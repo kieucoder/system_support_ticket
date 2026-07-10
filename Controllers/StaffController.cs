@@ -315,14 +315,18 @@ namespace SupportTicketSysterm.Controllers
 
 
         //Quản lý khách hàng 
+<<<<<<< HEAD
         [HttpGet]
         [Route("Staff/QuanLyKH")]
+=======
+>>>>>>> f27fcf8921ddad14015781ef7ddf6a8f873bdde0
         public IActionResult QuanLyKH(string keyword,
             string status,
             string sort = "newest")
         {
             var query = _context.KhachHangs.AsQueryable();
 
+<<<<<<< HEAD
             // Tìm kiếm (tên, số điện thoại, email)
             if (!string.IsNullOrWhiteSpace(keyword))
             {
@@ -333,11 +337,31 @@ namespace SupportTicketSysterm.Controllers
 
             // Lọc trạng thái (bỏ qua nếu chọn "Tất cả" - all)
             if (!string.IsNullOrWhiteSpace(status) && status != "all")
+=======
+           
+            // Tìm kiếm
+            
+            if (!string.IsNullOrWhiteSpace(keyword))
+            {
+                query = query.Where(x => x.HoTen.Contains(keyword));
+            }
+
+          
+            // Lọc trạng thái
+           
+            if (!string.IsNullOrWhiteSpace(status))
+>>>>>>> f27fcf8921ddad14015781ef7ddf6a8f873bdde0
             {
                 query = query.Where(x => x.TrangThai == status);
             }
 
+<<<<<<< HEAD
             // Sắp xếp
+=======
+           
+            // Sắp xếp
+            
+>>>>>>> f27fcf8921ddad14015781ef7ddf6a8f873bdde0
             switch (sort)
             {
                 case "oldest":
@@ -357,6 +381,11 @@ namespace SupportTicketSysterm.Controllers
                     break;
             }
 
+<<<<<<< HEAD
+=======
+            
+
+>>>>>>> f27fcf8921ddad14015781ef7ddf6a8f873bdde0
             var today = DateOnly.FromDateTime(DateTime.Today);
             var firstDayOfMonth = new DateOnly(today.Year, today.Month, 1);
 
@@ -372,6 +401,7 @@ namespace SupportTicketSysterm.Controllers
             return View(query.ToList());
         }
 
+<<<<<<< HEAD
         [HttpGet]
         [Route("Staff/DanhSachKhachHang")]
         public IActionResult DanhSachKhachHang(string keyword, string status, string sort = "newest")
@@ -415,6 +445,8 @@ namespace SupportTicketSysterm.Controllers
             return PartialView("_DanhSachKhachHang", query.ToList());
         }
 
+=======
+>>>>>>> f27fcf8921ddad14015781ef7ddf6a8f873bdde0
         //Tạo mã khách hàng tự động tăng
         private string TaoMaKhachHang()
         {
@@ -783,12 +815,15 @@ namespace SupportTicketSysterm.Controllers
                     return Json(new { success = false, message = "Danh mục sự cố không tồn tại." });
                 }
 
+<<<<<<< HEAD
                 // Kiểm tra nếu danh mục đang bị khóa mà thêm dịch vụ Hoạt động
                 if (model.TrangThai == "Hoạt động" && (dm.TrangThai == "Tạm khóa" || dm.TrangThai == "Khóa"))
                 {
                     return Json(new { success = false, message = $"Không thể thêm dịch vụ ở trạng thái Hoạt động vì danh mục '{dm.TenDanhMuc}' đang bị khóa." });
                 }
 
+=======
+>>>>>>> f27fcf8921ddad14015781ef7ddf6a8f873bdde0
                 // Kiểm tra trùng tên trong cùng danh mục
                 bool exists = await _context.DichVus.AnyAsync(x => x.IdDanhMuc == model.IdDanhMuc && x.TenDichVu.Trim().ToLower() == model.TenDichVu.Trim().ToLower());
                 if (exists)
@@ -839,12 +874,15 @@ namespace SupportTicketSysterm.Controllers
                     return Json(new { success = false, message = "Danh mục sự cố không tồn tại." });
                 }
 
+<<<<<<< HEAD
                 // Kiểm tra nếu danh mục đang bị khóa mà cập nhật dịch vụ thành Hoạt động
                 if (model.TrangThai == "Hoạt động" && (dm.TrangThai == "Tạm khóa" || dm.TrangThai == "Khóa"))
                 {
                     return Json(new { success = false, message = $"Không thể cập nhật dịch vụ ở trạng thái Hoạt động vì danh mục '{dm.TenDanhMuc}' đang bị khóa." });
                 }
 
+=======
+>>>>>>> f27fcf8921ddad14015781ef7ddf6a8f873bdde0
                 // Kiểm tra trùng tên
                 bool exists = await _context.DichVus.AnyAsync(x => x.IdDichVu != model.IdDichVu && x.IdDanhMuc == model.IdDanhMuc && x.TenDichVu.Trim().ToLower() == model.TenDichVu.Trim().ToLower());
                 if (exists)
@@ -892,15 +930,20 @@ namespace SupportTicketSysterm.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> KhoaDichVu(int id)
         {
+<<<<<<< HEAD
             var model = await _context.DichVus
                                       .Include(d => d.IdDanhMucNavigation)
                                       .FirstOrDefaultAsync(x => x.IdDichVu == id);
+=======
+            var model = await _context.DichVus.FindAsync(id);
+>>>>>>> f27fcf8921ddad14015781ef7ddf6a8f873bdde0
             if (model == null)
             {
                 return Json(new { success = false, message = "Dịch vụ không tồn tại." });
             }
 
             var isActive = model.TrangThai == "Hoạt động";
+<<<<<<< HEAD
             if (!isActive)
             {
                 var dm = model.IdDanhMucNavigation;
@@ -914,6 +957,8 @@ namespace SupportTicketSysterm.Controllers
                 }
             }
 
+=======
+>>>>>>> f27fcf8921ddad14015781ef7ddf6a8f873bdde0
             model.TrangThai = isActive ? "Tạm khóa" : "Hoạt động";
 
             await _context.SaveChangesAsync();

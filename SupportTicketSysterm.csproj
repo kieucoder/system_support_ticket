@@ -20,4 +20,11 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.23" />
   </ItemGroup>
 
+<<<<<<< HEAD
+=======
+  <ItemGroup>
+    <Folder Include="ViewModel\" />
+  </ItemGroup>
+
+>>>>>>> f27fcf8921ddad14015781ef7ddf6a8f873bdde0
 </Project>

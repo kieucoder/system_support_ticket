@@ -404,6 +404,7 @@ window.confirmDeleteService = function () {
         });
 };
 
+<<<<<<< HEAD
 window.toggleServiceStatus = function (id, currentStatus, categoryStatus) {
     if (currentStatus !== 'Hoạt động' && (categoryStatus === 'Tạm khóa' || categoryStatus === 'Khóa')) {
         Swal.fire({
@@ -416,6 +417,12 @@ window.toggleServiceStatus = function (id, currentStatus, categoryStatus) {
         return;
     }
 
+=======
+/* ══════════════════════════════════════════
+   TOGGLE STATUS
+   ══════════════════════════════════════════ */
+window.toggleServiceStatus = function (id) {
+>>>>>>> f27fcf8921ddad14015781ef7ddf6a8f873bdde0
     const tokenInput = document.querySelector('#addServiceForm input[name="__RequestVerificationToken"]');
     const token = tokenInput ? tokenInput.value : '';
 
@@ -434,6 +441,7 @@ window.toggleServiceStatus = function (id, currentStatus, categoryStatus) {
                 applyFilters();
                 loadStats();
             } else {
+<<<<<<< HEAD
                 if (data.isCategoryLocked) {
                     Swal.fire({
                         title: 'Không thể kích hoạt',
@@ -445,6 +453,9 @@ window.toggleServiceStatus = function (id, currentStatus, categoryStatus) {
                 } else {
                     showToast('error', data.message);
                 }
+=======
+                showToast('error', data.message);
+>>>>>>> f27fcf8921ddad14015781ef7ddf6a8f873bdde0
             }
         })
         .catch(err => {

@@ -106,6 +106,7 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         });
     }
+<<<<<<< HEAD
 
     // Đăng ký sự kiện tìm kiếm thời gian thực (real-time search)
     const searchCustomerInp = document.getElementById('searchCustomer');
@@ -118,12 +119,15 @@ document.addEventListener('DOMContentLoaded', function () {
             }, 300);
         });
     }
+=======
+>>>>>>> f27fcf8921ddad14015781ef7ddf6a8f873bdde0
 });
 
 
 
 
 /* ══════════════════════════════════════════
+<<<<<<< HEAD
    SEARCH & FILTERS AJAX (REAL-TIME UPDATES)
    ══════════════════════════════════════════ */
 window.applyFiltersKH = function () {
@@ -167,6 +171,21 @@ window.clearFiltersKH = function () {
     if (sortInp) sortInp.value = 'newest';
 
     window.applyFiltersKH();
+=======
+   SEARCH & FILTERS REDIRECTS (BACKEND-HANDLED)
+   ══════════════════════════════════════════ */
+window.searchCustomers = function () {
+    const searchVal = document.getElementById('searchCustomer')?.value.trim() || '';
+    const statusVal = document.getElementById('filterStatus')?.value || 'all';
+    const sortVal = document.getElementById('filterSort')?.value || 'newest';
+
+    // Chuyển hướng trang kèm tham số truy vấn để Backend xử lý lọc và phân trang
+    window.location.href = `/Staff/QuanLyKH?search=${encodeURIComponent(searchVal)}&status=${encodeURIComponent(statusVal)}&sort=${encodeURIComponent(sortVal)}`;
+};
+
+window.clearFilters = function () {
+    window.location.href = '/Staff/QuanLyKH';
+>>>>>>> f27fcf8921ddad14015781ef7ddf6a8f873bdde0
 };
 
 /* ══════════════════════════════════════════

@@ -240,6 +240,7 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\assets\css\lookup-ticket.css))</OriginalItemSpec>
     </StaticWebAsset>
+<<<<<<< HEAD
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\assets\css\register.css))">
       <SourceType>Package</SourceType>
       <SourceId>SupportTicketSysterm</SourceId>
@@ -256,6 +257,8 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\assets\css\register.css))</OriginalItemSpec>
     </StaticWebAsset>
+=======
+>>>>>>> f27fcf8921ddad14015781ef7ddf6a8f873bdde0
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\assets\css\responsive.css))">
       <SourceType>Package</SourceType>
       <SourceId>SupportTicketSysterm</SourceId>
@@ -736,6 +739,7 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\assets\images\news_3_upgrade.png))</OriginalItemSpec>
     </StaticWebAsset>
+<<<<<<< HEAD
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\assets\images\register-banner.svg))">
       <SourceType>Package</SourceType>
       <SourceId>SupportTicketSysterm</SourceId>
@@ -752,6 +756,8 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\assets\images\register-banner.svg))</OriginalItemSpec>
     </StaticWebAsset>
+=======
+>>>>>>> f27fcf8921ddad14015781ef7ddf6a8f873bdde0
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\assets\js\chatbox.js))">
       <SourceType>Package</SourceType>
       <SourceId>SupportTicketSysterm</SourceId>
@@ -960,6 +966,7 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\assets\js\main.js))</OriginalItemSpec>
     </StaticWebAsset>
+<<<<<<< HEAD
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\assets\js\register.js))">
       <SourceType>Package</SourceType>
       <SourceId>SupportTicketSysterm</SourceId>
@@ -976,6 +983,8 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\assets\js\register.js))</OriginalItemSpec>
     </StaticWebAsset>
+=======
+>>>>>>> f27fcf8921ddad14015781ef7ddf6a8f873bdde0
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\assets\js\sidebar.js))">
       <SourceType>Package</SourceType>
       <SourceId>SupportTicketSysterm</SourceId>
@@ -2528,6 +2537,7 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\pages\ticket-success.html))</OriginalItemSpec>
     </StaticWebAsset>
+<<<<<<< HEAD
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\register.html))">
       <SourceType>Package</SourceType>
       <SourceId>SupportTicketSysterm</SourceId>
@@ -2544,6 +2554,8 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\register.html))</OriginalItemSpec>
     </StaticWebAsset>
+=======
+>>>>>>> f27fcf8921ddad14015781ef7ddf6a8f873bdde0
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\scratch\replace_icons.js))">
       <SourceType>Package</SourceType>
       <SourceId>SupportTicketSysterm</SourceId>

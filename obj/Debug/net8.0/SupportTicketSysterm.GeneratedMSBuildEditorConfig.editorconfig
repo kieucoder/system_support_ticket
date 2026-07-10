@@ -26,6 +26,7 @@ build_property.GenerateRazorMetadataSourceChecksumAttributes =
 build_property.MSBuildProjectDirectory = D:\SupportTicketSysterm
 build_property._RazorSourceGeneratorDebug = 
 
+<<<<<<< HEAD
 [D:/SupportTicketSysterm/Views/Auth/DangKy.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXV0aFxEYW5nS3kuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
@@ -34,6 +35,8 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXV0aFxEYW5nTmhhcC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+=======
+>>>>>>> f27fcf8921ddad14015781ef7ddf6a8f873bdde0
 [D:/SupportTicketSysterm/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
@@ -50,10 +53,13 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXFNpZGViYXJTdGFmZi5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+<<<<<<< HEAD
 [D:/SupportTicketSysterm/Views/Shared/_Header.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9IZWFkZXIuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
+=======
+>>>>>>> f27fcf8921ddad14015781ef7ddf6a8f873bdde0
 [D:/SupportTicketSysterm/Views/Shared/_LayoutMain.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXRNYWluLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
@@ -98,10 +104,13 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3RhZmZcX0RhbmhTYWNoRGljaFZ1LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+<<<<<<< HEAD
 [D:/SupportTicketSysterm/Views/Staff/_DanhSachKhachHang.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3RhZmZcX0RhbmhTYWNoS2hhY2hIYW5nLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+=======
+>>>>>>> f27fcf8921ddad14015781ef7ddf6a8f873bdde0
 [D:/SupportTicketSysterm/Views/Staff/_SuaDanhMuc.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3RhZmZcX1N1YURhbmhNdWMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 

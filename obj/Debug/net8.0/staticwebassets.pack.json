@@ -65,10 +65,13 @@
       "PackagePath": "staticwebassets\\assets\\css\\lookup-ticket.css"
     },
     {
+<<<<<<< HEAD
       "Id": "D:\\SupportTicketSysterm\\wwwroot\\assets\\css\\register.css",
       "PackagePath": "staticwebassets\\assets\\css\\register.css"
     },
     {
+=======
+>>>>>>> f27fcf8921ddad14015781ef7ddf6a8f873bdde0
       "Id": "D:\\SupportTicketSysterm\\wwwroot\\assets\\css\\responsive.css",
       "PackagePath": "staticwebassets\\assets\\css\\responsive.css"
     },
@@ -189,10 +192,13 @@
       "PackagePath": "staticwebassets\\assets\\images\\news_3_upgrade.png"
     },
     {
+<<<<<<< HEAD
       "Id": "D:\\SupportTicketSysterm\\wwwroot\\assets\\images\\register-banner.svg",
       "PackagePath": "staticwebassets\\assets\\images\\register-banner.svg"
     },
     {
+=======
+>>>>>>> f27fcf8921ddad14015781ef7ddf6a8f873bdde0
       "Id": "D:\\SupportTicketSysterm\\wwwroot\\assets\\js\\chatbox.js",
       "PackagePath": "staticwebassets\\assets\\js\\chatbox.js"
     },
@@ -245,10 +251,13 @@
       "PackagePath": "staticwebassets\\assets\\js\\main.js"
     },
     {
+<<<<<<< HEAD
       "Id": "D:\\SupportTicketSysterm\\wwwroot\\assets\\js\\register.js",
       "PackagePath": "staticwebassets\\assets\\js\\register.js"
     },
     {
+=======
+>>>>>>> f27fcf8921ddad14015781ef7ddf6a8f873bdde0
       "Id": "D:\\SupportTicketSysterm\\wwwroot\\assets\\js\\sidebar.js",
       "PackagePath": "staticwebassets\\assets\\js\\sidebar.js"
     },
@@ -637,10 +646,13 @@
       "PackagePath": "staticwebassets\\pages\\ticket-success.html"
     },
     {
+<<<<<<< HEAD
       "Id": "D:\\SupportTicketSysterm\\wwwroot\\register.html",
       "PackagePath": "staticwebassets\\register.html"
     },
     {
+=======
+>>>>>>> f27fcf8921ddad14015781ef7ddf6a8f873bdde0
       "Id": "D:\\SupportTicketSysterm\\wwwroot\\scratch\\replace_icons.js",
       "PackagePath": "staticwebassets\\scratch\\replace_icons.js"
     },

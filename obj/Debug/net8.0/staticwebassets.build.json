@@ -1,6 +1,10 @@
 {
   "Version": 1,
+<<<<<<< HEAD
   "Hash": "DztEbhmFdNKEhjFu7DmfUWr+rfD6FMj5ST+tKqVEhao=",
+=======
+  "Hash": "3EPx0GVNk/GNKVtC6o9KgMEFhdSU3ZnwM+wMjaOXALE=",
+>>>>>>> f27fcf8921ddad14015781ef7ddf6a8f873bdde0
   "Source": "SupportTicketSysterm",
   "BasePath": "_content/SupportTicketSysterm",
   "Mode": "Default",
@@ -340,6 +344,7 @@
       "OriginalItemSpec": "wwwroot\\assets\\css\\lookup-ticket.css"
     },
     {
+<<<<<<< HEAD
       "Identity": "D:\\SupportTicketSysterm\\wwwroot\\assets\\css\\register.css",
       "SourceId": "SupportTicketSysterm",
       "SourceType": "Discovered",
@@ -359,6 +364,8 @@
       "OriginalItemSpec": "wwwroot\\assets\\css\\register.css"
     },
     {
+=======
+>>>>>>> f27fcf8921ddad14015781ef7ddf6a8f873bdde0
       "Identity": "D:\\SupportTicketSysterm\\wwwroot\\assets\\css\\responsive.css",
       "SourceId": "SupportTicketSysterm",
       "SourceType": "Discovered",
@@ -929,6 +936,7 @@
       "OriginalItemSpec": "wwwroot\\assets\\images\\news_3_upgrade.png"
     },
     {
+<<<<<<< HEAD
       "Identity": "D:\\SupportTicketSysterm\\wwwroot\\assets\\images\\register-banner.svg",
       "SourceId": "SupportTicketSysterm",
       "SourceType": "Discovered",
@@ -948,6 +956,8 @@
       "OriginalItemSpec": "wwwroot\\assets\\images\\register-banner.svg"
     },
     {
+=======
+>>>>>>> f27fcf8921ddad14015781ef7ddf6a8f873bdde0
       "Identity": "D:\\SupportTicketSysterm\\wwwroot\\assets\\js\\chatbox.js",
       "SourceId": "SupportTicketSysterm",
       "SourceType": "Discovered",
@@ -1195,6 +1205,7 @@
       "OriginalItemSpec": "wwwroot\\assets\\js\\main.js"
     },
     {
+<<<<<<< HEAD
       "Identity": "D:\\SupportTicketSysterm\\wwwroot\\assets\\js\\register.js",
       "SourceId": "SupportTicketSysterm",
       "SourceType": "Discovered",
@@ -1214,6 +1225,8 @@
       "OriginalItemSpec": "wwwroot\\assets\\js\\register.js"
     },
     {
+=======
+>>>>>>> f27fcf8921ddad14015781ef7ddf6a8f873bdde0
       "Identity": "D:\\SupportTicketSysterm\\wwwroot\\assets\\js\\sidebar.js",
       "SourceId": "SupportTicketSysterm",
       "SourceType": "Discovered",
@@ -3057,6 +3070,7 @@
       "OriginalItemSpec": "wwwroot\\pages\\ticket-success.html"
     },
     {
+<<<<<<< HEAD
       "Identity": "D:\\SupportTicketSysterm\\wwwroot\\register.html",
       "SourceId": "SupportTicketSysterm",
       "SourceType": "Discovered",
@@ -3076,6 +3090,8 @@
       "OriginalItemSpec": "wwwroot\\register.html"
     },
     {
+=======
+>>>>>>> f27fcf8921ddad14015781ef7ddf6a8f873bdde0
       "Identity": "D:\\SupportTicketSysterm\\wwwroot\\scratch\\replace_icons.js",
       "SourceId": "SupportTicketSysterm",
       "SourceType": "Discovered",
