@@ -1,0 +1,404 @@
+@{
+    ViewData["Title"] = "Dashboard Tổng Quan";
+    ViewData["HeaderTitle"] = "Tổng Quan Hệ Thống";
+    ViewData["HeaderSubtitle"] = "Cập nhật lần cuối hôm nay, " + DateTime.Now.ToString("dd/MM/yyyy");
+    Layout = "~/Views/Shared/_LayoutStaff.cshtml";
+}
+
+@section Styles {
+    <!-- Page-specific CSS -->
+    <link rel="stylesheet" href="~/assets/css/staff/dashboard-page.css">
+}
+
+<!-- ====================================
+     SECTION 1: STATISTICS CARDS
+     ==================================== -->
+<section aria-label="Thống kê tổng quan" class="mb-4">
+    <div class="row g-3">
+        <!-- Card 1 - Total Tickets -->
+        <div class="col-xl-3 col-lg-4 col-md-6 col-12">
+            <div class="dashboard-card">
+                <div class="stat-card-wrapper">
+                    <div>
+                        <p class="stat-card-title">Tổng Phiếu Hỗ Trợ</p>
+                        <h2 class="stat-card-number" id="count-total">0</h2>
+                        <p class="stat-trend up mb-0 mt-1">
+                            <i class="bi bi-arrow-trend-up me-1"></i>+8
+                            so với tuần trước
+                        </p>
+                    </div>
+                    <div class="stat-card-icon primary">
+                        <i class="fa-solid fa-ticket" aria-hidden="true"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 2 - Waiting -->
+        <div class="col-xl-3 col-lg-4 col-md-6 col-12">
+            <div class="dashboard-card">
+                <div class="stat-card-wrapper">
+                    <div>
+                        <p class="stat-card-title">Chờ Tiếp Nhận</p>
+                        <h2 class="stat-card-number" id="count-waiting">0</h2>
+                        <p class="stat-trend down mb-0 mt-1">
+                            <i class="fa-solid fa-circle-exclamation me-1"></i>Cần xử lý sớm
+                        </p>
+                    </div>
+                    <div class="stat-card-icon warning">
+                        <i class="fa-solid fa-clock" aria-hidden="true"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 3 - Processing -->
+        <div class="col-xl-3 col-lg-4 col-md-6 col-12">
+            <div class="dashboard-card">
+                <div class="stat-card-wrapper">
+                    <div>
+                        <p class="stat-card-title">Đang Xử Lý</p>
+                        <h2 class="stat-card-number" id="count-processing">0</h2>
+                        <p class="stat-trend up mb-0 mt-1">
+                            <i class="fa-solid fa-spinner fa-spin me-1"></i>Đang tiến hành
+                        </p>
+                    </div>
+                    <div class="stat-card-icon primary">
+                        <i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 4 - Completed -->
+        <div class="col-xl-3 col-lg-4 col-md-6 col-12">
+            <div class="dashboard-card">
+                <div class="stat-card-wrapper">
+                    <div>
+                        <p class="stat-card-title">Đã Hoàn Thành</p>
+                        <h2 class="stat-card-number" id="count-completed">0</h2>
+                        <p class="stat-trend up mb-0 mt-1">
+                            <i class="fa-solid fa-circle-check me-1"></i>Tốt! Tỉ lệ cao
+                        </p>
+                    </div>
+                    <div class="stat-card-icon success">
+                        <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 5 - Customers -->
+        <div class="col-xl-3 col-lg-4 col-md-6 col-12">
+            <div class="dashboard-card">
+                <div class="stat-card-wrapper">
+                    <div>
+                        <p class="stat-card-title">Khách Hàng</p>
+                        <h2 class="stat-card-number" id="count-customers">0</h2>
+                        <p class="stat-trend up mb-0 mt-1">
+                            <i class="fa-solid fa-users me-1"></i>Đã gửi phiếu
+                        </p>
+                    </div>
+                    <div class="stat-card-icon info">
+                        <i class="fa-solid fa-users" aria-hidden="true"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 6 - Appointments -->
+        <div class="col-xl-3 col-lg-4 col-md-6 col-12">
+            <div class="dashboard-card">
+                <div class="stat-card-wrapper">
+                    <div>
+                        <p class="stat-card-title">Lịch Hẹn Kỹ Thuật</p>
+                        <h2 class="stat-card-number" id="count-appointments">0</h2>
+                        <p class="stat-trend up mb-0 mt-1">
+                            <i class="fa-solid fa-calendar-check me-1"></i>Đã được duyệt
+                        </p>
+                    </div>
+                    <div class="stat-card-icon success">
+                        <i class="fa-solid fa-calendar-check" aria-hidden="true"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 7 - Services -->
+        <div class="col-xl-3 col-lg-4 col-md-6 col-12">
+            <div class="dashboard-card">
+                <div class="stat-card-wrapper">
+                    <div>
+                        <p class="stat-card-title">Dịch Vụ Kỹ Thuật</p>
+                        <h2 class="stat-card-number" id="count-services">0</h2>
+                        <p class="stat-trend up mb-0 mt-1">
+                            <i class="fa-solid fa-network-wired me-1"></i>Đang cung cấp
+                        </p>
+                    </div>
+                    <div class="stat-card-icon info">
+                        <i class="fa-solid fa-network-wired" aria-hidden="true"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 8 - Categories -->
+        <div class="col-xl-3 col-lg-4 col-md-6 col-12">
+            <div class="dashboard-card">
+                <div class="stat-card-wrapper">
+                    <div>
+                        <p class="stat-card-title">Danh Mục Sự Cố</p>
+                        <h2 class="stat-card-number" id="count-categories">0</h2>
+                        <p class="stat-trend up mb-0 mt-1">
+                            <i class="fa-solid fa-layer-group me-1"></i>Nhóm sự cố
+                        </p>
+                    </div>
+                    <div class="stat-card-icon warning">
+                        <i class="fa-solid fa-layer-group" aria-hidden="true"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 9 - Chat with Customer -->
+        <div class="col-xl-3 col-lg-4 col-md-6 col-12">
+            <div class="dashboard-card">
+                <div class="stat-card-wrapper">
+                    <div>
+                        <p class="stat-card-title">Chat with Customer</p>
+                        <h2 class="stat-card-number" id="count-chats">0</h2>
+                        <p class="stat-trend up mb-0 mt-1">
+                            <i class="fa-solid fa-comments me-1"></i>Chatbox
+                        </p>
+                    </div>
+                    <div class="stat-card-icon warning" style="background-color: rgba(255, 193, 7, 0.15); color: #ffc107;">
+                        <i class="fa-solid fa-comments" aria-hidden="true"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ====================================
+     SECTION 2: CHARTS ROW 1 (Line + Doughnut)
+     ==================================== -->
+<section aria-label="Biểu đồ thống kê phiếu" class="mb-4">
+    <div class="row g-3">
+        <!-- Line Chart - Trend by Month -->
+        <div class="col-lg-8 col-12">
+            <div class="dashboard-card h-100">
+                <div class="table-card-header">
+                    <div>
+                        <h2 class="section-heading-line">
+                            Phiếu Hỗ Trợ Theo Tháng
+                            <small>Biểu đồ xu hướng tiếp nhận phiếu trong 6 tháng gần nhất (2026)</small>
+                        </h2>
+                    </div>
+                    <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-2 py-1 rounded fs-9">
+                        <i class="fa-solid fa-chart-line me-1"></i>Line Chart
+                    </span>
+                </div>
+                <div class="chart-container">
+                    <canvas id="ticketTrendChart" aria-label="Biểu đồ phiếu theo tháng"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Doughnut Chart - Status -->
+        <div class="col-lg-4 col-12">
+            <div class="dashboard-card h-100">
+                <div class="table-card-header">
+                    <div>
+                        <h2 class="section-heading-line">
+                            Trạng Thái Phiếu
+                            <small>Phân bổ theo từng trạng thái xử lý</small>
+                        </h2>
+                    </div>
+                    <span class="badge bg-warning-subtle text-warning border border-warning-subtle px-2 py-1 rounded fs-9">
+                        <i class="bi bi-chart-pie me-1"></i>Doughnut
+                    </span>
+                </div>
+                <div class="chart-container">
+                    <canvas id="ticketStatusChart" aria-label="Biểu đồ phân bổ trạng thái"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ====================================
+     SECTION 3: CHARTS ROW 2 (Bar + Radar)
+     ==================================== -->
+<section aria-label="Biểu đồ dịch vụ và đánh giá" class="mb-4">
+    <div class="row g-3">
+        <!-- Bar Chart - by Service -->
+        <div class="col-lg-7 col-12">
+            <div class="dashboard-card h-100">
+                <div class="table-card-header">
+                    <div>
+                        <h2 class="section-heading-line">
+                            Phiếu Theo Dịch Vụ
+                            <small>Số lượng yêu cầu tương ứng mỗi dịch vụ kỹ thuật</small>
+                        </h2>
+                    </div>
+                    <span class="badge bg-info-subtle text-info border border-info-subtle px-2 py-1 rounded fs-9">
+                        <i class="fa-solid fa-chart-bar me-1"></i>Bar Chart
+                    </span>
+                </div>
+                <div class="chart-container">
+                    <canvas id="ticketServiceChart" aria-label="Biểu đồ phiếu theo dịch vụ"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Radar Chart - Customer Ratings -->
+        <div class="col-lg-5 col-12">
+            <div class="dashboard-card h-100">
+                <div class="table-card-header">
+                    <div>
+                        <h2 class="section-heading-line">
+                            Đánh Giá Khách Hàng
+                            <small>Tỉ lệ đánh giá hài lòng theo phân nhóm sao</small>
+                        </h2>
+                    </div>
+                    <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1 rounded fs-9">
+                        <i class="fa-solid fa-star me-1"></i>Radar
+                    </span>
+                </div>
+                <div class="chart-container">
+                    <canvas id="ticketRatingChart" aria-label="Biểu đồ đánh giá khách hàng"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ====================================
+     SECTION 4: RECENT TICKETS TABLE
+     ==================================== -->
+<section aria-label="Phiếu hỗ trợ gần đây" class="mb-4">
+    <div class="dashboard-card">
+        <div class="table-card-header flex-wrap gap-2">
+            <div>
+                <h2 class="section-heading-line">
+                    Phiếu Tiếp Nhận Gần Đây
+                    <small>5 phiếu hỗ trợ kỹ thuật được tạo mới nhất trong hệ thống</small>
+                </h2>
+            </div>
+            <a href="#" class="btn btn-sm btn-viettel px-3">
+                <i class="bi bi-eye me-1"></i>Xem tất cả
+            </a>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table custom-table" aria-label="Danh sách phiếu gần đây">
+                <thead>
+                    <tr>
+                        <th scope="col">Mã Phiếu</th>
+                        <th scope="col">Khách Hàng</th>
+                        <th scope="col">Nội Dung / Dịch Vụ</th>
+                        <th scope="col">Ưu Tiên</th>
+                        <th scope="col">Trạng Thái</th>
+                        <th scope="col">Ngày Tạo</th>
+                    </tr>
+                </thead>
+                <tbody id="recentTicketsBody">
+                    <!-- Populated by dashboard.js -->
+                    <tr>
+                        <td colspan="6" class="text-center py-4">
+                            <div class="skeleton-text skeleton-loading w-50 mx-auto"></div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<!-- ====================================
+     SECTION 5: QUICK ACCESS LINKS
+     ==================================== -->
+<section aria-label="Truy cập nhanh" class="mb-2">
+    <h2 class="section-heading-line mb-3">
+        Truy Cập Nhanh
+        <small>Các tác vụ quản trị thường dùng</small>
+    </h2>
+    <div class="row g-3">
+        <div class="col-lg-3 col-md-6 col-6">
+            <a asp-controller="Staff" asp-action="QuanLyDanhMuc"
+               class="dashboard-card d-flex align-items-center gap-3 text-decoration-none"
+               style="padding: 18px 20px;">
+                <div class="stat-card-icon primary" style="flex-shrink:0;">
+                    <i class="fa-solid fa-layer-group" aria-hidden="true"></i>
+                </div>
+                <div>
+                    <p class="fw-bold mb-0" style="color:var(--text-main); font-size:0.88rem;">
+                        Quản Lý
+                    </p>
+                    <p class="mb-0 text-muted" style="font-size:0.78rem;">Danh Mục Sự Cố</p>
+                </div>
+            </a>
+        </div>
+        <div class="col-lg-3 col-md-6 col-6">
+            <a href="admin-services.html"
+               class="dashboard-card d-flex align-items-center gap-3 text-decoration-none"
+               style="padding: 18px 20px;">
+                <div class="stat-card-icon info" style="flex-shrink:0;">
+                    <i class="fa-solid fa-network-wired" aria-hidden="true"></i>
+                </div>
+                <div>
+                    <p class="fw-bold mb-0" style="color:var(--text-main); font-size:0.88rem;">
+                        Quản Lý
+                    </p>
+                    <p class="mb-0 text-muted" style="font-size:0.78rem;">Dịch Vụ Kỹ Thuật</p>
+                </div>
+            </a>
+        </div>
+        <div class="col-lg-3 col-md-6 col-6">
+            <a href="admin-appointments.html"
+               class="dashboard-card d-flex align-items-center gap-3 text-decoration-none"
+               style="padding: 18px 20px;">
+                <div class="stat-card-icon warning" style="flex-shrink:0;">
+                    <i class="fa-solid fa-calendar-days" aria-hidden="true"></i>
+                </div>
+                <div>
+                    <p class="fw-bold mb-0" style="color:var(--text-main); font-size:0.88rem;">
+                        Quản Lý
+                    </p>
+                    <p class="mb-0 text-muted" style="font-size:0.78rem;">Lịch Hẹn Hỗ Trợ</p>
+                </div>
+            </a>
+        </div>
+        <div class="col-lg-3 col-md-6 col-6">
+            <a href="admin-profile.html"
+               class="dashboard-card d-flex align-items-center gap-3 text-decoration-none"
+               style="padding: 18px 20px;">
+                <div class="stat-card-icon success" style="flex-shrink:0;">
+                    <i class="fa-solid fa-user-gear" aria-hidden="true"></i>
+                </div>
+                <div>
+                    <p class="fw-bold mb-0" style="color:var(--text-main); font-size:0.88rem;">
+                        Tài Khoản
+                    </p>
+                    <p class="mb-0 text-muted" style="font-size:0.78rem;">Thông Tin Nhân Viên</p>
+                </div>
+            </a>
+        </div>
+        <div class="col-lg-3 col-md-6 col-6">
+            <a href="staff-chat.html"
+               class="dashboard-card d-flex align-items-center gap-3 text-decoration-none"
+               style="padding: 18px 20px;">
+                <div class="stat-card-icon success" style="flex-shrink:0;">
+                    <i class="fa-solid fa-comments" aria-hidden="true"></i>
+                </div>
+                <div>
+                    <p class="fw-bold mb-0" style="color:var(--text-main); font-size:0.88rem;">
+                        Chat Hỗ Trợ
+                    </p>
+                    <p class="mb-0 text-muted" style="font-size:0.78rem;">Hộp thư hỗ trợ</p>
+                </div>
+            </a>
+        </div>
+    </div>
+</section>

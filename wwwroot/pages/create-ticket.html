@@ -1,0 +1,1495 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Tạo Phiếu Hỗ Trợ Kỹ Thuật - TechSupport Viettel</title>
+
+    <!-- SEO Optimization -->
+    <meta name="description"
+        content="Gửi yêu cầu hỗ trợ kỹ thuật nhanh chóng cho đội ngũ hỗ trợ TechSupport Viettel. Chúng tôi tiếp nhận và xử lý sự cố mạng, Internet, Camera 24/7.">
+    <meta name="keywords"
+        content="tạo phiếu hỗ trợ, báo lỗi viettel, hỗ trợ kỹ thuật viettel, sự cố wifi, lắp đặt mạng viettel">
+    <meta name="author" content="Viettel Telecom TechSupport">
+    <meta name="robots" content="index, follow">
+
+    <!-- Open Graph Data -->
+    <meta property="og:title" content="Tạo Phiếu Hỗ Trợ Kỹ Thuật - TechSupport Viettel">
+    <meta property="og:description"
+        content="Gửi yêu cầu trực tiếp cho kỹ thuật viên Viettel. Nhận phản hồi tức thì và tiến độ xử lý sự cố trực tuyến.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://techsupport.viettel.vn/pages/create-category.html">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="https://viettel.com.vn/favicon.ico">
+
+    <!-- Bootstrap 5.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <!-- Font Awesome 6.6.0 CDN (Enterprise) -->
+    <link rel="stylesheet" id="fa-cdn-link" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+    <!-- FontAwesome Fallback Script -->
+    <script>
+        document.getElementById('fa-cdn-link').addEventListener('error', function() {
+            document.documentElement.classList.add('fa-fallback-active');
+            console.warn("FontAwesome failed to load. Falling back to Bootstrap Icons.");
+        });
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                if (!document.fonts.check('12px "Font Awesome 6 Free"')) {
+                    document.documentElement.classList.add('fa-fallback-active');
+                }
+            }, 1200);
+        });
+    </script>
+
+    <!-- Google Fonts Inter & Roboto -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Roboto:wght@300;400;500;700;900&display=swap"
+        rel="stylesheet">
+
+    <!-- SweetAlert2 CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-bootstrap-4/bootstrap-4.min.css" rel="stylesheet">
+
+    <!-- Flatpickr CSS CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+    <!-- Component-Based CSS -->
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/responsive.css">
+    <link rel="stylesheet" href="../assets/css/header.css">
+    <link rel="stylesheet" href="../assets/css/sidebar.css">
+    <link rel="stylesheet" href="../assets/css/footer.css">
+    <link rel="stylesheet" href="../assets/css/chatbox.css">
+    <link rel="stylesheet" href="../assets/css/create-category.css">
+</head>
+
+<body>
+
+    <!-- Header Component Container -->
+    <div id="header-container">
+        <!-- 1. TOPBAR HEADER -->
+        <header class="top-header">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div
+                        class="col-lg-8 col-12 top-header-info d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+                        <span class="me-4"><i class="fa-solid fa-phone"></i> Hotline kỹ thuật: <a
+                                href="tel:19008098">1900 8098</a> (Miễn phí)</span>
+                        <span class="me-4"><i class="fa-solid fa-envelope"></i> Email: <a
+                                href="mailto:support@viettel.com.vn">support@viettel.com.vn</a></span>
+                        <span><i class="fa-solid fa-clock"></i> Hỗ trợ kỹ thuật 24/7/365</span>
+                    </div>
+                    <div
+                        class="col-lg-4 col-12 top-header-social d-flex align-items-center justify-content-center justify-content-lg-end mt-2 mt-lg-0">
+                        <span class="me-2 d-none d-sm-inline">Kết nối:</span>
+                        <a href="https://facebook.com" target="_blank" class="me-2" aria-label="Facebook"><i
+                                class="bi bi-facebook"></i></a>
+                        <a href="https://youtube.com" target="_blank" class="me-2" aria-label="Youtube"><i
+                                class="bi bi-youtube"></i></a>
+                        <a href="https://linkedin.com" target="_blank" class="me-2" aria-label="LinkedIn"><i
+                                class="bi bi-linkedin"></i></a>
+                        <a href="https://instagram.com" target="_blank" aria-label="Instagram"><i
+                                class="bi bi-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- 2. NAVBAR STICKY (CUSTOM RESPONSIVE HEADER) -->
+        <header class="custom-header fixed-top" id="mainNavbar">
+            <div class="container container-header-wrapper">
+                <!-- Brand Logo -->
+                <a class="navbar-brand" href="../index.html#heroSection" id="navBrand">
+                    <i class="fa-solid fa-cpu-fill"></i>
+                    <span>TechSupport</span>
+                </a>
+
+                <!-- Desktop Menu (>=1200px) -->
+                <nav class="desktop-menu d-none d-xl-flex align-items-center justify-content-between flex-grow-1 ms-5">
+                    <ul class="navbar-nav header-nav-list flex-row align-items-center gap-2">
+                        <li class="nav-item">
+                            <a class="nav-link" href="../index.html" id="linkHome">Trang chủ</a>
+                        </li>
+                        <li class="nav-item dropdown-custom">
+                            <a class="nav-link dropdown-toggle-custom d-inline-flex align-items-center" href="#"
+                                id="linkServices">
+                                Dịch vụ hỗ trợ <i class="fa-solid fa-chevron-down ms-1"
+                                    style="font-size: 0.8rem; transition: transform 0.3s ease;"></i>
+                            </a>
+                            <ul class="dropdown-menu-custom">
+                                <li><a class="dropdown-item-custom" href="../index.html#serviceGridSection">Hỗ trợ
+                                        Internet Cáp Quang</a>
+                                </li>
+                                <li><a class="dropdown-item-custom" href="../index.html#serviceGridSection">Hỗ trợ Home
+                                        Camera</a></li>
+                                <li><a class="dropdown-item-custom" href="../index.html#serviceGridSection">Hỗ trợ
+                                        Server & Cloud</a></li>
+                                <li><a class="dropdown-item-custom" href="../index.html#serviceGridSection">Hỗ trợ Phần
+                                        mềm & Mạng nội bộ</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="../index.html#quickActionSection" id="linkSearch">Tra cứu
+                                phiếu</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="../index.html#newsSection" id="linkGuides">Hướng dẫn</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="contact.html" id="linkContact">Liên hệ</a>
+                        </li>
+                    </ul>
+                    <div class="header-buttons-group d-flex align-items-center gap-2">
+                        <a href="../login.html" class="btn btn-login-custom btn-ripple rounded-pill px-4"
+                            id="btnLogin">
+                            <i class="fa-solid fa-user me-1"></i> Đăng nhập
+                        </a>
+                        <a href="../register.html" class="btn btn-create-ticket-custom btn-ripple px-4"
+                            id="btnCreateTicket">
+                            <i class="bi bi-person-plus-fill me-1"></i> Đăng ký
+                        </a>
+                    </div>
+                </nav>
+
+                <!-- Hamburger Button (Tablet & Mobile <1200px) -->
+                <button class="navbar-hamburger d-xl-none" type="button" id="menuToggle" aria-label="Toggle navigation">
+                    <div class="hamburger">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </button>
+            </div>
+        </header>
+    </div>
+
+    <!-- Sidebar Component Container -->
+    <div id="sidebar-container">
+        <!-- Slide Menu Drawer for Mobile & Tablet -->
+        <div class="mobile-drawer" id="mobileDrawer">
+            <div class="drawer-header border-bottom">
+                <h5 class="drawer-title fw-bold">
+                    <span>TechSupport</span>
+                </h5>
+                <button type="button" class="btn-close-custom" id="drawerClose" aria-label="Close">
+                    <i class="fa-solid fa-times"></i>
+                </button>
+            </div>
+            <div class="drawer-body">
+                <!-- Navbar Links -->
+                <ul class="drawer-nav-list">
+                    <li class="drawer-nav-item">
+                        <a class="drawer-nav-link" href="../index.html" id="mobileLinkHome">Trang chủ</a>
+                    </li>
+                    <li class="drawer-nav-item drawer-dropdown-custom">
+                        <a class="drawer-nav-link dropdown-toggle-custom d-flex justify-content-between align-items-center"
+                            href="#" id="mobileLinkServices">
+                            Dịch vụ hỗ trợ <i class="fa-solid fa-chevron-down ms-1"
+                                style="font-size: 0.8rem; transition: transform 0.3s ease;"></i>
+                        </a>
+                        <ul class="drawer-dropdown-menu-custom">
+                            <li><a class="drawer-dropdown-item-custom" href="../index.html#serviceGridSection">Hỗ trợ
+                                    Internet Cáp Quang</a></li>
+                            <li><a class="drawer-dropdown-item-custom" href="../index.html#serviceGridSection">Hỗ trợ
+                                    Home Camera</a></li>
+                            <li><a class="drawer-dropdown-item-custom" href="../index.html#serviceGridSection">Hỗ trợ
+                                    Server & Cloud</a></li>
+                            <li><a class="drawer-dropdown-item-custom" href="../index.html#serviceGridSection">Hỗ trợ
+                                    Phần mềm & Mạng nội bộ</a></li>
+                        </ul>
+                    </li>
+                    <li class="drawer-nav-item">
+                        <a class="drawer-nav-link" href="../index.html#quickActionSection" id="mobileLinkSearch">Tra cứu
+                            phiếu</a>
+                    </li>
+                    <li class="drawer-nav-item">
+                        <a class="drawer-nav-link" href="../index.html#newsSection" id="mobileLinkGuides">Hướng dẫn</a>
+                    </li>
+                    <li class="drawer-nav-item">
+                        <a class="drawer-nav-link" href="contact.html" id="mobileLinkContact">Liên hệ</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="drawer-buttons-group d-flex flex-column">
+                <a href="../login.html"
+                    class="btn btn-login-custom btn-ripple rounded-pill px-4 justify-content-center"
+                    id="mobileBtnLogin">
+                    <i class="fa-solid fa-user me-1"></i> Đăng nhập
+                </a>
+                <a href="../register.html"
+                    class="btn btn-create-ticket-custom btn-ripple px-4 justify-content-center"
+                    id="mobileBtnCreateTicket">
+                    <i class="bi bi-person-plus-fill me-1"></i> Đăng ký
+                </a>
+            </div>
+        </div>
+
+        <!-- Dark Overlay behind Slide Menu -->
+        <div class="drawer-overlay" id="drawerOverlay"></div>
+    </div>
+
+    <!-- HERO SECTION -->
+    <section class="hero-section p-0" id="heroSection">
+        <div class="hero-carousel">
+            <div class="carousel-inner">
+                <div class="carousel-item active" style="background-image: url('../assets/images/hero_telecom_service.png');">
+                    <div class="hero-carousel-overlay"></div>
+                    <div class="hero-carousel-content">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-lg-8 col-md-10 col-12 text-start">
+                                    <!-- Breadcrumb Navigation -->
+                                    <nav aria-label="breadcrumb" class="hero-breadcrumb">
+                                        <ol class="breadcrumb m-0" itemscope itemtype="https://schema.org/BreadcrumbList">
+                                            <li class="breadcrumb-item" itemprop="itemListElement" itemscope
+                                                itemtype="https://schema.org/ListItem">
+                                                <a href="../index.html" itemprop="item"
+                                                    class="text-decoration-none d-inline-flex align-items-center">
+                                                    <i class="fa-solid fa-house-door-fill me-1"></i>
+                                                    <span itemprop="name">Trang chủ</span>
+                                                </a>
+                                                <meta itemprop="position" content="1" />
+                                            </li>
+                                            <li class="breadcrumb-item" itemprop="itemListElement" itemscope
+                                                itemtype="https://schema.org/ListItem">
+                                                <a href="../index.html#serviceGridSection" itemprop="item"
+                                                    class="text-decoration-none d-inline-flex align-items-center">
+                                                    <span itemprop="name">Hỗ trợ kỹ thuật</span>
+                                                </a>
+                                                <meta itemprop="position" content="2" />
+                                            </li>
+                                            <li class="breadcrumb-item active" itemprop="itemListElement" itemscope
+                                                itemtype="https://schema.org/ListItem" aria-current="page">
+                                                <span itemprop="name">Tạo phiếu hỗ trợ</span>
+                                                <meta itemprop="position" content="3" />
+                                            </li>
+                                        </ol>
+                                    </nav>
+
+                                    <!-- Badge -->
+                                    <span class="hero-badge animate-fade-up">
+                                        <i class="bi bi-shield-check me-1"></i> Hệ thống hỗ trợ kỹ thuật 24/7
+                                    </span>
+
+                                    <!-- Title -->
+                                    <h1 class="hero-title animate-fade-up delay-1">Tạo Phiếu Hỗ Trợ Kỹ Thuật</h1>
+
+                                    <!-- Description -->
+                                    <p class="hero-desc animate-fade-up delay-2">
+                                        Gửi yêu cầu hỗ trợ nhanh chóng cho đội ngũ kỹ thuật Viettel. Chúng tôi sẽ tiếp nhận và xử lý trong thời gian sớm nhất.
+                                    </p>
+
+                                    <!-- CTA Buttons -->
+                                    <div class="hero-buttons animate-fade-up delay-3">
+                                        <a href="#ticketFormSection" class="btn btn-create-ticket-custom btn-ripple">
+                                            <i class="bi bi-plus-circle me-1"></i> Tạo Phiếu
+                                        </a>
+                                        <a href="contact.html" class="btn btn-outline-light-custom btn-ripple">
+                                            <i class="bi bi-telephone me-1"></i> Liên Hệ Kỹ Thuật
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+=======
+    <section class="hero-section">
+        <div class="container hero-content">
+            <div class="row align-items-center g-5">
+                <div class="col-lg-7 col-12 text-start hero-text-col animate-fade-up">
+                    <!-- Breadcrumb Navigation -->
+                    <nav aria-label="breadcrumb" class="hero-breadcrumb">
+                        <ol class="breadcrumb m-0" itemscope itemtype="https://schema.org/BreadcrumbList">
+                            <li class="breadcrumb-item" itemprop="itemListElement" itemscope
+                                itemtype="https://schema.org/ListItem">
+                                <a href="../index.html" itemprop="item"
+                                    class="text-decoration-none d-inline-flex align-items-center">
+                                    <i class="fa-solid fa-house-door-fill me-1"></i>
+                                    <span itemprop="name">Trang chủ</span>
+                                </a>
+                                <meta itemprop="position" content="1" />
+                            </li>
+                            <li class="breadcrumb-item" itemprop="itemListElement" itemscope
+                                itemtype="https://schema.org/ListItem">
+                                <a href="../index.html#serviceGridSection" itemprop="item"
+                                    class="text-decoration-none d-inline-flex align-items-center">
+                                    <span itemprop="name">Hỗ trợ kỹ thuật</span>
+                                </a>
+                                <meta itemprop="position" content="2" />
+                            </li>
+                            <li class="breadcrumb-item active" itemprop="itemListElement" itemscope
+                                itemtype="https://schema.org/ListItem" aria-current="page">
+                                <span itemprop="name">Tạo phiếu hỗ trợ</span>
+                                <meta itemprop="position" content="3" />
+                            </li>
+                        </ol>
+                    </nav>
+
+                    <!-- Badge -->
+                    <span class="hero-badge">
+                        <i class="bi bi-shield-check me-1"></i> Hệ thống hỗ trợ kỹ thuật 24/7
+                    </span>
+
+                    <!-- Title -->
+                    <h1 class="hero-title text-uppercase">Tạo Phiếu Hỗ Trợ Kỹ Thuật</h1>
+
+                    <!-- Description -->
+                    <p class="hero-desc">
+                        Gửi yêu cầu hỗ trợ nhanh chóng cho đội ngũ kỹ thuật Viettel. Chúng tôi sẽ tiếp nhận và xử lý
+                        trong thời gian sớm nhất.
+                    </p>
+
+                    <!-- CTA Buttons -->
+                    <div class="hero-cta-buttons d-flex flex-wrap gap-3 mt-4">
+                        <a href="#ticketFormSection" class="btn btn-hero-create px-4 py-2">
+                            <i class="bi bi-plus-circle me-1"></i> Tạo Phiếu
+                        </a>
+                        <a href="contact.html" class="btn btn-hero-contact px-4 py-2">
+                            <i class="bi bi-telephone me-1"></i> Liên Hệ Kỹ Thuật
+                        </a>
+                    </div>
+                </div>
+
+                <div class="col-lg-5 col-12 hero-banner-wrapper animate-fade-up delay-1">
+                    <!-- Tech illustration representing helpdesk ticket creation -->
+                    <svg class="hero-banner-svg" viewBox="0 0 500 400" xmlns="http://www.w3.org/2000/svg"
+                        aria-label="Tech Support Ticket Creation Illustration">
+                        <defs>
+                            <linearGradient id="svgGradRed" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#ee0033" />
+                                <stop offset="100%" stop-color="#ff4d6d" />
+                            </linearGradient>
+                            <linearGradient id="svgGradDarkGray" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#1f2937" />
+                                <stop offset="100%" stop-color="#111827" />
+                            </linearGradient>
+                        </defs>
+                        <!-- Shapes & Decorative Glow -->
+                        <circle cx="250" cy="200" r="160" fill="url(#svgGradRed)" opacity="0.05" />
+                        <rect x="360" y="50" width="80" height="80" rx="16" fill="url(#svgGradRed)" opacity="0.08"
+                            transform="rotate(15 400 90)" />
+
+                        <!-- Main Dashboard Ticket Form Representation -->
+                        <rect x="80" y="60" width="340" height="280" rx="24" fill="#ffffff"
+                            stroke="rgba(15, 17, 21, 0.05)" stroke-width="2"
+                            filter="drop-shadow(0 20px 40px rgba(0,0,0,0.06))" />
+                        <!-- Header bar -->
+                        <path
+                            d="M80 84 C80 70.74, 90.74 60, 104 60 L396 60 C409.26 60, 420 70.74, 420 84 L420 100 L80 100 Z"
+                            fill="url(#svgGradDarkGray)" />
+                        <!-- Window buttons -->
+                        <circle cx="105" cy="80" r="5" fill="#ee0033" />
+                        <circle cx="120" cy="80" r="5" fill="#eab308" />
+                        <circle cx="135" cy="80" r="5" fill="#10b981" />
+                        <rect x="160" y="74" width="180" height="12" rx="6" fill="rgba(255,255,255,0.15)" />
+
+                        <!-- Inside form items simulation -->
+                        <!-- Input 1 Title -->
+                        <rect x="110" y="130" width="100" height="10" rx="3" fill="#ee0033" opacity="0.8" />
+                        <rect x="110" y="148" width="280" height="32" rx="8" fill="#f8fafc" stroke="#e2e8f0"
+                            stroke-width="1.5" />
+                        <circle cx="130" cy="164" r="6" fill="#cbd5e1" />
+                        <rect x="146" y="160" width="120" height="8" rx="4" fill="#94a3b8" />
+
+                        <!-- Input 2 Checkbox -->
+                        <rect x="110" y="200" width="20" height="20" rx="6" fill="url(#svgGradRed)" />
+                        <path d="M115 210 L119 214 L125 206" stroke="#ffffff" stroke-width="2" fill="none"
+                            stroke-linecap="round" />
+                        <rect x="140" y="206" width="180" height="8" rx="4" fill="#475569" />
+
+                        <!-- Input 3 Textarea -->
+                        <rect x="110" y="240" width="280" height="50" rx="8" fill="#f8fafc" stroke="#e2e8f0"
+                            stroke-width="1.5" />
+                        <rect x="126" y="252" width="248" height="6" rx="3" fill="#cbd5e1" />
+                        <rect x="126" y="264" width="200" height="6" rx="3" fill="#cbd5e1" opacity="0.7" />
+
+                        <!-- Floating Support Ticket Badge -->
+                        <g class="floating-avatar-card" transform="translate(320, 240)">
+                            <rect x="0" y="0" width="130" height="80" rx="16" fill="url(#svgGradRed)"
+                                filter="drop-shadow(0 8px 16px rgba(238, 0, 51, 0.2))" />
+                            <circle cx="35" cy="40" r="18" fill="rgba(255,255,255,0.2)" />
+                            <!-- Plus icon inside circle -->
+                            <path d="M35 33 L35 47 M28 40 L42 40" stroke="#ffffff" stroke-width="3"
+                                stroke-linecap="round" />
+                            <rect x="65" y="30" width="45" height="6" rx="3" fill="#ffffff" />
+                            <rect x="65" y="42" width="30" height="5" rx="2.5" fill="#ffffff" opacity="0.7" />
+                        </g>
+                    </svg>
+                </div>
+>>>>>>> 59a5e6f64da6c8eb44454bf22a5574b208c2f2b3
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content Section -->
+    <main id="ticketFormSection" class="py-5" style="background-color: var(--viettel-gray-light);">
+        <div class="container">
+            <div class="row g-4 align-items-stretch">
+
+                <!-- 1. LEFT COLUMN: TICKET FORM (8 Cols) -->
+                <div class="col-lg-8 col-12">
+                    <div id="createTicketFormCard" class="ticket-main-card">
+
+                        <div class="card-header-custom">
+                            <i class="fa-solid fa-file-signature text-danger fs-3 me-2"></i>
+                            <h2 class="contact-card-title m-0 d-inline-block">Thông Tin Phiếu Hỗ Trợ</h2>
+                        </div>
+
+                        <!-- Bootstrap 5 Form -->
+                        <form id="supportTicketForm" class="needs-validation mt-4" novalidate>
+
+                            <!-- [Thông tin khách hàng] -->
+                            <div class="customer-info-section mb-4 p-4 border rounded bg-light">
+                                <h4 class="fs-6 fw-bold text-dark mb-3">
+                                    <i class="fa-solid fa-user text-danger me-2"></i>Thông tin khách hàng
+                                </h4>
+                                <div class="row g-3">
+                                    <div class="col-md-4 col-12">
+                                        <div class="d-flex flex-column">
+                                            <span class="text-muted fs-7 small uppercase fw-bold mb-1">Họ tên</span>
+                                            <span class="text-dark fw-bold" id="custName">Nguyễn Văn A</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-12">
+                                        <div class="d-flex flex-column">
+                                            <span class="text-muted fs-7 small uppercase fw-bold mb-1">Số điện
+                                                thoại</span>
+                                            <span class="text-dark fw-bold" id="custPhone">098xxxxxxx</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-12">
+                                        <div class="d-flex flex-column">
+                                            <span class="text-muted fs-7 small uppercase fw-bold mb-1">Email</span>
+                                            <span class="text-dark fw-bold" id="custEmail">abc@gmail.com</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- [Thông tin yêu cầu hỗ trợ] -->
+                            <h4 class="fs-6 fw-bold text-dark mb-3 mt-4 border-top pt-4">
+                                <i class="fa-solid fa-file-invoice text-danger me-2"></i>Thông tin yêu cầu hỗ trợ
+                            </h4>
+
+                            <div class="row g-3">
+
+                                <!-- Mã Phiếu (Auto-generated Readonly) -->
+                                <div class="col-md-6 col-12">
+                                    <label for="ticketCode" class="form-label-custom">Mã Phiếu Hỗ Trợ</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light border-end-0"><i
+                                                class="bi bi-hashtag text-muted"></i></span>
+                                        <input type="text"
+                                            class="form-control form-control-custom border-start-0 ps-0 text-dark font-monospace fw-bold"
+                                            id="ticketCode" readonly>
+                                    </div>
+                                    <div class="form-text text-muted">Mã số định danh duy nhất của phiếu hỗ trợ.</div>
+                                </div>
+
+                                <!-- Tiêu Đề Sự Cố (Required Text Input) -->
+                                <div class="col-md-6 col-12">
+                                    <label for="ticketTitle" class="form-label-custom">Tiêu đề sự cố
+                                        <span>*</span></label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light border-end-0"><i
+                                                class="bi bi-pen text-muted"></i></span>
+                                        <input type="text"
+                                            class="form-control form-control-custom border-start-0 ps-0 text-dark"
+                                            id="ticketTitle" placeholder="Nhập tiêu đề sự cố hoặc yêu cầu hỗ trợ"
+                                            required>
+                                    </div>
+                                    <div class="invalid-feedback">Vui lòng cung cấp tiêu đề mô tả ngắn gọn sự cố.</div>
+                                </div>
+
+                                <!-- Danh mục dịch vụ (Custom Dropdown) -->
+                                <div class="col-md-6 col-12">
+                                    <label class="form-label-custom">Danh mục dịch vụ <span>*</span></label>
+                                    <div class="custom-dropdown-wrapper" id="categoryDropdownWrapper">
+                                        <!-- Hidden select element for native form validation compatibility and storage -->
+                                        <select id="serviceCategory" name="serviceCategory" required
+                                            style="position: absolute; width: 0px; height: 0px; opacity: 0; pointer-events: none;">
+                                            <option value="">Chọn danh mục dịch vụ...</option>
+                                            <option value="internet">Internet Cáp Quang</option>
+                                            <option value="tv">Truyền Hình TV360</option>
+                                            <option value="camera">Home Camera Viettel</option>
+                                            <option value="wifi">WiFi Mesh & Mạng Nội Bộ</option>
+                                            <option value="cloud">Cloud Server & Lưu Trữ</option>
+                                            <option value="tongdai">Tổng Đài Ảo vContact</option>
+                                            <option value="ca">Chữ ký số (CA)</option>
+                                        </select>
+
+                                        <div class="custom-dropdown-trigger" id="categoryDropdownTrigger" tabindex="0">
+                                            <span class="selected-value-placeholder">
+                                                <span class="selected-text">Chọn danh mục dịch vụ...</span>
+                                            </span>
+                                            <span class="custom-select-arrow">
+                                                <i class="fa-solid fa-chevron-down"></i>
+                                            </span>
+                                        </div>
+
+                                        <div class="custom-dropdown-menu" id="categoryDropdownMenu">
+                                            <div class="custom-dropdown-item" data-value="internet"
+                                                data-text="Internet Cáp Quang">
+                                                <div class="item-info">
+                                                    <span class="item-name">Internet Cáp Quang</span>
+                                                </div>
+                                            </div>
+                                            <div class="custom-dropdown-item" data-value="tv"
+                                                data-text="Truyền Hình TV360">
+                                                <div class="item-info">
+                                                    <span class="item-name">Truyền Hình TV360</span>
+                                                </div>
+                                            </div>
+                                            <div class="custom-dropdown-item" data-value="camera"
+                                                data-text="Home Camera Viettel">
+                                                <div class="item-info">
+                                                    <span class="item-name">Home Camera Viettel</span>
+                                                </div>
+                                            </div>
+                                            <div class="custom-dropdown-item" data-value="wifi"
+                                                data-text="WiFi Mesh & Mạng Nội Bộ">
+                                                <div class="item-info">
+                                                    <span class="item-name">WiFi Mesh & Mạng Nội Bộ</span>
+                                                </div>
+                                            </div>
+                                            <div class="custom-dropdown-item" data-value="cloud"
+                                                data-text="Cloud Server & Lưu Trữ">
+                                                <div class="item-info">
+                                                    <span class="item-name">Cloud Server & Lưu Trữ</span>
+                                                </div>
+                                            </div>
+                                            <div class="custom-dropdown-item" data-value="tongdai"
+                                                data-text="Tổng Đài Ảo vContact">
+                                                <div class="item-info">
+                                                    <span class="item-name">Tổng Đài Ảo vContact</span>
+                                                </div>
+                                            </div>
+                                            <div class="custom-dropdown-item" data-value="ca"
+                                                data-text="Chữ ký số (CA)">
+                                                <div class="item-info">
+                                                    <span class="item-name">Chữ ký số (CA)</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="invalid-feedback mt-2">Vui lòng chọn danh mục dịch vụ.</div>
+                                        <div class="valid-feedback mt-2 text-success">
+                                            <i class="fa-solid fa-circle-check me-1"></i>Trạng thái hợp lệ.
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Dịch vụ (Custom Dropdown) -->
+                                <div class="col-md-6 col-12">
+                                    <label class="form-label-custom">Dịch vụ <span>*</span></label>
+                                    <div class="custom-dropdown-wrapper disabled-wrapper" id="serviceDropdownWrapper">
+                                        <!-- Hidden select element for native form validation compatibility and storage -->
+                                        <select id="relatedService" name="relatedService" required
+                                            style="position: absolute; width: 0px; height: 0px; opacity: 0; pointer-events: none;"
+                                            disabled>
+                                            <option value="">Chọn dịch vụ...</option>
+                                            <!-- Internet -->
+                                            <option value="FTTH" data-category="internet">Internet Cáp Quang FTTH
+                                            </option>
+                                            <option value="COMBO" data-category="internet">Combo Internet + TV</option>
+                                            <option value="FTTH_BIZ" data-category="internet">Cáp quang Doanh Nghiệp
+                                                Leased Line</option>
+                                            <option value="INTERNET_5G" data-category="internet">Internet Không Dây 5G
+                                                Siêu Tốc</option>
+                                            <option value="FTTH_VIP" data-category="internet">Cáp Quang VIP Doanh Nghiệp
+                                                Lớn</option>
+                                            <!-- TV -->
+                                            <option value="TV360_APP" data-category="tv">Ứng dụng TV360 trên Smart TV
+                                            </option>
+                                            <option value="TV360_BOX" data-category="tv">Đầu thu TV360 Box (Android TV)
+                                            </option>
+                                            <option value="TV360_KPLUS" data-category="tv">Gói Kênh Thể Thao K+ TV360
+                                            </option>
+                                            <option value="TV360_VIP" data-category="tv">Gói TV360 VIP Truyền Hình Cao
+                                                Cấp</option>
+                                            <!-- Camera -->
+                                            <option value="CAMERA_IN" data-category="camera">Home Camera Trong Nhà 360
+                                            </option>
+                                            <option value="CAMERA_OUT" data-category="camera">Home Camera Ngoài Trời
+                                                IP67</option>
+                                            <option value="CAMERA_AI" data-category="camera">Camera AI Nhận Diện Thông
+                                                Minh</option>
+                                            <!-- WiFi -->
+                                            <option value="WIFI_5" data-category="wifi">Router WiFi 5 Băng Tần Kép
+                                            </option>
+                                            <option value="WIFI_MESH" data-category="wifi">Thiết Bị WiFi Mesh (Home
+                                                WiFi)</option>
+                                            <option value="WIFI_6_MESH" data-category="wifi">Router Home Wifi 6 Mesh Cao
+                                                Cấp</option>
+                                            <!-- Cloud -->
+                                            <option value="VPS" data-category="cloud">Cloud VPS Viettel</option>
+                                            <option value="CLOUD_DRIVE" data-category="cloud">Lưu Trữ Doanh Nghiệp Cloud
+                                                Drive</option>
+                                            <option value="CLOUD_STORAGE" data-category="cloud">Cloud Storage Server Sao
+                                                Lưu Dữ Liệu</option>
+                                            <!-- Tongdai -->
+                                            <option value="HOTLINE" data-category="tongdai">Tổng đài ảo (vCloudCenter)
+                                            </option>
+                                            <option value="VCONTACT" data-category="tongdai">Giải Pháp Chăm Sóc Khách
+                                                Hàng vContact</option>
+                                            <option value="AI_CALL_CENTER" data-category="tongdai">Tổng đài AI Call
+                                                Center Thông Minh</option>
+                                            <!-- CA -->
+                                            <option value="USB_TOKEN" data-category="ca">Cấu hình & Nhận diện USB Token
+                                            </option>
+                                            <option value="CA_RENEW" data-category="ca">Gia hạn chứng thư số Viettel-CA
+                                            </option>
+                                            <option value="MYSIGN" data-category="ca">Chữ Ký Số Di Động MySign</option>
+                                            <option value="VCONTRACT_SIGN" data-category="ca">Nền tảng Hợp đồng Điện tử
+                                                vContract</option>
+                                        </select>
+
+                                        <div class="custom-dropdown-trigger" id="serviceDropdownTrigger" tabindex="0">
+                                            <span class="selected-value-placeholder">
+                                                <span class="selected-text">Chọn dịch vụ...</span>
+                                            </span>
+                                            <span class="custom-select-arrow">
+                                                <i class="fa-solid fa-chevron-down"></i>
+                                            </span>
+                                        </div>
+
+                                        <div class="custom-dropdown-menu" id="serviceDropdownMenu">
+                                            <!-- Internet -->
+                                            <div class="custom-dropdown-item" data-value="FTTH" data-category="internet"
+                                                data-text="Internet Cáp Quang FTTH"
+                                                data-desc="Đường truyền cáp quang đối xứng băng thông rộng, tốc độ cao từ 100Mbps đến 1Gbps. Cam kết tính ổn định, độ trễ cực thấp, phù hợp cho mọi cá nhân và gia đình học tập, làm việc trực tuyến.">
+                                                <div class="item-info">
+                                                    <span class="item-name">Internet Cáp Quang FTTH</span>
+                                                    <span class="item-desc">Đường truyền cáp quang đối xứng băng thông
+                                                        rộng, tốc độ cao từ 100Mbps đến 1Gbps. Cam kết tính ổn định, độ
+                                                        trễ cực thấp, phù hợp cho mọi cá nhân và gia đình học tập, làm
+                                                        việc trực tuyến.</span>
+                                                </div>
+                                            </div>
+                                            <div class="custom-dropdown-item" data-value="COMBO"
+                                                data-category="internet" data-text="Combo Internet + TV"
+                                                data-desc="Dịch vụ tích hợp Internet Cáp Quang tốc độ cao và Truyền hình số thông minh TV360 Viettel với hơn 150 kênh truyền hình đặc sắc trong nước và quốc tế, kho phim HD khổng lồ.">
+                                                <div class="item-info">
+                                                    <span class="item-name">Combo Internet + TV</span>
+                                                    <span class="item-desc">Dịch vụ tích hợp Internet Cáp Quang tốc độ
+                                                        cao và Truyền hình số thông minh TV360 Viettel với hơn 150 kênh
+                                                        truyền hình đặc sắc trong nước và quốc tế, kho phim HD khổng
+                                                        lồ.</span>
+                                                </div>
+                                            </div>
+                                            <div class="custom-dropdown-item" data-value="FTTH_BIZ"
+                                                data-category="internet" data-text="Cáp quang Doanh Nghiệp Leased Line"
+                                                data-desc="Đường truyền kênh thuê riêng Internet đối xứng chất lượng cao, cam kết băng thông quốc tế và IP tĩnh riêng biệt phục vụ doanh nghiệp.">
+                                                <div class="item-info">
+                                                    <span class="item-name">Cáp quang Doanh Nghiệp Leased Line</span>
+                                                    <span class="item-desc">Đường truyền kênh thuê riêng Internet đối
+                                                        xứng chất lượng cao, cam kết băng thông quốc tế và IP tĩnh riêng
+                                                        biệt phục vụ doanh nghiệp.</span>
+                                                </div>
+                                            </div>
+                                            <div class="custom-dropdown-item" data-value="INTERNET_5G"
+                                                data-category="internet" data-text="Internet Không Dây 5G Siêu Tốc"
+                                                data-desc="Dịch vụ Internet không dây thế hệ mới trên nền tảng mạng di động 5G Viettel siêu tốc độ, độ trễ cực thấp, không cần kéo cáp vật lý thích hợp cho vùng cao hoặc đô thị đông đúc.">
+                                                <div class="item-info">
+                                                    <span class="item-name">Internet Không Dây 5G Siêu Tốc</span>
+                                                    <span class="item-desc">Dịch vụ Internet không dây thế hệ mới trên
+                                                        nền tảng mạng di động 5G Viettel siêu tốc độ, độ trễ cực thấp,
+                                                        không cần kéo cáp vật lý thích hợp cho vùng cao hoặc đô thị đông
+                                                        đúc.</span>
+                                                </div>
+                                            </div>
+                                            <div class="custom-dropdown-item" data-value="FTTH_VIP"
+                                                data-category="internet" data-text="Cáp Quang VIP Doanh Nghiệp Lớn"
+                                                data-desc="Băng thông quốc tế cam kết lên đến 100Mbps, hỗ trợ kỹ thuật riêng 24/7/365, dự phòng đa đường truyền cáp biển đảm bảo liên lạc thông suốt.">
+                                                <div class="item-info">
+                                                    <span class="item-name">Cáp Quang VIP Doanh Nghiệp Lớn</span>
+                                                    <span class="item-desc">Băng thông quốc tế cam kết lên đến 100Mbps,
+                                                        hỗ trợ kỹ thuật riêng 24/7/365, dự phòng đa đường truyền cáp
+                                                        biển đảm bảo liên lạc thông suốt.</span>
+                                                </div>
+                                            </div>
+                                            <!-- TV -->
+                                            <div class="custom-dropdown-item" data-value="TV360_APP" data-category="tv"
+                                                data-text="Ứng dụng TV360 trên Smart TV"
+                                                data-desc="Ứng dụng truyền hình giải trí đa nền tảng. Hỗ trợ xem trực tuyến phim HD và truyền hình độ nét cao không cần đầu thu.">
+                                                <div class="item-info">
+                                                    <span class="item-name">Ứng dụng TV360 trên Smart TV</span>
+                                                    <span class="item-desc">Ứng dụng truyền hình giải trí đa nền tảng.
+                                                        Hỗ trợ xem trực tuyến phim HD và truyền hình độ nét cao không
+                                                        cần đầu thu.</span>
+                                                </div>
+                                            </div>
+                                            <div class="custom-dropdown-item" data-value="TV360_BOX" data-category="tv"
+                                                data-text="Đầu thu TV360 Box (Android TV)"
+                                                data-desc="Thiết bị giải mã truyền hình số thông minh biến tivi thường thành Smart TV, hỗ trợ tìm kiếm giọng nói tiếng Việt.">
+                                                <div class="item-info">
+                                                    <span class="item-name">Đầu thu TV360 Box (Android TV)</span>
+                                                    <span class="item-desc">Thiết bị giải mã truyền hình số thông minh
+                                                        biến tivi thường thành Smart TV, hỗ trợ tìm kiếm giọng nói tiếng
+                                                        Việt.</span>
+                                                </div>
+                                            </div>
+                                            <div class="custom-dropdown-item" data-value="TV360_KPLUS"
+                                                data-category="tv" data-text="Gói Kênh Thể Thao K+ TV360"
+                                                data-desc="Đăng ký hoặc gia hạn nhóm kênh thể thao K+ trực tiếp Ngoại Hạng Anh độc quyền trên TV360.">
+                                                <div class="item-info">
+                                                    <span class="item-name">Gói Kênh Thể Thao K+ TV360</span>
+                                                    <span class="item-desc">Đăng ký hoặc gia hạn nhóm kênh thể thao K+
+                                                        trực tiếp Ngoại Hạng Anh độc quyền trên TV360.</span>
+                                                </div>
+                                            </div>
+                                            <div class="custom-dropdown-item" data-value="TV360_VIP" data-category="tv"
+                                                data-text="Gói TV360 VIP Truyền Hình Cao Cấp"
+                                                data-desc="Gói dịch vụ cao cấp nhất của TV360, xem không giới hạn kho phim HBO, phim chiếu rạp và toàn bộ các kênh thể thao đỉnh cao K+.">
+                                                <div class="item-info">
+                                                    <span class="item-name">Gói TV360 VIP Truyền Hình Cao Cấp</span>
+                                                    <span class="item-desc">Gói dịch vụ cao cấp nhất của TV360, xem
+                                                        không giới hạn kho phim HBO, phim chiếu rạp và toàn bộ các kênh
+                                                        thể thao đỉnh cao K+.</span>
+                                                </div>
+                                            </div>
+                                            <!-- Camera -->
+                                            <div class="custom-dropdown-item" data-value="CAMERA_IN"
+                                                data-category="camera" data-text="Home Camera Trong Nhà 360"
+                                                data-desc="Giải pháp giám sát an ninh trong nhà xoay 360 độ, tích hợp đàm thoại 2 chiều và công nghệ AI phát hiện chuyển động lạ.">
+                                                <div class="item-info">
+                                                    <span class="item-name">Home Camera Trong Nhà 360</span>
+                                                    <span class="item-desc">Giải pháp giám sát an ninh trong nhà xoay
+                                                        360 độ, tích hợp đàm thoại 2 chiều và công nghệ AI phát hiện
+                                                        chuyển động lạ.</span>
+                                                </div>
+                                            </div>
+                                            <div class="custom-dropdown-item" data-value="CAMERA_OUT"
+                                                data-category="camera" data-text="Home Camera Ngoài Trời IP67"
+                                                data-desc="Thiết bị giám sát ngoài trời chống nước chống bụi chuẩn IP67, đàm thoại 2 chiều, ghi hình đêm có màu hồng ngoại.">
+                                                <div class="item-info">
+                                                    <span class="item-name">Home Camera Ngoài Trời IP67</span>
+                                                    <span class="item-desc">Thiết bị giám sát ngoài trời chống nước
+                                                        chống bụi chuẩn IP67, đàm thoại 2 chiều, ghi hình đêm có màu
+                                                        hồng ngoại.</span>
+                                                </div>
+                                            </div>
+                                            <div class="custom-dropdown-item" data-value="CAMERA_AI"
+                                                data-category="camera" data-text="Camera AI Nhận Diện Thông Minh"
+                                                data-desc="Camera chuyên dụng tích hợp AI phát hiện và phân tích khuôn mặt, đếm người, cảnh báo xâm nhập và gửi thông báo trực tiếp qua ứng dụng.">
+                                                <div class="item-info">
+                                                    <span class="item-name">Camera AI Nhận Diện Thông Minh</span>
+                                                    <span class="item-desc">Camera chuyên dụng tích hợp AI phát hiện và
+                                                        phân tích khuôn mặt, đếm người, cảnh báo xâm nhập và gửi thông
+                                                        báo trực tiếp qua ứng dụng.</span>
+                                                </div>
+                                            </div>
+                                            <!-- WiFi -->
+                                            <div class="custom-dropdown-item" data-value="WIFI_5" data-category="wifi"
+                                                data-text="Router WiFi 5 Băng Tần Kép"
+                                                data-desc="Bộ định tuyến không dây hỗ trợ 2 băng tần 2.4Ghz và 5Ghz chuẩn AC1200 cho khả năng xuyên tường phát sóng khỏe.">
+                                                <div class="item-info">
+                                                    <span class="item-name">Router WiFi 5 Băng Tần Kép</span>
+                                                    <span class="item-desc">Bộ định tuyến không dây hỗ trợ 2 băng tần
+                                                        2.4Ghz và 5Ghz chuẩn AC1200 cho khả năng xuyên tường phát sóng
+                                                        khỏe.</span>
+                                                </div>
+                                            </div>
+                                            <div class="custom-dropdown-item" data-value="WIFI_MESH"
+                                                data-category="wifi" data-text="Thiết Bị WiFi Mesh (Home WiFi)"
+                                                data-desc="Hệ thống mở rộng vùng phủ sóng Wifi mesh không dây giúp phủ sóng toàn bộ căn hộ, tự động chuyển vùng mượt mà.">
+                                                <div class="item-info">
+                                                    <span class="item-name">Thiết Bị WiFi Mesh (Home WiFi)</span>
+                                                    <span class="item-desc">Hệ thống mở rộng vùng phủ sóng Wifi mesh
+                                                        không dây giúp phủ sóng toàn bộ căn hộ, tự động chuyển vùng mượt
+                                                        mà.</span>
+                                                </div>
+                                            </div>
+                                            <div class="custom-dropdown-item" data-value="WIFI_6_MESH"
+                                                data-category="wifi" data-text="Router Home Wifi 6 Mesh Cao Cấp"
+                                                data-desc="Thiết bị Wifi thế hệ mới nhất (Wi-Fi 6 AX3000) giảm nhiễu sóng hiệu quả, tăng tốc độ truy cập gấp 4 lần và hỗ trợ hơn 100 thiết bị kết nối cùng lúc.">
+                                                <div class="item-info">
+                                                    <span class="item-name">Router Home Wifi 6 Mesh Cao Cấp</span>
+                                                    <span class="item-desc">Thiết bị Wifi thế hệ mới nhất (Wi-Fi 6
+                                                        AX3000) giảm nhiễu sóng hiệu quả, tăng tốc độ truy cập gấp 4 lần
+                                                        và hỗ trợ hơn 100 thiết bị kết nối cùng lúc.</span>
+                                                </div>
+                                            </div>
+                                            <!-- Cloud -->
+                                            <div class="custom-dropdown-item" data-value="VPS" data-category="cloud"
+                                                data-text="Cloud VPS Viettel"
+                                                data-desc="Máy chủ ảo điện toán đám mây hiệu năng cao, hạ tầng trung tâm dữ liệu đạt chuẩn quốc tế Tier 3 của Viettel. Bảo mật an toàn, hỗ trợ giám sát 24/7.">
+                                                <div class="item-info">
+                                                    <span class="item-name">Cloud VPS Viettel</span>
+                                                    <span class="item-desc">Máy chủ ảo điện toán đám mây hiệu năng cao,
+                                                        hạ tầng trung tâm dữ liệu đạt chuẩn quốc tế Tier 3 của Viettel.
+                                                        Bảo mật an toàn, hỗ trợ giám sát 24/7.</span>
+                                                </div>
+                                            </div>
+                                            <div class="custom-dropdown-item" data-value="CLOUD_DRIVE"
+                                                data-category="cloud" data-text="Lưu Trữ Doanh Nghiệp Cloud Drive"
+                                                data-desc="Không gian lưu trữ, chia sẻ và đồng bộ hóa tài liệu doanh nghiệp bảo mật tuyệt đối trên nền tảng Cloud Viettel.">
+                                                <div class="item-info">
+                                                    <span class="item-name">Lưu Trữ Doanh Nghiệp Cloud Drive</span>
+                                                    <span class="item-desc">Không gian lưu trữ, chia sẻ và đồng bộ hóa
+                                                        tài liệu doanh nghiệp bảo mật tuyệt đối trên nền tảng Cloud
+                                                        Viettel.</span>
+                                                </div>
+                                            </div>
+                                            <div class="custom-dropdown-item" data-value="CLOUD_STORAGE"
+                                                data-category="cloud" data-text="Cloud Storage Server Sao Lưu Dữ Liệu"
+                                                data-desc="Hệ thống lưu trữ đám mây phân tán dung lượng cực lớn cho sao lưu và khôi phục dữ liệu thảm họa (Disaster Recovery), cam kết SLA 99.99%.">
+                                                <div class="item-info">
+                                                    <span class="item-name">Cloud Storage Server Sao Lưu Dữ Liệu</span>
+                                                    <span class="item-desc">Hệ thống lưu trữ đám mây phân tán dung lượng
+                                                        cực lớn cho sao lưu và khôi phục dữ liệu thảm họa (Disaster
+                                                        Recovery), cam kết SLA 99.99%.</span>
+                                                </div>
+                                            </div>
+                                            <!-- Tongdai -->
+                                            <div class="custom-dropdown-item" data-value="HOTLINE"
+                                                data-category="tongdai" data-text="Tổng đài ảo (vCloudCenter)"
+                                                data-desc="Hệ thống tổng đài chăm sóc khách hàng thông minh dành cho doanh nghiệp. Quản lý cuộc gọi chuyên nghiệp, ghi âm, thống kê và không cần chi phí lắp đặt phần cứng.">
+                                                <div class="item-info">
+                                                    <span class="item-name">Tổng đài ảo (vCloudCenter)</span>
+                                                    <span class="item-desc">Hệ thống tổng đài chăm sóc khách hàng thông
+                                                        minh dành cho doanh nghiệp. Quản lý cuộc gọi chuyên nghiệp, ghi
+                                                        âm, thống kê và không cần chi phí lắp đặt phần cứng.</span>
+                                                </div>
+                                            </div>
+                                            <div class="custom-dropdown-item" data-value="VCONTACT"
+                                                data-category="tongdai"
+                                                data-text="Giải Pháp Chăm Sóc Khách Hàng vContact"
+                                                data-desc="Tích hợp tổng đài, CRM quản lý liên hệ khách hàng thông minh tối ưu năng lực tổng đài viên.">
+                                                <div class="item-info">
+                                                    <span class="item-name">Giải Pháp Chăm Sóc Khách Hàng
+                                                        vContact</span>
+                                                    <span class="item-desc">Tích hợp tổng đài, CRM quản lý liên hệ khách
+                                                        hàng thông minh tối ưu năng lực tổng đài viên.</span>
+                                                </div>
+                                            </div>
+                                            <div class="custom-dropdown-item" data-value="AI_CALL_CENTER"
+                                                data-category="tongdai" data-text="Tổng đài AI Call Center Thông Minh"
+                                                data-desc="Tích hợp trợ lý ảo AI tự động thực hiện cuộc gọi CSKH, xác nhận đơn hàng và xử lý ngôn ngữ tự nhiên thông minh theo kịch bản tùy biến.">
+                                                <div class="item-info">
+                                                    <span class="item-name">Tổng đài AI Call Center Thông Minh</span>
+                                                    <span class="item-desc">Tích hợp trợ lý ảo AI tự động thực hiện cuộc
+                                                        gọi CSKH, xác nhận đơn hàng và xử lý ngôn ngữ tự nhiên thông
+                                                        minh theo kịch bản tùy biến.</span>
+                                                </div>
+                                            </div>
+                                            <!-- CA -->
+                                            <div class="custom-dropdown-item" data-value="USB_TOKEN" data-category="ca"
+                                                data-text="Cấu hình & Nhận diện USB Token"
+                                                data-desc="Hỗ trợ cài đặt driver USB Token Viettel-CA, sửa lỗi máy tính không nhận token, xung đột chữ ký số.">
+                                                <div class="item-info">
+                                                    <span class="item-name">Cấu hình & Nhận diện USB Token</span>
+                                                    <span class="item-desc">Hỗ trợ cài đặt driver USB Token Viettel-CA,
+                                                        sửa lỗi máy tính không nhận token, xung đột chữ ký số.</span>
+                                                </div>
+                                            </div>
+                                            <div class="custom-dropdown-item" data-value="CA_RENEW" data-category="ca"
+                                                data-text="Gia hạn chứng thư số Viettel-CA"
+                                                data-desc="Hỗ trợ thủ tục gia hạn, cập nhật chứng thư số mới lên hệ thống khai thuế, BHXH, Hải quan.">
+                                                <div class="item-info">
+                                                    <span class="item-name">Gia hạn chứng thư số Viettel-CA</span>
+                                                    <span class="item-desc">Hỗ trợ thủ tục gia hạn, cập nhật chứng thư
+                                                        số mới lên hệ thống khai thuế, BHXH, Hải quan.</span>
+                                                </div>
+                                            </div>
+                                            <div class="custom-dropdown-item" data-value="MYSIGN" data-category="ca"
+                                                data-text="Chữ Ký Số Di Động MySign"
+                                                data-desc="Dịch vụ ký số từ xa bằng thiết bị di động không cần USB Token hoặc SIM CA, ký kết hợp đồng điện tử tiện lợi.">
+                                                <div class="item-info">
+                                                    <span class="item-name">Chữ Ký Số Di Động MySign</span>
+                                                    <span class="item-desc">Dịch vụ ký số từ xa bằng thiết bị di động
+                                                        không cần USB Token hoặc SIM CA, ký kết hợp đồng điện tử tiện
+                                                        lợi.</span>
+                                                </div>
+                                            </div>
+                                            <div class="custom-dropdown-item" data-value="VCONTRACT_SIGN"
+                                                data-category="ca" data-text="Nền tảng Hợp đồng Điện tử vContract"
+                                                data-desc="Nền tảng hỗ trợ ký kết văn bản, hợp đồng điện tử trực tuyến nhanh chóng, đầy đủ tính pháp lý và bảo mật dữ liệu tuyệt đối.">
+                                                <div class="item-info">
+                                                    <span class="item-name">Nền tảng Hợp đồng Điện tử vContract</span>
+                                                    <span class="item-desc">Nền tảng hỗ trợ ký kết văn bản, hợp đồng
+                                                        điện tử trực tuyến nhanh chóng, đầy đủ tính pháp lý và bảo mật
+                                                        dữ liệu tuyệt đối.</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="invalid-feedback mt-2">Vui lòng chọn dịch vụ cụ thể.</div>
+                                        <div class="valid-feedback mt-2 text-success">
+                                            <i class="fa-solid fa-circle-check me-1"></i>Trạng thái hợp lệ.
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Dịch vụ mô tả chi tiết Card (Hiện động bằng JS) -->
+                                <div class="col-12 d-none" id="serviceDetailsWrapper">
+                                    <div class="card service-info-card border-0 shadow-sm">
+                                        <div class="card-body p-3">
+                                            <div class="d-flex align-items-center mb-2">
+                                                <i class="fa-solid fa-circle-info text-danger me-2"></i>
+                                                <h5 class="m-0 fw-bold fs-6 text-dark" id="serviceNameDisplay">Tên dịch
+                                                    vụ</h5>
+                                                <span
+                                                    class="badge ms-auto bg-success-subtle text-success border border-success-subtle px-2 py-1 rounded"
+                                                    id="serviceStatusDisplay">Hoạt động</span>
+                                            </div>
+                                            <p class="card-text text-muted mb-0 fs-7" id="serviceDescDisplay">Mô tả dịch
+                                                vụ sẽ xuất hiện ở đây.</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Loại yêu cầu (Custom Dropdown) -->
+                                <div class="col-12 mt-4">
+                                    <label class="form-label-custom">Loại yêu cầu <span>*</span></label>
+                                    <div class="custom-dropdown-wrapper" id="customDropdownWrapper">
+                                        <!-- Hidden select element for native form validation compatibility and storage -->
+                                        <select id="loaiYeuCau" name="LoaiYeuCau" required
+                                            style="position: absolute; width: 0px; height: 0px; opacity: 0; pointer-events: none;">
+                                            <option value="">-- Chọn loại yêu cầu --</option>
+                                            <option value="Báo lỗi">Báo lỗi</option>
+                                            <option value="Sửa chữa">Sửa chữa</option>
+                                            <option value="Lắp đặt mới">Lắp đặt mới</option>
+                                            <option value="Bảo trì">Bảo trì</option>
+                                            <option value="Nâng cấp dịch vụ">Nâng cấp dịch vụ</option>
+                                            <option value="Hỗ trợ kỹ thuật">Hỗ trợ kỹ thuật</option>
+                                            <option value="Tư vấn dịch vụ">Tư vấn dịch vụ</option>
+                                            <option value="Khiếu nại">Khiếu nại</option>
+                                        </select>
+
+                                        <div class="custom-dropdown-trigger" id="customDropdownTrigger" tabindex="0">
+                                            <span class="selected-value-placeholder">
+                                                <span class="selected-text">-- Chọn loại yêu cầu --</span>
+                                            </span>
+                                            <span class="custom-select-arrow">
+                                                <i class="fa-solid fa-chevron-down"></i>
+                                            </span>
+                                        </div>
+
+                                        <div class="custom-dropdown-menu" id="customDropdownMenu">
+                                            <div class="custom-dropdown-item" data-value="Báo lỗi"
+                                                data-desc="Khách hàng báo sự cố dịch vụ">
+                                                <div class="item-info">
+                                                    <span class="item-name">Báo lỗi</span>
+                                                    <span class="item-desc">Khách hàng báo sự cố dịch vụ</span>
+                                                </div>
+                                            </div>
+                                            <div class="custom-dropdown-item" data-value="Sửa chữa"
+                                                data-desc="Yêu cầu kỹ thuật viên khắc phục lỗi">
+                                                <div class="item-info">
+                                                    <span class="item-name">Sửa chữa</span>
+                                                    <span class="item-desc">Yêu cầu kỹ thuật viên khắc phục lỗi</span>
+                                                </div>
+                                            </div>
+                                            <div class="custom-dropdown-item" data-value="Lắp đặt mới"
+                                                data-desc="Đăng ký lắp đặt dịch vụ">
+                                                <div class="item-info">
+                                                    <span class="item-name">Lắp đặt mới</span>
+                                                    <span class="item-desc">Đăng ký lắp đặt dịch vụ</span>
+                                                </div>
+                                            </div>
+                                            <div class="custom-dropdown-item" data-value="Bảo trì"
+                                                data-desc="Kiểm tra, bảo dưỡng thiết bị">
+                                                <div class="item-info">
+                                                    <span class="item-name">Bảo trì</span>
+                                                    <span class="item-desc">Kiểm tra, bảo dưỡng thiết bị</span>
+                                                </div>
+                                            </div>
+                                            <div class="custom-dropdown-item" data-value="Nâng cấp dịch vụ"
+                                                data-desc="Thay đổi gói cước, thiết bị">
+                                                <div class="item-info">
+                                                    <span class="item-name">Nâng cấp dịch vụ</span>
+                                                    <span class="item-desc">Thay đổi gói cước, thiết bị</span>
+                                                </div>
+                                            </div>
+                                            <div class="custom-dropdown-item" data-value="Hỗ trợ kỹ thuật"
+                                                data-desc="Hướng dẫn sử dụng, cấu hình">
+                                                <div class="item-info">
+                                                    <span class="item-name">Hỗ trợ kỹ thuật</span>
+                                                    <span class="item-desc">Hướng dẫn sử dụng, cấu hình</span>
+                                                </div>
+                                            </div>
+                                            <div class="custom-dropdown-item" data-value="Tư vấn dịch vụ"
+                                                data-desc="Tư vấn sản phẩm, gói cước">
+                                                <div class="item-info">
+                                                    <span class="item-name">Tư vấn dịch vụ</span>
+                                                    <span class="item-desc">Tư vấn sản phẩm, gói cước</span>
+                                                </div>
+                                            </div>
+                                            <div class="custom-dropdown-item" data-value="Khiếu nại"
+                                                data-desc="Phản ánh chất lượng dịch vụ">
+                                                <div class="item-info">
+                                                    <span class="item-name">Khiếu nại</span>
+                                                    <span class="item-desc">Phản ánh chất lượng dịch vụ</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="invalid-feedback mt-2" id="loaiYeuCauFeedback">Vui lòng chọn loại
+                                            yêu cầu hỗ trợ.</div>
+                                        <div class="valid-feedback mt-2 text-success" id="loaiYeuCauValidFeedback">
+                                            <i class="fa-solid fa-circle-check me-1"></i>Trạng thái hợp lệ.
+                                        </div>
+                                    </div>
+
+                                    <!-- Selected option description area -->
+                                    <div class="selected-desc-wrapper d-none mt-3 animate-slide-down"
+                                        id="loaiYeuCauSelectedDesc">
+                                        <div class="selected-desc-content p-3 rounded">
+                                            <i class="fa-solid fa-circle-info text-danger me-2"></i>
+                                            <span class="desc-text"></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Mức Độ Ưu Tiên (Radio Selection Cards) -->
+                                <div class="col-12 mt-4">
+                                    <label class="form-label-custom mb-3">Mức độ ưu tiên <span>*</span></label>
+                                    <div class="row g-2">
+
+                                        <!-- Thấp -->
+                                        <div class="col-6 col-md-3">
+                                            <input type="radio" name="priority" id="priorityLow" value="Thấp"
+                                                class="d-none">
+                                            <label for="priorityLow" class="priority-card-label">
+                                                <div class="priority-icon text-success">
+                                                    <i class="bi bi-arrow-down-long"></i>
+                                                </div>
+                                                <div class="priority-title">Thấp</div>
+                                            </label>
+                                        </div>
+
+                                        <!-- Trung Bình (Default) -->
+                                        <div class="col-6 col-md-3">
+                                            <input type="radio" name="priority" id="priorityMedium" value="Trung Bình"
+                                                class="d-none" checked>
+                                            <label for="priorityMedium" class="priority-card-label">
+                                                <div class="priority-icon text-warning">
+                                                    <i class="bi bi-arrow-right-long"></i>
+                                                </div>
+                                                <div class="priority-title">Trung Bình</div>
+                                            </label>
+                                        </div>
+
+                                        <!-- Cao -->
+                                        <div class="col-6 col-md-3">
+                                            <input type="radio" name="priority" id="priorityHigh" value="Cao"
+                                                class="d-none">
+                                            <label for="priorityHigh" class="priority-card-label">
+                                                <div class="priority-icon text-danger">
+                                                    <i class="bi bi-arrow-up-long"></i>
+                                                </div>
+                                                <div class="priority-title">Cao</div>
+                                            </label>
+                                        </div>
+
+                                        <!-- Khẩn Cấp -->
+                                        <div class="col-6 col-md-3">
+                                            <input type="radio" name="priority" id="priorityUrgent" value="Khẩn Cấp"
+                                                class="d-none">
+                                            <label for="priorityUrgent" class="priority-card-label">
+                                                <div class="priority-icon text-dark-danger">
+                                                    <i class="bi bi-triangle-exclamation pulse-danger"></i>
+                                                </div>
+                                                <div class="priority-title">Khẩn Cấp</div>
+                                            </label>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <!-- Mô tả chi tiết sự cố * (Textarea) -->
+                                <div class="col-12 mt-4">
+                                    <label for="ticketContent" class="form-label-custom">Mô tả chi tiết sự cố
+                                        <span>*</span></label>
+                                    <textarea class="form-control form-control-custom" id="ticketContent"
+                                        placeholder="Mô tả chi tiết sự cố hoặc yêu cầu hỗ trợ của bạn (ví dụ: mất kết nối từ lúc mấy giờ, tín hiệu đèn nháy màu gì...)"
+                                        required></textarea>
+                                    <div class="invalid-feedback">Vui lòng nhập nội dung mô tả chi tiết yêu cầu hỗ trợ.
+                                    </div>
+                                </div>
+
+                                <!-- Drag & Drop File Upload Area -->
+                                <div class="col-12 mt-4">
+                                    <label class="form-label-custom mb-2">Tệp Đính Kèm (Ảnh chụp sự cố, tài liệu PDF,
+                                        DOCX)</label>
+                                    <div class="upload-area" id="dragDropArea">
+                                        <div class="upload-area-icon">
+                                            <i class="bi bi-cloud-arrow-up"></i>
+                                        </div>
+                                        <p class="upload-area-text">Kéo thả tệp tin sự cố tại đây hoặc <span>chọn
+                                                tệp</span></p>
+                                        <p class="upload-area-hint">Định dạng hỗ trợ: JPG, PNG, PDF, DOCX. Kích thước
+                                            tối đa: 5MB/file.</p>
+                                        <input type="file" id="ticketFileInput" class="d-none" multiple
+                                            accept="image/png, image/jpeg, application/pdf, application/vnd.openxmlformats-officedocument.wordprocessingml.document">
+                                    </div>
+
+                                    <!-- File Preview Grid Container -->
+                                    <div class="upload-preview-grid d-none" id="filePreviewGrid"></div>
+                                </div>
+
+                                <!-- Có cần lịch hẹn? (Radio Buttons) -->
+                                <div class="col-12 mt-4">
+                                    <label class="form-label-custom mb-2">Có cần lịch hẹn? <span>*</span></label>
+                                    <div class="d-flex gap-4 align-items-center">
+                                        <div class="form-check custom-radio-option">
+                                            <input class="form-check-input" type="radio" name="needAppointment"
+                                                id="needAppointmentNo" value="Không" checked>
+                                            <label class="form-check-label fw-bold text-dark pointer"
+                                                for="needAppointmentNo">
+                                                Không
+                                            </label>
+                                        </div>
+                                        <div class="form-check custom-radio-option">
+                                            <input class="form-check-input" type="radio" name="needAppointment"
+                                                id="needAppointmentYes" value="Có">
+                                            <label class="form-check-label fw-bold text-dark pointer"
+                                                for="needAppointmentYes">
+                                                Có
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Collapsible Section -->
+                                <div class="appointment-details mt-3 d-none animate-slide-down"
+                                    id="appointmentContainer">
+                                    <div class="card card-body appointment-card border-0 shadow-sm p-4">
+                                        <h5 class="fw-bold fs-6 text-dark mb-3">
+                                            <i class="fa-solid fa-calendar-days text-danger me-2"></i>Chọn Thời Gian &
+                                            Địa Chỉ Hẹn
+                                        </h5>
+                                        <div class="row g-3">
+                                            <div class="col-md-6 col-12">
+                                                <label for="appointmentDate" class="form-label-custom fs-7">Ngày hẹn
+                                                    <span>*</span></label>
+                                                <div class="input-group">
+                                                    <span class="input-group-text bg-light border-end-0"><i
+                                                            class="bi bi-calendar text-muted"></i></span>
+                                                    <input type="text"
+                                                        class="form-control form-control-custom border-start-0 ps-0 text-dark pointer"
+                                                        id="appointmentDate" placeholder="Chọn ngày hẹn">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 col-12">
+                                                <label class="form-label-custom fs-7">Khung giờ hẹn
+                                                    <span>*</span></label>
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <div class="input-group flex-grow-1">
+                                                        <span class="input-group-text bg-light border-end-0"><i
+                                                                class="fa-regular fa-solid fa-clock text-muted"></i></span>
+                                                        <input type="text"
+                                                            class="form-control form-control-custom border-start-0 ps-0 text-dark pointer"
+                                                            id="appointmentStartTime" placeholder="Bắt đầu">
+                                                    </div>
+                                                    <span class="text-muted fw-bold">-</span>
+                                                    <div class="input-group flex-grow-1">
+                                                        <span class="input-group-text bg-light border-end-0"><i
+                                                                class="fa-regular fa-solid fa-clock text-muted"></i></span>
+                                                        <input type="text"
+                                                            class="form-control form-control-custom border-start-0 ps-0 text-dark pointer"
+                                                            id="appointmentEndTime" placeholder="Kết thúc">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 col-12">
+                                                <label for="appointmentAddress" class="form-label-custom fs-7">Địa chỉ
+                                                    hỗ trợ <span>*</span></label>
+                                                <div class="input-group">
+                                                    <span class="input-group-text bg-light border-end-0"><i
+                                                            class="fa-solid fa-map-marker text-muted"></i></span>
+                                                    <input type="text"
+                                                        class="form-control form-control-custom border-start-0 ps-0 text-dark"
+                                                        id="appointmentAddress"
+                                                        placeholder="Nhập địa chỉ cụ thể cần hỗ trợ...">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 col-12">
+                                                <label for="appointmentNote" class="form-label-custom fs-7">Ghi chú lịch
+                                                    hẹn</label>
+                                                <div class="input-group">
+                                                    <span class="input-group-text bg-light border-end-0"><i
+                                                            class="fa-regular fa-solid fa-comments text-muted"></i></span>
+                                                    <input type="text"
+                                                        class="form-control form-control-custom border-start-0 ps-0 text-dark"
+                                                        id="appointmentNote"
+                                                        placeholder="Nhập ghi chú hoặc chỉ dẫn thêm...">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Thời Gian (Readonly values) -->
+                                <div class="col-md-6 col-12 mt-3">
+                                    <label for="createdDate" class="form-label-custom">Ngày Tạo</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light"><i
+                                                class="bi bi-calendar-plus text-muted"></i></span>
+                                        <input type="text" class="form-control form-control-custom bg-light"
+                                            id="createdDate" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-12 mt-3">
+                                    <label for="updatedDate" class="form-label-custom">Ngày Cập Nhật</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light"><i
+                                                class="bi bi-calendar-check text-muted"></i></span>
+                                        <input type="text" class="form-control form-control-custom bg-light"
+                                            id="updatedDate" readonly>
+                                    </div>
+                                </div>
+
+                                <!-- Trạng Thái Phiếu (Readonly Default) -->
+                                <div class="col-12 mt-3">
+                                    <label class="form-label-custom">Trạng Thái Ban Đầu</label>
+                                    <div>
+                                        <span
+                                            class="badge bg-warning text-dark border border-warning-subtle px-3 py-2 rounded-pill fw-bold"
+                                            style="font-size: 0.88rem;">
+                                            <i class="bi bi-spinner fa-spin me-1"></i> Chờ tiếp nhận
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <!-- Tôi xác nhận thông tin là chính xác -->
+                                <div class="col-12 mt-4">
+                                    <div class="form-check custom-confirmation-checkbox">
+                                        <input class="form-check-input" type="checkbox" id="confirmInfo" required>
+                                        <label class="form-check-label text-dark fw-bold pointer" for="confirmInfo">
+                                            Tôi xác nhận thông tin là chính xác
+                                        </label>
+                                        <div class="invalid-feedback">Vui lòng xác nhận thông tin của bạn là chính xác
+                                            trước khi gửi phiếu.</div>
+                                    </div>
+                                </div>
+
+                                <!-- Action Buttons -->
+                                <div class="col-12 mt-5 border-top pt-4">
+                                    <div class="row g-2">
+                                        <div class="col-md-4 col-12 order-2 order-md-1">
+                                            <button type="button" class="btn btn-wizard-back w-100"
+                                                onclick="window.history.back()">
+                                                <i class="bi bi-arrow-left me-1"></i> Quay lại
+                                            </button>
+                                        </div>
+                                        <div class="col-md-8 col-12 order-1 order-md-2">
+                                            <button type="submit" class="btn btn-form-submit w-100 btn-ripple">
+                                                <i class="fa-solid fa-paper-plane me-1"></i> Gửi Phiếu Hỗ Trợ
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- 2. RIGHT COLUMN: SIDEBAR INFO (4 Cols) -->
+                <div class="col-lg-4 col-12">
+                    <!-- Sidebar Card -->
+                    <div class="sidebar-info-card">
+                        <h3 class="sidebar-title">Quy Trình Xử Lý Phiếu</h3>
+                        <p class="sidebar-subtitle text-muted">Quy trình tiếp nhận và xử lý sự cố tiêu chuẩn của Viettel
+                            Telecom.</p>
+
+                        <!-- Timeline / Steps -->
+                        <div class="support-steps-timeline mt-4">
+
+                            <!-- Step 1 -->
+                            <div class="step-timeline-item active-step">
+                                <div class="step-timeline-badge">1</div>
+                                <div class="step-timeline-content">
+                                    <h4 class="step-title">Tiếp nhận phiếu</h4>
+                                    <p class="step-desc">Hệ thống ghi nhận thông tin sự cố của khách hàng và gửi thông
+                                        báo cho nhóm điều hành kỹ thuật.</p>
+                                </div>
+                            </div>
+
+                            <!-- Step 2 -->
+                            <div class="step-timeline-item">
+                                <div class="step-timeline-badge">2</div>
+                                <div class="step-timeline-content">
+                                    <h4 class="step-title">Phân công kỹ thuật viên</h4>
+                                    <p class="step-desc">Điều phối viên chuyển giao phiếu sự cố cho kỹ thuật viên tại
+                                        khu vực phụ trách của khách hàng.</p>
+                                </div>
+                            </div>
+
+                            <!-- Step 3 -->
+                            <div class="step-timeline-item">
+                                <div class="step-timeline-badge">3</div>
+                                <div class="step-timeline-content">
+                                    <h4 class="step-title">Xử lý sự cố</h4>
+                                    <p class="step-desc">Kỹ thuật viên kiểm tra từ xa hoặc đến địa chỉ khách hàng (theo
+                                        lịch hẹn) để tiến hành khắc phục.</p>
+                                </div>
+                            </div>
+
+                            <!-- Step 4 -->
+                            <div class="step-timeline-item">
+                                <div class="step-timeline-badge">4</div>
+                                <div class="step-timeline-content">
+                                    <h4 class="step-title">Hoàn thành</h4>
+                                    <p class="step-desc">Sự cố được giải quyết triệt để. Khách hàng kiểm tra chất lượng
+                                        kết nối kỹ thuật thực tế.</p>
+                                </div>
+                            </div>
+
+                            <!-- Step 5 -->
+                            <div class="step-timeline-item">
+                                <div class="step-timeline-badge">5</div>
+                                <div class="step-timeline-content">
+                                    <h4 class="step-title">Đánh giá dịch vụ</h4>
+                                    <p class="step-desc">Khách hàng cho điểm chất lượng phục vụ và đóng phiếu để hoàn
+                                        tất quy trình.</p>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Sidebar Quick Contact Guide Card -->
+                    <div class="sidebar-info-card mt-4 bg-white border border-danger-subtle">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="bi bi-triangle-exclamation text-danger fs-4 me-2"></i>
+                            <h4 class="fw-bold m-0 text-dark fs-6">Lưu ý khi tạo phiếu</h4>
+                        </div>
+                        <ul class="list-unstyled mb-0 text-muted fs-7 lh-base">
+                            <li class="mb-2"><i class="fa-solid fa-check text-success me-1"></i>Hãy mô tả chính xác biểu
+                                hiện lỗi giúp kỹ thuật viên chẩn đoán nhanh hơn.</li>
+                            <li class="mb-2"><i class="fa-solid fa-check text-success me-1"></i>Chọn mức độ <strong>Khẩn
+                                    Cấp</strong> chỉ khi dịch vụ mất hoàn toàn (mất liên lạc mạng diện rộng).</li>
+                            <li><i class="fa-solid fa-check text-success me-1"></i>Có thể đính kèm ảnh đèn tín hiệu
+                                modem Wifi/Camera bị lỗi để trực quan hóa sự cố.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CTA SECTION -->
+            <section class="contact-cta-section mt-5">
+                <h2 class="contact-cta-title">Cần Hỗ Trợ Khẩn Cấp?</h2>
+                <p class="contact-cta-desc">
+                    Liên hệ trực tiếp với đội ngũ kỹ thuật của chúng tôi qua hotline để được xử lý ngay lập tức.
+                </p>
+                <div class="contact-cta-buttons d-flex align-items-center justify-content-center gap-3 flex-wrap">
+                    <a href="#ticketFormSection" class="btn-cta-white">
+                        <i class="fa-solid fa-plus-circle me-1"></i> Tạo Phiếu Hỗ Trợ
+                    </a>
+                    <a href="tel:18008119" class="btn-cta-outline">
+                        <i class="fa-solid fa-phone me-1"></i> Gọi Hotline 1800 8119
+                    </a>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Chatbox Widget Container -->
+    <div id="chatbox-container"></div>
+
+    <!-- Footer Component Container -->
+    <div id="footer-container">
+        <!-- Local fallback footer for direct file:// loading -->
+        <footer class="custom-footer" id="footerSection">
+            <div class="container">
+                <div class="row g-4">
+                    <div class="col-lg-4 col-12">
+                        <a class="footer-brand" href="../index.html">
+                            <i class="fa-solid fa-cpu-fill"></i> Tech<span>Support</span>
+                        </a>
+                        <p class="footer-desc">
+                            Hệ thống tiếp nhận sự cố kỹ thuật thông minh của Viettel Telecom. Cam kết chất lượng dịch vụ
+                            tốt nhất 24/7/365.
+                        </p>
+                        <div class="footer-social-icons">
+                            <a href="https://facebook.com" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+                            <a href="https://youtube.com" aria-label="Youtube"><i class="bi bi-youtube"></i></a>
+                            <a href="https://linkedin.com" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
+                            <a href="https://instagram.com" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-6">
+                        <h5 class="footer-title">Dịch Vụ</h5>
+                        <ul class="footer-links">
+                            <li><a href="../index.html#serviceGridSection">Internet Cáp Quang</a></li>
+                            <li><a href="../index.html#serviceGridSection">Home Camera</a></li>
+                            <li><a href="../index.html#serviceGridSection">Server & Cloud</a></li>
+                            <li><a href="../index.html#serviceGridSection">Mạng Nội Bộ</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-6">
+                        <h5 class="footer-title">Liên Kết</h5>
+                        <ul class="footer-links">
+                            <li><a href="../index.html">Trang chủ</a></li>
+                            <li><a href="../index.html#quickActionSection">Tra cứu phiếu</a></li>
+                            <li><a href="../index.html#newsSection">Hướng dẫn</a></li>
+                            <li><a href="contact.html">Liên hệ</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-12">
+                        <h5 class="footer-title">Hỗ Trợ Kỹ Thuật</h5>
+                        <ul class="footer-contact-list">
+                            <li>
+                                <i class="fa-solid fa-phone"></i>
+                                <span>1800 8119 (Miễn phí cuộc gọi)</span>
+                            </li>
+                            <li>
+                                <i class="fa-solid fa-envelope"></i>
+                                <span>support@viettel.com.vn</span>
+                            </li>
+                            <li>
+                                <i class="fa-solid fa-map-marker"></i>
+                                <span>210 Trần Phú, Cái Khế, Ninh Kiều, Cần Thơ</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="footer-bottom text-center">
+                    <div class="row align-items-center">
+                        <div class="col-md-6 col-12 text-md-start">
+                            <p class="m-0">&copy; 2026 Viettel Telecom TechSupport. Bảo lưu mọi quyền.</p>
+                        </div>
+                        <div class="col-md-6 col-12 text-md-end mt-2 mt-md-0 footer-bottom-links">
+                            <a href="#">Điều khoản sử dụng</a>
+                            <a href="#">Chính sách bảo mật</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button class="scroll-top-btn" aria-label="Quay lại đầu trang"><i class="bi bi-arrow-up-short"></i></button>
+        </footer>
+    </div>
+
+    <!-- Bootstrap 5.3 JS Bundle (includes Popper) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+
+    <!-- SweetAlert2 JS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Flatpickr JS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/vn.js"></script>
+
+    <!-- Component-Based JS -->
+    <script src="../assets/js/header.js"></script>
+    <script src="../assets/js/sidebar.js"></script>
+    <script src="../assets/js/footer.js"></script>
+    <script src="../assets/js/chatbox.js"></script>
+    <script src="../assets/js/main.js"></script>
+    <script src="../assets/js/create-category.js"></script>
+</body>
+
+</html>

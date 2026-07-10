@@ -1,0 +1,53 @@
+<header class="admin-topbar">
+    <!-- Topbar Left: Mobile toggle & Breadcrumb -->
+    <div class="topbar-left">
+        <button class="sidebar-toggle d-lg-none" id="toggleSidebarMobile" aria-label="Toggle Sidebar Mobile">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+        <button class="sidebar-toggle d-none d-lg-flex" id="toggleSidebarDesktop" aria-label="Toggle Sidebar Desktop">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+        
+        <div class="breadcrumb-container">
+            <div class="breadcrumb-path">Hệ thống / Nhân viên</div>
+            <div class="breadcrumb-current">Tổng quan Dashboard</div>
+        </div>
+    </div>
+    
+    <!-- Topbar Middle: Search Box -->
+    <div class="topbar-search d-none d-md-block">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="search" placeholder="Tìm kiếm nhanh phiếu, khách hàng..." id="topbarSearchInput">
+    </div>
+    
+    <!-- Topbar Right: Notification & User Dropdown -->
+    <div class="topbar-right">
+        <!-- Theme Toggle -->
+        <button class="topbar-btn" id="toggleTheme" title="Chuyển Dark/Light Mode" aria-label="Toggle Theme">
+            <i class="fa-regular fa-moon"></i>
+        </button>
+        
+        <!-- Notification -->
+        <button class="topbar-btn" id="notificationBtn" aria-label="Notifications">
+            <i class="fa-regular fa-bell"></i>
+            <span class="badge-notify"></span>
+        </button>
+        
+        <!-- User Dropdown -->
+        <div class="dropdown">
+            <div class="user-profile" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=100&h=100" alt="Staff Avatar" class="user-avatar">
+                <div class="user-info d-none d-sm-flex">
+                    <span class="user-name">Trần Thanh Sơn</span>
+                    <span class="user-role">Kỹ thuật viên Trưởng</span>
+                </div>
+            </div>
+            <ul class="dropdown-menu dropdown-menu-end border-0 shadow mt-2" aria-labelledby="userDropdown" style="border-radius: var(--radius-sm); min-width: 200px;">
+                <li><a class="dropdown-item py-2" href="../../staff/admin-profile.html"><i class="fa-solid fa-user me-2 text-primary"></i>Thông tin cá nhân</a></li>
+                <li><a class="dropdown-item py-2" href="../../staff/admin-profile.html#changePassword"><i class="fa-solid fa-key me-2 text-warning"></i>Đổi mật khẩu</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item py-2 text-danger" href="../../login.html"><i class="fa-solid fa-right-from-bracket me-2"></i>Đăng xuất</a></li>
+            </ul>
+        </div>
+    </div>
+</header>

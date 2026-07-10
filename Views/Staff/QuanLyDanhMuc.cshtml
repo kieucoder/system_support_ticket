@@ -1,0 +1,182 @@
+@model List<SupportTicketSysterm.Data.DanhMuc>
+
+@{
+    ViewData["Title"] = "Quản Lý Danh Mục Sự Cố";
+    ViewData["HeaderTitle"] = "Quản Lý Danh Mục Sự Cố";
+    ViewData["HeaderSubtitle"] = "Thêm, sửa, xóa và kích hoạt danh mục hỗ trợ kỹ thuật";
+    Layout = "~/Views/Shared/_LayoutStaff.cshtml";
+}
+
+@section Styles {
+    <!-- Page-specific CSS -->
+    <link rel="stylesheet" href="~/assets/css/staff/admin-categories.css">
+}
+
+<!-- Breadcrumb -->
+<nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb" style="font-size: 0.82rem; margin: 0; padding: 0;">
+        <li class="breadcrumb-item">
+            <a href="/Staff/Dashboard" class="text-danger text-decoration-none">
+                <i class="fa-solid fa-gauge-high me-1"></i>Dashboard
+            </a>
+        </li>
+        <li class="breadcrumb-item active fw-semibold" style="color: var(--text-main);">Danh Mục Sự Cố</li>
+    </ol>
+</nav>
+
+<!-- Header Section -->
+<div class="vt-header-container">
+    <div class="vt-header-left">
+        <h1>Quản lý danh mục sự cố</h1>
+        <p>Quản lý các danh mục hỗ trợ kỹ thuật, dịch vụ và sự cố của khách hàng</p>
+    </div>
+    <button id="btnOpenAdd" class="vt-btn-add" onclick="openAddModal()">
+        <i class="fa-solid fa-plus"></i> Thêm danh mục
+    </button>
+</div>
+
+<!-- Statistics Cards -->
+<div class="vt-stats-grid" id="statsContainer">
+    @await Html.PartialAsync("_ThongKeDanhMuc")
+</div>
+
+<form id="filterForm" method="get">
+    <div class="vt-filter-toolbar">
+        <div class="vt-filter-left">
+            <div class="vt-search-input-group">
+                <i class="fa-solid fa-search"></i>
+                <input type="search"
+                       id="catSearchInput"
+                       name="keyword"
+                       value="@ViewBag.Keyword"
+                       class="vt-search-input"
+                       placeholder="Tìm kiếm tên danh mục..." />
+            </div>
+
+            <select id="catStatusFilter" name="status" class="vt-filter-select">
+                <option value="" selected="@(string.IsNullOrEmpty(ViewBag.Status) ? "selected" : null)">Trạng thái: Tất cả</option>
+                <option value="Hoạt động" selected="@(ViewBag.Status == "Hoạt động" ? "selected" : null)">Hoạt động</option>
+                <option value="Tạm khóa" selected="@(ViewBag.Status == "Tạm khóa" ? "selected" : null)">Tạm khóa</option>
+            </select>
+
+            <select id="catSortFilter" name="sort" class="vt-filter-select">
+                <option value="newest" selected="@(ViewBag.Sort == "newest" ? "selected" : null)">Mới nhất</option>
+                <option value="oldest" selected="@(ViewBag.Sort == "oldest" ? "selected" : null)">Cũ nhất</option>
+                <option value="az" selected="@(ViewBag.Sort == "az" ? "selected" : null)">A → Z</option>
+                <option value="za" selected="@(ViewBag.Sort == "za" ? "selected" : null)">Z → A</option>
+            </select>
+        </div>
+
+        <div class="vt-filter-actions">
+            <button type="submit" class="vt-btn-primary">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                Tìm kiếm
+            </button>
+
+            <button type="button"
+                    id="btnResetFilter"
+                    class="vt-btn-refresh"
+                    title="Làm mới bộ lọc">
+                <i class="fa-solid fa-rotate-right"></i>
+                Reset
+            </button>
+        </div>
+    </div>
+</form>
+
+<!-- Category Table Card -->
+<div class="vt-table-card" id="tableCardContainer">
+    @await Html.PartialAsync("_DanhSachDanhMuc", Model)
+</div>
+
+<!-- Info Banner -->
+<div class="cat-info-banner mt-3" style="background: rgba(238,0,51,0.03); border: 1px solid rgba(238,0,51,0.1); border-radius: 12px; padding: 16px;">
+    <div class="cat-info-banner-title" style="color: var(--vt-red); font-weight: 700; font-size: 0.85rem; margin-bottom: 8px;">
+        <i class="fa-solid fa-circle-info me-1"></i>Hướng dẫn quản lý danh mục
+    </div>
+    <ul style="font-size: 0.8rem; color: var(--text-muted); margin: 0; padding-left: 20px; line-height: 1.6;">
+        <li>Mỗi danh mục phải có <strong>Tên</strong> và <strong>Mô tả</strong> đầy đủ trước khi lưu.</li>
+        <li>Danh mục <strong>Tạm khóa</strong> sẽ không hiển thị trong form tạo phiếu hỗ trợ.</li>
+        <li>Danh mục đang có dịch vụ liên kết <strong>không thể xóa</strong> trực tiếp — cần tắt trạng thái trước.</li>
+        <li>Thay đổi trạng thái có hiệu lực ngay lập tức sau khi bấm <strong>Cập Nhật</strong> hoặc <strong>Lưu Danh Mục</strong>.</li>
+    </ul>
+</div>
+
+<!-- MODAL: THÊM DANH MỤC -->
+@await Html.PartialAsync("_ThemDanhMuc", new SupportTicketSysterm.Data.DanhMuc())
+
+<!-- MODAL: CẬP NHẬT DANH MỤC -->
+@await Html.PartialAsync("_SuaDanhMuc", new SupportTicketSysterm.Data.DanhMuc())
+
+<!-- MODAL: XÁC NHẬN XÓA -->
+@await Html.PartialAsync("_XoaDanhMuc", new SupportTicketSysterm.Data.DanhMuc())
+
+<!-- MODAL: XEM CHI TIẾT DANH MỤC -->
+<div id="viewModal" class="vt-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="viewModalTitle">
+    <div class="vt-modal">
+        <div class="vt-modal-header">
+            <div class="vt-modal-header-title">
+                <div class="vt-modal-header-icon" style="background-color: rgba(59, 130, 246, 0.1); color: #3B82F6;">
+                    <i class="fa-solid fa-circle-info"></i>
+                </div>
+                <div class="vt-modal-header-text">
+                    <h3 id="viewModalTitle">Thông Tin Chi Tiết</h3>
+                    <p>Chi tiết danh mục sự cố kỹ thuật</p>
+                </div>
+            </div>
+            <button class="vt-modal-close" onclick="closeViewModal()" aria-label="Đóng">
+                <i class="fa-solid fa-times"></i>
+            </button>
+        </div>
+        <div class="vt-modal-body" style="padding: 0;">
+            <div class="vt-view-banner">
+                <div class="vt-view-avatar-large">
+                    <i class="bi bi-layer-group"></i>
+                </div>
+                <div>
+                    <div class="vt-view-name" id="viewCatName">—</div>
+                    <div class="vt-view-id" id="viewCatIdTag">—</div>
+                </div>
+            </div>
+            <div class="vt-view-details">
+                <div class="vt-view-row">
+                    <div class="vt-view-label">
+                        <i class="bi bi-hashtag" style="color: var(--vt-red);"></i> ID Danh Mục
+                    </div>
+                    <div class="vt-view-val" id="viewCatId">—</div>
+                </div>
+                <div class="vt-view-row">
+                    <div class="vt-view-label">
+                        <i class="bi bi-toggle-on" style="color: var(--vt-red);"></i> Trạng Thái
+                    </div>
+                    <div class="vt-view-val" id="viewCatStatus">—</div>
+                </div>
+                <div class="vt-view-row">
+                    <div class="vt-view-label">
+                        <i class="bi bi-calendar-day" style="color: var(--vt-red);"></i> Ngày Tạo
+                    </div>
+                    <div class="vt-view-val" id="viewCatDate">—</div>
+                </div>
+                <div class="vt-view-row">
+                    <div class="vt-view-label">
+                        <i class="bi bi-align-left" style="color: var(--vt-red);"></i> Mô Tả
+                    </div>
+                    <div class="vt-view-val desc" id="viewCatDesc">—</div>
+                </div>
+            </div>
+        </div>
+        <div class="vt-modal-footer" style="justify-content: space-between;">
+            <button class="vt-btn cancel" onclick="openEditFromView()" style="border-color: #F59E0B; color: #F59E0B; background-color: transparent;">
+                <i class="bi bi-pen-to-square me-1"></i> Chỉnh sửa
+            </button>
+            <button class="vt-btn cancel" onclick="closeViewModal()">
+                Đóng
+            </button>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <!-- Page-specific JS -->
+    <script src="~/assets/js/staff/admin-categories.js" asp-append-version="true"></script>
+}

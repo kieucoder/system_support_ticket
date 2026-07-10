@@ -1,0 +1,310 @@
+/* Hamburger button - Modern Circular Glassmorphic Toggle */
+.navbar-hamburger {
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    background: rgba(255, 255, 255, 0.65);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    padding: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow);
+    transition: var(--transition-smooth);
+}
+
+.navbar-hamburger:focus {
+    outline: none;
+}
+
+.hamburger {
+    display: flex;
+    flex-direction: column;
+    width: 20px;
+    height: 12px;
+    justify-content: space-between;
+}
+
+.hamburger span {
+    display: block;
+    width: 100%;
+    height: 2px;
+    background-color: var(--text-main);
+    border-radius: 2px;
+    transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.navbar-hamburger:hover {
+    background: rgba(238, 0, 51, 0.05);
+    border-color: rgba(238, 0, 51, 0.25);
+    box-shadow: 0 4px 15px rgba(238, 0, 51, 0.08);
+}
+
+.navbar-hamburger:hover .hamburger span {
+    background-color: var(--viettel-red);
+}
+
+/* Slick micro-animation: middle line slides slightly to the right */
+.navbar-hamburger:hover .hamburger span:nth-child(2) {
+    width: 70%;
+    align-self: flex-end;
+}
+
+/* Mobile Drawer (Slide menu) */
+.mobile-drawer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 320px;
+    max-width: 90%;
+    height: 100vh;
+    z-index: 99999; /* Sidebar z-index requirement */
+    background-color: #ffffff;
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.15); /* Box shadow requirement */
+    transform: translateX(100%);
+    transition: transform 0.35s ease; /* Transition 0.35s ease requirement */
+    display: flex;
+    flex-direction: column;
+    border-radius: 24px 0 0 24px; /* Border-radius requirement */
+    overflow: hidden;
+}
+
+.mobile-drawer.open {
+    transform: translateX(0);
+}
+
+.drawer-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px !important; /* Sidebar header padding requirement */
+    border-bottom: 1px solid #eeeeee !important; /* Sidebar header border requirement */
+    background-color: #ffffff;
+    flex-shrink: 0;
+}
+
+.drawer-title {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    color: var(--viettel-red);
+    font-weight: 800;
+    font-size: 1.35rem;
+}
+
+.btn-close-custom {
+    background: none;
+    border: none;
+    font-size: 1.4rem;
+    color: var(--viettel-dark);
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.3s ease, transform 0.3s ease; /* All hover: 0.3s ease */
+}
+
+.btn-close-custom:hover {
+    color: var(--viettel-red);
+    transform: rotate(90deg);
+}
+
+.drawer-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px 24px 12px 24px;
+}
+
+.drawer-nav-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.drawer-nav-item {
+    margin-bottom: 0;
+}
+
+.drawer-nav-link {
+    display: flex;
+    align-items: center;
+    height: 52px; /* Menu item height: 52px */
+    padding: 0 16px; /* Menu item padding: 0 16px */
+    color: var(--viettel-dark);
+    font-weight: 600; /* Font weight: 600 */
+    font-size: 15px;
+    text-decoration: none;
+    border-radius: 10px; /* Hover border-radius: 10px */
+    transition: all 0.3s ease; /* All hover: 0.3s ease */
+}
+
+.drawer-nav-link:hover, 
+.drawer-nav-link.active {
+    background-color: rgba(var(--viettel-red-rgb), 0.05); /* Hover background requirement */
+    color: var(--viettel-red) !important; /* Hover color requirement */
+}
+
+/* Accordion Dropdown in mobile drawer */
+.drawer-dropdown-menu-custom {
+    list-style: none;
+    padding: 0 0 0 20px; /* Menu con padding-left: 20px */
+    margin: 0 0 0 16px;
+    display: block !important; /* Use height/opacity transition instead of display:none */
+    border-left: 2px solid var(--viettel-red); /* Left vertical red line */
+    margin-top: 4px;
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.35s ease;
+}
+
+.drawer-dropdown-menu-custom.show {
+<<<<<<< HEAD
+    max-height: 400px;
+    opacity: 1;
+    padding-top: 6px;
+    padding-bottom: 10px;
+}
+
+/* Parent item highlight when dropdown is open */
+.drawer-dropdown-custom.drawer-dropdown-open > .drawer-nav-link {
+    background-color: rgba(var(--viettel-red-rgb), 0.08);
+    color: var(--viettel-red) !important;
+=======
+    max-height: 350px;
+    opacity: 1;
+    padding-top: 4px;
+    padding-bottom: 8px;
+>>>>>>> 59a5e6f64da6c8eb44454bf22a5574b208c2f2b3
+}
+
+.drawer-dropdown-item-custom {
+    display: flex;
+    align-items: center;
+    height: 44px;
+    padding: 0 16px 0 24px;
+    color: var(--text-muted);
+    font-size: 14.5px;
+    text-decoration: none;
+    font-weight: 550;
+    border-radius: 8px;
+    position: relative;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.drawer-dropdown-item-custom::before {
+    content: '';
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%) scaleY(0);
+    width: 3px;
+    height: 14px;
+    background-color: var(--viettel-red);
+    border-radius: 2px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.drawer-dropdown-item-custom:hover {
+    background-color: rgba(var(--viettel-red-rgb), 0.05);
+    color: var(--viettel-red) !important;
+    padding-left: 28px;
+    transform: translateX(4px);
+}
+
+.drawer-dropdown-item-custom:hover::before {
+    transform: translateY(-50%) scaleY(1);
+}
+
+/* Sidebar action buttons styled at the bottom - Sticky Bottom */
+.drawer-buttons-group {
+    padding: 24px;
+    background-color: #ffffff;
+    border-top: 1px solid #eeeeee;
+    display: flex;
+    flex-direction: column;
+    gap: 12px; /* Gap between buttons: 12px */
+    width: 100%;
+    flex-shrink: 0;
+}
+
+.drawer-buttons-group .btn {
+    width: 100% !important;
+    height: 48px !important; /* height: 48px */
+    border-radius: 999px !important; /* border-radius: 999px */
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 0.95rem;
+    padding: 0 !important;
+    transition: all 0.3s ease;
+}
+
+/* Drawer overlay */
+.drawer-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.35); /* rgba(0,0,0,.35) */
+    backdrop-filter: blur(2px); /* backdrop-filter: blur(2px) */
+    -webkit-backdrop-filter: blur(2px);
+    z-index: 99998; /* Just below sidebar drawer */
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.35s ease, visibility 0.35s ease;
+}
+
+.drawer-overlay.open {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Prevent scroll on body when drawer is open */
+body.drawer-open {
+    overflow: hidden !important;
+}
+
+
+/* Responsive Overrides */
+@media (max-width: 1199.98px) {
+    /* Hamburger on the right and vertically centered */
+    .navbar-hamburger {
+        position: absolute !important;
+        right: 16px !important;
+        top: 50% !important;
+        transform: translateY(-50%) !important;
+        z-index: 10005;
+        margin: 0 !important;
+    }
+}
+
+@media (max-width: 768px) {
+    /* Drawer layout on mobile */
+    .mobile-drawer {
+        width: 80% !important; /* width requirement */
+        border-top-left-radius: 20px;
+        border-bottom-left-radius: 20px;
+    }
+
+    /* Drawer padding adaptation for mobile */
+    .drawer-header {
+        height: 60px;
+        padding: 15px 20px;
+    }
+
+    .drawer-body {
+        padding: 20px;
+    }
+}
+}

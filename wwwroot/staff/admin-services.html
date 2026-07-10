@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="vi" data-bs-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Dịch Vụ Hỗ Trợ - TechSupport Viettel Admin</title>
+    <meta name="description" content="Quản lý dịch vụ hỗ trợ kỹ thuật và danh mục sự cố tại TechSupport Viettel.">
+    <meta name="robots" content="noindex, nofollow">
+
+    <!-- Bootstrap 5.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <!-- Admin Dashboard CSS (base layout) -->
+    <link rel="stylesheet" href="../assets/css/staff/dashboard.css">
+    <!-- Page-specific CSS -->
+    <link rel="stylesheet" href="../assets/css/staff/admin-services.css">
+</head>
+
+<body>
+    <div id="adminLayout">
+
+        <!-- SIDEBAR MOUNT -->
+        <div id="sidebarMount"></div>
+
+        <!-- MAIN WRAPPER -->
+        <div class="main-wrapper">
+
+            <!-- TOPBAR -->
+            <header class="admin-topbar">
+                <div class="topbar-left">
+                    <button class="sidebar-toggle-btn d-lg-none" id="toggleMobileSidebar" aria-label="Open menu">
+                        <i class="bi bi-bars"></i>
+                    </button>
+                    <button class="sidebar-toggle-btn d-none d-lg-flex" id="toggleSidebar" aria-label="Toggle sidebar">
+                        <i class="bi bi-bars"></i>
+                    </button>
+                    <div class="d-none d-md-block">
+                        <p class="mb-0 fw-semibold" style="font-size:0.95rem; color:var(--text-main);">
+                            Dịch Vụ Hỗ Trợ
+                        </p>
+                        <p class="mb-0" style="font-size:0.75rem; color:var(--text-muted);">
+                            Hệ thống quản lý dịch vụ sự cố kỹ thuật và liên kết danh mục
+                        </p>
+                    </div>
+                </div>
+
+                <form class="topbar-search-form d-none d-md-block" role="search" onsubmit="event.preventDefault();">
+                    <div class="search-input-group">
+                        <i class="fa-solid fa-search"></i>
+                        <input type="search" class="form-control search-bar-input"
+                            placeholder="Tìm kiếm toàn hệ thống..." autocomplete="off">
+                    </div>
+                </form>
+
+                <div class="topbar-right">
+                    <button class="topbar-action-btn" id="toggleTheme" title="Toggle Dark Mode">
+                        <i class="bi bi-moon"></i>
+                    </button>
+                    <button class="topbar-action-btn" title="Thông báo">
+                        <i class="fa-solid fa-bell"></i>
+                        <span class="notification-badge"
+                            style="position: absolute; top: 6px; right: 6px; width: 18px; height: 18px; background-color: var(--viettel-red); color: #fff; border-radius: 50%; font-size: 0.6rem; font-weight: 700; display: flex; align-items: center; justify-content: center; border: 2px solid var(--bg-topbar);">5</span>
+                    </button>
+                    <div class="dropdown">
+                        <a class="user-profile-dropdown" href="#" data-bs-toggle="dropdown">
+                            <img src="https://ui-avatars.com/api/?name=Admin+Viettel&background=EE0033&color=fff&size=38"
+                                alt="Avatar">
+                            <div class="d-none d-sm-block">
+                                <p class="user-profile-name mb-0">Nguyễn Văn Hùng</p>
+                                <p class="mb-0 user-profile-role">Kỹ thuật viên Trưởng
+                                </p>
+                            </div>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-2" style="border-radius:12px;">
+                            <li><a class="dropdown-item py-2" href="admin-profile.html"><i
+                                        class="fa-solid fa-user me-2 text-primary"></i>Thông tin cá nhân</a></li>
+                            <li><a class="dropdown-item py-2" href="admin-profile.html#changePassword"><i
+                                        class="fa-solid fa-key me-2 text-warning"></i>Đổi mật khẩu</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item py-2 text-danger" href="../login.html"><i
+                                        class="fa-solid fa-right-from-bracket me-2"></i>Đăng xuất</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </header>
+
+            <!-- MAIN CONTENT -->
+            <main class="admin-content container-fluid">
+
+                <!-- Breadcrumb -->
+                <nav aria-label="breadcrumb" class="mb-4">
+                    <ol class="breadcrumb" style="font-size: 0.82rem; margin: 0; padding: 0;">
+                        <li class="breadcrumb-item">
+                            <a href="dashboard.html" class="text-danger text-decoration-none">
+                                <i class="fa-solid fa-gauge-high me-1"></i>Dashboard
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item active fw-semibold" style="color: var(--text-main);">Quản lý dịch vụ
+                        </li>
+                    </ol>
+                </nav>
+
+                <!-- Hero Section -->
+                <div class="row align-items-center mb-4 g-3">
+                    <div class="col-12 col-md-8">
+                        <h1 class="h3 fw-bold mb-1" style="color: var(--vt-dark-blue);"> Quản lý dịch vụ hỗ trợ</h1>
+                        <p class="text-muted mb-0" style="font-size: 0.9rem;">Quản lý danh sách các dịch vụ hỗ trợ kỹ
+                            thuật thuộc từng danh mục sự cố.</p>
+                    </div>
+                    <div class="col-12 col-md-4 text-md-end">
+                        <button class="btn btn-danger fw-bold px-3 py-2 w-100 w-md-auto" data-bs-toggle="modal"
+                            data-bs-target="#addServiceModal"
+                            style="background-color: var(--vt-red); border-color: var(--vt-red); border-radius: var(--vt-border-radius-sm); box-shadow: 0 4px 10px rgba(238, 0, 51, 0.15);">
+                            <i class="fa-solid fa-plus me-1"></i> Thêm dịch vụ
+                        </button>
+                    </div>
+                </div>
+
+                <!-- KPI Cards Dashboard -->
+                <div class="row g-3 mb-4">
+                    <!-- KPI 1: Total Services -->
+                    <div class="col-12 col-sm-6 col-xl-3">
+                        <div class="card border-0 shadow-sm rep-kpi-card" style="border-radius: 16px;">
+                            <div class="card-body d-flex align-items-center justify-content-between">
+                                <div>
+                                    <span class="text-muted fw-bold small text-uppercase"
+                                        style="letter-spacing: 0.5px;">Tổng dịch vụ</span>
+                                    <h3 class="fw-bold mt-1 mb-0" id="kpiTotalServices">0</h3>
+                                </div>
+                                <div class="rep-kpi-icon-box bg-primary-subtle text-primary d-none d-sm-flex">
+                                    <i class="fa-solid fa-network-wired"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- KPI 2: Active Services -->
+                    <div class="col-12 col-sm-6 col-xl-3">
+                        <div class="card border-0 shadow-sm rep-kpi-card" style="border-radius: 16px;">
+                            <div class="card-body d-flex align-items-center justify-content-between">
+                                <div>
+                                    <span class="text-muted fw-bold small text-uppercase"
+                                        style="letter-spacing: 0.5px;">Dịch vụ hoạt động</span>
+                                    <h3 class="fw-bold mt-1 mb-0 text-success" id="kpiActiveServices">0</h3>
+                                </div>
+                                <div class="rep-kpi-icon-box bg-success-subtle text-success d-none d-sm-flex">
+                                    <i class="fa-solid fa-circle-check"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- KPI 3: Inactive Services -->
+                    <div class="col-12 col-sm-6 col-xl-3">
+                        <div class="card border-0 shadow-sm rep-kpi-card" style="border-radius: 16px;">
+                            <div class="card-body d-flex align-items-center justify-content-between">
+                                <div>
+                                    <span class="text-muted fw-bold small text-uppercase"
+                                        style="letter-spacing: 0.5px;">Dịch vụ tạm khóa</span>
+                                    <h3 class="fw-bold mt-1 mb-0 text-danger" id="kpiInactiveServices">0</h3>
+                                </div>
+                                <div class="rep-kpi-icon-box bg-danger-subtle text-danger d-none d-sm-flex">
+                                    <i class="fa-solid fa-lock"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- KPI 4: Used Categories -->
+                    <div class="col-12 col-sm-6 col-xl-3">
+                        <div class="card border-0 shadow-sm rep-kpi-card" style="border-radius: 16px;">
+                            <div class="card-body d-flex align-items-center justify-content-between">
+                                <div>
+                                    <span class="text-muted fw-bold small text-uppercase"
+                                        style="letter-spacing: 0.5px;">Danh mục đang sử dụng</span>
+                                    <h3 class="fw-bold mt-1 mb-0 text-warning" id="kpiUsedCategories">0</h3>
+                                </div>
+                                <div class="rep-kpi-icon-box bg-warning-subtle text-warning d-none d-sm-flex">
+                                    <i class="fa-solid fa-folder-open"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filters & Searching Panel -->
+                <div class="card border-0 shadow-sm mb-4 rep-filter-card"
+                    style="border-radius: var(--vt-border-radius);">
+                    <div class="card-header bg-transparent border-0 pt-3 pb-0">
+                        <h5 class="card-title fw-bold mb-0 text-dark">
+                            <i class="bi bi-filter me-2 text-danger"></i>Bộ lọc dịch vụ
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <!-- Keyword Input -->
+                            <div class="col-12 col-md-4 col-lg-3">
+                                <label class="form-label-custom" for="searchService">Từ khóa</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-transparent border-end-0"
+                                        style="border-radius: 10px 0 0 10px; border-color: var(--border-color);"><i
+                                            class="bi bi-magnifying-glass text-muted"></i></span>
+                                    <input type="text" id="searchService"
+                                        class="form-control form-control-custom border-start-0"
+                                        placeholder="Tìm kiếm tên dịch vụ..."
+                                        style="border-radius: 0 10px 10px 0 !important;">
+                                </div>
+                            </div>
+                            <!-- Category Filter -->
+                            <div class="col-12 col-sm-6 col-md-3 col-lg-3">
+                                <label class="form-label-custom" for="filterCategory">Danh mục</label>
+                                <select id="filterCategory" class="form-select form-select-custom">
+                                    <option value="all">Tất cả danh mục</option>
+                                    <!-- Dynamic categories -->
+                                </select>
+                            </div>
+                            <!-- Status Filter -->
+                            <div class="col-12 col-sm-6 col-md-3 col-lg-2">
+                                <label class="form-label-custom" for="filterStatus">Trạng thái</label>
+                                <select id="filterStatus" class="form-select form-select-custom">
+                                    <option value="all">Tất cả</option>
+                                    <option value="Hoạt động">Hoạt động</option>
+                                    <option value="Tạm khóa">Tạm khóa</option>
+                                </select>
+                            </div>
+                            <!-- Sort Filter -->
+                            <div class="col-12 col-sm-6 col-md-2 col-lg-2">
+                                <label class="form-label-custom" for="filterSort">Sắp xếp</label>
+                                <select id="filterSort" class="form-select form-select-custom">
+                                    <option value="newest">Mới nhất</option>
+                                    <option value="oldest">Cũ nhất</option>
+                                    <option value="az">Tên A → Z</option>
+                                    <option value="za">Tên Z → A</option>
+                                </select>
+                            </div>
+                            <!-- Actions Buttons -->
+                            <div
+                                class="col-12 col-sm-6 col-md-12 col-lg-2 d-flex align-items-end justify-content-lg-end gap-2 filter-actions-col">
+                                <button class="btn btn-danger fw-bold px-3 py-2 flex-grow-1 flex-lg-grow-0"
+                                    onclick="searchServices()"
+                                    style="background-color: var(--vt-red); border-color: var(--vt-red); border-radius: var(--vt-border-radius-sm);">
+                                    <i class="fa-solid fa-search me-1"></i> Tìm
+                                </button>
+                                <button class="btn btn-outline-secondary fw-bold px-3 py-2 flex-grow-1 flex-lg-grow-0"
+                                    onclick="clearFilters()" style="border-radius: var(--vt-border-radius-sm);">
+                                    <i class="bi bi-rotate-right me-1"></i> Reset
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detailed Services List -->
+                <div class="card border-0 shadow-sm mb-4"
+                    style="border-radius: var(--vt-border-radius); overflow: hidden;">
+                    <div
+                        class="card-header bg-transparent border-0 pt-4 pb-0 d-flex justify-content-between align-items-center flex-wrap gap-2">
+                        <div>
+                            <h5 class="card-title fw-bold mb-0 text-dark">📋 Danh sách dịch vụ hỗ trợ</h5>
+                            <p class="text-muted mb-0 mt-1" id="filteredCountText" style="font-size: 0.82rem;">Đang
+                                tải...</p>
+                        </div>
+                        <span
+                            class="badge bg-danger-subtle text-danger px-3 py-2 border border-danger-subtle rounded-pill"
+                            style="font-size: 0.78rem;" id="servicesCountText">
+                            Đang hiển thị 0 dịch vụ
+                        </span>
+                    </div>
+                    <div class="card-body px-0 pb-0">
+                        <!-- Desktop Bootstrap Table Responsive -->
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0" id="servicesMainTable"
+                                aria-label="Bảng quản lý dịch vụ">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th style="padding-left: 20px; width: 50px;">#</th>
+                                        <th style="width: 90px;">ID</th>
+                                        <th style="width: 200px;">Tên dịch vụ</th>
+                                        <th style="width: 150px;">Danh mục</th>
+                                        <th>Mô tả</th>
+                                        <th style="width: 110px;">Trạng thái</th>
+                                        <th style="width: 110px;">Ngày tạo</th>
+                                        <th style="padding-right: 20px; width: 110px;">Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="servicesBody">
+                                    <!-- Filled dynamically by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Mobile Card List View -->
+                        <div id="servicesMobileContainer" class="d-none px-3 pb-3">
+                            <!-- Filled dynamically by JS -->
+                        </div>
+
+                        <!-- Table Pagination Footer -->
+                        <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 p-4 border-top">
+                            <div class="d-flex align-items-center gap-2">
+                                <label for="pageSizeSelect" class="text-muted mb-0"
+                                    style="font-size: 0.82rem; white-space: nowrap;">Hiển thị:</label>
+                                <select id="pageSizeSelect" class="form-select form-select-sm border"
+                                    style="width: 75px; border-radius: 6px;">
+                                    <option value="10" selected>10</option>
+                                    <option value="25">25</option>
+                                    <option value="50">50</option>
+                                    <option value="100">100</option>
+                                </select>
+                                <span class="text-muted" style="font-size: 0.82rem; white-space: nowrap;">bản ghi /
+                                    trang</span>
+                            </div>
+                            <nav aria-label="Điều hướng phân trang dịch vụ">
+                                <ul class="pagination pagination-sm mb-0" id="servicesPagination">
+                                    <!-- Filled dynamically by JS -->
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- 1. ADD SERVICE DIALOG MODAL -->
+    <div class="modal fade" id="addServiceModal" tabindex="-1" aria-labelledby="addServiceModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0">
+                <div class="modal-header">
+                    <div class="vt-modal-header-title">
+                        <div class="vt-modal-header-icon add">
+                            <i class="fa-solid fa-plus"></i>
+                        </div>
+                        <div class="vt-modal-header-text">
+                            <h3 id="addServiceModalLabel">Thêm Dịch Vụ Mới</h3>
+                            <p>Điền thông tin dịch vụ hỗ trợ kỹ thuật cần thêm</p>
+                        </div>
+                    </div>
+                    <button type="button" class="vt-modal-close" data-bs-dismiss="modal" aria-label="Đóng">
+                        <i class="fa-solid fa-times"></i>
+                    </button>
+                </div>
+                <form id="addServiceForm" novalidate>
+                    <div class="modal-body p-4">
+                        <!-- Service Name -->
+                        <div class="vt-form-group">
+                            <label for="addServiceName" class="vt-form-label">Tên dịch vụ <span>*</span></label>
+                            <input type="text" id="addServiceName" class="vt-form-input" placeholder="Nhập tên dịch vụ hỗ trợ..." required>
+                            <div class="invalid-feedback">Vui lòng nhập tên dịch vụ.</div>
+                        </div>
+                        <!-- Linked Category -->
+                        <div class="vt-form-group">
+                            <label for="addServiceCategory" class="vt-form-label">Danh mục sự cố <span>*</span></label>
+                            <select id="addServiceCategory" class="vt-form-select" required>
+                                <!-- Category options populated by JS -->
+                            </select>
+                            <div class="invalid-feedback">Vui lòng chọn danh mục sự cố.</div>
+                        </div>
+                        <!-- Description -->
+                        <div class="vt-form-group">
+                            <label for="addServiceDesc" class="vt-form-label">Mô tả dịch vụ</label>
+                            <textarea id="addServiceDesc" class="vt-form-textarea" placeholder="Nhập mô tả chi tiết lỗi/dịch vụ..."></textarea>
+                        </div>
+                        <!-- Status -->
+                        <div class="vt-form-group">
+                            <label for="addServiceStatus" class="vt-form-label">Trạng thái</label>
+                            <select id="addServiceStatus" class="vt-form-select">
+                                <option value="Hoạt động" selected>Hoạt động</option>
+                                <option value="Tạm khóa">Tạm khóa</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer pb-4">
+                        <button type="button" class="vt-btn cancel" data-bs-dismiss="modal">Hủy</button>
+                        <button type="submit" class="vt-btn primary"><i class="bi bi-floppy-disk me-1"></i> Lưu lại</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. EDIT SERVICE DIALOG MODAL -->
+    <div class="modal fade" id="editServiceModal" tabindex="-1" aria-labelledby="editServiceModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0">
+                <div class="modal-header">
+                    <div class="vt-modal-header-title">
+                        <div class="vt-modal-header-icon edit">
+                            <i class="bi bi-pen-to-square"></i>
+                        </div>
+                        <div class="vt-modal-header-text">
+                            <h3 id="editServiceModalLabel">Chỉnh Sửa Dịch Vụ</h3>
+                            <p>Chỉnh sửa các thông tin của dịch vụ hỗ trợ</p>
+                        </div>
+                    </div>
+                    <button type="button" class="vt-modal-close" data-bs-dismiss="modal" aria-label="Đóng">
+                        <i class="fa-solid fa-times"></i>
+                    </button>
+                </div>
+                <form id="editServiceForm" novalidate>
+                    <div class="modal-body p-4">
+                        <!-- Service Name -->
+                        <div class="vt-form-group">
+                            <label for="editServiceName" class="vt-form-label">Tên dịch vụ <span>*</span></label>
+                            <input type="text" id="editServiceName" class="vt-form-input" placeholder="Nhập tên dịch vụ hỗ trợ..." required>
+                            <div class="invalid-feedback">Tên dịch vụ không được trống.</div>
+                        </div>
+                        <!-- Linked Category -->
+                        <div class="vt-form-group">
+                            <label for="editServiceCategory" class="vt-form-label">Danh mục sự cố <span>*</span></label>
+                            <select id="editServiceCategory" class="vt-form-select" required>
+                                <!-- Options populated by JS -->
+                            </select>
+                            <div class="invalid-feedback">Hãy chọn danh mục sự cố liên kết.</div>
+                        </div>
+                        <!-- Description -->
+                        <div class="vt-form-group">
+                            <label for="editServiceDesc" class="vt-form-label">Mô tả dịch vụ</label>
+                            <textarea id="editServiceDesc" class="vt-form-textarea" placeholder="Nhập mô tả chi tiết..."></textarea>
+                        </div>
+                        <!-- Status -->
+                        <div class="vt-form-group">
+                            <label for="editServiceStatus" class="vt-form-label">Trạng thái</label>
+                            <select id="editServiceStatus" class="vt-form-select">
+                                <option value="Hoạt động">Hoạt động</option>
+                                <option value="Tạm khóa">Tạm khóa</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer pb-4">
+                        <button type="button" class="vt-btn cancel" data-bs-dismiss="modal">Hủy</button>
+                        <button type="submit" class="vt-btn primary"><i class="bi bi-floppy-disk me-1"></i> Cập nhật</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. VIEW SERVICE DETAIL DIALOG MODAL -->
+    <div class="modal fade" id="viewServiceModal" tabindex="-1" aria-labelledby="viewServiceModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0">
+                <div class="modal-header">
+                    <div class="vt-modal-header-title">
+                        <div class="vt-modal-header-icon view-info">
+                            <i class="fa-solid fa-circle-info"></i>
+                        </div>
+                        <div class="vt-modal-header-text">
+                            <h3 id="viewServiceModalLabel">Chi Tiết Dịch Vụ Hỗ Trợ</h3>
+                            <p>Thông tin đầy đủ của dịch vụ kỹ thuật</p>
+                        </div>
+                    </div>
+                    <button type="button" class="vt-modal-close" data-bs-dismiss="modal" aria-label="Đóng">
+                        <i class="fa-solid fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body p-0">
+                    <div class="vt-view-banner">
+                        <div class="vt-view-avatar-large">
+                            <i class="fa-solid fa-gears"></i>
+                        </div>
+                        <div>
+                            <h4 class="vt-view-name" id="viewServiceName">—</h4>
+                            <span class="vt-view-id" id="viewServiceId">—</span>
+                        </div>
+                    </div>
+                    <div class="vt-view-details">
+                        <div class="vt-view-row">
+                            <div class="vt-view-label"><i class="fa-solid fa-folder text-danger"></i> Danh mục sự cố:</div>
+                            <div class="vt-view-val" id="viewServiceCategory">—</div>
+                        </div>
+                        <div class="vt-view-row">
+                            <div class="vt-view-label"><i class="fa-solid fa-shield text-danger"></i> Trạng thái:</div>
+                            <div class="vt-view-val" id="viewServiceStatus">—</div>
+                        </div>
+                        <div class="vt-view-row">
+                            <div class="vt-view-label"><i class="fa-solid fa-calendar-alt text-danger"></i> Ngày tạo lập:</div>
+                            <div class="vt-view-val font-monospace text-muted" id="viewServiceCreatedDate">—</div>
+                        </div>
+                        <div class="vt-view-row" style="border-bottom: none;">
+                            <div class="vt-view-label"><i class="fa-solid fa-align-left text-danger"></i> Mô tả chi tiết:</div>
+                            <div class="vt-view-val text-wrap text-muted" id="viewServiceDesc" style="font-size: 0.85rem; line-height: 1.5;">—</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer pb-4">
+                    <button type="button" class="vt-btn cancel" data-bs-dismiss="modal">Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. DELETE CONFIRMATION DIALOG MODAL -->
+    <div class="modal fade" id="deleteServiceModal" tabindex="-1" aria-labelledby="deleteServiceModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm" style="max-width: 420px;">
+            <div class="modal-content border-0">
+                <div class="modal-header">
+                    <div class="vt-modal-header-title">
+                        <div class="vt-modal-header-icon delete">
+                            <i class="bi bi-triangle-exclamation"></i>
+                        </div>
+                        <div class="vt-modal-header-text">
+                            <h3 id="deleteServiceModalLabel">Xác Nhận Xóa</h3>
+                            <p>Hành động này không thể hoàn tác</p>
+                        </div>
+                    </div>
+                    <button type="button" class="vt-modal-close" data-bs-dismiss="modal" aria-label="Đóng">
+                        <i class="fa-solid fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body p-4 text-center">
+                    <div class="text-danger mb-3" style="font-size: 3rem;">
+                        <i class="fa-solid fa-circle-exclamation"></i>
+                    </div>
+                    <p class="text-dark-emphasis mb-0" id="deleteConfirmText" style="font-size: 0.95rem; line-height: 1.5;">
+                        Bạn có chắc chắn muốn xóa dịch vụ kỹ thuật này không?
+                    </p>
+                </div>
+                <div class="modal-footer justify-content-center pb-4">
+                    <button type="button" class="vt-btn cancel" data-bs-dismiss="modal">Hủy bỏ</button>
+                    <button type="button" class="vt-btn danger" onclick="confirmDeleteService()"><i class="fa-solid fa-trash me-1"></i> Xóa</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- SweetAlert 2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+    <!-- Base dashboard script -->
+    <script src="../assets/js/staff/dashboard.js"></script>
+    <!-- Page script -->
+    <script src="../assets/js/staff/admin-services.js"></script>
+    <!-- Sidebar template loader -->
+    <script src="../assets/js/staff/sidebar-loader.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,202 @@
+/* =============================================================
+   admin-profile.css — TechSupport Viettel Admin
+   Page-specific styles cho trang Tài Khoản Nhân Viên
+   Dùng kết hợp với dashboard.css (base)
+   ============================================================= */
+
+/* ── Utility font sizes ── */
+.fs-8 { font-size: 0.78rem; }
+.fs-9 { font-size: 0.7rem;  }
+
+/* ── Topbar notification badge ── */
+.notification-badge {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 18px;
+    height: 18px;
+    background-color: var(--viettel-red);
+    color: white;
+    border-radius: 50%;
+    font-size: 0.6rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid var(--bg-topbar);
+}
+
+/* ── Sidebar section label ── */
+.sidebar-section-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: rgba(156, 163, 175, 0.5);
+    padding: 10px 16px 4px;
+    margin-top: 8px;
+}
+.sidebar-collapsed .sidebar-section-label { display: none; }
+
+/* ── Sidebar scrollbar ── */
+.sidebar-menu::-webkit-scrollbar       { width: 4px; }
+.sidebar-menu::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 2px; }
+
+/* ── Section heading ── */
+.section-heading-line { font-size: 1.05rem; font-weight: 800; color: var(--text-main); margin: 0; }
+.section-heading-line small {
+    font-size: 0.78rem;
+    font-weight: 400;
+    color: var(--text-muted);
+    display: block;
+    margin-top: 2px;
+}
+
+/* ── Password Strength Meter ── */
+.pwd-strength-meter {
+    height: 4px;
+    border-radius: 2px;
+    background: var(--border-color);
+    margin-top: 8px;
+    overflow: hidden;
+}
+.pwd-strength-bar {
+    height: 100%;
+    border-radius: 2px;
+    width: 0%;
+    transition: width 0.3s ease, background-color 0.3s ease;
+}
+.pwd-strength-text {
+    font-size: 0.72rem;
+    font-weight: 600;
+    margin-top: 4px;
+}
+
+/* ── Password toggle eye button ── */
+.input-group-pwd { position: relative; }
+.input-group-pwd .form-control-custom { padding-right: 44px; }
+.btn-eye-toggle {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 4px;
+    z-index: 5;
+    transition: color 0.2s ease;
+}
+.btn-eye-toggle:hover { color: var(--text-main); }
+
+/* ── Profile page nav tabs ── */
+.profile-nav-tabs {
+    display: flex;
+    gap: 4px;
+    border-bottom: 2px solid var(--border-color);
+    margin-bottom: 28px;
+}
+.profile-nav-tab {
+    padding: 10px 20px;
+    border-radius: 10px 10px 0 0;
+    border: none;
+    background: none;
+    font-weight: 600;
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+}
+.profile-nav-tab:hover {
+    color: var(--text-main);
+    background: rgba(0,0,0,0.03);
+}
+.profile-nav-tab.active {
+    color: var(--viettel-red);
+    border-bottom: 2px solid var(--viettel-red);
+    background: rgba(238,0,51,0.04);
+}
+.profile-tab-panel        { display: none;  }
+.profile-tab-panel.active { display: block; }
+
+/* ── Avatar upload area ── */
+.avatar-upload-wrapper { position: relative; }
+.avatar-size-guide {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    margin-top: 8px;
+    text-align: center;
+}
+
+/* ── Profile header banner ── */
+.profile-banner {
+    background: linear-gradient(135deg, #111827 0%, #1f2937 50%, #111827 100%);
+    border-radius: var(--border-radius-large);
+    padding: 32px 30px;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 24px;
+}
+.profile-banner::before {
+    content: '';
+    position: absolute;
+    top: -40px;
+    right: -40px;
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    background: rgba(238, 0, 51, 0.15);
+}
+.profile-banner::after {
+    content: '';
+    position: absolute;
+    bottom: -60px;
+    left: 30%;
+    width: 240px;
+    height: 240px;
+    border-radius: 50%;
+    background: rgba(238, 0, 51, 0.07);
+}
+.profile-banner-content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+.profile-banner-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid rgba(238,0,51,0.8);
+    box-shadow: 0 0 0 4px rgba(238,0,51,0.2);
+    flex-shrink: 0;
+}
+.profile-banner-info h3 {
+    color: #fff;
+    font-size: 1.3rem;
+    font-weight: 800;
+    margin: 0;
+}
+.profile-banner-info p {
+    color: rgba(255,255,255,0.6);
+    font-size: 0.85rem;
+    margin: 4px 0 0;
+}
+.profile-banner-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: rgba(238,0,51,0.2);
+    color: #ff7a94;
+    border: 1px solid rgba(238,0,51,0.3);
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    margin-top: 8px;
+}

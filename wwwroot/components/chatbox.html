@@ -1,0 +1,236 @@
+<div class="chatbox-wrapper">
+    <!-- 1. Floating Chat Launcher -->
+    <button class="chat-launcher" id="chatLauncher" aria-label="Mở Trợ lý Hỗ trợ Kỹ thuật">
+        <i class="fa-solid fa-comments chat-icon-open"></i>
+        <i class="fa-solid fa-xmark chat-icon-close"></i>
+        <span class="chat-launcher-badge" id="launcherBadge">2</span>
+        <span class="chat-launcher-online-dot"></span>
+    </button>
+
+    <!-- 2. Chat Window Box -->
+    <div class="chat-window" id="chatWindow">
+        
+        <!-- Fixed Header Area -->
+        <div class="chat-header">
+            <div class="chat-header-brand">
+                <div class="chat-header-avatar">
+                    <i class="fa-solid fa-robot"></i>
+                    <span class="chat-header-online-status"></span>
+                </div>
+                <div class="chat-header-text">
+                    <span class="chat-header-title">TechSupport AI</span>
+                    <span class="chat-header-subtitle">Hỗ trợ kỹ thuật doanh nghiệp 24/7</span>
+                </div>
+            </div>
+            <div class="chat-header-actions">
+                <span class="chat-header-status-badge-top"><span class="status-dot"></span> Đang trực tuyến</span>
+                <button class="chat-header-btn" id="chatMinimize" title="Thu nhỏ" aria-label="Minimize">
+                    <i class="fa-solid fa-minus"></i>
+                </button>
+                <button class="chat-header-btn" id="chatMaximize" title="Phóng to" aria-label="Maximize">
+                    <i class="fa-solid fa-expand"></i>
+                </button>
+                <button class="chat-header-btn" id="chatRefresh" title="Làm mới cuộc trò chuyện" aria-label="Refresh" onclick="document.getElementById('chatMessagesContainer').innerHTML = ''; document.getElementById('chatWindow').classList.remove('chat-active-stream'); document.querySelectorAll('.convo-row').forEach(row => row.classList.remove('active'));">
+                    <i class="fa-solid fa-arrows-rotate"></i>
+                </button>
+                <button class="chat-header-btn" id="chatClose" title="Đóng" aria-label="Close">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Main Chat Body Sliding Containers -->
+        <div class="chat-body-container">
+            
+            <!-- Screen 1: Welcome & Actions & Conversations -->
+            <div class="chat-screen" id="screenWelcome">
+                <div class="welcome-scrollable">
+                    <!-- Greeting message -->
+                    <div class="welcome-greeting-box">
+                        <div class="welcome-avatar-robot-container">
+                            <span class="welcome-avatar-robot"><i class="fa-solid fa-robot"></i></span>
+                            <span class="avatar-glow-ring"></span>
+                        </div>
+                        <h2 class="welcome-greeting-title">Xin chào 👋</h2>
+                        <p class="welcome-greeting-desc">Tôi là TechSupport AI. Tôi có thể hỗ trợ bạn xử lý sự cố kỹ thuật, tạo phiếu hỗ trợ và kết nối với kỹ thuật viên nhanh chóng.</p>
+                    </div>
+                    
+                    <!-- Checklist -->
+                    <div class="welcome-checklist">
+                        <div class="welcome-checklist-title">
+                            <i class="fa-solid fa-wand-magic-sparkles text-danger me-2"></i>Tôi có thể hỗ trợ bạn
+                        </div>
+                        <div class="welcome-checklist-item">
+                            <span class="checklist-icon">🎫</span>
+                            <span>Tạo phiếu hỗ trợ</span>
+                        </div>
+                        <div class="welcome-checklist-item">
+                            <span class="checklist-icon">🔍</span>
+                            <span>Tra cứu trạng thái phiếu</span>
+                        </div>
+                        <div class="welcome-checklist-item">
+                            <span class="checklist-icon">🛠</span>
+                            <span>Khắc phục lỗi Internet</span>
+                        </div>
+                        <div class="welcome-checklist-item">
+                            <span class="checklist-icon">📺</span>
+                            <span>Khắc phục lỗi TV</span>
+                        </div>
+                        <div class="welcome-checklist-item">
+                            <span class="checklist-icon">📅</span>
+                            <span>Đặt lịch kỹ thuật</span>
+                        </div>
+                        <div class="welcome-checklist-item">
+                            <span class="checklist-icon">💬</span>
+                            <span>Chat với nhân viên</span>
+                        </div>
+                        <div class="welcome-checklist-item">
+                            <span class="checklist-icon">📊</span>
+                            <span>Theo dõi tiến độ</span>
+                        </div>
+                        <div class="welcome-checklist-item">
+                            <span class="checklist-icon">⭐</span>
+                            <span>Đánh giá dịch vụ</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Quick Actions Grid -->
+                    <div class="quick-actions-section">
+                        <h3 class="welcome-section-title"><i class="fa-solid fa-bolt text-warning me-1"></i> Yêu cầu nhanh</h3>
+                        <div class="quick-actions-grid container px-0">
+                            <div class="row g-3">
+                                <div class="col-6">
+                                    <button class="quick-action-card" data-action="create-ticket">
+                                        <span class="quick-action-card-icon"><i class="fa-solid fa-ticket-simple"></i></span>
+                                        <span class="quick-action-card-title">Tạo phiếu</span>
+                                        <span class="quick-action-card-desc">Gửi yêu cầu hỗ trợ</span>
+                                    </button>
+                                </div>
+                                <div class="col-6">
+                                    <button class="quick-action-card" data-action="lookup-ticket">
+                                        <span class="quick-action-card-icon"><i class="fa-solid fa-magnifying-glass"></i></span>
+                                        <span class="quick-action-card-title">Tra cứu</span>
+                                        <span class="quick-action-card-desc">Theo dõi xử lý</span>
+                                    </button>
+                                </div>
+                                <div class="col-6">
+                                    <button class="quick-action-card" data-action="troubleshoot">
+                                        <span class="quick-action-card-icon"><i class="fa-solid fa-screwdriver-wrench"></i></span>
+                                        <span class="quick-action-card-title">Khắc phục</span>
+                                        <span class="quick-action-card-desc">Internet • TV • Camera</span>
+                                    </button>
+                                </div>
+                                <div class="col-6">
+                                    <button class="quick-action-card" data-action="scheduler">
+                                        <span class="quick-action-card-icon"><i class="fa-solid fa-calendar-days"></i></span>
+                                        <span class="quick-action-card-title">Đặt lịch</span>
+                                        <span class="quick-action-card-desc">Kỹ thuật viên</span>
+                                    </button>
+                                </div>
+                                <div class="col-6">
+                                    <button class="quick-action-card" data-action="agent">
+                                        <span class="quick-action-card-icon"><i class="fa-solid fa-user-tie"></i></span>
+                                        <span class="quick-action-card-title">Nhân viên</span>
+                                        <span class="quick-action-card-desc">Hỗ trợ trực tiếp</span>
+                                    </button>
+                                </div>
+                                <div class="col-6">
+                                    <button class="quick-action-card" data-action="rate">
+                                        <span class="quick-action-card-icon"><i class="fa-solid fa-star"></i></span>
+                                        <span class="quick-action-card-title">Đánh giá</span>
+                                        <span class="quick-action-card-desc">Chất lượng dịch vụ</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Past Conversation History list -->
+                    <div class="history-section">
+                        <h3 class="welcome-section-title"><i class="fa-solid fa-clock-rotate-left text-secondary me-1"></i> Lịch sử trò chuyện</h3>
+                        <div class="history-toolbar">
+                            <div class="history-search">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                                <input type="text" id="convoSearchInput" placeholder="Tìm theo mã phiếu...">
+                            </div>
+                            <select class="history-filter" id="convoFilterSelect">
+                                <option value="all">Tất cả</option>
+                                <option value="processing">Đang xử lý</option>
+                                <option value="completed">Hoàn thành</option>
+                            </select>
+                        </div>
+                        
+                        <div id="convoListContainer">
+                            <!-- Injected dynamically in chatbox.js -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Screen 2: Active Chat Room Stream -->
+            <div class="chat-screen" id="screenStream">
+                <!-- Subheader Bar with Ticket status -->
+                <div class="stream-header-bar">
+                    <button class="stream-back-btn" id="btnBackToWelcome" title="Quay lại" aria-label="Quay lại">
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </button>
+                    <div class="stream-header-info">
+                        <div class="stream-header-title-row">
+                            <span class="stream-header-title" id="streamTicketTitle">Hội thoại hỗ trợ</span>
+                            <span class="stream-header-status-badge" id="streamTicketStatus">Hỗ trợ</span>
+                        </div>
+                        <span class="stream-header-desc" id="streamTicketDesc">Trò chuyện tự động với trợ lý ảo</span>
+                    </div>
+                </div>
+                
+                <!-- Messages List Box -->
+                <div class="messages-scrollable" id="chatMessagesContainer">
+                    <!-- Dynamic chat bubbles here -->
+                </div>
+                
+                <!-- AI Typing Indicator Bubble -->
+                <div class="messages-scrollable py-0" style="flex-grow: 0; background-color: #F8FAFC;">
+                    <div class="ai-typing-row" id="aiTypingIndicator">
+                        <div class="msg-avatar">
+                            <i class="fa-solid fa-robot"></i>
+                        </div>
+                        <div class="ai-typing-bubble">
+                            <span class="ai-typing-text">TechSupport AI đang soạn tin</span>
+                            <div class="ai-typing-dots">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Footer with Input -->
+                <div class="stream-footer">
+                    <div class="chatgpt-input-capsule">
+                        <button class="capsule-icon-btn" id="chatUploadFileBtn" title="Đính kèm tài liệu">
+                            <i class="fa-solid fa-paperclip"></i>
+                        </button>
+                        <button class="capsule-icon-btn" id="chatEmojiBtn" title="Thêm biểu tượng cảm xúc">
+                            <i class="fa-regular fa-face-smile"></i>
+                        </button>
+                        
+                        <textarea class="stream-textarea" id="chatInputField" placeholder="Hãy nhập câu hỏi hoặc mô tả sự cố..." rows="1" maxlength="500"></textarea>
+                        
+                        <button class="capsule-icon-btn" id="chatVoiceBtn" title="Nhập bằng giọng nói">
+                            <i class="fa-solid fa-microphone"></i>
+                        </button>
+                        <button class="stream-send-btn" id="btnSendChat" aria-label="Gửi tin nhắn">
+                            <i class="fa-solid fa-paper-plane"></i>
+                        </button>
+                    </div>
+                    <div class="stream-footer-meta d-flex justify-content-between px-2 pb-1 pt-1">
+                        <span class="small text-muted" style="font-size: 10px; opacity: 0.6;">TechSupport AI có thể đưa ra câu trả lời không chính xác.</span>
+                        <span class="toolbar-char-counter text-muted" id="chatCharCounter" style="font-size: 10px; opacity: 0.6;">0/500</span>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</div>

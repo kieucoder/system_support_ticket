@@ -1,0 +1,64 @@
+@model SupportTicketSysterm.Data.DanhMuc
+<!-- MODAL: THÊM DANH MỤC -->
+<div id="addModal" class="vt-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="addModalTitle">
+    <div class="vt-modal">
+        <div class="vt-modal-header">
+            <div class="vt-modal-header-title">
+                <div class="vt-modal-header-icon add">
+                    <i class="fa-solid fa-plus"></i>
+                </div>
+                <div class="vt-modal-header-text">
+                    <h3 id="addModalTitle">Thêm Danh Mục Mới</h3>
+                    <p>Điền đầy đủ thông tin danh mục sự cố kỹ thuật</p>
+                </div>
+            </div>
+            <button class="vt-modal-close" onclick="closeAddModal()" aria-label="Đóng">
+                <i class="fa-solid fa-times"></i>
+            </button>
+        </div>
+        <div class="vt-modal-body">
+            <form asp-action="ThemDanhMuc" asp-controller="Staff" method="post" id="addCatForm" novalidate>
+                @Html.AntiForgeryToken()
+                <!-- ID (Read-only) -->
+
+                @* <div class="vt-form-group">
+                    <label class="vt-form-label" for="addCatId">ID Danh Mục</label>
+                    <input type="text" id="addCatId" class="vt-form-input" readonly style="opacity: 0.7; cursor: not-allowed; background-color: var(--border-color);">
+                </div> *@
+
+                <!-- Tên danh mục -->
+                <div class="vt-form-group">
+                    <label class="vt-form-label" for="addCatName">Tên Danh Mục <span>*</span></label>
+                    <input asp-for="TenDanhMuc" type="text" id="addCatName" class="vt-form-input" placeholder="Nhập tên danh mục (Ví dụ: Internet Cáp Quang, ...)" required autocomplete="off">
+                    <div class="vt-error-msg" id="addCatNameError">
+                        <i class="fa-solid fa-circle-exclamation"></i> Vui lòng nhập tên danh mục!
+                    </div>
+                </div>
+                <!-- Mô tả -->
+                <div class="vt-form-group">
+                    <label class="vt-form-label" for="addCatDesc">Mô Tả <span>*</span></label>
+                    <textarea asp-for="MoTa" id="addCatDesc" class="vt-form-textarea" placeholder="Mô tả chi tiết về loại sự cố trong danh mục này..." required></textarea>
+                    <div class="vt-error-msg" id="addCatDescError">
+                        <i class="fa-solid fa-circle-exclamation"></i> Vui lòng nhập mô tả danh mục!
+                    </div>
+                </div>
+                <!-- Trạng thái -->
+                <div class="vt-form-group">
+                    <label class="vt-form-label" for="addCatStatus">Trạng Thái</label>
+                    <select asp-for="TrangThai" id="addCatStatus" class="vt-form-select">
+                        <option value="Hoạt động">Hoạt động</option>
+                        <option value="Tạm khóa">Tạm khóa</option>
+                    </select>
+                </div>
+            </form>
+        </div>
+        <div class="vt-modal-footer">
+            <button class="vt-btn cancel" onclick="closeAddModal()">
+                <i class="fa-solid fa-times me-1"></i> Hủy
+            </button>
+            <button class="vt-btn primary" type="submit" form="addCatForm">
+                <i class="bi bi-floppy-disk me-1"></i> Lưu Danh Mục
+            </button>
+        </div>
+    </div>
+</div>

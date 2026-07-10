@@ -1,0 +1,1324 @@
+/* -------------------------------------------------------------
+ * FILE: assets/css/create-category.css
+ * AUTHOR: Antigravity
+ * DESCRIPTION: Custom stylesheet for Create Support Ticket Page
+ * ------------------------------------------------------------- */
+
+:root {
+    --primary-red: #EE0033;
+    --primary-red-rgb: 238, 0, 51;
+    --dark-blue: #111827;
+    --light-gray: #F8FAFC;
+    --white: #FFFFFF;
+}
+
+/* =============================================================
+   1. HERO SECTION - Premium Tech Theme
+   ============================================================= */
+<<<<<<< HEAD
+/* 1. HERO SECTION - Premium Tech Theme */
+/* Removed old hero-section layout styles to inherit from style.css */
+=======
+.hero-section {
+    position: relative;
+    background-color: #ffffff;
+    background-image: 
+        radial-gradient(at 0% 0%, rgba(238, 0, 51, 0.05) 0px, transparent 50%),
+        radial-gradient(at 100% 0%, rgba(15, 17, 21, 0.03) 0px, transparent 50%),
+        radial-gradient(at 50% 100%, rgba(238, 0, 51, 0.02) 0px, transparent 50%),
+        linear-gradient(rgba(15, 17, 21, 0.008) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(15, 17, 21, 0.008) 1px, transparent 1px);
+    background-size: 100% 100%, 100% 100%, 100% 100%, 40px 40px, 40px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    z-index: 5;
+    border-bottom: 1px solid rgba(15, 17, 21, 0.04);
+    overflow: hidden;
+    
+    /* Base height guidelines (prioritizes 55vh and max 650px) */
+    min-height: 55vh;
+    max-height: 650px;
+    padding-top: 110px;
+    padding-bottom: 70px;
+    transition: var(--transition-smooth);
+}
+
+/* Ambient glow orb behind illustration */
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 10%;
+    right: 15%;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(238, 0, 51, 0.08) 0%, rgba(238, 0, 51, 0.01) 70%, transparent 100%);
+    filter: blur(50px);
+    z-index: 1;
+    pointer-events: none;
+    animation: pulseGlow 8s ease-in-out infinite alternate;
+}
+
+@keyframes pulseGlow {
+    0% { transform: scale(1) translate(0, 0); opacity: 0.8; }
+    100% { transform: scale(1.2) translate(-20px, 20px); opacity: 1; }
+}
+
+.hero-content {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+}
+>>>>>>> 59a5e6f64da6c8eb44454bf22a5574b208c2f2b3
+
+/* Breadcrumb Glassmorphic Container */
+.hero-breadcrumb {
+    display: inline-flex;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(15, 17, 21, 0.06);
+    padding: 6px 16px;
+    border-radius: 50px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+    transition: var(--transition-smooth);
+    margin-bottom: 16px !important;
+}
+
+.hero-breadcrumb:hover {
+    background: rgba(255, 255, 255, 0.85);
+    border-color: rgba(238, 0, 51, 0.2);
+    box-shadow: 0 8px 30px rgba(238, 0, 51, 0.05);
+    transform: translateY(-2px);
+}
+
+.hero-breadcrumb .breadcrumb-item {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: #4b5563;
+    display: flex;
+    align-items: center;
+}
+
+.hero-breadcrumb .breadcrumb-item a {
+    color: #4b5563;
+    text-decoration: none;
+    transition: var(--transition-fast);
+    display: inline-flex;
+    align-items: center;
+}
+
+.hero-breadcrumb .breadcrumb-item a i {
+    font-size: 0.85rem;
+    color: #4b5563;
+    transition: var(--transition-fast);
+}
+
+.hero-breadcrumb .breadcrumb-item a:hover,
+.hero-breadcrumb .breadcrumb-item a:hover i {
+    color: var(--primary-red) !important;
+}
+
+.hero-breadcrumb .breadcrumb-item.active {
+    color: #0f1115;
+    font-weight: 600;
+}
+
+.hero-breadcrumb .breadcrumb-item + .breadcrumb-item::before {
+    content: "\F285"; /* Bootstrap Icons chevron right */
+    font-family: "bootstrap-icons";
+    font-size: 0.65rem;
+    color: rgba(15, 17, 21, 0.2);
+    vertical-align: middle;
+    padding: 0 10px;
+}
+
+/* Badge Styling */
+.hero-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 16px;
+    background: rgba(238, 0, 51, 0.05);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(238, 0, 51, 0.15);
+    color: var(--primary-red);
+    font-weight: 700;
+    border-radius: 30px;
+    font-size: 0.75rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    box-shadow: 0 4px 15px rgba(238, 0, 51, 0.04);
+    margin-bottom: 16px !important;
+    width: fit-content;
+    transition: var(--transition-smooth);
+}
+
+.hero-badge:hover {
+    background: rgba(238, 0, 51, 0.08);
+    border-color: rgba(238, 0, 51, 0.3);
+    transform: translateY(-1px);
+}
+
+<<<<<<< HEAD
+/* Title Styling and Description text removed to inherit from style.css */
+=======
+/* Title Styling with elegant red-black gradient */
+.hero-title {
+    font-size: clamp(2.2rem, 3.8vw, 3rem);
+    font-weight: 850;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    background: linear-gradient(135deg, #0f1115 30%, #ee0033 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 16px !important;
+}
+
+/* Description text */
+.hero-desc {
+    font-size: 1.05rem;
+    color: #4b5563;
+    max-width: 540px;
+    line-height: 1.6;
+    margin-bottom: 28px !important;
+}
+>>>>>>> 59a5e6f64da6c8eb44454bf22a5574b208c2f2b3
+
+/* Hero Buttons */
+.btn-hero-create {
+    background: linear-gradient(135deg, #ee0033 0%, #ff4d6d 100%);
+    color: #ffffff !important;
+    border: none;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    transition: var(--transition-smooth);
+    box-shadow: 0 8px 20px rgba(238, 0, 51, 0.25);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-hero-create:hover {
+    background: linear-gradient(135deg, #ff4d6d 0%, #ee0033 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 25px rgba(238, 0, 51, 0.35);
+}
+
+.btn-hero-contact {
+    border: 2px solid rgba(15, 17, 21, 0.15);
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    color: #1f2937 !important;
+    font-weight: 700;
+    font-size: 0.95rem;
+    border-radius: 50px;
+    transition: var(--transition-smooth);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-hero-contact:hover {
+    background: var(--dark-blue);
+    color: #ffffff !important;
+    border-color: var(--dark-blue);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(17, 25, 39, 0.15);
+}
+
+/* Support Banner and SVG Wrapper */
+.hero-banner-wrapper {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.hero-banner-svg {
+    width: 100%;
+    max-width: 480px;
+    height: auto;
+    filter: drop-shadow(0 20px 45px rgba(15, 17, 21, 0.15));
+    transition: var(--transition-smooth);
+}
+
+.hero-banner-svg:hover {
+    transform: translateY(-5px);
+    filter: drop-shadow(0 25px 50px rgba(15, 17, 21, 0.2));
+}
+
+/* Floating Card Animation for Support Representative */
+.floating-avatar-card {
+    animation: floatAvatar 6s ease-in-out infinite;
+}
+
+@keyframes floatAvatar {
+    0%, 100% {
+        transform: translate(320px, 240px);
+    }
+    50% {
+        transform: translate(320px, 225px);
+    }
+}
+
+
+/* =============================================================
+   2. TICKET FORM CARDS & FIELDS
+   ============================================================= */
+.ticket-main-card {
+    background: var(--white);
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(0, 0, 0, 0.04);
+    padding: 40px;
+    height: 100%;
+    transition: var(--transition-smooth);
+}
+
+.ticket-main-card:hover {
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.05);
+    border-color: rgba(238, 0, 51, 0.08);
+}
+
+.card-header-custom {
+    border-bottom: 2px solid rgba(15, 17, 21, 0.04);
+    padding-bottom: 20px;
+    display: flex;
+    align-items: center;
+}
+
+.contact-card-title {
+    font-weight: 850;
+    font-size: 1.45rem;
+    color: var(--dark-blue);
+    position: relative;
+}
+
+/* Inputs & Labels */
+.form-label-custom {
+    font-weight: 750;
+    font-size: 0.88rem;
+    color: var(--dark-blue);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: block;
+}
+
+.form-label-custom span {
+    color: var(--primary-red);
+    margin-left: 2px;
+}
+
+.form-control-custom, .form-select-custom {
+    height: 48px;
+    border-radius: 12px;
+    border: 1.5px solid var(--viettel-gray-medium);
+    padding: 0 16px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    color: var(--dark-blue);
+    background-color: var(--light-gray);
+}
+
+.form-control-custom:focus, .form-select-custom:focus {
+    background-color: var(--white);
+    border-color: var(--primary-red);
+    box-shadow: 0 0 0 3.5px rgba(238, 0, 51, 0.12);
+    outline: none;
+}
+
+textarea.form-control-custom {
+    height: 180px;
+    padding: 14px 16px;
+    resize: none;
+    line-height: 1.5;
+}
+
+/* Input group bootstrap overrides */
+.input-group-text {
+    border: 1.5px solid var(--viettel-gray-medium);
+    border-radius: 12px;
+    color: #6b7280;
+}
+
+/* Dynamic Service Description Card */
+.service-info-card {
+    background: linear-gradient(135deg, rgba(238, 0, 51, 0.02) 0%, rgba(15, 17, 21, 0.01) 100%);
+    border: 1px dashed rgba(238, 0, 51, 0.2) !important;
+    border-radius: 12px;
+    animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+
+/* =============================================================
+   3. PRIORITY CARD SELECTION SYSTEM
+   ============================================================= */
+.priority-card-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: var(--white);
+    border: 1.5px solid var(--viettel-gray-medium);
+    border-radius: 16px;
+    padding: 18px 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+    width: 100%;
+    position: relative;
+    user-select: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+}
+
+.priority-icon {
+    font-size: 1.4rem;
+    margin-bottom: 8px;
+    transition: var(--transition-fast);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(15, 17, 21, 0.03);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.priority-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--dark-blue);
+    transition: var(--transition-fast);
+}
+
+/* Hover effect */
+.priority-card-label:hover {
+    border-color: rgba(238, 0, 51, 0.3);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.04);
+}
+
+/* Radio button Checked state logic */
+input[type="radio"]:checked + .priority-card-label {
+    background: linear-gradient(135deg, #EE0033 0%, #ff4d6d 100%);
+    border-color: transparent;
+    color: var(--white);
+    box-shadow: 0 8px 20px rgba(238, 0, 51, 0.25);
+}
+
+input[type="radio"]:checked + .priority-card-label .priority-icon {
+    background: rgba(255, 255, 255, 0.2);
+    color: var(--white) !important;
+}
+
+input[type="radio"]:checked + .priority-card-label .priority-title {
+    color: var(--white);
+}
+
+/* Specific styling for Urgent pulsing icon */
+.pulse-danger {
+    animation: urgentPulse 1.5s infinite alternate;
+}
+
+@keyframes urgentPulse {
+    0% { transform: scale(1); opacity: 1; }
+    100% { transform: scale(1.15); opacity: 0.8; }
+}
+
+.text-dark-danger {
+    color: #991b1b;
+}
+
+
+/* =============================================================
+   4. APPOINTMENT COLLAPSE ANIMATION
+   ============================================================= */
+.custom-switch {
+    padding-left: 2.8em;
+}
+
+.custom-switch .form-check-input {
+    width: 2.2em;
+    height: 1.2em;
+    margin-left: -2.8em;
+    background-color: var(--viettel-gray-medium);
+    border-color: rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: background-color .2s ease-in-out, border-color .2s ease-in-out, box-shadow .2s ease-in-out;
+}
+
+.custom-switch .form-check-input:checked {
+    background-color: var(--primary-red);
+    border-color: var(--primary-red);
+}
+
+.custom-switch .form-check-input:focus {
+    box-shadow: 0 0 0 3.5px rgba(238, 0, 51, 0.15);
+}
+
+/* Slide Down Animation */
+.appointment-card {
+    background-color: #fafbfc;
+    border: 1.5px solid var(--viettel-gray-medium) !important;
+    border-radius: 16px;
+}
+
+.animate-slide-down {
+    animation: slideDown 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+        max-height: 0;
+        overflow: hidden;
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+        max-height: 500px;
+    }
+}
+
+
+/* =============================================================
+   5. DRAG & DROP FILE UPLOADER
+   ============================================================= */
+.upload-area {
+    border: 2px dashed var(--viettel-gray-medium);
+    border-radius: 16px;
+    padding: 35px 20px;
+    text-align: center;
+    background-color: var(--light-gray);
+    cursor: pointer;
+    transition: var(--transition-smooth);
+}
+
+.upload-area:hover, .upload-area.dragover {
+    border-color: var(--primary-red);
+    background-color: rgba(238, 0, 51, 0.02);
+}
+
+.upload-area-icon {
+    font-size: 2.2rem;
+    color: var(--primary-red);
+    margin-bottom: 12px;
+}
+
+.upload-area-text {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--dark-blue);
+    margin-bottom: 6px;
+}
+
+.upload-area-text span {
+    color: var(--primary-red);
+    text-decoration: underline;
+}
+
+.upload-area-hint {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin: 0;
+}
+
+/* Upload Previews */
+.upload-preview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.preview-item {
+    position: relative;
+    aspect-ratio: 1;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1.5px solid var(--viettel-gray-medium);
+    background-color: var(--viettel-gray-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    animation: scaleIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes scaleIn {
+    from { transform: scale(0.8); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+.preview-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.preview-file-icon {
+    font-size: 2.2rem;
+    color: var(--primary-red);
+}
+
+.preview-file-details {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(17, 24, 39, 0.75);
+    color: #ffffff;
+    font-size: 0.65rem;
+    padding: 4px 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: center;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+.preview-item-remove {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background-color: rgba(17, 24, 39, 0.8);
+    color: #ffffff;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: var(--transition-fast);
+    z-index: 15;
+}
+
+.preview-item-remove:hover {
+    background-color: var(--primary-red);
+    transform: scale(1.1);
+}
+
+
+/* =============================================================
+   6. SIDEBAR PROCESS STEPS & TIMELINE
+   ============================================================= */
+.sidebar-info-card {
+    background: var(--white);
+    border-radius: 20px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.02);
+    border: 1px solid rgba(0, 0, 0, 0.04);
+    padding: 30px 24px;
+    transition: var(--transition-smooth);
+}
+
+.sidebar-info-card:hover {
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.04);
+}
+
+.sidebar-title {
+    font-weight: 800;
+    font-size: 1.15rem;
+    color: var(--dark-blue);
+    margin-bottom: 6px;
+}
+
+.sidebar-subtitle {
+    font-size: 0.82rem;
+    line-height: 1.4;
+}
+
+/* Vertical Steps Timeline */
+.support-steps-timeline {
+    position: relative;
+    padding-left: 10px;
+}
+
+.step-timeline-item {
+    position: relative;
+    padding-left: 36px;
+    padding-bottom: 24px;
+}
+
+.step-timeline-item:last-child {
+    padding-bottom: 0;
+}
+
+/* Vertical indicator line */
+.step-timeline-item::before {
+    content: '';
+    position: absolute;
+    left: 12px;
+    top: 24px;
+    bottom: -8px;
+    width: 2px;
+    background-color: var(--viettel-gray-medium);
+    z-index: 1;
+}
+
+.step-timeline-item:last-child::before {
+    display: none;
+}
+
+.step-timeline-badge {
+    position: absolute;
+    left: 0;
+    top: 2px;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background-color: var(--viettel-gray-light);
+    border: 2px solid var(--viettel-gray-medium);
+    color: var(--text-muted);
+    font-weight: 700;
+    font-size: 0.78rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 5;
+    transition: var(--transition-smooth);
+}
+
+.step-timeline-content {
+    transition: var(--transition-smooth);
+}
+
+.step-title {
+    font-weight: 750;
+    font-size: 0.92rem;
+    color: var(--dark-blue);
+    margin-bottom: 4px;
+}
+
+.step-desc {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* Active Step style (Step 1 by default) */
+.step-timeline-item.active-step .step-timeline-badge {
+    background-color: var(--primary-red);
+    border-color: var(--primary-red);
+    color: #ffffff;
+    box-shadow: 0 0 0 4px rgba(238, 0, 51, 0.12);
+}
+
+.step-timeline-item.active-step .step-title {
+    color: var(--primary-red);
+}
+
+
+/* =============================================================
+   7. CTA & SUBMIT BUTTONS
+   ============================================================= */
+.btn-form-submit {
+    background: linear-gradient(135deg, #EE0033 0%, #ff4d6d 100%);
+    color: var(--white) !important;
+    border: none;
+    border-radius: 12px;
+    padding: 12px 30px;
+    font-size: 0.98rem;
+    font-weight: 700;
+    transition: var(--transition-smooth);
+    box-shadow: 0 8px 20px rgba(238, 0, 51, 0.2);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-form-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 25px rgba(238, 0, 51, 0.35);
+    background: linear-gradient(135deg, #ff4d6d 0%, #EE0033 100%);
+}
+
+.btn-form-submit i {
+    transition: transform 0.2s ease;
+}
+
+.btn-form-submit:hover i {
+    transform: translate(3px, -3px);
+}
+
+.btn-wizard-back {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 48px;
+    border: 1.5px solid var(--viettel-gray-medium);
+    border-radius: 12px;
+    background-color: #ffffff;
+    color: var(--text-dark);
+    font-weight: 700;
+    font-size: 0.95rem;
+    transition: var(--transition-fast);
+}
+
+.btn-wizard-back:hover {
+    background-color: var(--viettel-gray-light);
+    border-color: #d1d5db;
+}
+
+/* CTA Section Spacer */
+.contact-cta-section {
+    background: linear-gradient(135deg, #EE0033 0%, #ff4d6d 100%);
+    border-radius: 24px;
+    padding: 60px 40px;
+    text-align: center;
+    color: var(--white);
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(238, 0, 51, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    margin-top: 60px;
+    margin-bottom: 60px !important; /* Forces 60px gap from footer */
+}
+
+.btn-cta-white {
+    background: var(--white) !important;
+    color: var(--primary-red) !important;
+    border: none;
+    border-radius: 30px;
+    padding: 12px 30px;
+    font-weight: 700;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-cta-white:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+    background: #f8f9fa !important;
+}
+
+.btn-cta-outline {
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--white) !important;
+    border-radius: 30px;
+    padding: 10px 30px;
+    font-weight: 700;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-cta-outline:hover {
+    transform: translateY(-2px);
+    background: var(--white) !important;
+    color: var(--primary-red) !important;
+    border-color: var(--white);
+    box-shadow: 0 8px 20px rgba(255, 255, 255, 0.15);
+}
+
+
+<<<<<<< HEAD
+/* /* HERO SECTION RESPONSIVE STYLES (GOOGLE CHROME OPTIMIZED) */
+/* Removed conflicting hero-section dimension limits to support fullscreen height of landing page */
+@media (min-width: 768px) and (max-width: 991.98px) {
+    .hero-breadcrumb,
+    .hero-badge,
+    .hero-title,
+    .hero-desc,
+    .hero-cta-buttons {
+        margin-left: auto;
+        margin-right: auto;
+        justify-content: center;
+    }
+    .hero-desc {
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+@media (max-width: 767.98px) {
+=======
+/* =============================================================
+   8. HERO SECTION RESPONSIVE STYLES (GOOGLE CHROME OPTIMIZED)
+   ============================================================= */
+
+/* --- Desktop Screens (>= 1440px, including 2K 2560x1440 & Full HD 1920x1080) --- */
+@media (min-width: 1440px) {
+    .hero-section {
+        min-height: clamp(480px, 55vh, 520px);
+        max-height: 520px;
+        padding-top: 120px;
+        padding-bottom: 80px;
+    }
+    .hero-banner-svg {
+        max-width: 460px;
+    }
+}
+
+/* --- Laptop Screens (992px to 1439.98px, including 1366x768 & 1440x900 viewports) --- */
+@media (min-width: 992px) and (max-width: 1439.98px) {
+    .hero-section {
+        min-height: clamp(450px, 55vh, 500px);
+        max-height: 500px;
+        padding-top: 110px;
+        padding-bottom: 70px;
+    }
+    .hero-banner-svg {
+        max-width: 380px;
+    }
+}
+
+/* --- Tablet Screens (768px to 991.98px) --- */
+@media (min-width: 768px) and (max-width: 991.98px) {
+    .hero-section {
+        min-height: 400px;
+        max-height: 450px;
+        padding-top: 100px;
+        padding-bottom: 60px;
+        text-align: center;
+    }
+>>>>>>> 59a5e6f64da6c8eb44454bf22a5574b208c2f2b3
+    .hero-breadcrumb,
+    .hero-badge,
+    .hero-title,
+    .hero-desc,
+    .hero-cta-buttons {
+        margin-left: auto;
+        margin-right: auto;
+        justify-content: center;
+    }
+    .hero-desc {
+        margin-left: auto;
+        margin-right: auto;
+    }
+<<<<<<< HEAD
+=======
+    .hero-banner-wrapper {
+        display: none !important; /* Hide image on tablets */
+    }
+}
+
+/* --- Mobile Screens (< 768px) --- */
+@media (max-width: 767.98px) {
+    .hero-section {
+        min-height: clamp(320px, 50vh, 380px);
+        max-height: 380px;
+        padding-top: 100px;
+        padding-bottom: 60px;
+        text-align: center;
+    }
+    .hero-breadcrumb,
+    .hero-badge,
+    .hero-title,
+    .hero-desc,
+    .hero-cta-buttons {
+        margin-left: auto;
+        margin-right: auto;
+        justify-content: center;
+    }
+    .hero-desc {
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .hero-title {
+        font-size: clamp(1.8rem, 5vw, 2.2rem);
+    }
+    .hero-banner-wrapper {
+        display: none !important; /* Hide image on mobile devices */
+    }
+    
+>>>>>>> 59a5e6f64da6c8eb44454bf22a5574b208c2f2b3
+    .ticket-main-card {
+        padding: 24px 16px;
+    }
+}
+
+/* Extra Mobile Adjustments */
+@media (max-width: 575.98px) {
+    .hero-title {
+        font-size: 1.6rem;
+    }
+    .hero-desc {
+        font-size: 0.95rem;
+    }
+    .btn-hero-create, .btn-hero-contact {
+        padding: 8px 18px;
+        font-size: 0.85rem;
+    }
+}
+
+/* =============================================================
+   CUSTOM FLATPICKR VIETTEL THEME OVERRIDES
+   ============================================================= */
+.flatpickr-calendar {
+    background: #ffffff !important;
+    border: 1px solid rgba(0,0,0,0.05) !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1) !important;
+    border-radius: 16px !important;
+    font-family: 'Inter', sans-serif !important;
+    padding: 8px !important;
+}
+
+.flatpickr-months .flatpickr-month {
+    color: var(--dark-blue) !important;
+    fill: var(--dark-blue) !important;
+}
+
+.flatpickr-current-month .flatpickr-monthDropdown-months {
+    font-weight: 700 !important;
+    color: var(--dark-blue) !important;
+}
+
+.flatpickr-current-month input.cur-year {
+    font-weight: 700 !important;
+    color: var(--dark-blue) !important;
+}
+
+.flatpickr-months .flatpickr-prev-month, 
+.flatpickr-months .flatpickr-next-month {
+    color: var(--primary-red) !important;
+    fill: var(--primary-red) !important;
+}
+
+.flatpickr-months .flatpickr-prev-month:hover, 
+.flatpickr-months .flatpickr-next-month:hover {
+    color: #ff4d6d !important;
+}
+
+span.flatpickr-weekday {
+    font-weight: 600 !important;
+    color: #4b5563 !important;
+}
+
+.flatpickr-day.today {
+    border-color: var(--primary-red) !important;
+    color: var(--primary-red) !important;
+    font-weight: 700 !important;
+}
+
+.flatpickr-day.today:hover {
+    background: rgba(238, 0, 51, 0.05) !important;
+    color: var(--primary-red) !important;
+}
+
+.flatpickr-day.selected, 
+.flatpickr-day.selected:focus, 
+.flatpickr-day.selected:hover, 
+.flatpickr-day.startRange, 
+.flatpickr-day.endRange {
+    background: linear-gradient(135deg, #EE0033 0%, #ff4d6d 100%) !important;
+    border-color: transparent !important;
+    color: #ffffff !important;
+    font-weight: 700 !important;
+}
+
+.flatpickr-day:hover {
+    background: rgba(238, 0, 51, 0.05) !important;
+    color: var(--primary-red) !important;
+}
+
+.flatpickr-time {
+    border-top: 1px solid rgba(0,0,0,0.05) !important;
+    border-radius: 0 0 16px 16px !important;
+}
+
+.flatpickr-time input:focus {
+    background: rgba(238, 0, 51, 0.05) !important;
+}
+
+.flatpickr-time .numInputWrapper span.arrow-up:after {
+    border-bottom-color: var(--primary-red) !important;
+}
+
+.flatpickr-time .numInputWrapper span.arrow-down:after {
+    border-top-color: var(--primary-red) !important;
+}
+
+.flatpickr-time input {
+    font-weight: 700 !important;
+    color: var(--dark-blue) !important;
+}
+
+.flatpickr-time .flatpickr-time-separator {
+    color: var(--dark-blue) !important;
+}
+
+/* =============================================================
+   9. NEW FIELDS STYLING (CUSTOMER INFO & REQUEST TYPE CARDS)
+   ============================================================= */
+.customer-info-section {
+    background-color: var(--light-gray) !important;
+    border: 1.5px solid var(--viettel-gray-medium) !important;
+    border-radius: 16px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+}
+
+/* Custom Dropdown Wrapper */
+.custom-dropdown-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.custom-dropdown-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 48px;
+    border-radius: 12px;
+    border: 1.5px solid var(--viettel-gray-medium);
+    padding: 0 16px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    color: var(--dark-blue);
+    background-color: var(--light-gray);
+    cursor: pointer;
+    user-select: none;
+    outline: none;
+}
+
+.custom-dropdown-trigger:hover {
+    border-color: rgba(238, 0, 51, 0.3);
+    background-color: rgba(238, 0, 51, 0.01);
+}
+
+.custom-dropdown-trigger:focus,
+.custom-dropdown-wrapper.open .custom-dropdown-trigger {
+    background-color: var(--white);
+    border-color: var(--primary-red);
+    box-shadow: 0 0 0 3.5px rgba(238, 0, 51, 0.12);
+}
+
+.selected-value-placeholder {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.selected-icon {
+    font-size: 1.1rem;
+}
+
+.selected-text {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--dark-blue);
+}
+
+.custom-select-arrow {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    pointer-events: none;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), color 0.3s ease;
+}
+
+.custom-dropdown-wrapper.open .custom-select-arrow {
+    transform: translateY(-50%) rotate(180deg);
+    color: var(--primary-red) !important;
+}
+
+/* Custom Dropdown Menu with animation */
+.custom-dropdown-menu {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    width: 100%;
+    z-index: 1050;
+    background-color: var(--white);
+    border: 1.5px solid rgba(0, 0, 0, 0.08);
+    border-radius: 12px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+    max-height: 280px;
+    overflow-y: auto;
+    opacity: 0;
+    transform: translateY(-10px) scale(0.98);
+    pointer-events: none;
+    transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1), transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.custom-dropdown-menu.show {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+}
+
+/* Custom Scrollbar for Dropdown Menu */
+.custom-dropdown-menu::-webkit-scrollbar {
+    width: 6px;
+}
+
+.custom-dropdown-menu::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.custom-dropdown-menu::-webkit-scrollbar-thumb {
+    background-color: rgba(15, 17, 21, 0.15);
+    border-radius: 10px;
+}
+
+.custom-dropdown-menu::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(15, 17, 21, 0.25);
+}
+
+.custom-dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 10px 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-bottom: 1px solid rgba(15, 17, 21, 0.02);
+}
+
+.custom-dropdown-item:last-child {
+    border-bottom: none;
+}
+
+.custom-dropdown-item:hover {
+    background-color: rgba(238, 0, 51, 0.03);
+}
+
+.custom-dropdown-item.selected {
+    background-color: rgba(238, 0, 51, 0.06);
+}
+
+.item-icon {
+    font-size: 1.3rem;
+    min-width: 24px;
+    text-align: center;
+}
+
+.item-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.item-name {
+    font-size: 0.92rem;
+    font-weight: 650;
+    color: var(--dark-blue);
+}
+
+.item-desc {
+    font-size: 0.78rem;
+    color: #64748b;
+    line-height: 1.35;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+}
+
+/* Selected option description area style */
+.selected-desc-wrapper {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.selected-desc-content {
+    background: linear-gradient(135deg, rgba(238, 0, 51, 0.02) 0%, rgba(15, 17, 21, 0.01) 100%);
+    border: 1px dashed rgba(238, 0, 51, 0.25) !important;
+    color: #475569;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    line-height: 1.5;
+}
+
+.selected-desc-content .desc-text {
+    font-weight: 500;
+}
+
+/* Custom validation styles logic */
+.custom-dropdown-wrapper select {
+    display: none !important;
+}
+
+/* State when selected (even before submit) */
+.custom-dropdown-wrapper.has-value .custom-dropdown-trigger {
+    border-color: var(--primary-red) !important;
+    background-color: var(--white) !important;
+    box-shadow: 0 0 0 3px rgba(238, 0, 51, 0.06) !important;
+}
+
+/* Native check integration for was-validated */
+.was-validated select:invalid ~ .custom-dropdown-trigger {
+    border-color: var(--viettel-gray-medium) !important;
+    background-color: var(--light-gray) !important;
+    box-shadow: none !important;
+}
+
+.was-validated select:valid ~ .custom-dropdown-trigger {
+    border-color: var(--primary-red) !important;
+    background-color: var(--white) !important;
+    box-shadow: 0 0 0 3px rgba(238, 0, 51, 0.06) !important;
+}
+
+/* Explicit validation feedback control since select is visually hidden */
+.was-validated select:invalid ~ .invalid-feedback {
+    display: block !important;
+}
+
+.was-validated select:valid ~ .valid-feedback {
+    display: block !important;
+}
+
+/* Disabled custom dropdown styles */
+.custom-dropdown-wrapper.disabled-wrapper .custom-dropdown-trigger {
+    background-color: var(--light-gray) !important;
+    border-color: var(--viettel-gray-medium) !important;
+    color: var(--text-muted) !important;
+    cursor: not-allowed !important;
+    pointer-events: none !important;
+    opacity: 0.6 !important;
+}
+
+.custom-radio-option .form-check-input:checked {
+    background-color: var(--primary-red);
+    border-color: var(--primary-red);
+}
+
+.custom-radio-option .form-check-input:focus {
+    box-shadow: 0 0 0 3.5px rgba(238, 0, 51, 0.15);
+}
+
+.custom-confirmation-checkbox .form-check-input:checked {
+    background-color: var(--primary-red);
+    border-color: var(--primary-red);
+}
+
+.custom-confirmation-checkbox .form-check-input:focus {
+    box-shadow: 0 0 0 3.5px rgba(238, 0, 51, 0.15);
+}
+
+/* Hide static service dropdown options by default initially */
+#serviceDropdownMenu .custom-dropdown-item {
+    display: none;
+}

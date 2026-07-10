@@ -1,0 +1,105 @@
+@model SupportTicketSysterm.Data.KhachHang
+<div class="modal fade" id="addCustomerModal" tabindex="-1" aria-labelledby="addCustomerModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border-radius: var(--vt-border-radius); overflow: hidden; border: none;">
+            <div class="modal-header bg-danger text-white py-3">
+                <h5 class="modal-title fw-bold" id="addCustomerModalLabel">
+                    <i class="fa-solid fa-user-plus me-2"></i>Thêm Khách Hàng Mới
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Đóng"></button>
+            </div>
+            <form asp-controller="Staff" asp-action="ThemKhachHang" method="post" id="addCustomerForm" novalidate>
+                @Html.AntiForgeryToken()
+                <div class="modal-body p-4">
+                    <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+                    <div class="row g-3">
+                        <!-- Full Name -->
+                        <div class="col-12">
+                            <label for="addCustomerName" class="form-label fw-semibold text-dark mb-1">
+                                Họ tên <span class="text-danger">*</span>
+                            </label>
+                            <input asp-for="HoTen" type="text" id="addCustomerName" class="form-control form-control-custom"
+                                   placeholder="Nhập họ và tên khách hàng..." required>
+                            <span asp-validation-for="HoTen" class="text-danger small"></span>
+                        </div>
+                        <!-- Phone -->
+                        <div class="col-md-6">
+                            <label for="addCustomerPhone" class="form-label fw-semibold text-dark mb-1">
+                                Số điện thoại <span class="text-danger">*</span>
+                            </label>
+                            <input asp-for="SoDienThoai" type="tel" id="addCustomerPhone" class="form-control form-control-custom"
+                                   placeholder="Nhập số điện thoại..." required>
+                            <span asp-validation-for="SoDienThoai" class="text-danger small"></span>
+                        </div>
+                        <!-- Email -->
+                        <div class="col-md-6">
+                            <label for="addCustomerEmail"
+                                   class="form-label fw-semibold text-dark mb-1">Email</label>
+                            <input asp-for="Email" type="email" id="addCustomerEmail" class="form-control form-control-custom"
+                                   placeholder="Nhập email...">
+                            <span asp-validation-for="Email" class="text-danger small"></span>
+                        </div>
+                        <!-- DOB -->
+                        <div class="col-md-6">
+                            <label for="addCustomerDOB" class="form-label fw-semibold text-dark mb-1">
+                                Ngày sinh
+                            </label>
+                            <input asp-for="NgaySinh" type="date" id="addCustomerDOB" class="form-control form-control-custom">
+                            <span asp-validation-for="NgaySinh" class="text-danger small"></span>
+                        </div>
+                        <!-- Status -->
+                        <div class="col-md-6">
+                            <label asp-for="TrangThai" for="addCustomerStatus" class="form-label fw-semibold text-dark mb-1">
+                                Trạng thái
+                            </label>
+                            <select asp-for="TrangThai" id="addCustomerStatus" class="form-select form-select-custom">
+                                <option value="Hoạt động" selected>Hoạt động</option>
+                                <option value="Đã khóa">Đã khóa</option>
+                            </select>
+                            <span asp-validation-for="TrangThai" class="text-danger small"></span>
+                        </div>
+                        <!-- Address -->
+                        <div class="col-12">
+                            <label for="addCustomerAddress" class="form-label fw-semibold text-dark mb-1">
+                                Địa chỉ
+                            </label>
+                            <input asp-for="DiaChi" type="text" id="addCustomerAddress" class="form-control form-control-custom"
+                                   placeholder="Số nhà, đường, quận/huyện, tỉnh/thành phố...">
+                            <span asp-validation-for="DiaChi" class="text-danger small"></span>
+                        </div>
+                        <!-- Username -->
+                        <div class="col-md-6">
+                            <label for="addCustomerUsername" class="form-label fw-semibold text-dark mb-1">
+                                Tên đăng nhập <span class="text-danger">*</span>
+                            </label>
+                            <input asp-for="TenDangNhap" type="text" id="addCustomerUsername" class="form-control form-control-custom"
+                                   placeholder="Tên đăng nhập hệ thống..." required>
+                            <span asp-validation-for="TenDangNhap" class="text-danger small"></span>
+                        </div>
+                        <!-- Password -->
+                        <div class="col-md-6">
+                            <label for="addCustomerPassword" class="form-label fw-semibold text-dark mb-1">
+                                Mật khẩu <span class="text-danger">*</span>
+                            </label>
+                            <input asp-for="MatKhau" type="password" id="addCustomerPassword" class="form-control form-control-custom"
+                                   placeholder="Mật khẩu tài khoản..." required>
+                            <span asp-validation-for="MatKhau" class="text-danger small"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-top-0 pt-0 px-4 pb-4">
+                    <button type="button" class="btn btn-secondary px-4 py-2" data-bs-dismiss="modal"
+                            style="border-radius: var(--vt-border-radius-sm);">
+                        Hủy
+                    </button>
+                    <button type="submit" class="btn btn-danger px-4 py-2"
+                            style="background-color: var(--vt-red); border-color: var(--vt-red); border-radius: var(--vt-border-radius-sm);">
+                        Lưu
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

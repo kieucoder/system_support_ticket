@@ -1,0 +1,93 @@
+@model SupportTicketSysterm.Data.KhachHang
+
+@{
+    var ratings = Model.PhieuHoTros?
+        .Select(p => p.DanhGium)
+        .Where(d => d != null && d.ChatLuongDichVu.HasValue)
+        .Select(d => d!.ChatLuongDichVu!.Value)
+        .ToList() ?? new List<int>();
+    double avgRating = ratings.Any() ? Math.Round(ratings.Average(), 1) : 4.8;
+}
+
+<div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="border-radius: var(--vt-border-radius); overflow: hidden; border: none;">
+        <div class="modal-header bg-danger text-white py-3">
+            <h5 class="modal-title fw-bold" id="viewCustomerModalLabel">
+                <i class="bi bi-id-card me-2"></i>Hồ Sơ Chi Tiết Khách Hàng
+            </h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                    aria-label="Đóng"></button>
+        </div>
+        <div class="modal-body p-0">
+            <!-- Profile Card Header Banner -->
+            <div class="p-4 d-flex align-items-center gap-3"
+                 style="background: linear-gradient(135deg, rgba(238, 0, 51, 0.05) 0%, rgba(238, 0, 51, 0.01) 100%);">
+                <div class="bg-danger text-white d-flex align-items-center justify-content-center"
+                     style="width: 60px; height: 60px; border-radius: 16px; font-size: 1.5rem; box-shadow: 0 4px 12px rgba(238,0,51,0.2);">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+                <div>
+                    <h4 class="fw-bold mb-0 text-dark">@Model.HoTen</h4>
+                    <div class="d-flex align-items-center gap-2 mt-1">
+                        <span class="badge bg-danger-subtle text-danger border border-danger-subtle font-monospace">@Model.MaKh</span>
+                        <span class="badge @(Model.TrangThai == "Hoạt động" ? "bg-success" : "bg-danger")">@Model.TrangThai</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Badges Strip -->
+            <div class="row g-0 border-top border-bottom text-center bg-light">
+                <div class="col-4 py-3 border-end">
+                    <span class="text-muted d-block" style="font-size:0.75rem;">Phiếu hỗ trợ</span>
+                    <span class="fw-bold fs-5 text-dark">@(Model.PhieuHoTros?.Count ?? 0)</span>
+                </div>
+                <div class="col-4 py-3 border-end">
+                    <span class="text-muted d-block" style="font-size:0.75rem;">Lịch hẹn</span>
+                    <span class="fw-bold fs-5 text-dark">@(Model.PhieuHoTros?.SelectMany(p => p.LichHens)?.Count() ?? 0)</span>
+                </div>
+                <div class="col-4 py-3">
+                    <span class="text-muted d-block" style="font-size:0.75rem;">Điểm đánh giá</span>
+                    <span class="fw-bold fs-5 text-warning">
+                        @avgRating.ToString("F1") <i class="fa-solid fa-star small"></i>
+                    </span>
+                </div>
+            </div>
+
+            <!-- Details Rows -->
+            <div class="px-4 py-3">
+                <div class="detail-modal-row row align-items-center">
+                    <div class="col-4 text-muted fw-bold" style="font-size: 0.85rem;">Số điện thoại:</div>
+                    <div class="col-8 text-dark fw-semibold">@Model.SoDienThoai</div>
+                </div>
+                <div class="detail-modal-row row align-items-center">
+                    <div class="col-4 text-muted fw-bold" style="font-size: 0.85rem;">Email:</div>
+                    <div class="col-8 text-dark">@(string.IsNullOrEmpty(Model.Email) ? "—" : Model.Email)</div>
+                </div>
+                <div class="detail-modal-row row align-items-center">
+                    <div class="col-4 text-muted fw-bold" style="font-size: 0.85rem;">Tên đăng nhập:</div>
+                    <div class="col-8 text-dark font-monospace">@Model.TenDangNhap</div>
+                </div>
+                <div class="detail-modal-row row align-items-center">
+                    <div class="col-4 text-muted fw-bold" style="font-size: 0.85rem;">Ngày sinh:</div>
+                    <div class="col-8 text-dark">@(Model.NgaySinh?.ToString("dd/MM/yyyy") ?? "—")</div>
+                </div>
+                <div class="detail-modal-row row align-items-center">
+                    <div class="col-4 text-muted fw-bold" style="font-size: 0.85rem;">Ngày tạo lập:</div>
+                    <div class="col-8 text-dark font-monospace">@(Model.NgayTao?.ToString("dd/MM/yyyy") ?? "—")</div>
+                </div>
+                <div class="detail-modal-row row">
+                    <div class="col-4 text-muted fw-bold" style="font-size: 0.85rem;">Địa chỉ:</div>
+                    <div class="col-8 text-dark text-wrap" style="font-size: 0.85rem; line-height: 1.5;">
+                        @(string.IsNullOrEmpty(Model.DiaChi) ? "—" : Model.DiaChi)
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer border-top-0 pt-0 px-4 pb-4">
+            <button type="button" class="btn btn-secondary px-4 py-2" data-bs-dismiss="modal"
+                    style="border-radius: var(--vt-border-radius-sm);">
+                Đóng
+            </button>
+        </div>
+    </div>
+</div>

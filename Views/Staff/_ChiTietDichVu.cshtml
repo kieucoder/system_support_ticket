@@ -1,0 +1,67 @@
+@model SupportTicketSysterm.Data.DichVu
+
+<div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="border-radius: var(--vt-border-radius); overflow: hidden; border: none; box-shadow: var(--vt-shadow-hover);">
+        <div class="modal-header bg-danger text-white py-3">
+            <h5 class="modal-title fw-bold" id="viewServiceModalLabel">
+                <i class="fa-solid fa-circle-info me-2"></i>Chi Tiết Dịch Vụ Hỗ Trợ
+            </h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Đóng"></button>
+        </div>
+        <div class="modal-body p-0">
+            <!-- Profile Banner -->
+            <div class="p-4 d-flex align-items-center gap-3" style="background: linear-gradient(135deg, rgba(238, 0, 51, 0.05) 0%, rgba(238, 0, 51, 0.01) 100%);">
+                <div class="bg-danger text-white d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; border-radius: 16px; font-size: 1.5rem; box-shadow: 0 4px 12px rgba(238,0,51,0.2);">
+                    <i class="fa-solid fa-gears"></i>
+                </div>
+                <div>
+                    <h4 class="fw-bold mb-0 text-dark">@Model.TenDichVu</h4>
+                    <div class="d-flex align-items-center gap-2 mt-1">
+                        <span class="badge bg-danger-subtle text-danger border border-danger-subtle font-monospace">DV@(Model.IdDichVu.ToString("D3"))</span>
+                        @if (Model.TrangThai == "Hoạt động")
+                        {
+                            <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill">Hoạt động</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle rounded-pill">Tạm khóa</span>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Details Rows -->
+            <div class="px-4 py-3">
+                <div class="detail-modal-row row align-items-center py-2.5 border-bottom">
+                    <div class="col-4 text-muted fw-bold" style="font-size: 0.85rem;"><i class="fa-solid fa-hashtag text-danger me-1"></i> ID Dịch Vụ:</div>
+                    <div class="col-8 text-dark font-monospace fw-semibold">DV@(Model.IdDichVu.ToString("D3"))</div>
+                </div>
+                <div class="detail-modal-row row align-items-center py-2.5 border-bottom">
+                    <div class="col-4 text-muted fw-bold" style="font-size: 0.85rem;"><i class="fa-solid fa-folder text-danger me-1"></i> Danh mục sự cố:</div>
+                    <div class="col-8 text-dark fw-semibold">
+                        @(Model.IdDanhMucNavigation?.TenDanhMuc ?? "Chưa phân loại")
+                    </div>
+                </div>
+                <div class="detail-modal-row row align-items-center py-2.5 border-bottom">
+                    <div class="col-4 text-muted fw-bold" style="font-size: 0.85rem;"><i class="fa-solid fa-calendar-day text-danger me-1"></i> Ngày tạo lập:</div>
+                    <div class="col-8 text-dark font-monospace">@(Model.NgayTao?.ToString("dd/MM/yyyy") ?? "—")</div>
+                </div>
+                <div class="detail-modal-row row align-items-center py-2.5 border-bottom">
+                    <div class="col-4 text-muted fw-bold" style="font-size: 0.85rem;"><i class="fa-solid fa-shield text-danger me-1"></i> Trạng thái:</div>
+                    <div class="col-8 text-dark fw-semibold">@Model.TrangThai</div>
+                </div>
+                <div class="detail-modal-row row py-2.5">
+                    <div class="col-4 text-muted fw-bold" style="font-size: 0.85rem;"><i class="fa-solid fa-align-left text-danger me-1"></i> Mô tả chi tiết:</div>
+                    <div class="col-8 text-dark text-wrap" style="font-size: 0.85rem; line-height: 1.5;">
+                        @(string.IsNullOrEmpty(Model.MoTa) ? "—" : Model.MoTa)
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer border-top-0 pt-0 px-4 pb-4">
+            <button type="button" class="btn btn-secondary px-4 py-2" data-bs-dismiss="modal" style="border-radius: var(--vt-border-radius-sm);">
+                Đóng
+            </button>
+        </div>
+    </div>
+</div>

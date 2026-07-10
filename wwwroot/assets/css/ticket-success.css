@@ -1,0 +1,1178 @@
+/* =============================================================
+ * FILE: assets/css/ticket-success.css
+ * DESCRIPTION: Ticket Success Page — Clean & Professional Enterprise Style
+ * ACCENTS: Viettel Red #EE0033 | Success Green #10B981 | Slate Dark #0F172A
+ * ============================================================= */
+
+/* ==================== 1. GENERAL & BACKGROUND ==================== */
+.success-page-main {
+    background-color: #F8F9FA;
+    min-height: 100vh;
+    padding-top: 115px; /* Bù chiều cao header fixed */
+    padding-bottom: 60px;
+    font-family: 'Be Vietnam Pro', sans-serif;
+    color: #334155;
+}
+
+/* Ẩn hoàn toàn các đốm màu trôi nổi và hiệu ứng neon trùm của AI */
+.hero-blob, 
+.success-ring {
+    display: none !important;
+}
+
+/* ==================== 2. HERO SUCCESS FLAT AREA ==================== */
+<<<<<<< HEAD
+/* Success-hero-section layout styles removed to inherit from style.css */
+=======
+.success-hero-section {
+    position: relative;
+    background-color: #ffffff;
+    background-image: 
+        radial-gradient(at 0% 0%, rgba(238, 0, 51, 0.05) 0px, transparent 50%),
+        radial-gradient(at 100% 0%, rgba(15, 17, 21, 0.03) 0px, transparent 50%),
+        radial-gradient(at 50% 100%, rgba(238, 0, 51, 0.02) 0px, transparent 50%),
+        linear-gradient(rgba(15, 17, 21, 0.008) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(15, 17, 21, 0.008) 1px, transparent 1px);
+    background-size: 100% 100%, 100% 100%, 100% 100%, 40px 40px, 40px 40px;
+    border-bottom: 1px solid rgba(15, 17, 21, 0.04);
+    padding: 20px 0 30px;
+    text-align: center;
+    margin-bottom: 30px;
+}
+>>>>>>> 59a5e6f64da6c8eb44454bf22a5574b208c2f2b3
+
+.success-hero-section .hero-breadcrumb {
+    display: inline-flex;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(15, 17, 21, 0.06);
+    padding: 6px 16px;
+    border-radius: 50px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+    transition: var(--transition-smooth);
+    margin-bottom: 20px !important;
+}
+
+.success-hero-section .hero-breadcrumb:hover {
+    background: rgba(255, 255, 255, 0.85);
+    border-color: rgba(238, 0, 51, 0.2);
+    box-shadow: 0 8px 30px rgba(238, 0, 51, 0.05);
+    transform: translateY(-2px);
+}
+
+.success-hero-section .hero-breadcrumb .breadcrumb {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.success-hero-section .hero-breadcrumb .breadcrumb-item {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: #4b5563;
+    display: flex;
+    align-items: center;
+}
+
+.success-hero-section .hero-breadcrumb .breadcrumb-item a {
+    color: #4b5563;
+    text-decoration: none;
+    transition: var(--transition-fast);
+    display: inline-flex;
+    align-items: center;
+}
+
+.success-hero-section .hero-breadcrumb .breadcrumb-item a i {
+    font-size: 0.85rem;
+    color: #4b5563;
+    transition: var(--transition-fast);
+}
+
+.success-hero-section .hero-breadcrumb .breadcrumb-item a:hover,
+.success-hero-section .hero-breadcrumb .breadcrumb-item a:hover i {
+    color: #ee0033 !important;
+}
+
+.success-hero-section .hero-breadcrumb .breadcrumb-item.active {
+    color: #0f1115;
+    font-weight: 600;
+}
+
+.success-hero-section .hero-breadcrumb .breadcrumb-item+.breadcrumb-item::before {
+    content: "\F285"; /* Bootstrap Icons chevron right */
+    font-family: "bootstrap-icons";
+    font-size: 0.65rem;
+    color: rgba(15, 17, 21, 0.2);
+    vertical-align: middle;
+    padding: 0 10px;
+}
+
+/* Success Check Circle Flat */
+.success-icon-wrapper {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 80px;
+    height: 80px;
+    margin-bottom: 18px;
+}
+
+.success-icon-circle {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background-color: #10B981; /* Flat green */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15);
+}
+
+.success-check-icon {
+    font-size: 2.2rem;
+    color: #ffffff;
+    font-weight: 700;
+}
+
+/* Text block */
+.success-text-block {
+    margin-bottom: 24px;
+}
+
+.success-main-title {
+    font-size: clamp(1.5rem, 3.5vw, 2.1rem);
+    font-weight: 700;
+    color: #0F172A;
+    margin-bottom: 8px;
+}
+
+.success-main-desc {
+    font-size: 0.95rem;
+    color: #64748B;
+    line-height: 1.6;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Ticket Code Highlight */
+.success-code-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.success-code-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: #64748B;
+}
+
+.success-code-box {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    background-color: #FFF0F3;
+    border: 1px solid rgba(238, 0, 51, 0.2);
+    color: #EE0033;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: clamp(1.25rem, 2.8vw, 1.65rem);
+    font-weight: 700;
+    letter-spacing: 0.02em;
+}
+
+.success-code-ticket-icon {
+    font-size: 1.25rem;
+    opacity: 0.8;
+}
+
+.btn-copy-code {
+    background-color: #ffffff;
+    border: 1px solid #CBD5E1;
+    color: #334155;
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+}
+
+.btn-copy-code:hover {
+    background-color: #F8FAFC;
+    border-color: #94A3B8;
+}
+
+.success-code-hint {
+    font-size: 0.8rem;
+    color: #94A3B8;
+    margin: 0;
+}
+
+/* Section Title styling */
+.success-section-title {
+    font-size: 1.45rem;
+    font-weight: 700;
+    color: #0F172A;
+    text-align: center;
+    margin: 20px auto 30px;
+    position: relative;
+    padding-bottom: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.success-section-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3.5px;
+    background-color: #EE0033; /* Viettel Red */
+    border-radius: 99px;
+}
+
+.success-section-title i {
+    font-size: 1.5rem;
+}
+
+/* ==================== 3. FLATTENED CONTAINER & CARDS ==================== */
+.success-workspace {
+    max-width: 1140px;
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+/* Card Base */
+.info-card {
+    background-color: #ffffff;
+    border: 1px solid #E2E8F0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+    overflow: hidden;
+    margin-bottom: 24px;
+}
+
+.info-card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    border-bottom: 1px solid #F1F5F9;
+    background-color: #FAFCFD;
+}
+
+.info-card-icon-box {
+    width: 34px;
+    height: 34px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+.info-card-icon-box.red    { background-color: #FFF1F2; color: #EE0033; }
+.info-card-icon-box.blue   { background-color: #EFF6FF; color: #3B82F6; }
+.info-card-icon-box.green  { background-color: #ECFDF5; color: #10B981; }
+.info-card-icon-box.orange { background-color: #FFFBEB; color: #D97706; }
+
+.info-card-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #0F172A;
+    margin: 0 0 1px;
+}
+
+.info-card-subtitle {
+    font-size: 0.78rem;
+    color: #64748B;
+    margin: 0;
+}
+
+.info-card-body {
+    padding: 20px;
+}
+
+/* ==================== 4. TICKET & CUSTOMER 2-COL GRID ==================== */
+.info-cards-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 0px;
+}
+
+.ticket-detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+
+.ticket-detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.ticket-detail-item.td-full {
+    grid-column: span 2;
+}
+
+.detail-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #94A3B8;
+}
+
+.detail-value {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #1E293B;
+}
+
+.detail-value.highlight {
+    color: #EE0033;
+    font-family: monospace, sans-serif;
+    font-size: 1rem;
+}
+
+/* Badges */
+.status-pill, 
+.priority-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    border-radius: 50px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    width: fit-content;
+}
+
+.status-pill.pending {
+    background-color: #FEF3C7;
+    color: #D97706;
+    border: 1px solid #FDE68A;
+}
+
+.status-dot-sm {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: currentColor;
+}
+
+.priority-pill.high {
+    background-color: #FEE2E2;
+    color: #DC2626;
+    border: 1px solid #FCA5A5;
+}
+
+/* Customer details layout */
+.customer-profile-display {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+}
+
+.customer-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: #EE0033;
+    color: #ffffff;
+    font-size: 1rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.customer-details-list {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.customer-detail-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #334155;
+}
+
+.customer-detail-row a {
+    color: #334155;
+    text-decoration: none;
+}
+
+.customer-detail-row a:hover {
+    color: #EE0033;
+    text-decoration: underline;
+}
+
+.customer-date-row {
+    padding-top: 8px;
+    border-top: 1px solid #F1F5F9;
+    margin-top: 2px;
+    font-size: 0.8rem;
+    color: #64748B;
+}
+
+/* ==================== 5. SIMPLIFIED STEPPER (FLAT CARD COLUMNS) ==================== */
+.process-stepper-h {
+    display: flex;
+    gap: 16px;
+}
+
+.step-h {
+    flex: 1;
+    background-color: #F8FAFC;
+    border: 1px solid #E2E8F0;
+    border-radius: 8px;
+    padding: 16px;
+    transition: all 0.2s ease;
+}
+
+.step-h.completed {
+    background-color: #F0FDF4;
+    border-color: #A7F3D0;
+}
+
+.step-h.completed .step-h-num, 
+.step-h.completed .step-h-time {
+    color: #10B981;
+}
+
+.step-h.completed .step-h-title {
+    color: #065F46;
+}
+
+.step-h.active {
+    background-color: #FFF5F5;
+    border-color: #FCA5A5;
+}
+
+.step-h.active .step-h-num {
+    color: #EE0033;
+}
+
+.step-h.active .step-h-title {
+    color: #991B1B;
+}
+
+.step-h-body {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.step-h-num {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #94A3B8;
+}
+
+.step-h-title {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #1E293B;
+    margin: 0;
+}
+
+.step-h-desc {
+    font-size: 0.8rem;
+    color: #64748B;
+    line-height: 1.5;
+    margin: 0;
+}
+
+.step-h-time {
+    font-size: 0.75rem;
+    color: #94A3B8;
+    font-weight: 600;
+    margin-top: 4px;
+}
+
+/* ==================== 6. NOTIFICATION & EMAIL/SMS CONFIRMS ==================== */
+.notif-sms-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 24px;
+}
+
+/* Notification checklist card */
+.notification-info-card {
+    background-color: #EFF6FF;
+    border: 1px solid #BFDBFE;
+    border-radius: 12px;
+    padding: 20px;
+    height: 100%;
+}
+
+.notif-card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(59, 130, 246, 0.15);
+}
+
+.notif-card-icon {
+    font-size: 1.1rem;
+    color: #3B82F6;
+    display: flex;
+    align-items: center;
+}
+
+.notif-card-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #1E40AF;
+    margin: 0;
+}
+
+.notif-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.notif-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 0.88rem;
+    color: #1E3A8A;
+    line-height: 1.45;
+}
+
+.notif-list-icon {
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    margin-top: 3px;
+}
+
+.notif-list-icon.green  { color: #10B981; }
+.notif-list-icon.blue   { color: #3B82F6; }
+.notif-list-icon.purple { color: #8B5CF6; }
+.notif-list-icon.orange { color: #F59E0B; }
+.notif-list-icon.red    { color: #EF4444; }
+
+/* Confirmation card */
+.confirm-card {
+    background-color: #ffffff;
+    border: 1px solid #E2E8F0;
+    border-radius: 12px;
+}
+
+.confirm-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.confirm-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+}
+
+.confirm-icon.email-icon {
+    background-color: #EFF6FF;
+    color: #3B82F6;
+}
+
+.confirm-icon.sms-icon {
+    background-color: #ECFDF5;
+    color: #10B981;
+}
+
+.confirm-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.confirm-type {
+    font-size: 0.78rem;
+    color: #64748B;
+    font-weight: 600;
+}
+
+.confirm-value {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #1E293B;
+    text-decoration: none;
+}
+
+.confirm-value:hover {
+    color: #EE0033;
+    text-decoration: underline;
+}
+
+.confirm-badge.sent {
+    background-color: #ECFDF5;
+    color: #065F46;
+    border: 1px solid #A7F3D0;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 50px;
+}
+
+.confirm-divider {
+    height: 1px;
+    background-color: #F1F5F9;
+    margin: 14px 0;
+}
+
+/* ==================== 7. ACTION BUTTONS ==================== */
+.action-section {
+    background-color: #ffffff;
+    border: 1px solid #E2E8F0;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 24px;
+}
+
+.action-section-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #0F172A;
+    margin-bottom: 16px;
+    border-bottom: 1px solid #F1F5F9;
+    padding-bottom: 10px;
+}
+
+.action-buttons-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+.action-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-radius: 6px;
+    text-decoration: none;
+    border: 1px solid transparent;
+    transition: all 0.2s ease;
+}
+
+.action-btn:hover {
+    transform: translateY(-1px);
+}
+
+.action-btn.primary {
+    background-color: #EE0033;
+    color: #ffffff !important;
+    border-color: #EE0033;
+}
+
+.action-btn.primary:hover {
+    background-color: #C8002A;
+    border-color: #C8002A;
+}
+
+.action-btn.outline {
+    background-color: #ffffff;
+    color: #334155 !important;
+    border-color: #D1D5DB;
+}
+
+.action-btn.outline:hover {
+    background-color: #F8FAFC;
+    border-color: #94A3B8;
+}
+
+.action-btn.ghost {
+    background-color: #F1F5F9;
+    color: #334155 !important;
+    border-color: #E2E8F0;
+}
+
+.action-btn.ghost:hover {
+    background-color: #E2E8F0;
+}
+
+.action-btn-emoji {
+    display: none; /* Ẩn emoji trên nút để giữ tính sạch sẽ doanh nghiệp */
+}
+
+.action-btn-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+
+.action-btn-label {
+    font-size: 0.88rem;
+    font-weight: 700;
+}
+
+.action-btn-desc {
+    font-size: 0.72rem;
+    opacity: 0.85;
+}
+
+.action-btn-arrow {
+    font-size: 0.85rem;
+    transition: transform 0.2s ease;
+}
+
+.action-btn:hover .action-btn-arrow {
+    transform: translateX(3px);
+}
+
+/* ==================== 8. FAQ & HOTLINE GRID ==================== */
+.faq-hotline-grid {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 24px;
+    margin-bottom: 24px;
+    align-items: start;
+}
+
+/* FAQ card styling */
+.faq-card {
+    background-color: #ffffff;
+    border: 1px solid #E2E8F0;
+    border-radius: 12px;
+}
+
+.faq-body {
+    padding-top: 8px !important;
+}
+
+.faq-accordion {
+    display: flex;
+    flex-direction: column;
+}
+
+.faq-item {
+    border-bottom: 1px solid #F1F5F9;
+}
+
+.faq-item:last-child {
+    border-bottom: none;
+}
+
+.faq-question {
+    width: 100%;
+    background: none;
+    border: none;
+    text-align: left;
+    padding: 14px 4px;
+    font-size: 0.9rem;
+    font-weight: 650;
+    color: #1E293B;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: color 0.15s ease;
+}
+
+.faq-question:hover,
+.faq-question[aria-expanded="true"] {
+    color: #EE0033;
+}
+
+.faq-chevron {
+    font-size: 0.8rem;
+    transition: transform 0.25s ease;
+    color: #94A3B8;
+}
+
+.faq-question[aria-expanded="true"] .faq-chevron {
+    transform: rotate(180deg);
+}
+
+.faq-answer {
+    font-size: 0.85rem;
+    color: #475569;
+    line-height: 1.6;
+    padding-bottom: 14px;
+    padding-left: 8px;
+}
+
+/* Hotline Card block dark mode portal style */
+.hotline-card-wrap {
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.hotline-card-inner {
+    background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+    padding: 30px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 12px;
+}
+
+.hotline-bg-circle {
+    display: none !important;
+}
+
+.hotline-icon-box {
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+    background-color: rgba(238, 0, 51, 0.12);
+    border: 1px solid rgba(238, 0, 51, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.35rem;
+    color: #FF4D6D;
+}
+
+.hotline-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0;
+}
+
+.hotline-subtitle {
+    font-size: 0.8rem;
+    color: #94A3B8;
+    margin: 0;
+}
+
+.hotline-contact-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+}
+
+.hotline-contact-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+}
+
+.hotline-number {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #ffffff;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.hotline-number:hover {
+    color: #FF4D6D;
+}
+
+.hotline-email,
+.hotline-hours {
+    color: #CBD5E1;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.hotline-email:hover {
+    text-decoration: underline;
+}
+
+.btn-call-now {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px 24px;
+    border-radius: 6px;
+    background-color: #EE0033;
+    color: #ffffff;
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: background-color 0.2s ease;
+    width: 100%;
+    margin-top: 4px;
+}
+
+.btn-call-now:hover {
+    background-color: #C8002A;
+    color: #ffffff;
+}
+
+/* ==================== 9. SUGGESTION NEXT CARDS ==================== */
+.suggestion-section {
+    margin-bottom: 30px;
+}
+
+.suggestion-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #0F172A;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.suggestion-title::before {
+    content: '';
+    width: 3px;
+    height: 16px;
+    background-color: #EE0033;
+    border-radius: 2px;
+}
+
+.suggestion-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.suggestion-card {
+    background-color: #ffffff;
+    border: 1px solid #E2E8F0;
+    border-radius: 12px;
+    padding: 20px;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: all 0.2s ease;
+}
+
+.suggestion-card:hover {
+    border-color: #EE0033;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+}
+
+.suggestion-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.15rem;
+}
+
+.suggestion-icon.red    { background-color: #FFF1F2; color: #EE0033; }
+.suggestion-icon.blue   { background-color: #EFF6FF; color: #3B82F6; }
+.suggestion-icon.green  { background-color: #ECFDF5; color: #10B981; }
+
+.suggestion-card-title {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #0F172A;
+    margin: 0;
+}
+
+.suggestion-card-desc {
+    font-size: 0.8rem;
+    color: #64748B;
+    line-height: 1.5;
+    margin: 0;
+    flex: 1;
+}
+
+.suggestion-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #EE0033;
+    transition: gap 0.2s ease;
+}
+
+.suggestion-card:hover .suggestion-link {
+    gap: 6px;
+}
+
+/* ==================== 10. TOAST NOTIFICATIONS ==================== */
+.custom-toast-container {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 9999;
+}
+
+.custom-toast {
+    background-color: #1F2937;
+    color: #ffffff;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transform: translateY(100px);
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.custom-toast.show {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+/* ==================== 11. RESPONSIVE MEDIA BREAKPOINTS ==================== */
+
+/* Laptop (992px - 1199px) */
+@media (max-width: 1199.98px) {
+    .faq-hotline-grid {
+        grid-template-columns: 1fr 300px;
+        gap: 20px;
+    }
+}
+
+/* Tablet (768px - 991px) */
+@media (max-width: 991.98px) {
+<<<<<<< HEAD
+
+=======
+    .success-hero-section {
+        padding-top: 105px;
+    }
+>>>>>>> 59a5e6f64da6c8eb44454bf22a5574b208c2f2b3
+    
+    .info-cards-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .process-stepper-h {
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .step-h {
+        width: 100%;
+    }
+    
+    .notif-sms-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .faq-hotline-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .suggestion-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+    
+    .suggestion-grid .suggestion-card:last-child {
+        grid-column: span 2;
+    }
+}
+
+/* Mobile (<768px) */
+@media (max-width: 767.98px) {
+    .success-page-main {
+        padding-top: 95px;
+        padding-bottom: 40px;
+    }
+    
+<<<<<<< HEAD
+
+=======
+    .success-hero-section {
+        padding-bottom: 30px;
+    }
+>>>>>>> 59a5e6f64da6c8eb44454bf22a5574b208c2f2b3
+    
+    .success-main-title {
+        font-size: 1.35rem;
+    }
+    
+    .success-code-box {
+        font-size: 1.15rem;
+        padding: 8px 16px;
+    }
+    
+    .ticket-detail-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    
+    .ticket-detail-item.td-full {
+        grid-column: span 1;
+    }
+    
+    .customer-profile-display {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    
+    .customer-detail-row {
+        justify-content: center;
+    }
+    
+    .action-buttons-row {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    
+    .action-btn {
+        width: 100%;
+    }
+    
+    .suggestion-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .suggestion-grid .suggestion-card:last-child {
+        grid-column: span 1;
+    }
+    
+    .custom-toast {
+        max-width: calc(100vw - 32px);
+        min-width: unset;
+    }
+}

@@ -1,0 +1,122 @@
+@{
+    var currentController = ViewContext.RouteData.Values["Controller"]?.ToString();
+    var currentAction = ViewContext.RouteData.Values["Action"]?.ToString();
+}
+
+<!-- ============================================================
+     ADMIN SIDEBAR COMPONENT — TechSupport Viettel
+     ============================================================ -->
+<aside class="admin-sidebar offcanvas-lg offcanvas-start" tabindex="-1" id="adminSidebar" aria-labelledby="adminSidebarLabel">
+
+    <!-- Offcanvas Header (Mobile/Tablet only) -->
+    <div class="offcanvas-header d-lg-none border-bottom py-3 px-4" style="background-color: #111827; border-bottom-color: rgba(255,255,255,0.07) !important;">
+        <div class="d-flex align-items-center">
+            <i class="fa-solid fa-headset me-2 fs-4" style="color: #EE0033;"></i>
+            <div>
+                <span class="fw-bold fs-6" style="color: #FFFFFF;" id="adminSidebarLabel">TechSupport</span>
+                <small class="d-block" style="font-size: 0.65rem; font-weight: 500; letter-spacing: 0.5px; color: rgba(255,255,255,0.5);">TechSupport Staff</small>
+            </div>
+        </div>
+        <button type="button" class="btn-close btn-close-white text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+
+    <!-- Sidebar Brand Logo (Desktop only) -->
+    <a href="/Staff/Dashboard" class="sidebar-brand d-none d-lg-flex">
+        <i class="fa-solid fa-headset"></i>
+        <span>
+            TechSupport <small style="display:block;font-size:0.65rem;font-weight:400;letter-spacing:1px;color:rgba(255,255,255,0.5);">
+                VIETTEL
+                ADMIN
+            </small>
+        </span>
+    </a>
+
+    <!-- Sidebar Menu -->
+    <nav aria-label="Primary navigation">
+        <ul class="sidebar-menu">
+
+            <li class="sidebar-section-label">TỔNG QUAN</li>
+            <li class="sidebar-item @(currentController == "Staff" && currentAction == "Dashboard" ? "active" : "")" data-page="dashboard.html">
+                <a asp-controller="Staff" asp-action="Dashboard" class="sidebar-link">
+                    <i class="fa-solid fa-gauge-high"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+
+            <li class="sidebar-section-label">QUẢN LÝ</li>
+            <li class="sidebar-item" data-page="staff-ticket-management.html">
+                <a href="/staff/staff-ticket-management.html" class="sidebar-link">
+                    <i class="fa-solid fa-ticket"></i>
+                    <span>Phiếu Hỗ Trợ</span>
+                </a>
+            </li>
+            <li class="sidebar-item" data-page="staff-chat.html">
+                <a href="/staff/staff-chat.html" class="sidebar-link">
+                    <i class="fa-solid fa-comments"></i>
+                    <span>Chat Hỗ Trợ</span>
+                </a>
+            </li>
+            <li class="sidebar-item" data-page="admin-appointments.html">
+                <a href="/staff/admin-appointments.html" class="sidebar-link">
+                    <i class="fa-solid fa-calendar-days"></i>
+                    <span>Lịch Hẹn Kỹ Thuật</span>
+                </a>
+            </li>
+            <li class="sidebar-item @(currentController == "Staff" && currentAction == "QuanLyDanhMuc" ? "active" : "")" data-page="admin-categories.html">
+                <a asp-controller="Staff" asp-action="QuanLyDanhMuc" class="sidebar-link">
+                    <i class="fa-solid fa-layer-group"></i>
+                    <span>Danh Mục Sự Cố</span>
+                </a>
+            </li>
+            <li class="sidebar-item @(currentController == "Staff" && currentAction == "QuanLyDichVu" ? "active" : "")" data-page="admin-services.html">
+                <a asp-controller="Staff" asp-action="QuanLyDichVu" class="sidebar-link">
+                    <i class="fa-solid fa-network-wired"></i>
+                    <span>Dịch Vụ Kỹ Thuật</span>
+                </a>
+            </li>
+            <li class="sidebar-item @(currentController == "Staff" && currentAction == "QuanLyKH" ? "active" : "")" data-page="admin-customers.html">
+                <a asp-controller="Staff" asp-action="QuanLyKH" class="sidebar-link">
+                    <i class="fa-solid fa-users"></i>
+                    <span>Khách Hàng</span>
+                </a>
+            </li>
+            <li class="sidebar-item" data-page="staff.html">
+                <a href="/staff/staff.html" class="sidebar-link">
+                    <i class="fa-solid fa-users-gear"></i>
+                    <span>Nhân Viên</span>
+                </a>
+            </li>
+            <li class="sidebar-item" data-page="staff-review-list.html">
+                <a href="/staff/staff-review-list.html" class="sidebar-link">
+                    <i class="fa-solid fa-star"></i>
+                    <span>Đánh Giá Khách Hàng</span>
+                </a>
+            </li>
+
+            <li class="sidebar-section-label">THỐNG KÊ</li>
+            <li class="sidebar-item" data-page="admin-report.html">
+                <a href="/staff/admin-report.html" class="sidebar-link">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <span>Báo Cáo &amp; Thống Kê</span>
+                </a>
+            </li>
+
+            <li class="sidebar-section-label">TÀI KHOẢN</li>
+            <li class="sidebar-item" data-page="admin-profile.html">
+                <a href="/staff/admin-profile.html" class="sidebar-link">
+                    <i class="fa-solid fa-circle-user"></i>
+                    <span>Thông Tin Cá Nhân</span>
+                </a>
+            </li>
+
+        </ul>
+    </nav>
+
+    <!-- Sidebar Footer Logout -->
+    <div class="sidebar-footer">
+        <a href="/login.html" class="sidebar-link text-danger">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            <span>Đăng Xuất</span>
+        </a>
+    </div>
+</aside>

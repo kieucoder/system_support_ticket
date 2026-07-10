@@ -1,0 +1,167 @@
+@model List<SupportTicketSysterm.Data.DichVu>
+
+@{
+    ViewData["Title"] = "Quản Lý Dịch Vụ Kỹ Thuật";
+    Layout = "~/Views/Shared/_LayoutStaff.cshtml";
+}
+
+@section Styles {
+    <!-- Page-specific CSS -->
+    <link rel="stylesheet" href="~/assets/css/staff/admin-services.css">
+}
+
+<!-- Breadcrumb -->
+<nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb" style="font-size: 0.82rem; margin: 0; padding: 0;">
+        <li class="breadcrumb-item">
+            <a href="/Staff/Dashboard" class="text-danger text-decoration-none">
+                <i class="fa-solid fa-gauge-high me-1"></i>Dashboard
+            </a>
+        </li>
+        <li class="breadcrumb-item active fw-semibold" style="color: var(--text-main);">Quản lý dịch vụ</li>
+    </ol>
+</nav>
+
+<!-- Hero Section -->
+<div class="row align-items-center mb-4 g-3">
+    <div class="col-12 col-md-8">
+        <h1 class="h3 fw-bold mb-1" style="color: var(--vt-dark-blue);">Quản lý dịch vụ hỗ trợ</h1>
+        <p class="text-muted mb-0" style="font-size: 0.9rem;">
+            Quản lý danh sách các dịch vụ hỗ trợ kỹ thuật thuộc từng danh mục sự cố.
+        </p>
+    </div>
+    <div class="col-12 col-md-4 text-md-end">
+        <button class="btn btn-danger" onclick="openAddModal()">
+            <i class="fa-solid fa-plus"></i> Thêm dịch vụ
+        </button>
+    </div>
+</div>
+
+<!-- KPI Cards Dashboard -->
+<div class="vt-stats-grid" id="statsContainer">
+    @await Html.PartialAsync("_ThongKeDichVu")
+</div>
+
+<!-- Filters & Searching Panel -->
+<div class="card border-0 shadow-sm mb-4 rep-filter-card mt-3" style="border-radius: var(--vt-border-radius);">
+    <div class="card-header bg-transparent border-0 pt-3 pb-0">
+        <h5 class="card-title fw-bold mb-0 text-dark">
+            <i class="bi bi-filter me-2 text-danger"></i>Bộ lọc dịch vụ
+        </h5>
+    </div>
+    <div class="card-body">
+        <form id="filterForm" method="get" onsubmit="event.preventDefault(); applyFilters();">
+            <div class="row g-3">
+                <!-- Keyword Input -->
+                <div class="col-12 col-md-4 col-lg-3">
+                    <label class="form-label-custom" for="searchService">Từ khóa</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-transparent border-end-0" style="border-radius: 10px 0 0 10px; border-color: var(--border-color);">
+                            <i class="bi bi-magnifying-glass text-muted"></i>
+                        </span>
+                        <input type="text" id="searchService" name="keyword" class="form-control form-control-custom border-start-0" placeholder="Tìm kiếm tên dịch vụ..." style="border-radius: 0 10px 10px 0 !important;">
+                    </div>
+                </div>
+                <!-- Category Filter -->
+                <div class="col-12 col-sm-6 col-md-3 col-lg-3">
+                    <label class="form-label-custom" for="filterCategory">Danh mục</label>
+                    <select id="filterCategory" name="category" class="form-select form-select-custom">
+                        <option value="">Tất cả danh mục</option>
+                        @if (ViewBag.DanhMucs != null)
+                        {
+                            foreach (var item in ViewBag.DanhMucs)
+                            {
+                                <option value="@item.IdDanhMuc">@item.TenDanhMuc</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <!-- Status Filter -->
+                <div class="col-12 col-sm-6 col-md-3 col-lg-2">
+                    <label class="form-label-custom" for="filterStatus">Trạng thái</label>
+                    <select id="filterStatus" name="status" class="form-select form-select-custom">
+                        <option value="">Tất cả</option>
+                        <option value="Hoạt động">Hoạt động</option>
+                        <option value="Tạm khóa">Tạm khóa</option>
+                    </select>
+                </div>
+                <!-- Sort Filter -->
+                <div class="col-12 col-sm-6 col-md-2 col-lg-2">
+                    <label class="form-label-custom" for="filterSort">Sắp xếp</label>
+                    <select id="filterSort" name="sort" class="form-select form-select-custom">
+                        <option value="newest">Mới nhất</option>
+                        <option value="oldest">Cũ nhất</option>
+                        <option value="az">Tên A → Z</option>
+                        <option value="za">Tên Z → A</option>
+                    </select>
+                </div>
+                <!-- Actions Buttons -->
+                <div class="col-12 col-sm-6 col-md-12 col-lg-2 d-flex align-items-end justify-content-lg-end gap-2 filter-actions-col">
+                    <button type="submit" class="btn btn-danger fw-bold px-3 py-2 flex-grow-1 flex-lg-grow-0" style="background-color: var(--vt-red); border-color: var(--vt-red); border-radius: var(--vt-border-radius-sm);">
+                        <i class="fa-solid fa-search me-1"></i> Tìm
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary fw-bold px-3 py-2 flex-grow-1 flex-lg-grow-0" onclick="clearFilters()" style="border-radius: var(--vt-border-radius-sm);">
+                        <i class="bi bi-rotate-right me-1"></i> Reset
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Detailed Services List -->
+<div class="card border-0 shadow-sm mb-4" id="tableCardContainer" style="border-radius: var(--vt-border-radius); overflow: hidden;">
+    @await Html.PartialAsync("_DanhSachDichVu", Model)
+</div>
+
+<!-- 1. ADD SERVICE DIALOG MODAL -->
+@await Html.PartialAsync("_ThemDichVu", new SupportTicketSysterm.Data.DichVu())
+
+<!-- 2. EDIT SERVICE DIALOG MODAL -->
+@await Html.PartialAsync("_SuaDichVu", new SupportTicketSysterm.Data.DichVu())
+
+<!-- 3. VIEW SERVICE DETAIL DIALOG MODAL -->
+<div class="modal fade" id="viewServiceModal" tabindex="-1" aria-labelledby="viewServiceModalLabel" aria-hidden="true"></div>
+
+<!-- 4. DELETE CONFIRMATION DIALOG MODAL -->
+<div class="modal fade" id="deleteServiceModal" tabindex="-1" aria-labelledby="deleteServiceModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm" style="max-width: 420px;">
+        <div class="modal-content border-0">
+            <div class="modal-header">
+                <div class="vt-modal-header-title">
+                    <div class="vt-modal-header-icon delete">
+                        <i class="bi bi-triangle-exclamation"></i>
+                    </div>
+                    <div class="vt-modal-header-text">
+                        <h3 id="deleteServiceModalLabel">Xác Nhận Xóa</h3>
+                        <p>Hành động này không thể hoàn tác</p>
+                    </div>
+                </div>
+                <button type="button" class="vt-modal-close" data-bs-dismiss="modal" aria-label="Đóng">
+                    <i class="fa-solid fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body p-4 text-center">
+                <div class="text-danger mb-3" style="font-size: 3rem;">
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                </div>
+                <p class="text-dark-emphasis mb-0" id="deleteConfirmText" style="font-size: 0.95rem; line-height: 1.5;">
+                    Bạn có chắc chắn muốn xóa dịch vụ kỹ thuật này không?
+                </p>
+            </div>
+            <div class="modal-footer justify-content-center pb-4">
+                <button type="button" class="vt-btn cancel" data-bs-dismiss="modal">Hủy bỏ</button>
+                <button type="button" class="vt-btn danger" onclick="confirmDeleteService()"><i class="fa-solid fa-trash me-1"></i> Xóa</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <!-- Share category collection with script for lookup mappings -->
+    <script>
+        const activeCategoriesList = @Html.Raw(Json.Serialize(((IEnumerable<SupportTicketSysterm.Data.DanhMuc>)ViewBag.DanhMucs).Select(c => new { c.IdDanhMuc, c.TenDanhMuc })));
+    </script>
+    <!-- Page-specific script -->
+    <script src="~/assets/js/staff/admin-services.js" asp-append-version="true"></script>
+}
