@@ -1,0 +1,62 @@
+﻿@model SupportTicketSysterm.Data.DanhMuc
+<!-- MODAL: CẬP NHẬT DANH MỤC -->
+<div id="editModal" class="vt-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="editModalTitle">
+        <div class="vt-modal">
+            <div class="vt-modal-header">
+                <div class="vt-modal-header-title">
+                    <div class="vt-modal-header-icon edit">
+                        <i class="bi bi-pen-to-square"></i>
+                    </div>
+                    <div class="vt-modal-header-text">
+                        <h3 id="editModalTitle">Cập Nhật Danh Mục</h3>
+                        <p>Chỉnh sửa thông tin danh mục sự cố: <strong id="editCatId" style="color: var(--vt-red);">—</strong></p>
+                    </div>
+                </div>
+                <button class="vt-modal-close" onclick="closeEditModal()" aria-label="Đóng">
+                    <i class="fa-solid fa-times"></i>
+                </button>
+            </div>
+            <div class="vt-modal-body">
+                <form asp-action="SuaDanhMuc" asp-controller="Staff" method="post" id="editCatForm" novalidate>
+                    <input type="hidden" id="editCatIdField">
+
+                    @Html.AntiForgeryToken()
+
+                    <input asp-for="IdDanhMuc" type="hidden" id="editId" />
+
+                    <!-- Tên danh mục -->
+                    <div class="vt-form-group">
+                        <label class="vt-form-label" for="editCatName">Tên Danh Mục <span>*</span></label>
+                        <input asp-for="TenDanhMuc" type="text" id="editCatName" class="vt-form-input" placeholder="Tên danh mục..." required autocomplete="off">
+                        <div class="vt-error-msg" id="editCatNameError">
+                            <i class="fa-solid fa-circle-exclamation"></i> Vui lòng nhập tên danh mục!
+                        </div>
+                    </div>
+                    <!-- Mô tả -->
+                    <div class="vt-form-group">
+                        <label class="vt-form-label" for="editCatDesc">Mô Tả <span>*</span></label>
+                        <textarea asp-for="MoTa" id="editCatDesc" class="vt-form-textarea" placeholder="Mô tả chi tiết danh mục..." required></textarea>
+                        <div class="vt-error-msg" id="editCatDescError">
+                            <i class="fa-solid fa-circle-exclamation"></i> Vui lòng nhập mô tả!
+                        </div>
+                    </div>
+                    <!-- Trạng thái -->
+                    <div class="vt-form-group">
+                        <label class="vt-form-label" for="editCatStatus">Trạng Thái</label>
+                        <select asp-for="TrangThai" id="editCatStatus" class="vt-form-select">
+                            <option value="Hoạt động">Hoạt động</option>
+                            <option value="Tạm khóa">Tạm khóa</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="vt-modal-footer">
+                <button class="vt-btn cancel" onclick="closeEditModal()">
+                    <i class="fa-solid fa-times me-1"></i> Hủy
+                </button>
+                <button class="vt-btn primary" type="submit" form="editCatForm">
+                    <i class="bi bi-floppy-disk me-1"></i> Cập Nhật
+                </button>
+            </div>
+        </div>
+    </div>

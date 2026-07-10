@@ -1,0 +1,62 @@
+@model SupportTicketSysterm.Data.DichVu
+
+<div class="modal fade" id="editServiceModal" tabindex="-1" aria-labelledby="editServiceModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0">
+            <div class="modal-header">
+                <div class="vt-modal-header-title">
+                    <div class="vt-modal-header-icon edit">
+                        <i class="bi bi-pen-to-square"></i>
+                    </div>
+                    <div class="vt-modal-header-text">
+                        <h3 id="editServiceModalLabel">Chỉnh Sửa Dịch Vụ</h3>
+                        <p>Chỉnh sửa các thông tin của dịch vụ hỗ trợ</p>
+                    </div>
+                </div>
+                <button type="button" class="vt-modal-close" data-bs-dismiss="modal" aria-label="Đóng">
+                    <i class="fa-solid fa-times"></i>
+                </button>
+            </div>
+            <form asp-controller="Staff" asp-action="SuaDichVu" method="post" id="editServiceForm" novalidate>
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="IdDichVu" id="editServiceId" />
+                
+                <div class="modal-body p-4">
+                    <!-- Service Name -->
+                    <div class="vt-form-group">
+                        <label for="editServiceName" class="vt-form-label">Tên dịch vụ <span>*</span></label>
+                        <input asp-for="TenDichVu" type="text" id="editServiceName" class="vt-form-input" placeholder="Nhập tên dịch vụ hỗ trợ..." required>
+                        <span asp-validation-for="TenDichVu" class="text-danger" style="font-size: 0.78rem;"></span>
+                        <div class="invalid-feedback">Tên dịch vụ không được trống.</div>
+                    </div>
+                    <!-- Linked Category -->
+                    <div class="vt-form-group">
+                        <label for="editServiceCategory" class="vt-form-label">Danh mục sự cố <span>*</span></label>
+                        <select asp-for="IdDanhMuc" id="editServiceCategory" class="vt-form-select" required>
+                            <!-- Dynamically populated via script -->
+                        </select>
+                        <span asp-validation-for="IdDanhMuc" class="text-danger" style="font-size: 0.78rem;"></span>
+                        <div class="invalid-feedback">Hãy chọn danh mục sự cố liên kết.</div>
+                    </div>
+                    <!-- Description -->
+                    <div class="vt-form-group">
+                        <label for="editServiceDesc" class="vt-form-label">Mô tả dịch vụ</label>
+                        <textarea asp-for="MoTa" id="editServiceDesc" class="vt-form-textarea" placeholder="Nhập mô tả chi tiết..."></textarea>
+                    </div>
+                    <!-- Status -->
+                    <div class="vt-form-group">
+                        <label for="editServiceStatus" class="vt-form-label">Trạng thái</label>
+                        <select asp-for="TrangThai" id="editServiceStatus" class="vt-form-select">
+                            <option value="Hoạt động">Hoạt động</option>
+                            <option value="Tạm khóa">Tạm khóa</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer pb-4">
+                    <button type="button" class="vt-btn cancel" data-bs-dismiss="modal">Hủy</button>
+                    <button type="submit" class="vt-btn primary"><i class="bi bi-floppy-disk me-1"></i> Cập nhật</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

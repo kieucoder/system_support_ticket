@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="vi" data-bs-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Chi Tiết Đánh Giá Khách Hàng - TechSupport Viettel</title>
+    <meta name="description" content="Chi tiết phản hồi, mức độ hài lòng của khách hàng và đề xuất cải tiến dịch vụ TechSupport Viettel.">
+    <meta name="robots" content="noindex, nofollow">
+
+    <!-- Bootstrap 5.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    
+    <!-- Admin Dashboard CSS (base layout) -->
+    <link rel="stylesheet" href="../assets/css/staff/dashboard.css">
+    <!-- Page-specific CSS -->
+    <link rel="stylesheet" href="../assets/css/staff/staff-review-detail.css">
+</head>
+
+<body>
+    <div id="adminLayout">
+
+        <!-- SIDEBAR MOUNT (Nội dung tự động tải từ sidebar-loader.js) -->
+        <div id="sidebarMount"></div>
+
+        <!-- MAIN WRAPPER -->
+        <div class="main-wrapper">
+
+            <!-- TOPBAR HEADER -->
+            <header class="admin-topbar" role="banner">
+                <div class="topbar-left">
+                    <!-- Toggle buttons for sidebar -->
+                    <button class="sidebar-toggle-btn d-lg-none" id="toggleMobileSidebar" aria-label="Open sidebar menu">
+                        <i class="bi bi-bars"></i>
+                    </button>
+                    <button class="sidebar-toggle-btn d-none d-lg-flex" id="toggleSidebar" aria-label="Toggle sidebar">
+                        <i class="bi bi-bars"></i>
+                    </button>
+
+                    <!-- Breadcrumbs Summary -->
+                    <div class="d-none d-md-block">
+                        <p class="mb-0 fw-semibold" style="font-size:0.95rem; color: var(--text-main);">Đánh Giá Khách Hàng</p>
+                        <p class="mb-0" style="font-size: 0.75rem; color: var(--text-muted);">Thông tin đo lường mức độ hài lòng dịch vụ kỹ thuật</p>
+                    </div>
+                </div>
+
+                <!-- Search topbar form -->
+                <form class="topbar-search-form d-none d-md-block" role="search" onsubmit="event.preventDefault();">
+                    <div class="search-input-group">
+                        <i class="fa-solid fa-search" aria-hidden="true"></i>
+                        <input type="search" class="form-control search-bar-input" placeholder="Tìm phiếu, dịch vụ, khách hàng..." autocomplete="off">
+                    </div>
+                </form>
+
+                <div class="topbar-right">
+                    <!-- Light/Dark Theme Toggle -->
+                    <button class="topbar-action-btn" id="toggleTheme" title="Chuyển chế độ tối/sáng">
+                        <i class="bi bi-moon"></i>
+                    </button>
+
+                    <!-- Notification bell -->
+                    <button class="topbar-action-btn" title="Thông báo hệ thống">
+                        <i class="fa-solid fa-bell"></i>
+                        <span class="notification-badge">5</span>
+                    </button>
+
+                    <!-- User Account profile -->
+                    <div class="dropdown">
+                        <a class="user-profile-dropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <img src="https://ui-avatars.com/api/?name=Admin+Viettel&background=EE0033&color=fff&size=38" alt="Avatar" class="user-avatar">
+                            <div class="d-none d-sm-block">
+                                <p class="user-profile-name mb-0">Nguyễn Văn Hùng</p>
+                                <p class="mb-0 user-profile-role">Kỹ thuật viên Trưởng</p>
+                            </div>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2" style="border-radius:12px;">
+                            <li><a class="dropdown-item py-2" href="admin-profile.html"><i class="fa-solid fa-user me-2 text-primary"></i>Thông tin cá nhân</a></li>
+                            <li><a class="dropdown-item py-2" href="admin-profile.html#changePassword"><i class="fa-solid fa-key me-2 text-warning"></i>Đổi mật khẩu</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item py-2 text-danger" href="../login.html"><i class="fa-solid fa-right-from-bracket me-2"></i>Đăng xuất</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </header>
+
+            <!-- MAIN CONTENT AREA -->
+            <main class="admin-content container-fluid">
+
+                <!-- =============================================================
+                     1. HERO BREADCRUMB
+                     ============================================================= -->
+                <section class="review-hero-section" aria-label="Hero Breadcrumb">
+                    <nav aria-label="breadcrumb" class="hero-breadcrumb-nav">
+                        <ol class="breadcrumb m-0">
+                            <li class="breadcrumb-item"><a href="dashboard.html"><i class="fa-solid fa-house me-1"></i>Trang chủ</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Đánh giá khách hàng</li>
+                            <li class="breadcrumb-item active fw-bold" aria-current="page" style="color: var(--viettel-red);">Chi tiết đánh giá</li>
+                        </ol>
+                    </nav>
+                    <h1 class="hero-title-main">Chi tiết đánh giá khách hàng</h1>
+                    <p class="hero-desc-main">Theo dõi phản hồi và mức độ hài lòng của khách hàng đối với phiếu hỗ trợ kỹ thuật.</p>
+                </section>
+
+                <!-- =============================================================
+                     3. THỐNG KÊ ĐÁNH GIÁ (4 Card Ngang)
+                     ============================================================= -->
+                <section aria-label="Tóm tắt điểm số">
+                    <div class="rating-stats-grid">
+                        <!-- Card 1: Chất lượng dịch vụ -->
+                        <div class="rating-stat-mini-card">
+                            <span class="stat-mini-label">Chất lượng dịch vụ</span>
+                            <div class="stat-mini-stars" id="starsServiceQuality">
+                                <!-- Sao render qua JS -->
+                            </div>
+                            <p class="stat-mini-val" id="valServiceQuality">—</p>
+                        </div>
+                        
+                        <!-- Card 2: Thái độ nhân viên -->
+                        <div class="rating-stat-mini-card">
+                            <span class="stat-mini-label">Thái độ nhân viên</span>
+                            <div class="stat-mini-stars" id="starsStaffAttitude">
+                                <!-- Sao render qua JS -->
+                            </div>
+                            <p class="stat-mini-val" id="valStaffAttitude">—</p>
+                        </div>
+
+                        <!-- Card 3: Tốc độ xử lý -->
+                        <div class="rating-stat-mini-card">
+                            <span class="stat-mini-label">Tốc độ xử lý</span>
+                            <div class="stat-mini-stars" id="starsProcessingSpeed">
+                                <!-- Sao render qua JS -->
+                            </div>
+                            <p class="stat-mini-val" id="valProcessingSpeed">—</p>
+                        </div>
+
+                        <!-- Card 4: Điểm trung bình -->
+                        <div class="rating-stat-mini-card">
+                            <span class="stat-mini-label">Điểm trung bình</span>
+                            <p class="stat-mini-val text-primary" id="valAverageScore">—</p>
+                            <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill font-monospace stat-mini-badge px-2.5 py-1">
+                                Rất hài lòng
+                            </span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- GRID CHÍNH: 2 CỘT -->
+                <div class="row g-4">
+                    
+                    <!-- CỘT TRÁI (LỚN): THÔNG TIN PHIẾU, NHẬN XÉT, GALLERY, PHẢN HỒI, TIMELINE -->
+                    <div class="col-xl-8 col-lg-7 col-12">
+                        
+                        <!-- Card: Thông tin phiếu hỗ trợ -->
+                        <div class="review-detail-card">
+                            <h2 class="card-title-header">
+                                <i class="fa-solid fa-circle-info"></i> Thông tin phiếu hỗ trợ
+                            </h2>
+                            <div class="info-grid-row">
+                                <div class="info-item-box">
+                                    <span class="info-item-label">Mã phiếu</span>
+                                    <span class="info-item-value font-monospace text-primary" id="ticketCode">—</span>
+                                </div>
+                                <div class="info-item-box">
+                                    <span class="info-item-label">Tiêu đề phiếu</span>
+                                    <span class="info-item-value" id="ticketTitle">—</span>
+                                </div>
+                                <div class="info-item-box">
+                                    <span class="info-item-label">Khách hàng</span>
+                                    <span class="info-item-value" id="customerName">—</span>
+                                </div>
+                                <div class="info-item-box">
+                                    <span class="info-item-label">Dịch vụ</span>
+                                    <span class="info-item-value text-secondary" id="serviceName">—</span>
+                                </div>
+                                <div class="info-item-box">
+                                    <span class="info-item-label">Nhân viên phụ trách</span>
+                                    <span class="info-item-value text-danger" id="assigneeName">—</span>
+                                </div>
+                                <div class="info-item-box">
+                                    <span class="info-item-label">Ngày tạo</span>
+                                    <span class="info-item-value font-monospace" id="createdDate">—</span>
+                                </div>
+                                <div class="info-item-box">
+                                    <span class="info-item-label">Ngày hoàn thành</span>
+                                    <span class="info-item-value font-monospace" id="completedDate">—</span>
+                                </div>
+                                <div class="info-item-box">
+                                    <span class="info-item-label">Trạng thái phiếu</span>
+                                    <div>
+                                        <span id="ticketStatusBadge">—</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card: Nhận xét khách hàng -->
+                        <div class="review-detail-card">
+                            <h2 class="card-title-header">
+                                <i class="fa-solid fa-comments"></i> Nhận xét khách hàng
+                            </h2>
+                            <div class="customer-quote-box">
+                                <p class="customer-quote-content" id="customerCommentText">—</p>
+                            </div>
+                        </div>
+
+                        <!-- Card: Hình ảnh đính kèm Gallery -->
+                        <div class="review-detail-card">
+                            <h2 class="card-title-header">
+                                <i class="fa-solid fa-images"></i> Hình ảnh đính kèm
+                            </h2>
+                            <div class="review-gallery-grid" id="reviewGallery">
+                                <!-- Đổ ảnh động từ JS -->
+                            </div>
+                        </div>
+
+                        <!-- Card: Phản hồi khách hàng (Reply Form) -->
+                        <div class="review-detail-card">
+                            <h2 class="card-title-header">
+                                <i class="fa-solid fa-reply-all"></i> Phản hồi khách hàng
+                            </h2>
+                            <div class="reply-textarea-wrapper">
+                                <textarea id="replyTextarea" class="reply-textarea-control" 
+                                    placeholder="Cảm ơn anh/chị đã dành thời gian đánh giá dịch vụ của chúng tôi..."></textarea>
+                                <div class="char-counter-display" id="replyCharCounter">0 / 1000</div>
+                            </div>
+                            <!-- Nút thao tác -->
+                            <div class="actions-footer-bar">
+                                <button type="button" class="btn-crm-action btn-crm-secondary" id="btnGoBack">
+                                    <i class="fa-solid fa-arrow-left"></i> Quay lại
+                                </button>
+                                <button type="button" class="btn-crm-action btn-crm-success" id="btnSaveDraft">
+                                    <i class="fa-solid fa-floppy-disk"></i> Lưu nháp
+                                </button>
+                                <button type="button" class="btn-crm-action btn-crm-primary" id="btnSubmitReply">
+                                    <i class="fa-solid fa-paper-plane"></i> Gửi phản hồi
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Card: Lịch sử phản hồi (Timeline) -->
+                        <div class="review-detail-card">
+                            <h2 class="card-title-header">
+                                <i class="fa-solid fa-clock-rotate-left"></i> Lịch sử phản hồi
+                            </h2>
+                            <div class="crm-timeline-container" id="timelineLog">
+                                <!-- Đổ timeline động từ JS -->
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- CỘT PHẢI (NHỎ): BIỂU ĐỒ RADAR, AI INSIGHT & RECOMMENDATIONS -->
+                    <div class="col-xl-4 col-lg-5 col-12">
+                        
+                        <!-- Card: Phân tích đánh giá Radar Chart -->
+                        <div class="review-detail-card">
+                            <h2 class="card-title-header">
+                                <i class="fa-solid fa-chart-pie"></i> Phân tích đánh giá
+                            </h2>
+                            <div class="radar-chart-wrapper">
+                                <canvas id="ratingRadarChart" aria-label="Biểu đồ radar phân tích đánh giá"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Card: Phân tích mức độ hài lòng (AI Insight) & Đề xuất cải thiện -->
+                        <div class="review-detail-card">
+                            <h2 class="card-title-header">
+                                <i class="fa-solid fa-robot"></i> Phân tích mức độ hài lòng
+                            </h2>
+                            <!-- AI Insight Card -->
+                            <div class="ai-insight-box mb-4" id="aiInsightBox">
+                                <i class="ai-insight-icon" id="aiInsightIcon"></i>
+                                <div class="ai-insight-text-wrapper">
+                                    <h3 class="ai-insight-title" id="aiInsightTitle">AI Insight</h3>
+                                    <p class="ai-insight-message" id="aiInsightMessage">—</p>
+                                </div>
+                            </div>
+
+                            <!-- Đề xuất cải thiện -->
+                            <h3 class="fw-bold mb-3" style="font-size:0.98rem; color:var(--text-main);">
+                                <i class="fa-solid fa-lightbulb text-warning me-1.5"></i> Đề xuất cải thiện
+                            </h3>
+                            <ul class="suggestion-list-group">
+                                <li class="suggestion-item-check">
+                                    <i class="fa-solid fa-circle-check"></i> Duy trì thái độ hỗ trợ chuyên nghiệp.
+                                </li>
+                                <li class="suggestion-item-check">
+                                    <i class="fa-solid fa-circle-check"></i> Tiếp tục nâng cao tốc độ phản hồi.
+                                </li>
+                                <li class="suggestion-item-check">
+                                    <i class="fa-solid fa-circle-check"></i> Theo dõi khách hàng sau hỗ trợ.
+                                </li>
+                            </ul>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </main>
+            <!-- END MAIN CONTENT -->
+
+        </div>
+        <!-- END MAIN WRAPPER -->
+
+    </div>
+    <!-- END ADMIN LAYOUT -->
+
+    <!-- =============================================================
+         LIGHTBOX POPUP MODAL
+         ============================================================= -->
+    <div class="lightbox-modal" id="lightboxModal" role="dialog" aria-modal="true">
+        <div class="lightbox-content-box">
+            <button class="lightbox-close-btn" id="lightboxClose" aria-label="Đóng">&times;</button>
+            <img class="lightbox-image" id="lightboxImage" src="" alt="Ảnh đính kèm lỗi">
+            <p class="lightbox-caption" id="lightboxCaption"></p>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+    <!-- SweetAlert 2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Base dashboard script (theme & sidebar toggles) -->
+    <script src="../assets/js/staff/dashboard.js"></script>
+    <!-- Page controller script -->
+    <script src="../assets/js/staff/staff-review-detail.js"></script>
+    <!-- Sidebar loader script -->
+    <script src="../assets/js/staff/sidebar-loader.js"></script>
+</body>
+
+</html>

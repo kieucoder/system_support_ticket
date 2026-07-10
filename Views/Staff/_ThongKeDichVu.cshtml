@@ -1,0 +1,40 @@
+<!-- Card 1 -->
+<div class="vt-stat-card">
+    <div class="vt-stat-info">
+        <span class="vt-stat-label">Tổng dịch vụ</span>
+        <span class="vt-stat-value animate-counter" id="kpiTotalServices" data-value="@(ViewBag.TotalServices ?? 0)">@(ViewBag.TotalServices ?? 0)</span>
+    </div>
+    <div class="vt-stat-icon-box" style="background-color: rgba(59, 130, 246, 0.1); color: #3B82F6;">
+        <i class="fa-solid fa-network-wired"></i>
+    </div>
+</div>
+<!-- Card 2 -->
+<div class="vt-stat-card">
+    <div class="vt-stat-info">
+        <span class="vt-stat-label">Dịch vụ hoạt động</span>
+        <span class="vt-stat-value animate-counter text-success" id="kpiActiveServices" data-value="@(ViewBag.ActiveServices ?? 0)">@(ViewBag.ActiveServices ?? 0)</span>
+    </div>
+    <div class="vt-stat-icon-box" style="background-color: rgba(16, 185, 129, 0.1); color: #10B981;">
+        <i class="fa-solid fa-circle-check"></i>
+    </div>
+</div>
+<!-- Card 3 -->
+<div class="vt-stat-card">
+    <div class="vt-stat-info">
+        <span class="vt-stat-label">Dịch vụ tạm khóa</span>
+        <span class="vt-stat-value animate-counter text-danger" id="kpiInactiveServices" data-value="@(ViewBag.InactiveServices ?? 0)">@(ViewBag.InactiveServices ?? 0)</span>
+    </div>
+    <div class="vt-stat-icon-box" style="background-color: rgba(239, 68, 68, 0.1); color: #EF4444;">
+        <i class="fa-solid fa-lock"></i>
+    </div>
+</div>
+<!-- Card 4 -->
+<div class="vt-stat-card">
+    <div class="vt-stat-info">
+        <span class="vt-stat-label">Danh mục sử dụng</span>
+        <span class="vt-stat-value animate-counter text-warning" id="kpiUsedCategories" data-value="@(ViewBag.UsedCategories ?? 0)">@(ViewBag.UsedCategories ?? 0)</span>
+    </div>
+    <div class="vt-stat-icon-box" style="background-color: rgba(245, 158, 11, 0.1); color: #F59E0B;">
+        <i class="fa-solid fa-folder-open"></i>
+    </div>
+</div>

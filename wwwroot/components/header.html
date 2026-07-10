@@ -1,0 +1,635 @@
+<!-- 1. TOP INFO BAR -->
+<header class="top-header">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8 col-12 top-header-info d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+                <span class="me-4"><i class="fa-solid fa-phone"></i> Hotline kỹ thuật: <a href="tel:19008098">1900 8098</a> (Miễn phí)</span>
+                <span class="me-4"><i class="fa-solid fa-envelope"></i> Email: <a href="mailto:support@viettel.com.vn">support@viettel.com.vn</a></span>
+                <span><i class="fa-solid fa-clock"></i> Hỗ trợ kỹ thuật 24/7/365</span>
+            </div>
+            <div class="col-lg-4 col-12 top-header-social d-flex align-items-center justify-content-center justify-content-lg-end mt-2 mt-lg-0">
+                <span class="me-2 d-none d-sm-inline">Kết nối:</span>
+                <a href="https://facebook.com" target="_blank" class="me-2" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+                <a href="https://youtube.com" target="_blank" class="me-2" aria-label="Youtube"><i class="bi bi-youtube"></i></a>
+                <a href="https://linkedin.com" target="_blank" class="me-2" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
+                <a href="https://instagram.com" target="_blank" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- 2. PREMIUM MAIN HEADER -->
+<header class="premium-header fixed-top" id="mainNavbar">
+    <div class="container container-header-wrapper">
+        <!-- Brand Logo -->
+        <a class="navbar-brand" href="#heroSection" id="navBrand">
+            <i class="fa-solid fa-headset logo-icon"></i>
+            <span>TechSupport</span>
+        </a>
+
+        <!-- Desktop Menu (>=1200px) -->
+        <nav class="desktop-menu d-none d-xl-flex align-items-center justify-content-between flex-grow-1 ms-5">
+            <ul class="navbar-nav header-nav-list flex-row align-items-center gap-2">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="index.html" id="linkHome">Trang chủ</a>
+                </li>
+                
+                <!-- Mega Menu Dropdown -->
+                <li class="nav-item dropdown-custom dropdown-mega">
+                    <a class="nav-link dropdown-toggle-custom d-inline-flex align-items-center" href="#" id="linkServices">
+                        Dịch vụ hỗ trợ <i class="fa-solid fa-chevron-down ms-1" style="font-size: 0.8rem; transition: transform 0.3s ease;"></i>
+                    </a>
+                    <div class="mega-menu-content">
+                        <div class="container">
+                            <div class="row g-4">
+                                <div class="col-lg-3">
+                                    <a class="mega-menu-item" href="#serviceGridSection">
+                                        <div class="mega-menu-icon">
+                                            <i class="bi bi-router-fill"></i>
+                                        </div>
+                                        <div>
+                                            <h4 class="mega-menu-title">Internet Cáp Quang</h4>
+                                            <p class="mega-menu-desc">Hỗ trợ kết nối, cấu hình Mesh Wifi, suy hao tín hiệu quang.</p>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="col-lg-3">
+                                    <a class="mega-menu-item" href="#serviceGridSection">
+                                        <div class="mega-menu-icon">
+                                            <i class="bi bi-camera-reels-fill"></i>
+                                        </div>
+                                        <div>
+                                            <h4 class="mega-menu-title">Home Camera</h4>
+                                            <p class="mega-menu-desc">Căn chỉnh góc quay, khôi phục mật khẩu, kết nối thiết bị.</p>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="col-lg-3">
+                                    <a class="mega-menu-item" href="#serviceGridSection">
+                                        <div class="mega-menu-icon">
+                                            <i class="bi bi-server"></i>
+                                        </div>
+                                        <div>
+                                            <h4 class="mega-menu-title">Server & Cloud VPS</h4>
+                                            <p class="mega-menu-desc">Hỗ trợ VPS quá tải, cấu hình firewall, sao lưu database.</p>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="col-lg-3">
+                                    <a class="mega-menu-item" href="#serviceGridSection">
+                                        <div class="mega-menu-icon">
+                                            <i class="bi bi-window-sidebar"></i>
+                                        </div>
+                                        <div>
+                                            <h4 class="mega-menu-title">Phần Mềm & Mạng</h4>
+                                            <p class="mega-menu-desc">Khắc phục lỗi đăng nhập phần mềm, cấu hình LAN/VPN.</p>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="#quickActionSection" id="linkSearch">Tra cứu phiếu</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#newsSection" id="linkGuides">Hướng dẫn</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="pages/contact.html" id="linkContact">Liên hệ</a>
+                </li>
+            </ul>
+            
+            <div class="header-buttons-group d-flex align-items-center gap-2">
+                <!-- [TRẠNG THÁI CHƯA ĐĂNG NHẬP] -->
+                <div id="authButtons" class="d-flex align-items-center gap-2">
+                    <a href="login.html" class="btn btn-login-custom btn-ripple rounded-pill px-4" id="btnLogin">
+                        <i class="fa-solid fa-user me-1"></i> Đăng nhập
+                    </a>
+                </div>
+
+                <a href="register.html" class="btn btn-create-ticket-custom btn-ripple px-4" id="btnCreateTicket">
+                    <i class="bi bi-person-plus-fill me-1"></i> Đăng ký
+                </a>
+            </div>
+        </nav>
+
+        <!-- [TRẠNG THÁI ĐÃ ĐĂNG NHẬP (USER PROFILE DROPDOWN)] -->
+        <div id="userDropdownWrapper" class="user-profile-dropdown d-none d-flex align-items-center gap-3">
+            <a href="#" class="btn-logout-header-custom btn-ripple" id="btnHeaderLogout">
+                🚪 Đăng xuất
+            </a>
+            <div class="position-relative">
+                <button class="btn-user-dropdown" type="button" aria-haspopup="true" aria-expanded="false">
+                    <i class="fa-solid fa-user"></i>
+                    <span class="greeting-text">Xin chào, </span><span id="userDisplayName"></span>
+                    <i class="fa-solid fa-chevron-down dropdown-arrow"></i>
+                </button>
+                <ul class="user-profile-dropdown-menu">
+                    <li>
+                        <a class="dropdown-item" href="pages/customer-profile.html">
+                            👤 Thông tin cá nhân
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="my-tickets.html">
+                            🎫 Phiếu hỗ trợ của tôi
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="pages/customer-profile.html#appointmentSection">
+                            📅 Lịch hẹn hỗ trợ
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="pages/contact.html">
+                            📞 Liên hệ hỗ trợ
+                        </a>
+                    </li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li>
+                        <a class="dropdown-item text-danger" href="#" id="btnLogoutBtn">
+                            🚪 Đăng xuất
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Hamburger Button (Tablet & Mobile <1200px) -->
+        <button class="navbar-hamburger d-xl-none" type="button" id="menuToggle" aria-label="Toggle navigation">
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </button>
+    </div>
+</header>
+
+<!-- =====================================================
+     USER AUTH DISPLAY – TechSupport Viettel
+     Tái sử dụng Header hiện tại | HTML5 + CSS3 + ES6
+     Tương thích: Chrome, Edge, Firefox
+     ====================================================== -->
+<style>
+    /* --- Nút Đăng ký (bổ sung bên cạnh Đăng nhập) --- */
+    .btn-register-custom {
+        background: transparent;
+        border: 1.5px solid #EE0033;
+        color: #EE0033;
+        font-weight: 600;
+        font-size: 0.875rem;
+        transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        white-space: nowrap;
+    }
+
+    .btn-register-custom:hover,
+    .btn-register-custom:focus {
+        background: #EE0033;
+        color: #fff;
+        border-color: #EE0033;
+    }
+
+    /* --- Khu vực Xin chào --- */
+    .user-greeting-wrapper {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+        cursor: pointer;
+        padding: 0.3rem 0.6rem;
+        border-radius: 50px;
+        transition: background 0.3s ease, box-shadow 0.3s ease;
+        white-space: nowrap;
+        text-decoration: none;
+        line-height: 1;
+    }
+
+    .user-greeting-wrapper:hover {
+        background: rgba(238, 0, 51, 0.07);
+        box-shadow: 0 0 0 2px rgba(238, 0, 51, 0.15);
+    }
+
+    /* --- Icon người dùng --- */
+    .user-greeting-icon {
+        font-size: 1.35rem;
+        color: #EE0033;
+        flex-shrink: 0;
+        transition: color 0.3s ease;
+    }
+
+    .user-greeting-wrapper:hover .user-greeting-icon {
+        color: #c8002a;
+    }
+
+    /* --- Văn bản lời chào --- */
+    .user-greeting-text {
+        font-size: 0.9rem;
+        color: #333;
+        display: inline-flex;
+        align-items: center;
+        white-space: nowrap;
+    }
+
+    .greeting-label {
+        font-weight: 400;
+        color: #555;
+        transition: color 0.3s ease;
+    }
+
+    .user-greeting-name {
+        font-weight: 700;
+        color: #EE0033;
+        transition: color 0.3s ease;
+    }
+
+    .user-greeting-wrapper:hover .greeting-label {
+        color: #333;
+    }
+
+    .user-greeting-wrapper:hover .user-greeting-name {
+        color: #c8002a;
+    }
+
+    /* --- Responsive: Mobile (< 576px) ẩn "Xin chào," --- */
+    @media (max-width: 575.98px) {
+        .greeting-label {
+            display: none !important;
+        }
+
+        .btn-user-dropdown .greeting-text {
+            display: none !important;
+        }
+    }
+
+    /* --- User Profile Dropdown Styles --- */
+    .user-profile-dropdown {
+        position: relative;
+        display: inline-block;
+    }
+
+    .btn-user-dropdown {
+        background: transparent;
+        border: 1.5px solid #EE0033;
+        color: #EE0033;
+        font-weight: 600;
+        font-size: 0.875rem;
+        height: 44px;
+        padding: 0 1.25rem;
+        border-radius: 999px;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+        white-space: nowrap;
+        box-sizing: border-box;
+    }
+
+    .btn-user-dropdown:hover,
+    .btn-user-dropdown.active {
+        background: #EE0033;
+        color: #ffffff;
+        box-shadow: 0 4px 10px rgba(238, 0, 51, 0.2);
+    }
+
+    .btn-user-dropdown i {
+        font-size: 1.1rem;
+        display: inline-block;
+    }
+
+    .btn-user-dropdown .dropdown-arrow {
+        font-size: 0.75rem;
+        transition: transform 0.3s ease;
+    }
+
+    .btn-user-dropdown.active .dropdown-arrow {
+        transform: rotate(180deg);
+    }
+
+    .user-profile-dropdown-menu {
+        position: absolute;
+        top: 100%;
+        right: 0;
+        margin-top: 0.75rem;
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        border: 1px solid #E5E7EB;
+        min-width: 220px;
+        padding: 0.5rem 0;
+        z-index: 1050;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(15px);
+        transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
+        list-style: none;
+    }
+
+    .user-profile-dropdown-menu.show {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+
+    .user-profile-dropdown-menu li {
+        padding: 0;
+        margin: 0;
+    }
+
+    .user-profile-dropdown-menu .dropdown-item {
+        display: flex;
+        align-items: center;
+        padding: 0.75rem 1.25rem;
+        color: #333333;
+        font-size: 0.9rem;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        font-weight: 500;
+    }
+
+    .user-profile-dropdown-menu .dropdown-item:hover {
+        background-color: rgba(238, 0, 51, 0.05);
+        color: #EE0033;
+        padding-left: 1.5rem;
+    }
+
+    .user-profile-dropdown-menu .dropdown-item.text-danger {
+        color: #EE0033 !important;
+    }
+
+    .user-profile-dropdown-menu .dropdown-item.text-danger:hover {
+        background-color: rgba(238, 0, 51, 0.08);
+        color: #D6002F !important;
+    }
+
+    .user-profile-dropdown-menu .dropdown-divider {
+        height: 1px;
+        margin: 0.5rem 0;
+        background-color: #E5E7EB;
+        border: 0;
+    }
+
+    /* --- Responsive Rules --- */
+    @media (max-width: 1199.98px) {
+        .user-profile-dropdown {
+            position: absolute !important;
+            right: 16px !important;
+            top: 50% !important;
+            transform: translateY(-50%) !important;
+            z-index: 10001 !important;
+        }
+    }
+
+    @media (max-width: 575.98px) {
+        .greeting-text {
+            display: none !important;
+        }
+
+        .btn-user-dropdown {
+            padding: 0 0.85rem;
+        }
+    }
+
+    .btn-logout-header-custom {
+        background: transparent;
+        border: 1.5px solid #EE0033;
+        color: #EE0033;
+        font-weight: 600;
+        font-size: 0.875rem;
+        border-radius: 999px;
+        height: 44px;
+        padding: 0 1.25rem;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+        white-space: nowrap;
+        text-decoration: none;
+        box-sizing: border-box;
+    }
+
+    .btn-logout-header-custom:hover {
+        background: #EE0033;
+        color: #ffffff;
+        box-shadow: 0 4px 10px rgba(238, 0, 51, 0.2);
+    }
+
+    @media (max-width: 1199.98px) {
+        .btn-logout-header-custom {
+            display: none !important;
+        }
+    }
+
+    /* --- Global Toast Styles --- */
+    #globalToastContainer {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        z-index: 99999;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        pointer-events: none;
+    }
+
+    .global-toast {
+        background: #ffffff;
+        color: #333333;
+        padding: 12px 24px;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        border: 1px solid #E5E7EB;
+        border-left: 4px solid #EE0033;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        pointer-events: auto;
+    }
+
+    .global-toast.show {
+        opacity: 1;
+        transform: translateY(0);
+    }
+</style>
+
+<script>
+    (function () {
+        'use strict';
+
+        function showGlobalToast(message) {
+            let container = document.getElementById('globalToastContainer');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'globalToastContainer';
+                document.body.appendChild(container);
+            }
+            const toast = document.createElement('div');
+            toast.className = 'global-toast';
+            toast.innerHTML = `<span>${message}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => toast.classList.add('show'), 10);
+            setTimeout(() => {
+                toast.classList.remove('show');
+                toast.addEventListener('transitionend', () => {
+                    toast.remove();
+                    if (container.children.length === 0) container.remove();
+                });
+            }, 3500);
+        }
+
+        function updateAuthHeader(customerName) {
+            const authButtons = document.getElementById('authButtons');
+            const userDropdownWrapper = document.getElementById('userDropdownWrapper');
+            const btnCreateTicket = document.getElementById('btnCreateTicket');
+            const userNameEl = document.getElementById('userDisplayName');
+            const buttonsGroup = document.querySelector('.header-buttons-group');
+
+            const isProfilePage = window.location.pathname.includes('customer-profile.html');
+
+            if (!userDropdownWrapper || !userNameEl) return;
+
+            if (isProfilePage || customerName) {
+                userNameEl.textContent = customerName || "Nguyễn Văn An";
+                if (authButtons) authButtons.classList.add('d-none');
+                userDropdownWrapper.classList.remove('d-none');
+                if (btnCreateTicket) btnCreateTicket.classList.add('d-none');
+                if (buttonsGroup) buttonsGroup.classList.add('d-none');
+            } else {
+                userDropdownWrapper.classList.add('d-none');
+                if (authButtons) authButtons.classList.remove('d-none');
+                if (btnCreateTicket) btnCreateTicket.classList.remove('d-none');
+                if (buttonsGroup) buttonsGroup.classList.remove('d-none');
+            }
+        }
+
+        function loadAuthState() {
+            let name = null;
+            const sessionStr = sessionStorage.getItem('techsupport_session');
+            if (sessionStr) {
+                try {
+                    const sessionData = JSON.parse(sessionStr);
+                    if (sessionData && sessionData.isLoggedIn && sessionData.user && sessionData.user.fullname) {
+                        name = sessionData.user.fullname;
+                    }
+                } catch (e) {
+                    console.error('Error parsing session storage:', e);
+                }
+            }
+            if (!name) {
+                name = sessionStorage.getItem('ts_customer_name')
+                    || localStorage.getItem('ts_customer_name')
+                    || null;
+            }
+            updateAuthHeader(name);
+        }
+
+        function checkLogoutToast() {
+            if (sessionStorage.getItem('logout_success_toast') === 'true') {
+                sessionStorage.removeItem('logout_success_toast');
+                showGlobalToast('✅ Đăng xuất thành công');
+            }
+        }
+
+        function bindDropdownEvents() {
+            const wrapper = document.getElementById('userDropdownWrapper');
+            if (!wrapper) return;
+            const trigger = wrapper.querySelector('.btn-user-dropdown');
+            const menu = wrapper.querySelector('.user-profile-dropdown-menu');
+            const logoutBtn = wrapper.querySelector('#btnLogoutBtn');
+
+            if (trigger && menu) {
+                const newTrigger = trigger.cloneNode(true);
+                trigger.parentNode.replaceChild(newTrigger, trigger);
+
+                newTrigger.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    const isShown = menu.classList.contains('show');
+                    if (isShown) {
+                        menu.classList.remove('show');
+                        newTrigger.classList.remove('active');
+                    } else {
+                        menu.classList.add('show');
+                        newTrigger.classList.add('active');
+                    }
+                });
+
+                document.addEventListener('click', function (e) {
+                    if (!wrapper.contains(e.target)) {
+                        menu.classList.remove('show');
+                        newTrigger.classList.remove('active');
+                    }
+                });
+            }
+
+            if (logoutBtn) {
+                const newLogout = logoutBtn.cloneNode(true);
+                logoutBtn.parentNode.replaceChild(newLogout, logoutBtn);
+
+                newLogout.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    window.TechSupportAuth.logout();
+                });
+            }
+
+            const headerLogoutBtn = wrapper.querySelector('#btnHeaderLogout');
+            if (headerLogoutBtn) {
+                const newHeaderLogout = headerLogoutBtn.cloneNode(true);
+                headerLogoutBtn.parentNode.replaceChild(newHeaderLogout, headerLogoutBtn);
+
+                newHeaderLogout.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    window.TechSupportAuth.logout();
+                });
+            }
+        }
+
+        const initAll = () => {
+            loadAuthState();
+            checkLogoutToast();
+            bindDropdownEvents();
+        };
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initAll);
+        } else {
+            initAll();
+        }
+
+        window.TechSupportAuth = {
+            login: function (name, remember) {
+                if (remember) {
+                    localStorage.setItem('ts_customer_name', name);
+                } else {
+                    sessionStorage.setItem('ts_customer_name', name);
+                }
+                loadAuthState();
+                bindDropdownEvents();
+            },
+            logout: function () {
+                sessionStorage.removeItem('ts_customer_name');
+                sessionStorage.removeItem('techsupport_session');
+                localStorage.removeItem('ts_customer_name');
+
+                sessionStorage.setItem('logout_success_toast', 'true');
+
+                const redirectPath = window.location.pathname.includes('/pages/') ? '../index.html' : 'index.html';
+                window.location.href = redirectPath;
+            }
+        };
+
+        window.initHeader = initAll;
+    })();
+</script>

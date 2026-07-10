@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="vi" data-bs-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Hộp Thư Hỗ Trợ Kỹ Thuật (AI + Staff) - TechSupport Viettel</title>
+    <meta name="description" content="Trang quản lý hội thoại hỗ trợ kỹ thuật tích hợp trợ lý ảo Gemini AI dành cho Staff.">
+    <meta name="robots" content="noindex, nofollow">
+
+    <!-- Bootstrap 5.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- Google Fonts Poppins & Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Admin Dashboard CSS (base layout) -->
+    <link rel="stylesheet" href="../assets/css/staff/dashboard.css">
+    <!-- Page-specific Chat CSS -->
+    <link rel="stylesheet" href="../assets/css/staff/staff-chat.css">
+</head>
+
+<body class="staff-chat-page">
+    <div id="adminLayout">
+
+        <!-- SIDEBAR MOUNT (Tải tự động qua sidebar-loader.js) -->
+        <div id="sidebarMount"></div>
+
+        <!-- MAIN WRAPPER -->
+        <div class="main-wrapper">
+
+            <!-- TOPBAR HEADER -->
+            <header class="admin-topbar" role="banner">
+                <div class="topbar-left">
+                    <!-- Hamburger for Mobile -->
+                    <button class="sidebar-toggle-btn d-lg-none" id="toggleMobileSidebar" aria-label="Open sidebar menu">
+                        <i class="bi bi-bars"></i>
+                    </button>
+                    <!-- Collapse for Desktop -->
+                    <button class="sidebar-toggle-btn d-none d-lg-flex" id="toggleSidebar" aria-label="Toggle sidebar">
+                        <i class="bi bi-bars"></i>
+                    </button>
+
+                    <!-- Breadcrumbs -->
+                    <div class="d-none d-md-block">
+                        <p class="mb-0 fw-semibold" style="font-size:0.95rem; color: var(--text-main);">Hộp Thư Hỗ Trợ Kỹ Thuật</p>
+                        <p class="mb-0" style="font-size: 0.75rem; color: var(--text-muted);">Trợ lý ảo Gemini AI song hành cùng Staff</p>
+                    </div>
+                </div>
+
+                <div class="topbar-right">
+                    <!-- Mobile Right Sidebar Toggle -->
+                    <button class="topbar-action-btn d-md-none btn-ai-toggle-mobile" id="btnMobileShowAi" title="Chi tiết & Trợ lý AI">
+                        <i class="bi bi-file-earmark-person text-primary"></i>
+                    </button>
+
+                    <!-- Light/Dark Theme Toggle -->
+                    <button class="topbar-action-btn" id="toggleTheme" title="Chuyển chế độ tối/sáng">
+                        <i class="bi bi-moon"></i>
+                    </button>
+
+                    <!-- Notifications Bell -->
+                    <button class="topbar-action-btn" title="Thông báo hệ thống">
+                        <i class="fa-solid fa-bell"></i>
+                        <span class="notification-badge" id="sidebarUnreadBadge">0</span>
+                    </button>
+
+                    <!-- User Account Profile Dropdown -->
+                    <div class="dropdown">
+                        <a class="user-profile-dropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <img src="https://ui-avatars.com/api/?name=Admin+Viettel&background=EE0033&color=fff&size=38" alt="Avatar" class="user-avatar">
+                            <div class="d-none d-sm-block">
+                                <p class="user-profile-name mb-0">Nguyễn Văn Hùng</p>
+                                <p class="mb-0 user-profile-role">Kỹ thuật viên Trưởng</p>
+                            </div>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2" style="border-radius:12px;">
+                            <li><a class="dropdown-item py-2" href="admin-profile.html"><i class="fa-solid fa-user me-2 text-primary"></i>Thông tin cá nhân</a></li>
+                            <li><a class="dropdown-item py-2" href="admin-profile.html#changePassword"><i class="fa-solid fa-key me-2 text-warning"></i>Đổi mật khẩu</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item py-2 text-danger" href="../login.html"><i class="fa-solid fa-right-from-bracket me-2"></i>Đăng xuất</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </header>
+
+            <!-- MAIN CHAT CONTAINER AREA -->
+            <main class="admin-content">
+                <div class="chat-layout-wrapper" id="chatLayoutWrapper">
+
+                    <!-- =========================================================
+                         1. COLUMN 1: CONVERSATION LIST (DANH SÁCH HỘI THOẠI)
+                         ========================================================= -->
+                    <section class="chat-sidebar-list" aria-label="Danh sách cuộc hội thoại">
+                        <div class="conv-header">
+                            <div class="conv-title-row">
+                                <h5>Chat hỗ trợ</h5>
+                                <span class="conv-count-badge" id="convTotalCount">0 cuộc hội thoại</span>
+                            </div>
+                            
+                            <!-- Search -->
+                            <div class="conv-search-group">
+                                <i class="bi bi-search"></i>
+                                <input type="text" class="conv-search-input" id="searchConvInput" placeholder="Tìm theo khách hàng hoặc mã phiếu...">
+                            </div>
+
+                            <!-- Filter scrolling bar -->
+                            <div class="conv-filter-scroll">
+                                <button class="conv-filter-btn active" data-filter="all">Tất cả</button>
+                                <button class="conv-filter-btn" data-filter="ai">AI xử lý</button>
+                                <button class="conv-filter-btn" data-filter="waiting">Chờ Staff</button>
+                                <button class="conv-filter-btn" data-filter="processing">Đang xử lý</button>
+                            </div>
+                        </div>
+
+                        <!-- Conversation list container -->
+                        <div class="scrollable-y flex-grow-1" id="convListContainer">
+                            <!-- Rendered dynamically -->
+                        </div>
+                    </section>
+
+                    <!-- =========================================================
+                         2. COLUMN 2: MAIN CHAT WINDOW (KHUNG CHAT CHÍNH)
+                         ========================================================= -->
+                    <section class="chat-main-window" id="chatMainArea" aria-label="Nội dung chat hỗ trợ">
+                        
+                        <!-- Chat Header -->
+                        <div class="chat-header">
+                            <div class="chat-customer-details">
+                                <button class="mobile-back-btn" id="mobileBackToConvs" title="Quay lại danh sách">
+                                    <i class="bi bi-arrow-left"></i>
+                                </button>
+                                <img src="https://ui-avatars.com/api/?name=K&background=E2E8F0&color=475569" alt="Customer Avatar" class="avatar-img" id="chatHeaderAvatar">
+                                <div class="chat-customer-info">
+                                    <h6 id="chatHeaderName">Chọn cuộc hội thoại...</h6>
+                                    <div class="chat-customer-contacts" id="chatHeaderContacts">
+                                        <span>Vui lòng chọn khách hàng cần hỗ trợ kỹ thuật.</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="chat-header-actions">
+                                <span class="status-badge-live bg-secondary text-white" id="ticketStatusBadge">Mã Phiếu</span>
+                            </div>
+                        </div>
+
+                        <!-- Chat Messages bubbles area -->
+                        <div class="chat-messages-area scrollable-y" id="chatMessagesArea">
+                            <!-- Messages loaded by script -->
+                        </div>
+
+                        <!-- Typing status bar -->
+                        <div class="typing-status-bar d-none" id="chatTypingIndicator">
+                            <div class="typing-container">
+                                <span class="typing-dot"></span>
+                                <span class="typing-dot"></span>
+                                <span class="typing-dot"></span>
+                                <small class="text-muted ms-2" id="typingIndicatorText">Khách hàng đang nhập...</small>
+                            </div>
+                        </div>
+
+                        <!-- Closed Ticket Banner Warning -->
+                        <div class="closed-ticket-banner d-none" id="closedTicketBanner">
+                            <i class="bi bi-lock-fill"></i> Phiếu hỗ trợ này đã đóng. Bạn không thể gửi tin nhắn mới.
+                        </div>
+
+                        <!-- Chat Input bar -->
+                        <div class="chat-input-container" id="chatInputAreaWrapper">
+                            
+                            <!-- Drag & Drop Overlay -->
+                            <div class="drag-drop-area" id="chatDragDropZone">
+                                <i class="bi bi-cloud-arrow-up fs-1 mb-2"></i>
+                                <span>Thả tệp tin tại đây để đính kèm</span>
+                                <small class="text-muted" style="font-size:0.75rem;">(Hỗ trợ ảnh, PDF, Excel, Word, ZIP)</small>
+                            </div>
+
+                            <!-- Upload Preview Bar -->
+                            <div class="file-preview-bar" id="filePreviewBar">
+                                <i class="bi bi-file-earmark-fill file-preview-icon" id="filePreviewIcon"></i>
+                                <div class="file-preview-info">
+                                    <span class="file-preview-name" id="filePreviewName">file-dinh-kem.pdf</span>
+                                    <span class="file-preview-size" id="filePreviewSize">1.2 MB</span>
+                                </div>
+                                <button class="btn-remove-preview" id="btnRemovePreview" title="Hủy file đính kèm">
+                                    <i class="bi bi-x"></i>
+                                </button>
+                            </div>
+
+                            <!-- Input controllers -->
+                            <div class="chat-input-bar">
+                                <div class="chat-input-tools">
+                                    <!-- Hidden Input File -->
+                                    <input type="file" id="chatFileInput" class="d-none">
+                                    
+                                    <button class="chat-tool-btn" id="btnChatUpload" title="Tải tệp đính kèm">
+                                        <i class="bi bi-paperclip"></i>
+                                    </button>
+                                    <button class="chat-tool-btn" id="btnAiSuggest" title="Gợi ý câu trả lời AI">
+                                        <i class="bi bi-magic" style="color: var(--chat-purple);"></i>
+                                    </button>
+                                </div>
+
+                                <textarea class="chat-textarea" id="chatInputText" placeholder="Nhập nội dung hỗ trợ... (Nhấn Enter để gửi, Shift+Enter xuống dòng)" rows="1"></textarea>
+
+                                <button class="btn-chat-send" id="btnChatSend" title="Gửi tin nhắn">
+                                    <i class="bi bi-send-fill"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- =========================================================
+                         3. COLUMN 3: RIGHT PANEL (CHI TIẾT PHIẾU & TRỢ LÝ AI)
+                         ========================================================= -->
+                    <section class="chat-ticket-sidebar" id="aiAssistantSidebar" aria-label="Chi tiết phiếu và Trợ lý AI">
+                        <div class="sidebar-tabs-header">
+                            <button class="sidebar-tab-btn active" id="tabTicketInfoBtn">Chi Tiết Phiếu</button>
+                            <button class="sidebar-tab-btn" id="tabAiAssistantBtn">Trợ Lý AI</button>
+                        </div>
+                        
+                        <div class="sidebar-tab-content scrollable-y">
+                            
+                            <!-- TAB 1: TICKET INFO & ACTIONS -->
+                            <div class="tab-pane-sidebar active" id="paneTicketInfo">
+                                <div class="p-3 border-bottom">
+                                    <h6 class="fw-bold mb-3"><i class="bi bi-info-circle text-primary me-2"></i>Thông tin phiếu hỗ trợ</h6>
+                                    
+                                    <table class="table table-sm table-borderless info-table-panel mb-0" style="font-size:0.8rem;">
+                                        <tbody>
+                                            <tr>
+                                                <td class="text-muted py-1" style="width:120px;">Mã phiếu:</td>
+                                                <td class="fw-bold py-1 text-primary" id="sideTicketCode">-</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-muted py-1">Trạng thái:</td>
+                                                <td class="py-1"><span class="badge bg-light text-dark" id="sideTicketStatus">-</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-muted py-1">Mức ưu tiên:</td>
+                                                <td class="py-1"><span class="badge bg-light text-dark" id="sideTicketPriority">-</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-muted py-1">Danh mục:</td>
+                                                <td class="py-1 fw-semibold" id="sideTicketCategory">-</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-muted py-1">Dịch vụ:</td>
+                                                <td class="py-1 text-muted" id="sideTicketService">-</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-muted py-1">Ngày tạo:</td>
+                                                <td class="py-1" id="sideTicketDate">-</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-muted py-1">Phụ trách:</td>
+                                                <td class="py-1" id="sideTicketStaff">-</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div class="p-3 border-bottom">
+                                    <h6 class="fw-bold mb-2"><i class="bi bi-person-circle text-primary me-2"></i>Khách hàng</h6>
+                                    <div class="d-flex align-items-center gap-2 mb-2">
+                                        <img src="https://ui-avatars.com/api/?name=KH" class="rounded-circle" id="sideCustAvatar" style="width:32px; height:32px;">
+                                        <div>
+                                            <div class="fw-bold" style="font-size:0.85rem;" id="sideCustName">-</div>
+                                            <div class="text-muted" style="font-size:0.75rem;" id="sideCustPhone">-</div>
+                                        </div>
+                                    </div>
+                                    <div class="text-muted" style="font-size:0.75rem;" id="sideCustEmail">-</div>
+                                </div>
+
+                                <!-- Actions Grid -->
+                                <div class="p-3 border-bottom">
+                                    <h6 class="fw-bold mb-3"><i class="bi bi-gear text-primary me-2"></i>Thao tác Ticket</h6>
+                                    <div class="d-grid gap-2">
+                                        <button class="btn btn-outline-secondary btn-sm text-start" data-bs-toggle="modal" data-bs-target="#statusModal">
+                                            <i class="bi bi-arrow-left-right me-2 text-primary"></i> Thay đổi trạng thái
+                                        </button>
+                                        <button class="btn btn-outline-secondary btn-sm text-start" data-bs-toggle="modal" data-bs-target="#transferModal">
+                                            <i class="bi bi-person-plus me-2 text-primary"></i> Chuyển nhân viên phụ trách
+                                        </button>
+                                        <button class="btn btn-outline-secondary btn-sm text-start" data-bs-toggle="modal" data-bs-target="#internalNoteModal">
+                                            <i class="bi bi-sticky me-2 text-warning"></i> Thêm ghi chú nội bộ
+                                        </button>
+                                        <button class="btn btn-outline-secondary btn-sm text-start" id="btnSideShowTimeline">
+                                            <i class="bi bi-clock-history me-2 text-info"></i> Xem lịch sử hoạt động
+                                        </button>
+                                        <button class="btn btn-danger btn-sm text-start text-white bg-danger border-danger" id="btnSideCloseTicket">
+                                            <i class="bi bi-lock-fill me-2 text-white"></i> Đóng phiếu hỗ trợ
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- History events list in sidebar -->
+                                <div class="p-3">
+                                    <h6 class="fw-bold mb-3"><i class="bi bi-activity text-primary me-2"></i>Sự kiện gần nhất</h6>
+                                    <div class="scrollable-y" style="max-height: 180px;">
+                                        <ul class="timeline-list" id="sideTimelineContainer" style="font-size:0.75rem;">
+                                            <!-- Activities List -->
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- TAB 2: AI ASSISTANT -->
+                            <div class="tab-pane-sidebar" id="paneAiAssistant">
+                                <!-- AI Summary Widget -->
+                                <div class="ai-summary-widget" style="margin: 15px;">
+                                    <div class="ai-widget-title">
+                                        <i class="bi bi-magic"></i> Tóm tắt sự cố (AI Summary)
+                                    </div>
+                                    <div id="aiSummaryContent">
+                                        <!-- Summary injected by JS -->
+                                    </div>
+                                </div>
+
+                                <!-- AI Quick Actions Widgets -->
+                                <div class="ai-actions-widget" style="padding: 0 15px; margin-bottom:15px;">
+                                    <div class="ai-widget-title" style="margin-bottom: 10px;">
+                                        <i class="bi bi-lightning-charge"></i> Tác vụ AI nhanh
+                                    </div>
+                                    <div class="ai-actions-grid">
+                                        <button class="ai-action-btn" id="aiActionSummary">
+                                            <i class="bi bi-card-text"></i> Tóm tắt Ticket
+                                        </button>
+                                        <button class="ai-action-btn" id="aiActionReply">
+                                            <i class="bi bi-pencil-square"></i> Viết câu trả lời
+                                        </button>
+                                        <button class="ai-action-btn" id="aiActionPolite">
+                                            <i class="bi bi-chat-heart"></i> Làm lịch sự hơn
+                                        </button>
+                                        <button class="ai-action-btn" id="aiActionTranslate">
+                                            <i class="bi bi-translate"></i> Dịch tin nhắn
+                                        </button>
+                                        <button class="ai-action-btn" id="aiActionSentiment">
+                                            <i class="bi bi-emoji-expressionless"></i> Cảm xúc khách
+                                        </button>
+                                        <button class="ai-action-btn" id="aiActionSuggest">
+                                            <i class="bi bi-wrench"></i> Đề xuất xử lý
+                                        </button>
+                                        <button class="ai-action-btn" id="aiActionSchedule">
+                                            <i class="bi bi-calendar-event"></i> Sinh lịch hẹn
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- AI Chat box -->
+                                <div class="ai-chat-segment">
+                                    <div class="ai-chat-title">
+                                        <i class="bi bi-chat-right-text"></i> Hỏi Gemini về kỹ thuật
+                                    </div>
+                                    
+                                    <!-- Small bubbles list -->
+                                    <div class="ai-chat-bubbles" id="aiChatBubbles">
+                                        <div class="ai-chat-bubble ai-msg">
+                                            Tôi là Gemini AI. Bạn cần tra cứu cấu hình ONT Viettel hay cách đo suy hao quang GPON?
+                                        </div>
+                                    </div>
+
+                                    <!-- Chat with AI input -->
+                                    <div class="ai-chat-input-bar">
+                                        <input type="text" class="ai-chat-input" id="aiChatInputText" placeholder="Hỏi Gemini...">
+                                        <button class="btn-ai-send" id="btnAiSend" title="Hỏi AI">
+                                            <i class="bi bi-arrow-right-short fs-4"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </section>
+
+                    <!-- Responsive Dark overlay -->
+                    <div class="chat-dark-overlay" id="chatDarkOverlay"></div>
+
+                </div>
+            </main>
+            <!-- END MAIN CONTENT -->
+
+        </div>
+        <!-- END MAIN WRAPPER -->
+    </div>
+    <!-- END ADMIN LAYOUT -->
+
+    <!-- =========================================================================
+         4. MODAL POPUPS (ĐỔI TRẠNG THÁI, CHUYỂN NHÂN VIÊN, GHI CHÚ NỘI BỘ, ĐẶT LỊCH HẸN)
+         ========================================================================= -->
+    
+    <!-- Modal 1: Change Ticket Status -->
+    <div class="modal fade" id="statusModal" tabindex="-1" aria-labelledby="statusModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="border-radius:18px; border:none; box-shadow:0 10px 40px rgba(0,0,0,0.15);">
+                <div class="modal-header border-bottom-0 pt-4 px-4">
+                    <h5 class="modal-title fw-bold" id="statusModalLabel"><i class="bi bi-arrow-left-right text-primary me-2"></i>Đổi trạng thái phiếu hỗ trợ</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body px-4 pb-4">
+                    <div class="mb-3">
+                        <label for="ticketStatusSelect" class="form-label fw-semibold" style="font-size:0.85rem;">Chọn trạng thái</label>
+                        <select class="form-select" id="ticketStatusSelect" style="border-radius:10px; padding:10px;">
+                            <option value="waiting">Chờ tiếp nhận (Open)</option>
+                            <option value="processing" selected>Đang xử lý (In Progress)</option>
+                            <option value="closed">Đã hoàn thành / Đóng phiếu (Closed)</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="ticketStatusNote" class="form-label fw-semibold" style="font-size:0.85rem;">Ghi chú thay đổi</label>
+                        <textarea class="form-control" id="ticketStatusNote" rows="3" placeholder="Nhập lý do thay đổi trạng thái..." style="border-radius:10px;"></textarea>
+                    </div>
+                    <div class="d-flex gap-2 justify-content-end mt-4">
+                        <button type="button" class="btn btn-light fw-semibold px-4" data-bs-dismiss="modal" style="border-radius:10px; padding:10px 20px;">Hủy bỏ</button>
+                        <button type="button" class="btn btn-viettel fw-bold px-4" id="btnSaveTicketStatus" style="border-radius:10px; padding:10px 20px;">Lưu lại</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 2: Transfer Assigned Staff -->
+    <div class="modal fade" id="transferModal" tabindex="-1" aria-labelledby="transferModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="border-radius:18px; border:none; box-shadow:0 10px 40px rgba(0,0,0,0.15);">
+                <div class="modal-header border-bottom-0 pt-4 px-4">
+                    <h5 class="modal-title fw-bold" id="transferModalLabel"><i class="bi bi-person-plus text-primary me-2"></i>Chuyển nhân viên phụ trách</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body px-4 pb-4">
+                    <div class="mb-3">
+                        <label for="transferStaffSelect" class="form-label fw-semibold" style="font-size:0.85rem;">Chọn kỹ thuật viên nhận phiếu</label>
+                        <select class="form-select" id="transferStaffSelect" style="border-radius:10px; padding:10px;">
+                            <option value="Nguyễn Văn Hùng">Nguyễn Văn Hùng (Kỹ thuật viên Trưởng - Đang phân công)</option>
+                            <option value="Trần Quốc Khánh">Trần Quốc Khánh (Kỹ thuật viên Hạ tầng)</option>
+                            <option value="Phạm Minh Hoàng">Phạm Minh Hoàng (Nhân viên NOC)</option>
+                            <option value="Lê Thị Cúc">Lê Thị Cúc (Chăm sóc khách hàng)</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="transferReason" class="form-label fw-semibold" style="font-size:0.85rem;">Lý do bàn giao phiếu</label>
+                        <textarea class="form-control" id="transferReason" rows="3" placeholder="Nhập lý do chuyển giao (ví dụ: Cần kỹ thuật địa bàn xử lý cáp quang đứt bên ngoài)..." style="border-radius:10px;"></textarea>
+                    </div>
+                    <div class="d-flex gap-2 justify-content-end mt-4">
+                        <button type="button" class="btn btn-light fw-semibold px-4" data-bs-dismiss="modal" style="border-radius:10px; padding:10px 20px;">Hủy bỏ</button>
+                        <button type="button" class="btn btn-viettel fw-bold px-4" id="btnSaveTransfer" style="border-radius:10px; padding:10px 20px;">Xác nhận chuyển</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 3: Add Internal Note -->
+    <div class="modal fade" id="internalNoteModal" tabindex="-1" aria-labelledby="internalNoteModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="border-radius:18px; border:none; box-shadow:0 10px 40px rgba(0,0,0,0.15);">
+                <div class="modal-header border-bottom-0 pt-4 px-4">
+                    <h5 class="modal-title fw-bold" id="internalNoteModalLabel"><i class="bi bi-sticky text-warning me-2"></i>Thêm ghi chú nội bộ (Staff-only)</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body px-4 pb-4">
+                    <div class="alert alert-warning border-0" style="border-radius:10px; font-size:0.78rem;">
+                        <i class="bi bi-exclamation-triangle-fill me-1"></i> Ghi chú nội bộ chỉ hiển thị với nhân viên trong giao diện này, khách hàng không thể nhìn thấy nội dung này.
+                    </div>
+                    <div class="mb-3">
+                        <label for="internalNoteText" class="form-label fw-semibold" style="font-size:0.85rem;">Nội dung ghi chú</label>
+                        <textarea class="form-control" id="internalNoteText" rows="4" placeholder="Nhập ghi chú kỹ thuật, thông tin bảo mật thiết bị hoặc lưu ý riêng về khách hàng..." style="border-radius:10px;"></textarea>
+                    </div>
+                    <div class="d-flex gap-2 justify-content-end mt-4">
+                        <button type="button" class="btn btn-light fw-semibold px-4" data-bs-dismiss="modal" style="border-radius:10px; padding:10px 20px;">Hủy</button>
+                        <button type="button" class="btn btn-viettel fw-bold px-4" id="btnSaveInternalNote" style="border-radius:10px; padding:10px 20px;">Lưu ghi chú</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 4: Add / Schedule Appointment -->
+    <div class="modal fade" id="appointmentModal" tabindex="-1" aria-labelledby="appointmentModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="border-radius:18px; border:none; box-shadow:0 10px 40px rgba(0,0,0,0.15);">
+                <div class="modal-header border-bottom-0 pt-4 px-4">
+                    <h5 class="modal-title fw-bold" id="appointmentModalLabel"><i class="bi bi-calendar-check text-primary me-2"></i>Đặt lịch hẹn kỹ thuật trực tiếp</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body px-4 pb-4">
+                    <div class="row g-3 mb-3">
+                        <div class="col-6">
+                            <label for="apptDate" class="form-label fw-semibold" style="font-size:0.85rem;">Ngày hẹn</label>
+                            <input type="date" class="form-control" id="apptDate" value="2026-06-29" style="border-radius:10px; padding:10px;">
+                        </div>
+                        <div class="col-6">
+                            <label for="apptTime" class="form-label fw-semibold" style="font-size:0.85rem;">Giờ hẹn</label>
+                            <input type="time" class="form-control" id="apptTime" value="09:00" style="border-radius:10px; padding:10px;">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="apptLocation" class="form-label fw-semibold" style="font-size:0.85rem;">Địa điểm hỗ trợ</label>
+                        <input type="text" class="form-control" id="apptLocation" placeholder="Nhập địa chỉ nhà khách hàng..." style="border-radius:10px; padding:10px;">
+                    </div>
+                    <div class="mb-3">
+                        <label for="apptNote" class="form-label fw-semibold" style="font-size:0.85rem;">Nội dung công việc</label>
+                        <textarea class="form-control" id="apptNote" rows="3" placeholder="Ví dụ: Cần mang theo cục Home Wifi Mesh Viettel mới..." style="border-radius:10px;"></textarea>
+                    </div>
+                    <div class="d-flex gap-2 justify-content-end mt-4">
+                        <button type="button" class="btn btn-light fw-semibold px-4" data-bs-dismiss="modal" style="border-radius:10px; padding:10px 20px;">Hủy</button>
+                        <button type="button" class="btn btn-viettel fw-bold px-4" id="btnSaveAppointment" style="border-radius:10px; padding:10px 20px;">Lưu lịch hẹn</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5.3 JS Bundle CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+    
+    <!-- Custom Chat script -->
+    <script src="../assets/js/staff/staff-chat.js"></script>
+    <!-- Sidebar template loader script -->
+    <script src="../assets/js/staff/sidebar-loader.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,40 @@
+<!-- Card 1 -->
+<div class="vt-stat-card">
+    <div class="vt-stat-info">
+        <span class="vt-stat-label">Tổng danh mục</span>
+        <span class="vt-stat-value animate-counter" id="statTotal">@ViewBag.TotalCategories</span>
+    </div>
+    <div class="vt-stat-icon-box">
+        <i class="bi bi-folder"></i>
+    </div>
+</div>
+<!-- Card 2 -->
+<div class="vt-stat-card">
+    <div class="vt-stat-info">
+        <span class="vt-stat-label">Danh mục hoạt động</span>
+        <span class="vt-stat-value animate-counter" id="statActive">@ViewBag.ActiveCategories</span>
+    </div>
+    <div class="vt-stat-icon-box">
+        <i class="fa-solid fa-circle-check"></i>
+    </div>
+</div>
+<!-- Card 3 -->
+<div class="vt-stat-card">
+    <div class="vt-stat-info">
+        <span class="vt-stat-label">Danh mục tạm khóa</span>
+        <span class="vt-stat-value animate-counter" id="statInactive">@ViewBag.InactiveCategories</span>
+    </div>
+    <div class="vt-stat-icon-box">
+        <i class="fa-solid fa-lock"></i>
+    </div>
+</div>
+<!-- Card 4 -->
+<div class="vt-stat-card">
+    <div class="vt-stat-info">
+        <span class="vt-stat-label">Mới tháng này</span>
+        <span class="vt-stat-value animate-counter" id="statNewThisMonth">@ViewBag.NewThisMonth</span>
+    </div>
+    <div class="vt-stat-icon-box">
+        <i class="fa-solid fa-chart-line"></i>
+    </div>
+</div>

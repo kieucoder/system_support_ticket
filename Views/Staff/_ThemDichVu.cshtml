@@ -1,0 +1,87 @@
+@model SupportTicketSysterm.Data.DichVu
+<div class="modal fade" id="addServiceModal" tabindex="-1" aria-labelledby="addServiceModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0">
+            <div class="modal-header">
+                <div class="vt-modal-header-title">
+                    <div class="vt-modal-header-icon add">
+                        <i class="fa-solid fa-plus"></i>
+                    </div>
+                    <div class="vt-modal-header-text">
+                        <h3 id="addServiceModalLabel">Thêm Dịch Vụ Mới</h3>
+                        <p>Điền thông tin dịch vụ hỗ trợ kỹ thuật cần thêm</p>
+                    </div>
+                </div>
+                <button type="button" class="vt-modal-close" data-bs-dismiss="modal" aria-label="Đóng">
+                    <i class="fa-solid fa-times"></i>
+                </button>
+            </div>
+            <form asp-action="ThemDichVu"
+                  asp-controller="Staff"
+                  method="post"
+                  id="addServiceForm">
+                @Html.AntiForgeryToken()
+                <div class="modal-body p-4">
+                    <!-- Service Name -->
+                    <div class="vt-form-group">
+                        <label for="addServiceName" class="vt-form-label">Tên dịch vụ <span>*</span></label>
+                        <input asp-for="TenDichVu" type="text" id="addServiceName" class="vt-form-input" placeholder="Nhập tên dịch vụ hỗ trợ..." required>
+                        <div class="invalid-feedback">Vui lòng nhập tên dịch vụ.</div>
+@*                         cái này mới thêm 
+ *@                        <span asp-validation-for="TenDichVu"
+                              class="text-danger"></span>
+                    </div>
+                    <!-- Linked Category -->
+                    <div class="vt-form-group">
+                        <label for="addServiceCategory" class="vt-form-label">Danh mục sự cố <span>*</span></label>
+                        <select asp-for="IdDanhMuc"
+                                id="addServiceCategory"
+                                class="vt-form-select">
+
+                            <option value="">-- Chọn danh mục --</option>
+
+                            @foreach (var item in ViewBag.DanhMucs)
+
+                            {
+                                <option value="@item.IdDanhMuc">
+                                    @item.TenDanhMuc
+                                </option>
+                            }
+
+                        </select>
+                        <span asp-validation-for="IdDanhMuc"
+                              class="text-danger"></span>
+                        <div class="invalid-feedback">Vui lòng chọn danh mục sự cố.</div>
+                    </div>
+                    <!-- Description -->
+                    <div class="vt-form-group">
+                        <label for="addServiceDesc" class="vt-form-label">Mô tả dịch vụ</label>
+                        <textarea asp-for="MoTa" id="addServiceDesc" class="vt-form-textarea" placeholder="Nhập mô tả chi tiết lỗi/dịch vụ..."></textarea>
+                    </div>
+                    <!-- Status -->
+                    <div class="vt-form-group">
+                        <label for="addServiceStatus" class="vt-form-label">Trạng thái</label>
+                        <select asp-for="TrangThai"
+                                id="addServiceStatus"
+                                class="vt-form-select">
+
+                            <option value="Hoạt động">
+                                Hoạt động
+                            </option>
+
+                            <option value="Tạm khóa">
+                                Tạm khóa
+                            </option>
+
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer pb-4">
+                    <button type="button" class="vt-btn cancel" data-bs-dismiss="modal">Hủy</button>
+                    <button type="submit" class="vt-btn primary"><i class="bi bi-floppy-disk me-1"></i> Lưu lại</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,716 @@
+/* =============================================================
+   admin-services.css — TechSupport Viettel Admin Services Styling
+   Premium SaaS Dashboard Aesthetics — 2026 Edition
+   ============================================================= */
+
+:root {
+    --vt-red: #EE0033;
+    --vt-red-glow: rgba(238, 0, 51, 0.12);
+    --vt-red-hover: #FF1744;
+    --vt-dark-blue: #2C3E50;
+    --vt-bg-light: #F5F7FA;
+    --vt-white: #FFFFFF;
+    
+    --vt-border-radius: 16px;
+    --vt-border-radius-sm: 10px;
+    --vt-shadow-soft: 0 10px 30px rgba(44, 62, 80, 0.04);
+    --vt-shadow-hover: 0 15px 35px rgba(44, 62, 80, 0.08);
+    --vt-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    /* System Colors */
+    --color-teal: #14B8A6;
+    --color-amber: #F59E0B;
+    --color-blue: #3B82F6;
+    --color-purple: #8B5CF6;
+}
+
+/* ── Content Container Overrides ── */
+.admin-content {
+    background-color: var(--vt-bg-light);
+    min-height: calc(100vh - var(--topbar-height));
+    padding: 30px;
+    transition: var(--vt-transition);
+}
+
+[data-bs-theme="dark"] .admin-content {
+    background-color: #0B0F19;
+}
+
+/* Override Bootstrap Cards */
+.card {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color) !important;
+    border-radius: var(--vt-border-radius) !important;
+    box-shadow: var(--vt-shadow-soft) !important;
+    transition: var(--vt-transition) !important;
+}
+
+.card:hover {
+    box-shadow: var(--vt-shadow-hover) !important;
+}
+
+/* ── KPI Cards System ── */
+.rep-kpi-card {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--border-color) !important;
+}
+
+.rep-kpi-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background-color: transparent;
+    transition: var(--vt-transition);
+}
+
+.rep-kpi-card:hover {
+    transform: translateY(-5px);
+}
+
+.rep-kpi-card:hover::before {
+    background-color: var(--vt-red);
+}
+
+.rep-kpi-icon-box {
+    width: 46px;
+    height: 46px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    transition: var(--vt-transition);
+    flex-shrink: 0;
+}
+
+.rep-kpi-card:hover .rep-kpi-icon-box {
+    transform: scale(1.1);
+}
+
+/* HSL themed backgrounds for KPI box icons */
+.bg-warning-subtle { background-color: rgba(245, 158, 11, 0.08) !important; }
+.bg-primary-subtle { background-color: rgba(59, 130, 246, 0.08) !important; }
+.bg-success-subtle { background-color: rgba(16, 185, 129, 0.08) !important; }
+.bg-info-subtle    { background-color: rgba(139, 92, 246, 0.08) !important; }
+.bg-danger-subtle  { background-color: rgba(239, 68, 68, 0.08) !important; }
+.bg-teal-subtle    { background-color: rgba(20, 184, 166, 0.08) !important; }
+
+.text-teal { color: var(--color-teal) !important; }
+.text-amber { color: var(--color-amber) !important; }
+.text-blue { color: var(--color-blue) !important; }
+.text-purple { color: var(--color-purple) !important; }
+
+/* ── Filter Card Styling ── */
+.form-label-custom {
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+}
+
+.form-control-custom, .form-select-custom {
+    border-radius: var(--vt-border-radius-sm) !important;
+    border: 1.5px solid var(--border-color) !important;
+    background-color: var(--bg-card) !important;
+    color: var(--text-main) !important;
+    font-size: 0.88rem !important;
+    padding: 10px 14px !important;
+    transition: var(--vt-transition);
+}
+
+.form-control-custom:focus, .form-select-custom:focus {
+    border-color: var(--vt-red) !important;
+    box-shadow: 0 0 0 3px var(--vt-red-glow) !important;
+}
+
+/* ── Tables & Badges overrides ── */
+.table-light th {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-muted);
+    border-bottom: 2px solid var(--border-color);
+    padding: 16px 20px;
+}
+
+.table td {
+    padding: 16px 20px;
+    font-size: 0.875rem;
+    color: var(--text-main);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.table tbody tr {
+    transition: var(--vt-transition);
+}
+
+.table tbody tr:hover {
+    background-color: rgba(238, 0, 51, 0.02) !important;
+}
+
+/* Custom Status and Category badges */
+.badge-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+}
+
+.badge-status.active {
+    background-color: rgba(16, 185, 129, 0.1);
+    color: #059669;
+    border: 1px solid rgba(16, 185, 129, 0.15);
+}
+
+.badge-status.inactive {
+    background-color: rgba(239, 68, 68, 0.1);
+    color: #DC2626;
+    border: 1px solid rgba(239, 68, 68, 0.15);
+}
+
+/* Dynamic category badges */
+.badge-category {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 6px;
+    white-space: nowrap;
+}
+
+.badge-category.internet {
+    background-color: rgba(59, 130, 246, 0.08);
+    color: #2563EB;
+    border: 1px solid rgba(59, 130, 246, 0.15);
+}
+
+.badge-category.tv {
+    background-color: rgba(139, 92, 246, 0.08);
+    color: #7C3AED;
+    border: 1px solid rgba(139, 92, 246, 0.15);
+}
+
+.badge-category.mobile {
+    background-color: rgba(238, 0, 51, 0.06);
+    color: #EE0033;
+    border: 1px solid rgba(238, 0, 51, 0.1);
+}
+
+.badge-category.camera {
+    background-color: rgba(20, 184, 166, 0.08);
+    color: #0D9488;
+    border: 1px solid rgba(20, 184, 166, 0.15);
+}
+
+.badge-category.default {
+    background-color: rgba(156, 163, 175, 0.08);
+    color: #4B5563;
+    border: 1px solid rgba(156, 163, 175, 0.15);
+}
+
+/* Service Code representation */
+.rep-service-code {
+    font-family: 'Courier New', monospace;
+    font-weight: 750;
+    color: var(--vt-red);
+    background-color: var(--vt-red-glow);
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    white-space: nowrap;
+}
+
+/* Action button inside table row */
+.btn-action-custom {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    background-color: var(--bg-card);
+    color: var(--text-muted);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.82rem;
+    cursor: pointer;
+    transition: var(--vt-transition);
+}
+
+.btn-action-custom.view:hover {
+    color: #3B82F6;
+    border-color: rgba(59, 130, 246, 0.4);
+    background-color: rgba(59, 130, 246, 0.05);
+    transform: translateY(-2px);
+}
+
+.btn-action-custom.edit:hover {
+    color: #F59E0B;
+    border-color: rgba(245, 158, 11, 0.4);
+    background-color: rgba(245, 158, 11, 0.05);
+    transform: translateY(-2px);
+}
+
+.btn-action-custom.delete:hover {
+    color: #EF4444;
+    border-color: rgba(239, 68, 68, 0.4);
+    background-color: rgba(239, 68, 68, 0.05);
+    transform: translateY(-2px);
+}
+
+/* ── Pagination Styling overrides ── */
+.pagination {
+    gap: 4px;
+}
+
+.page-link {
+    min-width: 34px;
+    height: 34px;
+    border-radius: 8px !important;
+    border: 1.5px solid var(--border-color) !important;
+    background-color: var(--bg-card) !important;
+    color: var(--text-main) !important;
+    font-size: 0.8rem !important;
+    font-weight: 700 !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--vt-transition);
+    padding: 0 8px !important;
+}
+
+.page-link:hover:not(.active) {
+    border-color: var(--vt-red) !important;
+    color: var(--vt-red) !important;
+    background-color: var(--vt-red-glow) !important;
+}
+
+.page-item.active .page-link {
+    background-color: var(--vt-red) !important;
+    border-color: var(--vt-red) !important;
+    color: var(--vt-white) !important;
+    box-shadow: 0 4px 10px rgba(238, 0, 51, 0.3) !important;
+}
+
+.page-item.disabled .page-link {
+    opacity: 0.4 !important;
+    cursor: not-allowed;
+}
+
+/* ── Mobile Responsive Card representation ── */
+.rep-mobile-card {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--vt-border-radius-sm);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+    margin-bottom: 14px;
+}
+
+.rep-mobile-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.rep-mobile-card-title {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--text-main);
+}
+
+.rep-mobile-card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+}
+
+.rep-mobile-card-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.rep-mobile-card-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px dashed var(--border-color);
+    padding-top: 10px;
+    font-size: 0.78rem;
+}
+
+/* Modal details list styling */
+.detail-modal-row {
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border-color);
+}
+.detail-modal-row:last-child {
+    border-bottom: none;
+}
+
+/* Tooltip standard customization */
+.tooltip-inner {
+    background-color: var(--vt-dark-blue);
+    font-weight: 600;
+    font-size: 0.72rem;
+    border-radius: 6px;
+    padding: 6px 10px;
+}
+
+/* ── Responsive rules ── */
+@media (max-width: 991.98px) {
+    .rep-kpi-card .card-body {
+        position: relative;
+    }
+    .rep-kpi-icon-box {
+        position: absolute !important;
+        right: 16px;
+        bottom: 12px;
+        opacity: 0.15;
+        background-color: transparent !important;
+        border: none !important;
+        z-index: 1;
+        pointer-events: none;
+        width: 40px;
+        height: 40px;
+        font-size: 1.5rem;
+    }
+    .rep-kpi-card:hover .rep-kpi-icon-box {
+        transform: scale(1.1) !important;
+    }
+    .rep-kpi-card span.text-muted {
+        font-size: 0.72rem !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .admin-content {
+        padding: 20px;
+    }
+    
+    /* Mobile: Hides table layout and switches to dynamic cards */
+    .table-responsive {
+        display: none !important;
+    }
+    
+    #servicesMobileContainer {
+        display: flex !important;
+        flex-direction: column;
+    }
+    
+    /* Align buttons vertically */
+    .filter-actions-col {
+        text-align: right;
+    }
+}
+
+/* =============================================================
+   11. CUSTOM MODAL SYNC WITH ADMIN-CATEGORIES
+   ============================================================= */
+
+/* Override Bootstrap modals to look like VT modals */
+.modal-content {
+    background-color: var(--bg-card) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: var(--vt-border-radius) !important;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+    overflow: hidden !important;
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+}
+
+.modal-header {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding: 20px 24px !important;
+    border-bottom: 1px solid var(--border-color) !important;
+    background-color: var(--bg-card) !important;
+}
+
+.modal-body {
+    padding: 24px !important;
+}
+
+.modal-footer {
+    padding: 16px 24px !important;
+    border-top: 1px solid var(--border-color) !important;
+    display: flex !important;
+    justify-content: flex-end !important;
+    gap: 12px !important;
+    background-color: var(--bg-card) !important;
+}
+
+/* Modal Title Elements */
+.vt-modal-header-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.vt-modal-header-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.15rem;
+}
+
+.vt-modal-header-icon.add {
+    background-color: var(--vt-red-glow);
+    color: var(--vt-red);
+}
+
+.vt-modal-header-icon.edit {
+    background-color: rgba(245, 158, 11, 0.1);
+    color: #F59E0B;
+}
+
+.vt-modal-header-icon.delete {
+    background-color: rgba(239, 68, 68, 0.1);
+    color: #EF4444;
+}
+
+.vt-modal-header-icon.view-info {
+    background-color: rgba(59, 130, 246, 0.1);
+    color: #3B82F6;
+}
+
+.vt-modal-header-text h3 {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: var(--text-main);
+    margin: 0;
+}
+
+.vt-modal-header-text p {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin: 2px 0 0 0;
+}
+
+.vt-modal-close {
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 1.25rem;
+    padding: 4px;
+    transition: var(--vt-transition);
+}
+
+.vt-modal-close:hover {
+    color: var(--vt-red);
+}
+
+/* Form Styling in Modals */
+.vt-form-group {
+    margin-bottom: 20px;
+}
+
+.vt-form-group:last-child {
+    margin-bottom: 0;
+}
+
+.vt-form-label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-main);
+    margin-bottom: 8px;
+}
+
+.vt-form-label span {
+    color: var(--vt-red);
+}
+
+.vt-form-input, .vt-form-textarea, .vt-form-select {
+    width: 100%;
+    height: 44px;
+    border-radius: var(--vt-border-radius-sm);
+    border: 1.5px solid var(--border-color);
+    background-color: var(--bg-body);
+    color: var(--text-main);
+    padding: 0 14px;
+    font-size: 0.875rem;
+    outline: none;
+    transition: var(--vt-transition);
+}
+
+.vt-form-textarea {
+    height: 100px;
+    padding: 12px 14px;
+    resize: none;
+}
+
+.vt-form-input:focus, .vt-form-textarea:focus, .vt-form-select:focus {
+    border-color: var(--vt-red);
+    box-shadow: 0 0 0 3px var(--vt-red-glow);
+    background-color: var(--bg-card);
+}
+
+.vt-form-input.is-invalid, .vt-form-textarea.is-invalid {
+    border-color: #EF4444;
+}
+
+.vt-form-input.is-invalid:focus, .vt-form-textarea.is-invalid:focus {
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
+}
+
+.vt-form-select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%236B7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    background-size: 12px;
+}
+
+/* Modal Action Buttons */
+.vt-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 42px;
+    padding: 0 20px;
+    border-radius: var(--vt-border-radius-sm);
+    font-size: 0.875rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--vt-transition);
+    border: none;
+    text-decoration: none;
+}
+
+.vt-btn.cancel {
+    background-color: var(--bg-body);
+    border: 1.5px solid var(--border-color);
+    color: var(--text-main);
+}
+
+.vt-btn.cancel:hover {
+    border-color: var(--vt-red);
+    color: var(--vt-red);
+    background-color: var(--bg-card);
+}
+
+.vt-btn.primary {
+    background-color: var(--vt-red);
+    color: var(--vt-white);
+    box-shadow: 0 4px 10px rgba(238, 0, 51, 0.2);
+}
+
+.vt-btn.primary:hover {
+    background-color: var(--vt-red-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 14px rgba(238, 0, 51, 0.3);
+}
+
+.vt-btn.danger {
+    background-color: #EF4444;
+    color: var(--vt-white);
+    box-shadow: 0 4px 10px rgba(239, 68, 68, 0.2);
+}
+
+.vt-btn.danger:hover {
+    background-color: #DC2626;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 14px rgba(239, 68, 68, 0.3);
+}
+
+/* Details banner styles */
+.vt-view-banner {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 24px;
+    background: linear-gradient(135deg, var(--vt-red-glow) 0%, rgba(238, 0, 51, 0.02) 100%);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.vt-view-avatar-large {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    background-color: var(--vt-red);
+    color: var(--vt-white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    box-shadow: 0 4px 12px rgba(238, 0, 51, 0.3);
+}
+
+.vt-view-name {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: var(--text-main);
+    line-height: 1.2;
+}
+
+.vt-view-id {
+    font-family: 'Courier New', monospace;
+    font-size: 0.72rem;
+    font-weight: 750;
+    color: var(--vt-red);
+    background-color: var(--vt-red-glow);
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-top: 4px;
+    display: inline-block;
+}
+
+.vt-view-details {
+    padding: 20px 24px;
+}
+
+.vt-view-row {
+    display: flex;
+    border-bottom: 1px solid var(--border-color);
+    padding: 12px 0;
+}
+
+.vt-view-row:last-child {
+    border-bottom: none;
+}
+
+.vt-view-label {
+    width: 150px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.vt-view-val {
+    flex: 1;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-main);
+}
+

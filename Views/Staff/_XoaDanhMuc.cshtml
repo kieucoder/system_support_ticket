@@ -1,0 +1,77 @@
+@model SupportTicketSysterm.Data.DanhMuc
+
+<div id="deleteModal" class="vt-modal-overlay"
+     role="dialog"
+     aria-modal="true"
+     aria-labelledby="deleteModalTitle">
+
+    <div class="vt-modal vt-modal-sm">
+        <form asp-action="XoaDanhMuc" method="post" id="deleteCatForm">
+            @Html.AntiForgeryToken()
+            <input type="hidden" id="IdDanhMucXoa" name="id" />
+
+            <div class="vt-modal-header">
+                <div class="vt-modal-header-title">
+                    <div class="vt-modal-header-icon delete">
+                        <i class="bi bi-triangle-exclamation"></i>
+                    </div>
+
+                    <div class="vt-modal-header-text">
+                        <h3 id="deleteModalTitle">Xác Nhận Xóa</h3>
+                        <p>Hành động này không thể hoàn tác</p>
+                    </div>
+                </div>
+
+                <button type="button"
+                        class="vt-modal-close"
+                        onclick="closeDeleteModal()">
+
+                    <i class="fa-solid fa-times"></i>
+
+                </button>
+            </div>
+
+            <div class="vt-modal-body">
+
+                <div class="vt-delete-confirm-box">
+
+                    <div class="vt-delete-icon-large">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </div>
+
+                    <p>Bạn có chắc chắn muốn xóa danh mục này không?</p>
+
+                    <div class="vt-delete-item-name"
+                         id="deleteCatName">
+                    </div>
+
+                    <span class="sub">
+                        Toàn bộ dữ liệu liên quan sẽ bị xóa vĩnh viễn khỏi hệ thống.
+                    </span>
+
+                </div>
+
+            </div>
+
+            <div class="vt-modal-footer" style="justify-content:center;">
+
+                <button type="button"
+                        class="vt-btn cancel"
+                        onclick="closeDeleteModal()">
+                    Hủy
+                </button>
+
+                <button type="submit"
+                        class="vt-btn danger">
+
+                    Xóa
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>

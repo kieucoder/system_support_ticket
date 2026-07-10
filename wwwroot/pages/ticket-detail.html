@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Chi Tiết Phiếu Hỗ Trợ - TechSupport Viettel</title>
+
+    <!-- SEO Optimization -->
+    <meta name="description"
+        content="Trang chi tiết phiếu hỗ trợ kỹ thuật TechSupport Viettel. Theo dõi tiến trình khắc phục sự cố, trao đổi với kỹ thuật viên và đánh giá dịch vụ.">
+    <meta name="keywords" content="chi tiet phieu, viettel support, ho tro kỹ thuat, khac phuc su co, techsupport">
+    <meta name="author" content="Viettel Telecom TechSupport">
+    <meta name="robots" content="noindex, nofollow">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="https://viettel.com.vn/favicon.ico">
+
+    <!-- Bootstrap 5.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <!-- Font Awesome 6.6.0 CDN (Enterprise) -->
+    <link rel="stylesheet" id="fa-cdn-link" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+    <!-- FontAwesome Fallback Script -->
+    <script>
+        document.getElementById('fa-cdn-link').addEventListener('error', function() {
+            document.documentElement.classList.add('fa-fallback-active');
+            console.warn("FontAwesome failed to load. Falling back to Bootstrap Icons.");
+        });
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                if (!document.fonts.check('12px "Font Awesome 6 Free"')) {
+                    document.documentElement.classList.add('fa-fallback-active');
+                }
+            }, 1200);
+        });
+    </script>
+
+    <!-- Google Fonts Inter & Poppins -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Core Stylesheets -->
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/responsive.css">
+    <link rel="stylesheet" href="../assets/css/header.css">
+    <link rel="stylesheet" href="../assets/css/sidebar.css">
+    <link rel="stylesheet" href="../assets/css/footer.css">
+    <link rel="stylesheet" href="../assets/css/chatbox.css">
+
+    <!-- Custom Page CSS -->
+    <link rel="stylesheet" href="../assets/css/contact.css">
+    <link rel="stylesheet" href="../assets/css/ticket-detail.css">
+
+</head>
+
+<body>
+
+    <!-- ==================== HEADER CONTAINER ==================== -->
+    <div id="header-container">
+        <!-- 1. TOPBAR HEADER -->
+        <header class="top-header">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-8 col-12 top-header-info d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+                        <span class="me-4"><i class="fa-solid fa-phone"></i> Hotline kỹ thuật: <a href="tel:19008098">1900 8098</a> (Miễn phí)</span>
+                        <span class="me-4"><i class="fa-solid fa-envelope"></i> Email: <a href="mailto:support@viettel.com.vn">support@viettel.com.vn</a></span>
+                        <span><i class="fa-solid fa-clock"></i> Hỗ trợ kỹ thuật 24/7/365</span>
+                    </div>
+                    <div class="col-lg-4 col-12 top-header-social d-flex align-items-center justify-content-center justify-content-lg-end mt-2 mt-lg-0">
+                        <span class="me-2 d-none d-sm-inline">Kết nối:</span>
+                        <a href="https://facebook.com" target="_blank" class="me-2" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+                        <a href="https://youtube.com" target="_blank" class="me-2" aria-label="Youtube"><i class="bi bi-youtube"></i></a>
+                        <a href="https://linkedin.com" target="_blank" class="me-2" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
+                        <a href="https://instagram.com" target="_blank" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- 2. NAVBAR STICKY -->
+        <header class="custom-header fixed-top" id="mainNavbar">
+            <div class="container container-header-wrapper">
+                <a class="navbar-brand" href="../index.html#heroSection" id="navBrand">
+                    <i class="fa-solid fa-cpu-fill"></i>
+                    <span>TechSupport</span>
+                </a>
+                <nav class="desktop-menu d-none d-xl-flex align-items-center justify-content-between flex-grow-1 ms-5">
+                    <ul class="navbar-nav header-nav-list flex-row align-items-center gap-2">
+                        <li class="nav-item"><a class="nav-link" href="../index.html" id="linkHome">Trang chủ</a></li>
+                        <li class="nav-item dropdown-custom">
+                            <a class="nav-link dropdown-toggle-custom d-inline-flex align-items-center" href="#" id="linkServices">
+                                Dịch vụ hỗ trợ <i class="fa-solid fa-chevron-down ms-1" style="font-size: 0.8rem;"></i>
+                            </a>
+                            <ul class="dropdown-menu-custom">
+                                <li><a class="dropdown-item-custom" href="../index.html#serviceGridSection">Hỗ trợ Internet Cáp Quang</a></li>
+                                <li><a class="dropdown-item-custom" href="../index.html#serviceGridSection">Hỗ trợ Home Camera</a></li>
+                                <li><a class="dropdown-item-custom" href="../index.html#serviceGridSection">Hỗ trợ Server &amp; Cloud</a></li>
+                                <li><a class="dropdown-item-custom" href="../index.html#serviceGridSection">Hỗ trợ Phần mềm &amp; Mạng nội bộ</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item"><a class="nav-link active" href="lookup-ticket.html" id="linkSearch">Tra cứu phiếu</a></li>
+                        <li class="nav-item"><a class="nav-link" href="huong-dan.html" id="linkGuides">Hướng dẫn</a></li>
+                        <li class="nav-item"><a class="nav-link" href="contact.html" id="linkContact">Liên hệ</a></li>
+                    </ul>
+                    <div class="header-buttons-group d-flex align-items-center gap-2">
+                        <div id="authButtons" class="d-flex align-items-center gap-2">
+                            <a href="../login.html" class="btn btn-login-custom btn-ripple rounded-pill px-4" id="btnLogin">
+                                <i class="fa-solid fa-user me-1"></i> Đăng nhập
+                            </a>
+                        </div>
+                        <a href="../register.html" class="btn btn-create-ticket-custom btn-ripple px-4" id="btnCreateTicket">
+                            <i class="bi bi-person-plus-fill me-1"></i> Đăng ký
+                        </a>
+                    </div>
+                </nav>
+                <div id="userDropdownWrapper" class="user-profile-dropdown d-none d-flex align-items-center gap-3">
+                    <a href="#" class="btn-logout-header-custom btn-ripple" id="btnHeaderLogout">🚪 Đăng xuất</a>
+                    <div class="position-relative">
+                        <button class="btn-user-dropdown" type="button" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa-solid fa-user"></i>
+                            <span class="greeting-text">Xin chào, </span><span id="userDisplayName"></span>
+                            <i class="fa-solid fa-chevron-down dropdown-arrow"></i>
+                        </button>
+                        <ul class="user-profile-dropdown-menu">
+                            <li><a class="dropdown-item" href="customer-profile.html">👤 Thông tin cá nhân</a></li>
+                            <li><a class="dropdown-item" href="customer-profile.html#ticketSection">🎫 Phiếu hỗ trợ của tôi</a></li>
+                            <li><a class="dropdown-item" href="customer-profile.html#appointmentSection">📅 Lịch hẹn hỗ trợ</a></li>
+                            <li><a class="dropdown-item" href="contact.html">📞 Liên hệ hỗ trợ</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="#" id="btnLogoutBtn">🚪 Đăng xuất</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <button class="navbar-hamburger d-xl-none" type="button" id="menuToggle" aria-label="Toggle navigation">
+                    <div class="hamburger">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </button>
+            </div>
+        </header>
+    </div>
+
+    <!-- ==================== SIDEBAR CONTAINER ==================== -->
+    <div id="sidebar-container">
+        <!-- Slide Menu Drawer for Mobile -->
+        <div class="mobile-drawer" id="mobileDrawer">
+            <div class="drawer-header border-bottom">
+                <h5 class="drawer-title fw-bold"><span>TechSupport</span></h5>
+                <button type="button" class="btn-close-custom" id="drawerClose" aria-label="Close"><i class="fa-solid fa-times"></i></button>
+            </div>
+            <div class="drawer-body">
+                <ul class="drawer-nav-list">
+                    <li class="drawer-nav-item"><a class="drawer-nav-link" href="../index.html">Trang chủ</a></li>
+                    <li class="drawer-nav-item drawer-dropdown-custom">
+                        <a class="drawer-nav-link dropdown-toggle-custom d-flex justify-content-between align-items-center" href="#">
+                            Dịch vụ hỗ trợ <i class="fa-solid fa-chevron-down ms-1"></i>
+                        </a>
+                        <ul class="drawer-dropdown-menu-custom">
+                            <li><a class="drawer-dropdown-item-custom" href="../index.html#serviceGridSection">Internet Cáp Quang</a></li>
+                            <li><a class="drawer-dropdown-item-custom" href="../index.html#serviceGridSection">Home Camera</a></li>
+                            <li><a class="drawer-dropdown-item-custom" href="../index.html#serviceGridSection">Server &amp; Cloud</a></li>
+                            <li><a class="drawer-dropdown-item-custom" href="../index.html#serviceGridSection">Mạng nội bộ</a></li>
+                        </ul>
+                    </li>
+                    <li class="drawer-nav-item"><a class="drawer-nav-link active" href="lookup-ticket.html">Tra cứu phiếu</a></li>
+                    <li class="drawer-nav-item"><a class="drawer-nav-link" href="huong-dan.html">Hướng dẫn</a></li>
+                    <li class="drawer-nav-item"><a class="drawer-nav-link" href="contact.html">Liên hệ</a></li>
+                </ul>
+            </div>
+            <div class="drawer-buttons-group d-flex flex-column">
+                <a href="../login.html" class="btn btn-login-custom btn-ripple rounded-pill px-4 justify-content-center"><i class="fa-solid fa-user me-1"></i> Đăng nhập</a>
+                <a href="../register.html" class="btn btn-create-ticket-custom btn-ripple px-4 justify-content-center"><i class="bi bi-person-plus-fill me-1"></i> Đăng ký</a>
+            </div>
+        </div>
+        <div class="drawer-overlay" id="drawerOverlay"></div>
+    </div>
+
+    <!-- HERO SECTION -->
+    <section class="hero-section p-0" id="heroSection">
+        <div class="hero-carousel">
+            <div class="carousel-inner">
+                <div class="carousel-item active" style="background-image: url('../assets/images/hero_telecom_service.png');">
+                    <div class="hero-carousel-overlay"></div>
+                    <div class="hero-carousel-content">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-lg-8 col-md-10 col-12 text-start">
+                                    <!-- Breadcrumb Navigation -->
+                                    <nav aria-label="breadcrumb" class="hero-breadcrumb">
+                                        <ol class="breadcrumb m-0" itemscope itemtype="https://schema.org/BreadcrumbList">
+                                            <li class="breadcrumb-item" itemprop="itemListElement" itemscope
+                                                itemtype="https://schema.org/ListItem">
+                                                <a href="../index.html" itemprop="item"
+                                                    class="text-decoration-none d-inline-flex align-items-center">
+                                                    <i class="fa-solid fa-house-door-fill me-1"></i>
+                                                    <span itemprop="name">Trang chủ</span>
+                                                </a>
+                                                <meta itemprop="position" content="1" />
+                                            </li>
+                                            <li class="breadcrumb-item" itemprop="itemListElement" itemscope
+                                                itemtype="https://schema.org/ListItem">
+                                                <a href="lookup-ticket.html" itemprop="item" class="text-decoration-none">
+                                                    <span itemprop="name">Tra cứu</span>
+                                                </a>
+                                                <meta itemprop="position" content="2" />
+                                            </li>
+                                            <li class="breadcrumb-item active" itemprop="itemListElement" itemscope
+                                                itemtype="https://schema.org/ListItem" aria-current="page">
+                                                <span itemprop="name">Chi tiết phiếu</span>
+                                                <meta itemprop="position" content="3" />
+                                            </li>
+                                        </ol>
+                                    </nav>
+
+                                    <!-- Badge -->
+                                    <span class="hero-badge animate-fade-up">
+                                        <i class="bi bi-ticket-detailed-fill me-1"></i> Chi tiết phiếu hỗ trợ kỹ thuật
+                                    </span>
+
+                                    <!-- Title -->
+                                    <h1 class="hero-title animate-fade-up delay-1">Phiếu Hỗ Trợ: <span class="highlight-red font-monospace" id="heroTicketCode">#VT-992038</span></h1>
+
+                                    <!-- Description -->
+                                    <p class="hero-desc animate-fade-up delay-2">
+                                        Theo dõi tiến độ, xem lịch sử xử lý sự cố mạng, phản hồi thông tin trực tiếp với nhân viên kỹ thuật Viettel đang phụ trách.
+                                    </p>
+
+                                    <!-- CTA Buttons -->
+                                    <div class="hero-buttons animate-fade-up delay-3">
+                                        <a href="#chatSection" class="btn btn-create-ticket-custom btn-ripple">
+                                            <i class="bi bi-chat-text me-1"></i> Trò chuyện trực tiếp
+                                        </a>
+                                        <a href="#ticketTimeline" class="btn btn-outline-light-custom btn-ripple">
+                                            <i class="bi bi-activity me-1"></i> Tiến trình xử lý
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+=======
+    <!-- Header Component Container -->
+    <div id="header-container"></div>
+
+    <!-- Sidebar Drawer Component Container (Mobile Drawer) -->
+    <div id="sidebar-container"></div>
+
+    <!-- HERO SECTION -->
+    <section class="hero-section">
+        <div class="container hero-content">
+            <div class="row align-items-center g-5">
+
+                <!-- Left Column: Text & Info -->
+                <div class="col-lg-6 col-12 text-start hero-text-col animate-fade-up">
+
+                    <!-- Breadcrumb Navigation (Glassmorphism Pill) -->
+                    <nav aria-label="breadcrumb" class="hero-breadcrumb mb-4">
+                        <ol class="breadcrumb m-0" itemscope itemtype="https://schema.org/BreadcrumbList">
+                            <li class="breadcrumb-item" itemprop="itemListElement" itemscope
+                                itemtype="https://schema.org/ListItem">
+                                <a href="../index.html" itemprop="item"
+                                    class="text-decoration-none d-inline-flex align-items-center">
+                                    <i class="fa-solid fa-house-door-fill me-1"></i>
+                                    <span itemprop="name">Trang chủ</span>
+                                </a>
+                                <meta itemprop="position" content="1" />
+                            </li>
+                            <li class="breadcrumb-item" itemprop="itemListElement" itemscope
+                                itemtype="https://schema.org/ListItem">
+                                <a href="customer-profile.html#my-tickets" itemprop="item"
+                                    class="text-decoration-none d-inline-flex align-items-center">
+                                    <span itemprop="name">Phiếu Hỗ Trợ</span>
+                                </a>
+                                <meta itemprop="position" content="2" />
+                            </li>
+                            <li class="breadcrumb-item active" itemprop="itemListElement" itemscope
+                                itemtype="https://schema.org/ListItem" aria-current="page">
+                                <span itemprop="name" id="breadcrumbTicketCode">PT000123</span>
+                                <meta itemprop="position" content="3" />
+                            </li>
+                        </ol>
+                    </nav>
+
+                    <!-- Hero Badge -->
+                    <span class="hero-badge mb-3">
+                        <i class="bi bi-ticket-detailed-fill me-1"></i> CHI TIẾT PHIẾU HỖ TRỢ
+                    </span>
+
+                    <!-- Main Title -->
+                    <h1 class="hero-title mb-3">Chi Tiết <span class="hero-title-highlight">Phiếu Hỗ Trợ</span></h1>
+
+                    <!-- Description -->
+                    <p class="hero-desc mb-4">
+                        Theo dõi toàn bộ thông tin, tiến độ xử lý, lịch sử cập nhật và trao đổi hỗ trợ của phiếu yêu cầu
+                        kỹ thuật.
+                    </p>
+
+                    <!-- Quick Info Cards -->
+                    <div class="hero-quick-info-row mb-4">
+                        <div class="hero-info-card">
+                            <div class="hero-info-card-icon">
+                                <i class="fa-solid fa-ticket-fill"></i>
+                            </div>
+                            <div class="hero-info-card-body">
+                                <span class="hero-info-card-label">Mã Phiếu</span>
+                                <strong class="hero-info-card-value" id="heroTicketCode">PT000123</strong>
+                            </div>
+                        </div>
+                        <div class="hero-info-card">
+                            <div class="hero-info-card-icon">
+                                <i class="bi bi-calendar3"></i>
+                            </div>
+                            <div class="hero-info-card-body">
+                                <span class="hero-info-card-label">Ngày Tạo</span>
+                                <strong class="hero-info-card-value" id="heroCreatedDate">10/06/2026</strong>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+
+                </div>
+
+                <!-- Right Column: SVG Illustration -->
+                <div class="col-lg-6 col-12 hero-banner-wrapper animate-fade-up delay-1">
+                    <svg class="hero-banner-svg" viewBox="0 0 520 420" xmlns="http://www.w3.org/2000/svg"
+                        aria-label="Ticket support detail illustration">
+                        <defs>
+                            <linearGradient id="tdRed" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#ee0033" />
+                                <stop offset="100%" stop-color="#ff4d6d" />
+                            </linearGradient>
+                            <linearGradient id="tdDark" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#1f2937" />
+                                <stop offset="100%" stop-color="#111827" />
+                            </linearGradient>
+                        </defs>
+
+                        <!-- Background ambient glow -->
+                        <circle cx="400" cy="130" r="90" fill="url(#tdRed)" opacity="0.07" />
+                        <circle cx="100" cy="300" r="60" fill="#3b82f6" opacity="0.04" />
+                        <rect x="40" y="280" width="80" height="80" rx="16" fill="#ffffff" opacity="0.04"
+                            transform="rotate(20 80 320)" />
+
+                        <!-- Main Ticket Panel -->
+                        <rect x="60" y="45" width="340" height="240" rx="20" fill="#ffffff" stroke="rgba(15,17,21,0.06)"
+                            stroke-width="1.5" filter="drop-shadow(0 15px 35px rgba(0,0,0,0.08))" />
+
+                        <!-- Panel Header Bar -->
+                        <path
+                            d="M60 65 C60 53.95, 68.95 45, 80 45 L380 45 C391.05 45, 400 53.95, 400 65 L400 85 L60 85 Z"
+                            fill="url(#tdDark)" />
+                        <circle cx="84" cy="65" r="5" fill="#ee0033" />
+                        <circle cx="100" cy="65" r="5" fill="#eab308" />
+                        <circle cx="116" cy="65" r="5" fill="#10b981" />
+                        <rect x="145" y="60" width="180" height="10" rx="5" fill="rgba(255,255,255,0.12)" />
+                        <rect x="335" y="57" width="55" height="16" rx="8" fill="url(#tdRed)" opacity="0.8" />
+
+                        <!-- Content Lines -->
+                        <rect x="90" y="105" width="120" height="9" rx="4.5" fill="#0f1115" opacity="0.8" />
+                        <rect x="90" y="120" width="260" height="6" rx="3" fill="#e5e7eb" />
+                        <rect x="90" y="132" width="200" height="6" rx="3" fill="#e5e7eb" />
+
+                        <!-- Status Badges Row -->
+                        <rect x="90" y="158" width="70" height="22" rx="11" fill="#fffbeb" stroke="#fde68a"
+                            stroke-width="1" />
+                        <circle cx="103" cy="169" r="4" fill="#f59e0b" />
+                        <rect x="112" y="165" width="40" height="8" rx="4" fill="#f59e0b" opacity="0.5" />
+                        <rect x="170" y="158" width="60" height="22" rx="11" fill="#fef2f2" stroke="#fca5a5"
+                            stroke-width="1" />
+                        <circle cx="183" cy="169" r="4" fill="#ef4444" />
+                        <rect x="192" y="165" width="30" height="8" rx="4" fill="#ef4444" opacity="0.5" />
+
+                        <!-- Agent Chat Bubble -->
+                        <rect x="90" y="200" width="180" height="42" rx="12" fill="#f1f5f9" />
+                        <circle cx="110" cy="221" r="12" fill="#94a3b8" />
+                        <rect x="128" y="212" width="120" height="7" rx="3.5" fill="#cbd5e1" />
+                        <rect x="128" y="224" width="80" height="5" rx="2.5" fill="#e2e8f0" />
+
+                        <!-- Customer Reply Bubble -->
+                        <rect x="190" y="255" width="170" height="38" rx="12" fill="url(#tdRed)" opacity="0.9" />
+                        <rect x="204" y="266" width="100" height="7" rx="3.5" fill="#ffffff" opacity="0.9" />
+                        <rect x="204" y="278" width="70" height="5" rx="2.5" fill="#ffffff" opacity="0.6" />
+
+                        <!-- Timeline dots -->
+                        <line x1="90" y1="315" x2="420" y2="315" stroke="#e5e7eb" stroke-width="3"
+                            stroke-linecap="round" />
+                        <circle cx="110" cy="315" r="9" fill="#10b981" stroke="#ffffff" stroke-width="2" />
+                        <circle cx="190" cy="315" r="9" fill="#10b981" stroke="#ffffff" stroke-width="2" />
+                        <circle cx="270" cy="315" r="9" fill="#f59e0b" stroke="#ffffff" stroke-width="2" />
+                        <circle cx="350" cy="315" r="9" fill="#e5e7eb" stroke="#ffffff" stroke-width="2" />
+                        <circle cx="420" cy="315" r="9" fill="#e5e7eb" stroke="#ffffff" stroke-width="2" />
+
+                        <!-- Floating Headset Card -->
+                        <g class="td-floating-card">
+                            <rect x="330" y="175" width="155" height="100" rx="16" fill="#ffffff"
+                                filter="drop-shadow(0 10px 25px rgba(0,0,0,0.12))" />
+                            <circle cx="370" cy="215" r="18" fill="url(#tdRed)" />
+                            <path d="M370 195 A18 18 0 0 1 388 211" fill="none" stroke="#0f1115" stroke-width="2.5"
+                                stroke-linecap="round" />
+                            <circle cx="388" cy="211" r="3.5" fill="#0f1115" />
+                            <path d="M350 230 C350 218, 390 218, 390 230 Z" fill="#0f1115" />
+                            <rect x="402" y="201" width="70" height="8" rx="4" fill="url(#tdRed)" />
+                            <rect x="402" y="215" width="55" height="6" rx="3" fill="#9ca3af" />
+                            <rect x="402" y="227" width="60" height="5" rx="2.5" fill="#d1d5db" />
+                            <circle cx="404" cy="253" r="7" fill="#10b981" stroke="#ffffff" stroke-width="2" />
+                            <rect x="416" y="250" width="50" height="6" rx="3" fill="#d1d5db" />
+                        </g>
+
+                        <!-- Floating gear badge -->
+                        <circle cx="77" cy="182" r="22" fill="#ffffff" stroke="#f1f5f9" stroke-width="2"
+                            filter="drop-shadow(0 4px 8px rgba(0,0,0,0.06))" />
+                        <path
+                            d="M77 172 L77 175 M77 189 L77 192 M67 182 L70 182 M84 182 L87 182 M70.5 175.5 L72.6 177.6 M81.4 186.4 L83.5 188.5 M70.5 188.5 L72.6 186.4 M81.4 177.6 L83.5 175.5"
+                            stroke="#64748b" stroke-width="2" stroke-linecap="round" />
+                        <circle cx="77" cy="182" r="5" fill="#64748b" />
+                    </svg>
+                </div>
+
+>>>>>>> 59a5e6f64da6c8eb44454bf22a5574b208c2f2b3
+            </div>
+        </div>
+    </section>
+
+    <!-- MAIN WORKSPACE -->
+    <main class="workspace-area">
+        <div class="container container-workspace">
+
+            <!-- 3. DASHBOARD TÓM TẮT -->
+            <section class="summary-stats-grid">
+                <!-- Card 1: Trạng thái -->
+                <div class="summary-card animate-fade-up">
+                    <div class="summary-icon-box status-orange">
+                        <i class="bi bi-clock-history"></i>
+                    </div>
+                    <div class="summary-info">
+                        <span class="summary-label"> Trạng thái</span>
+                        <h3 class="summary-value" id="statsStatusText">Đang xử lý</h3>
+                    </div>
+                </div>
+
+                <!-- Card 2: Mức ưu tiên -->
+                <div class="summary-card animate-fade-up">
+                    <div class="summary-icon-box priority-red">
+                        <i class="bi bi-fire"></i>
+                    </div>
+                    <div class="summary-info">
+                        <span class="summary-label"> Mức ưu tiên</span>
+                        <h3 class="summary-value text-danger" id="statsPriorityText">Cao</h3>
+                    </div>
+                </div>
+
+                <!-- Card 3: Lịch hẹn -->
+                <div class="summary-card animate-fade-up">
+                    <div class="summary-icon-box appointment-blue">
+                        <i class="bi bi-calendar2-check"></i>
+                    </div>
+                    <div class="summary-info">
+                        <span class="summary-label"> Lịch hẹn</span>
+                        <h3 class="summary-value counter-value" id="statsAppointmentsCount" data-target="1">0</h3>
+                    </div>
+                </div>
+
+                <!-- Card 4: Tin nhắn -->
+                <div class="summary-card animate-fade-up">
+                    <div class="summary-icon-box messages-purple">
+                        <i class="bi bi-chat-dots-fill"></i>
+                    </div>
+                    <div class="summary-info">
+                        <span class="summary-label"> Tin nhắn trao đổi</span>
+                        <h3 class="summary-value counter-value" id="statsMessagesCount" data-target="12">0</h3>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. MAIN BỐ CỤC CHÍNH (SIDEBAR + CONTENT) -->
+            <div class="main-sections-layout">
+
+                <!-- 5. SIDEBAR THÔNG TIN PHIẾU (DESKTOP VIEW) -->
+                <aside class="ticket-sidebar-col" id="ticketSidebarCol">
+                    <div class="sidebar-cards-wrapper">
+                        <!-- Card 1: Thông tin chi tiết -->
+                        <div class="sidebar-card">
+                            <h3 class="sidebar-card-title"><i class="fa-solid fa-circle-info text-danger me-2"></i>Thông
+                                tin phiếu</h3>
+                            <div class="sidebar-meta-list">
+                                <div class="meta-item">
+                                    <span class="meta-label">Mã phiếu</span>
+                                    <span class="meta-value highlight" id="sideTicketCode">PT000123</span>
+                                </div>
+                                <div class="meta-item">
+                                    <span class="meta-label">Dịch vụ</span>
+                                    <span class="meta-value" id="sideTicketService">Internet Cáp Quang</span>
+                                </div>
+                                <div class="meta-item">
+                                    <span class="meta-label">Danh mục</span>
+                                    <span class="meta-value" id="sideTicketCategory">Viễn thông</span>
+                                </div>
+                                <div class="meta-item">
+                                    <span class="meta-label">Loại yêu cầu</span>
+                                    <span class="meta-value">Sự cố kỹ thuật</span>
+                                </div>
+                                <div class="meta-item">
+                                    <span class="meta-label">Trạng thái</span>
+                                    <span class="badge badge-processing py-1 px-3" id="sideTicketStatus">Đang xử
+                                        lý</span>
+                                </div>
+                                <div class="meta-item border-none">
+                                    <span class="meta-label">Mức ưu tiên</span>
+                                    <span class="meta-value text-danger fw-bold" id="sideTicketPriority">Cao</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 2: Nhân viên phụ trách -->
+                        <div class="sidebar-card">
+                            <h3 class="sidebar-card-title"><i class="bi bi-person-workspace text-danger me-2"></i>Nhân
+                                viên phụ trách</h3>
+                            <div class="agent-profile-box text-center">
+                                <div class="agent-avatar-circle" id="agentInitials">NV</div>
+                                <h4 class="agent-name" id="agentName">Nguyễn Văn B</h4>
+                                <p class="agent-role">Kỹ thuật viên hỗ trợ</p>
+
+                                <div class="agent-contacts-list text-start mt-3 border-top pt-3">
+                                    <div class="contact-line">
+                                        <i class="bi bi-telephone text-success"></i>
+                                        <a href="tel:0909888777" id="agentPhone">0909 888 777</a>
+                                    </div>
+                                    <div class="contact-line">
+                                        <i class="bi bi-envelope text-danger"></i>
+                                        <a href="mailto:support@techsupport.vn"
+                                            id="agentEmail">support@techsupport.vn</a>
+                                    </div>
+                                </div>
+
+                                <div class="agent-actions-group mt-3 pt-3 border-top d-flex gap-2">
+                                    <a href="tel:0909888777" class="btn btn-sm btn-outline-success flex-grow-1"
+                                        id="btnCallAgent">
+                                        <i class="fa-solid fa-phone"></i> Gọi hỗ trợ
+                                    </a>
+                                    <button class="btn btn-sm btn-outline-danger flex-grow-1" id="btnChatAgentShortcut">
+                                        <i class="bi bi-chat-text-fill"></i> Nhắn tin
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 3: Cập nhật trạng thái -->
+                        <div class="sidebar-card status-change-card" id="statusChangeCard">
+                            <h3 class="sidebar-card-title"><i class="bi bi-arrow-repeat text-danger me-2"></i>Cập nhật
+                                trạng thái</h3>
+                            <div class="status-change-body">
+                                <!-- Current status display with animated indicator -->
+                                <div class="current-status-display mb-3" id="currentStatusDisplay">
+                                    <span class="status-change-label">Trạng thái hiện tại</span>
+                                    <div class="status-indicator-row" id="statusIndicatorRow">
+                                        <span class="status-pulse-dot" id="statusPulseDot"></span>
+                                        <span class="status-indicator-text" id="statusIndicatorText">Đang xử lý</span>
+                                    </div>
+                                </div>
+
+                                <!-- Dropdown select new status -->
+                                <label class="status-change-label mb-2 d-block">Chuyển sang trạng thái</label>
+                                <div class="status-select-wrapper" id="statusSelectWrapper">
+                                    <select class="status-dropdown-select" id="statusDropdownSelect">
+                                        <option value="pending"> Chờ tiếp nhận</option>
+                                        <option value="processing" selected> Đang xử lý</option>
+                                        <option value="completed"> Đã hoàn thành</option>
+                                        <option value="cancelled"> Đã hủy</option>
+                                    </select>
+                                </div>
+
+                                <!-- Update button -->
+                                <button class="btn-status-update w-100 mt-3" id="btnUpdateStatus">
+                                    <i class="bi bi-check2-circle me-2"></i>Xác nhận cập nhật
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- RIGHT CONTENT (TABS NAVIGATION + DETAILS) -->
+                <div class="ticket-content-col">
+
+                    <!-- Mobile Sidebar Trigger Bar (Visible only < 768px) -->
+                    <div class="mobile-sidebar-trigger-bar d-md-none mb-3">
+                        <button class="btn btn-viettel-red w-100 py-2 d-flex justify-content-between align-items-center"
+                            id="btnToggleMobileSidebar">
+                            <span><i class="bi bi-info-circle me-2"></i> Xem thông tin phiếu & kỹ thuật viên</span>
+                            <i class="fa-solid fa-chevron-right"></i>
+                        </button>
+                    </div>
+
+                    <!-- 6. TAB NAVIGATION HEADER -->
+                    <div class="tabs-header-navigation">
+                        <ul class="tabs-nav-list" role="tablist">
+                            <li class="tab-nav-item">
+                                <button class="tab-nav-link active" id="tabBtnOverview"
+                                    data-tab-target="tabPanelOverview" role="tab" aria-selected="true">
+                                    <i class="fa-solid fa-file"></i> Tổng quan
+                                </button>
+                            </li>
+                            <li class="tab-nav-item">
+                                <button class="tab-nav-link" id="tabBtnTimeline" data-tab-target="tabPanelTimeline"
+                                    role="tab" aria-selected="false">
+                                    <i class="bi bi-clock-history"></i> Timeline xử lý
+                                </button>
+                            </li>
+                            <li class="tab-nav-item">
+                                <button class="tab-nav-link" id="tabBtnChat" data-tab-target="tabPanelChat" role="tab"
+                                    aria-selected="false">
+                                    <i class="bi bi-chat-left-dots"></i> Chat hỗ trợ
+                                </button>
+                            </li>
+                            <li class="tab-nav-item">
+                                <button class="tab-nav-link" id="tabBtnAppointments"
+                                    data-tab-target="tabPanelAppointments" role="tab" aria-selected="false">
+                                    <i class="bi bi-calendar2-event"></i> Lịch hẹn
+                                </button>
+                            </li>
+                            <li class="tab-nav-item">
+                                <button class="tab-nav-link" id="tabBtnAttachments"
+                                    data-tab-target="tabPanelAttachments" role="tab" aria-selected="false">
+                                    <i class="fa-solid fa-paperclip"></i> File đính kèm
+                                </button>
+                            </li>
+                            <li class="tab-nav-item">
+                                <button class="tab-nav-link" id="tabBtnReview" data-tab-target="tabPanelReview"
+                                    role="tab" aria-selected="false">
+                                    <i class="fa-regular fa-star"></i> Đánh giá
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- TAB CONTENTS WRAPPER -->
+                    <div class="tab-contents-wrapper mt-3">
+
+                        <!-- 7. TAB TỔNG QUAN -->
+                        <div class="tab-content-panel active" id="tabPanelOverview" role="tabpanel">
+                            <div class="overview-details-card">
+                                <h3 class="section-inner-title mb-4"><i
+                                        class="bi bi-card-list text-danger me-2"></i>Thông tin yêu cầu</h3>
+
+                                <div class="overview-info-grid">
+                                    <div class="info-cell">
+                                        <span class="cell-label">Khách hàng</span>
+                                        <span class="cell-value" id="viewCustomerName">Nguyễn Văn An</span>
+                                    </div>
+                                    <div class="info-cell">
+                                        <span class="cell-label">Số điện thoại</span>
+                                        <span class="cell-value" id="viewCustomerPhone">0909123456</span>
+                                    </div>
+                                    <div class="info-cell">
+                                        <span class="cell-label">Email liên hệ</span>
+                                        <span class="cell-value" id="viewCustomerEmail">nguyenvanan@gmail.com</span>
+                                    </div>
+                                    <div class="info-cell">
+                                        <span class="cell-label">Dịch vụ đăng ký</span>
+                                        <span class="cell-value" id="viewCustomerService">Internet Cáp Quang</span>
+                                    </div>
+                                    <div class="info-cell full-width">
+                                        <span class="cell-label">Địa chỉ lắp đặt / Khắc phục</span>
+                                        <span class="cell-value" id="viewCustomerAddress">123 Nguyễn Văn Linh, Phường
+                                            Tân Phong, Quận 7, TP. Hồ Chí Minh</span>
+                                    </div>
+                                    <div class="info-cell full-width border-top pt-3">
+                                        <span class="cell-label font-bold text-dark">Tiêu đề yêu cầu</span>
+                                        <span class="cell-value font-bold text-danger" id="viewTicketTitle">Internet mất
+                                            kết nối</span>
+                                    </div>
+                                    <div class="info-cell full-width">
+                                        <span class="cell-label font-bold text-dark">Mô tả sự cố chi tiết</span>
+                                        <p class="description-card-box" id="viewTicketDesc">Khách hàng phản ánh modem
+                                            báo đèn LOS đỏ, không truy cập được Internet từ 8h sáng. Đã thử tắt bật lại
+                                            thiết bị nhưng không thành công.</p>
+                                    </div>
+                                </div>
+
+                                <!-- 8. FILE ĐÍNH KÈM TRONG TỔNG QUAN -->
+                                <div class="overview-attachments-gallery mt-4 pt-4 border-top">
+                                    <h4 class="gallery-inner-title mb-3"><i
+                                            class="bi bi-images text-danger me-2"></i>Hình ảnh & Tài liệu đính kèm</h4>
+                                    <div class="attachments-grid-gallery" id="overviewAttachmentsGallery">
+                                        <!-- Dynamic items populated via JS -->
+                                        <div class="gallery-card image-card"
+                                            data-file-url="../assets/images/modem-error.jpg" data-file-name="modem.jpg">
+                                            <div class="thumbnail-wrapper">
+                                                <i class="bi bi-file-earmark-image image-icon-placeholder"></i>
+                                                <div class="thumbnail-overlay">
+                                                    <i class="bi bi-zoom-in"></i>
+                                                </div>
+                                            </div>
+                                            <span class="gallery-file-name">📷 modem.jpg</span>
+                                        </div>
+                                        <div class="gallery-card image-card"
+                                            data-file-url="../assets/images/loi-mang.png" data-file-name="loi-mang.png">
+                                            <div class="thumbnail-wrapper">
+                                                <i class="bi bi-file-earmark-image image-icon-placeholder"></i>
+                                                <div class="thumbnail-overlay">
+                                                    <i class="bi bi-zoom-in"></i>
+                                                </div>
+                                            </div>
+                                            <span class="gallery-file-name">📷 loi-mang.png</span>
+                                        </div>
+                                        <div class="gallery-card pdf-card" data-file-url="../assets/docs/bienban.pdf"
+                                            data-file-name="bienban.pdf">
+                                            <div class="thumbnail-wrapper pdf-bg">
+                                                <i class="bi bi-file-earmark-pdf-fill pdf-icon"></i>
+                                            </div>
+                                            <span class="gallery-file-name">📄 bienban.pdf</span>
+                                            <button class="btn btn-sm btn-outline-danger btn-gallery-download"
+                                                data-file-name="bienban.pdf">
+                                                Tải xuống <i class="bi bi-download"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 9. TAB TIMELINE XỬ LÝ -->
+                        <div class="tab-content-panel" id="tabPanelTimeline" role="tabpanel">
+                            <div class="timeline-details-card">
+                                <h3 class="section-inner-title mb-4"><i
+                                        class="bi bi-clock-history text-danger me-2"></i>Nhật ký quá trình xử lý</h3>
+
+                                <div class="vertical-timeline-flow" id="verticalTimelineFlow">
+                                    <!-- Dynamic timeline list populated via JS -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 10. TAB CHAT HỖ TRỢ -->
+                        <div class="tab-content-panel" id="tabPanelChat" role="tabpanel">
+                            <div class="chat-details-card">
+                                <div
+                                    class="chat-header border-bottom d-flex align-items-center justify-content-between">
+                                    <div class="chat-agent-info d-flex align-items-center gap-2">
+                                        <div class="chat-agent-avatar" id="chatAgentAvatar">NV</div>
+                                        <div>
+                                            <h4 class="chat-agent-name" id="chatAgentName">Nguyễn Văn B</h4>
+                                            <span class="chat-agent-status"><span class="status-dot success"></span> Kỹ
+                                                thuật viên hỗ trợ online</span>
+                                        </div>
+                                    </div>
+                                    <div class="chat-actions">
+                                        <span class="badge badge-success py-1 px-3">Live Helpdesk</span>
+                                    </div>
+                                </div>
+
+                                <!-- MESSENGER PANEL (650px high) -->
+                                <div class="chat-messages-container" id="chatMessagesContainer">
+                                    <!-- Dynamic chat messages populated via JS -->
+                                </div>
+
+                                <!-- 11. KHUNG NHẬP CHAT STICKY -->
+                                <div class="chat-input-sticky-toolbar">
+                                    <form id="chatForm">
+                                        <div class="chat-toolbar-layout">
+                                            <div class="toolbar-left-actions d-flex gap-1 align-items-center">
+                                                <!-- Attachment File trigger -->
+                                                <button type="button" class="btn-toolbar-action" id="btnAttachChatFile"
+                                                    aria-label="Đính kèm file">
+                                                    <i class="fa-solid fa-paperclip"></i>
+                                                </button>
+                                                <!-- Hidden Input File -->
+                                                <input type="file" id="chatFileInput" class="d-none">
+                                            </div>
+
+                                            <!-- Message Textarea -->
+                                            <div class="toolbar-center-input flex-grow-1">
+                                                <textarea class="chat-input-textarea" id="chatMessageTextarea" rows="1"
+                                                    placeholder="Nhập tin nhắn trao đổi..."></textarea>
+                                            </div>
+
+                                            <!-- Send Button -->
+                                            <div class="toolbar-right-actions">
+                                                <button type="submit" class="btn-chat-send" id="btnSendChatMessage"
+                                                    aria-label="Gửi tin nhắn">
+                                                    <i class="fa-solid fa-paper-plane"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+
+
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 12. TAB LỊCH HẸN -->
+                        <div class="tab-content-panel" id="tabPanelAppointments" role="tabpanel">
+                            <div class="appointments-details-card">
+                                <h3 class="section-inner-title mb-4"><i class="fa-solid fa-calendar-days text-danger"></i>
+                                    Lịch hẹn khắc phục tại nhà</h3>
+
+                                <div class="appointments-grid-list" id="appointmentsGridList">
+                                    <!-- Dynamic appointments content populated via JS -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 13. TAB FILE ĐÍNH KÈM -->
+                        <div class="tab-content-panel" id="tabPanelAttachments" role="tabpanel">
+                            <div class="extended-attachments-card">
+                                <div
+                                    class="card-header-flex d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
+                                    <h3 class="section-inner-title m-0"><i class="fa-solid fa-paperclip text-danger"></i> Tệp
+                                        tin đã chia sẻ</h3>
+                                    <button class="btn btn-viettel-red btn-sm px-3" id="btnUploadAttachmentTrigger">
+                                        <i class="fa-solid fa-upload"></i> Tải lên tài liệu mới
+                                    </button>
+                                    <input type="file" id="modalUploadFileInput" class="d-none">
+                                </div>
+
+                                <div class="table-responsive-wrapper">
+                                    <table class="attachments-list-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Loại tệp</th>
+                                                <th>Tên tệp tin</th>
+                                                <th>Dung lượng</th>
+                                                <th>Ngày tải lên</th>
+                                                <th>Thao tác</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="attachmentsTableBody">
+                                            <!-- Dynamic items loaded via JS -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 14. TAB ĐÁNH GIÁ -->
+                        <div class="tab-content-panel" id="tabPanelReview" role="tabpanel">
+                            <div class="review-details-card">
+                                <div class="section-card-header mb-4 border-bottom pb-3">
+                                    <h3 class="section-inner-title m-0"><i
+                                            class="fa-solid fa-star text-danger me-2"></i>Đánh giá dịch vụ hỗ trợ</h3>
+                                    <p class="section-card-subtitle mt-1" id="reviewSubtitle">Vui lòng đánh giá chất
+                                        lượng phục vụ sau khi sự cố đã được khắc phục hoàn toàn.</p>
+                                </div>
+
+                                <form id="ticketReviewForm">
+                                    <!-- Star Ratings Grid -->
+                                    <div class="rating-metrics-stack d-flex flex-column gap-3 mb-4">
+                                        <!-- Metric 1: Quality -->
+                                        <div class="metric-row d-flex align-items-center gap-3 flex-wrap">
+                                            <span class="rating-label fw-bold">1. Chất lượng khắc phục kỹ thuật:</span>
+                                            <div class="star-rating" id="reviewRatingQuality">
+                                                <span class="star-item" data-rating="1"><i
+                                                        class="fa-regular fa-star"></i></span>
+                                                <span class="star-item" data-rating="2"><i
+                                                        class="fa-regular fa-star"></i></span>
+                                                <span class="star-item" data-rating="3"><i
+                                                        class="fa-regular fa-star"></i></span>
+                                                <span class="star-item" data-rating="4"><i
+                                                        class="fa-regular fa-star"></i></span>
+                                                <span class="star-item" data-rating="5"><i
+                                                        class="fa-regular fa-star"></i></span>
+                                            </div>
+                                            <input type="hidden" id="ratingValueQuality" value="0" required>
+                                        </div>
+
+                                        <!-- Metric 2: Attitude -->
+                                        <div class="metric-row d-flex align-items-center gap-3 flex-wrap">
+                                            <span class="rating-label fw-bold">2. Thái độ phục vụ kỹ thuật viên:</span>
+                                            <div class="star-rating" id="reviewRatingAttitude">
+                                                <span class="star-item" data-rating="1"><i
+                                                        class="fa-regular fa-star"></i></span>
+                                                <span class="star-item" data-rating="2"><i
+                                                        class="fa-regular fa-star"></i></span>
+                                                <span class="star-item" data-rating="3"><i
+                                                        class="fa-regular fa-star"></i></span>
+                                                <span class="star-item" data-rating="4"><i
+                                                        class="fa-regular fa-star"></i></span>
+                                                <span class="star-item" data-rating="5"><i
+                                                        class="fa-regular fa-star"></i></span>
+                                            </div>
+                                            <input type="hidden" id="ratingValueAttitude" value="0" required>
+                                        </div>
+
+                                        <!-- Metric 3: Speed -->
+                                        <div class="metric-row d-flex align-items-center gap-3 flex-wrap">
+                                            <span class="rating-label fw-bold">3. Tốc độ tiếp nhận & xử lý:</span>
+                                            <div class="star-rating" id="reviewRatingSpeed">
+                                                <span class="star-item" data-rating="1"><i
+                                                        class="fa-regular fa-star"></i></span>
+                                                <span class="star-item" data-rating="2"><i
+                                                        class="fa-regular fa-star"></i></span>
+                                                <span class="star-item" data-rating="3"><i
+                                                        class="fa-regular fa-star"></i></span>
+                                                <span class="star-item" data-rating="4"><i
+                                                        class="fa-regular fa-star"></i></span>
+                                                <span class="star-item" data-rating="5"><i
+                                                        class="fa-regular fa-star"></i></span>
+                                            </div>
+                                            <input type="hidden" id="ratingValueSpeed" value="0" required>
+                                        </div>
+                                    </div>
+
+                                    <!-- Feedback Comment -->
+                                    <div class="form-group-item mb-4">
+                                        <label for="reviewComments" class="custom-form-label fw-bold mb-2">Ý kiến phản
+                                            hồi & Đóng góp ý kiến</label>
+                                        <textarea class="custom-form-textarea" id="reviewComments" rows="5"
+                                            placeholder="Cảm nghĩ của bạn về chất lượng dịch vụ chăm sóc và xử lý sự cố kỹ thuật của TechSupport..."></textarea>
+                                    </div>
+
+                                    <!-- Submit button -->
+                                    <button type="submit" class="btn btn-hero-create px-4 py-2" id="btnSubmitReview">
+                                        <i class="fa-solid fa-paper-plane me-1"></i> Gửi đánh giá dịch vụ
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </main>
+
+    <!-- FOOTER COMPONENT CONTAINER -->
+    <div id="footer-container"></div>
+
+    <!-- CHATBOX WIDGET CONTAINER -->
+    <div id="chatbox-container"></div>
+
+
+    <!-- ==================== MODALS & DRAWER LAYOUTS ==================== -->
+
+    <!-- Backdrop Overlay -->
+    <div class="modal-backdrop-overlay" id="modalBackdropOverlay"></div>
+
+    <!-- 15. MODAL XEM FILE PREVIEW (LIGHTBOX) -->
+    <div class="profile-custom-modal" id="lightboxModal" role="dialog" aria-modal="true"
+        aria-labelledby="lightboxModalTitle">
+        <div class="modal-dialog-card modal-large-viewer">
+            <div class="modal-header">
+                <h3 class="modal-title-text" id="lightboxModalTitle"><i
+                        class="bi bi-file-earmark-image text-danger"></i> Xem Tệp Đính Kèm</h3>
+                <button type="button" class="btn-modal-close" aria-label="Close" data-close-modal>
+                    <i class="fa-solid fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body text-center bg-dark">
+                <!-- Image view -->
+                <img src="" class="lightbox-image-preview img-fluid d-none" id="lightboxImagePreview"
+                    alt="Image preview">
+
+                <!-- PDF iframe viewer container placeholder -->
+                <div class="lightbox-pdf-preview d-none" id="lightboxPdfPreview">
+                    <i class="bi bi-file-pdf text-danger d-block mb-3" style="font-size: 5rem;"></i>
+                    <h4 class="text-white mb-2" id="pdfFileName">bienban.pdf</h4>
+                    <p class="text-muted mb-4">Trình xem PDF tích hợp của trình duyệt sẽ hiển thị tệp này khi tải thực
+                        tế.</p>
+                    <button class="btn btn-viettel-red px-4" id="btnDownloadPdfModal">
+                        Tải xuống file PDF <i class="bi bi-download"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="modal-footer-actions">
+                <button type="button" class="btn-modal-action btn-cancel" data-close-modal>Đóng</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MOBILE SIDEBAR DRAW DRAWER (Visible on Mobile) -->
+    <div class="mobile-sidebar-drawer" id="mobileSidebarDrawer">
+        <div class="drawer-header border-bottom">
+            <h5 class="drawer-title fw-bold"><i class="fa-solid fa-circle-info text-danger me-2"></i>Thông tin phiếu</h5>
+            <button type="button" class="btn-close-custom" id="mobileSidebarClose" aria-label="Close">
+                <i class="fa-solid fa-times"></i>
+            </button>
+        </div>
+        <div class="drawer-body p-3" id="mobileSidebarBody">
+            <!-- Sidebar content is cloned here dynamically in JS -->
+        </div>
+    </div>
+
+    <!-- 16. TOAST NOTIFICATION CONTAINER -->
+    <div class="custom-toast-container" id="toastContainer"></div>
+
+
+    <!-- ==================== SCRIPTS ==================== -->
+
+    <!-- Bootstrap 5.3 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+
+    <!-- Dynamic Loader and Actions -->
+    <script src="../assets/js/header.js"></script>
+    <script src="../assets/js/sidebar.js"></script>
+    <script src="../assets/js/footer.js"></script>
+    <script src="../assets/js/chatbox.js"></script>
+    <script src="../assets/js/main.js"></script>
+
+    <!-- Ticket Detail Page JS -->
+    <script src="../assets/js/ticket-detail.js"></script>
+</body>
+
+</html>

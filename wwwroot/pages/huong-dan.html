@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Trung tâm Hướng dẫn khách hàng - TechSupport Viettel</title>
+
+    <!-- SEO Optimization -->
+    <meta name="description" content="Hướng dẫn sử dụng hệ thống TechSupport Viettel. Tìm hiểu cách tạo phiếu hỗ trợ, tra cứu trạng thái, chat trực tiếp với kỹ thuật viên và đặt lịch hẹn kỹ thuật.">
+    <meta name="keywords" content="hướng dẫn viettel, tạo phiếu hỗ trợ viettel, tra cứu sự cố viettel, tổng đài kỹ thuật viettel">
+    <meta name="author" content="Viettel Telecom TechSupport">
+    <meta name="robots" content="index, follow">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="https://viettel.com.vn/favicon.ico">
+
+    <!-- Bootstrap 5.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <!-- Font Awesome 6.6.0 CDN (Enterprise) -->
+    <link rel="stylesheet" id="fa-cdn-link" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+    <!-- FontAwesome Fallback Script -->
+    <script>
+        document.getElementById('fa-cdn-link').addEventListener('error', function() {
+            document.documentElement.classList.add('fa-fallback-active');
+            console.warn("FontAwesome failed to load. Falling back to Bootstrap Icons.");
+        });
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                if (!document.fonts.check('12px "Font Awesome 6 Free"')) {
+                    document.documentElement.classList.add('fa-fallback-active');
+                }
+            }, 1200);
+        });
+    </script>
+
+    <!-- AOS Animation CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css">
+
+    <!-- Google Fonts Inter & Be Vietnam Pro -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Component-Based CSS -->
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/responsive.css">
+    <link rel="stylesheet" href="../assets/css/header.css">
+    <link rel="stylesheet" href="../assets/css/sidebar.css">
+    <link rel="stylesheet" href="../assets/css/footer.css">
+    <link rel="stylesheet" href="../assets/css/chatbox.css">
+    <link rel="stylesheet" href="../assets/css/contact.css">
+
+    <!-- Page Specific CSS -->
+    <link rel="stylesheet" href="../assets/css/huong-dan.css">
+</head>
+
+<body>
+
+    <!-- ==================== HEADER CONTAINER ==================== -->
+    <div id="header-container">
+        <!-- 1. TOPBAR HEADER (Fallback) -->
+        <header class="top-header">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-8 col-12 top-header-info d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+                        <span class="me-4"><i class="fa-solid fa-phone"></i> Hotline kỹ thuật: <a href="tel:19008098">1900 8098</a> (Miễn phí)</span>
+                        <span class="me-4"><i class="fa-solid fa-envelope"></i> Email: <a href="mailto:support@viettel.com.vn">support@viettel.com.vn</a></span>
+                        <span><i class="fa-solid fa-clock"></i> Hỗ trợ kỹ thuật 24/7/365</span>
+                    </div>
+                    <div class="col-lg-4 col-12 top-header-social d-flex align-items-center justify-content-center justify-content-lg-end mt-2 mt-lg-0">
+                        <span class="me-2 d-none d-sm-inline">Kết nối:</span>
+                        <a href="https://facebook.com" target="_blank" class="me-2" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+                        <a href="https://youtube.com" target="_blank" class="me-2" aria-label="Youtube"><i class="bi bi-youtube"></i></a>
+                        <a href="https://linkedin.com" target="_blank" class="me-2" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
+                        <a href="https://instagram.com" target="_blank" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- 2. NAVBAR STICKY (Fallback) -->
+        <header class="custom-header fixed-top" id="mainNavbar">
+            <div class="container container-header-wrapper">
+                <a class="navbar-brand" href="../index.html#heroSection" id="navBrand">
+                    <i class="fa-solid fa-cpu-fill"></i>
+                    <span>TechSupport</span>
+                </a>
+                <nav class="desktop-menu d-none d-xl-flex align-items-center justify-content-between flex-grow-1 ms-5">
+                    <ul class="navbar-nav header-nav-list flex-row align-items-center gap-2">
+                        <li class="nav-item"><a class="nav-link" href="../index.html" id="linkHome">Trang chủ</a></li>
+                        <li class="nav-item dropdown-custom">
+                            <a class="nav-link dropdown-toggle-custom d-inline-flex align-items-center" href="#" id="linkServices">
+                                Dịch vụ hỗ trợ <i class="fa-solid fa-chevron-down ms-1" style="font-size: 0.8rem;"></i>
+                            </a>
+                            <ul class="dropdown-menu-custom">
+                                <li><a class="dropdown-item-custom" href="../index.html#serviceGridSection">Hỗ trợ Internet Cáp Quang</a></li>
+                                <li><a class="dropdown-item-custom" href="../index.html#serviceGridSection">Hỗ trợ Home Camera</a></li>
+                                <li><a class="dropdown-item-custom" href="../index.html#serviceGridSection">Hỗ trợ Server & Cloud</a></li>
+                                <li><a class="dropdown-item-custom" href="../index.html#serviceGridSection">Hỗ trợ Phần mềm & Mạng nội bộ</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item"><a class="nav-link" href="lookup-ticket.html" id="linkSearch">Tra cứu phiếu</a></li>
+                        <li class="nav-item"><a class="nav-link active" href="huong-dan.html" id="linkGuides">Hướng dẫn</a></li>
+                        <li class="nav-item"><a class="nav-link" href="contact.html" id="linkContact">Liên hệ</a></li>
+                    </ul>
+                    <div class="header-buttons-group d-flex align-items-center gap-2">
+                        <div id="authButtons" class="d-flex align-items-center gap-2">
+                            <a href="../login.html" class="btn btn-login-custom btn-ripple rounded-pill px-4" id="btnLogin">
+                                <i class="fa-solid fa-user me-1"></i> Đăng nhập
+                            </a>
+                        </div>
+                        <a href="../register.html" class="btn btn-create-ticket-custom btn-ripple px-4" id="btnCreateTicket">
+                            <i class="bi bi-person-plus-fill me-1"></i> Đăng ký
+                        </a>
+                    </div>
+                </nav>
+                <div id="userDropdownWrapper" class="user-profile-dropdown d-none d-flex align-items-center gap-3">
+                    <a href="#" class="btn-logout-header-custom btn-ripple" id="btnHeaderLogout">🚪 Đăng xuất</a>
+                    <div class="position-relative">
+                        <button class="btn-user-dropdown" type="button" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa-solid fa-user"></i>
+                            <span class="greeting-text">Xin chào, </span><span id="userDisplayName"></span>
+                            <i class="fa-solid fa-chevron-down dropdown-arrow"></i>
+                        </button>
+                        <ul class="user-profile-dropdown-menu">
+                            <li><a class="dropdown-item" href="customer-profile.html">👤 Thông tin cá nhân</a></li>
+                            <li><a class="dropdown-item" href="customer-profile.html#ticketSection">🎫 Phiếu hỗ trợ của tôi</a></li>
+                            <li><a class="dropdown-item" href="customer-profile.html#appointmentSection">📅 Lịch hẹn hỗ trợ</a></li>
+                            <li><a class="dropdown-item" href="contact.html">📞 Liên hệ hỗ trợ</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="#" id="btnLogoutBtn">🚪 Đăng xuất</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <button class="navbar-hamburger d-xl-none" type="button" id="menuToggle" aria-label="Toggle navigation">
+                    <div class="hamburger">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </button>
+            </div>
+        </header>
+    </div>
+
+    <!-- ==================== SIDEBAR CONTAINER ==================== -->
+    <div id="sidebar-container">
+        <!-- Slide Menu Drawer Fallback for Mobile -->
+        <div class="mobile-drawer" id="mobileDrawer">
+            <div class="drawer-header border-bottom">
+                <h5 class="drawer-title fw-bold"><span>TechSupport</span></h5>
+                <button type="button" class="btn-close-custom" id="drawerClose" aria-label="Close"><i class="fa-solid fa-times"></i></button>
+            </div>
+            <div class="drawer-body">
+                <ul class="drawer-nav-list">
+                    <li class="drawer-nav-item"><a class="drawer-nav-link" href="../index.html">Trang chủ</a></li>
+                    <li class="drawer-nav-item drawer-dropdown-custom">
+                        <a class="drawer-nav-link dropdown-toggle-custom d-flex justify-content-between align-items-center" href="#">
+                            Dịch vụ hỗ trợ <i class="fa-solid fa-chevron-down ms-1"></i>
+                        </a>
+                        <ul class="drawer-dropdown-menu-custom">
+                            <li><a class="drawer-dropdown-item-custom" href="../index.html#serviceGridSection">Internet Cáp Quang</a></li>
+                            <li><a class="drawer-dropdown-item-custom" href="../index.html#serviceGridSection">Home Camera</a></li>
+                            <li><a class="drawer-dropdown-item-custom" href="../index.html#serviceGridSection">Server & Cloud</a></li>
+                            <li><a class="drawer-dropdown-item-custom" href="../index.html#serviceGridSection">Mạng nội bộ</a></li>
+                        </ul>
+                    </li>
+                    <li class="drawer-nav-item"><a class="drawer-nav-link" href="lookup-ticket.html">Tra cứu phiếu</a></li>
+                    <li class="drawer-nav-item"><a class="drawer-nav-link active" href="huong-dan.html">Hướng dẫn</a></li>
+                    <li class="drawer-nav-item"><a class="drawer-nav-link" href="contact.html">Liên hệ</a></li>
+                </ul>
+            </div>
+            <div class="drawer-buttons-group d-flex flex-column">
+                <a href="../login.html" class="btn btn-login-custom btn-ripple rounded-pill px-4 justify-content-center"><i class="fa-solid fa-user me-1"></i> Đăng nhập</a>
+                <a href="../register.html" class="btn btn-create-ticket-custom btn-ripple px-4 justify-content-center"><i class="bi bi-person-plus-fill me-1"></i> Đăng ký</a>
+            </div>
+        </div>
+        <div class="drawer-overlay" id="drawerOverlay"></div>
+    </div>
+
+    <!-- ==================== MAIN CONTENT ==================== -->
+    <main class="lookup-page-main" style="background-color: var(--viettel-gray-light);">
+
+        <!-- ========== 1. BREADCRUMB HERO ========== -->
+        <section class="hero-section p-0" id="heroSection">
+            <div class="hero-carousel">
+                <div class="carousel-inner">
+                    <div class="carousel-item active" style="background-image: url('../assets/images/hero_tv_entertainment.png');">
+                        <div class="hero-carousel-overlay"></div>
+                        <div class="hero-carousel-content">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-lg-8 col-md-10 col-12 text-start">
+                                        <!-- Breadcrumbs -->
+                                        <nav aria-label="breadcrumb" class="hero-breadcrumb">
+                                            <ol class="breadcrumb m-0" itemscope itemtype="https://schema.org/BreadcrumbList">
+                                                <li class="breadcrumb-item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                                                    <a href="../index.html" itemprop="item" class="text-decoration-none d-inline-flex align-items-center">
+                                                        <i class="fa-solid fa-house-door-fill me-1"></i>
+                                                        <span itemprop="name">Trang chủ</span>
+                                                    </a>
+                                                    <meta itemprop="position" content="1" />
+                                                </li>
+                                                <li class="breadcrumb-item active" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem" aria-current="page">
+                                                    <span itemprop="name">Hướng dẫn sử dụng</span>
+                                                    <meta itemprop="position" content="2" />
+                                                </li>
+                                            </ol>
+                                        </nav>
+                                        
+                                        <!-- Badge -->
+                                        <span class="hero-badge animate-fade-up">
+                                            <i class="fa-solid fa-circle-question me-2"></i>TRUNG TÂM HƯỚNG DẪN KHÁCH HÀNG
+                                        </span>
+
+                                        <!-- Title -->
+                                        <h1 class="hero-title animate-fade-up delay-1">Trung tâm hướng dẫn</h1>
+
+                                        <!-- Description -->
+                                        <p class="hero-desc animate-fade-up delay-2">Tìm hiểu cách sử dụng hệ thống hỗ trợ kỹ thuật TechSupport, tạo phiếu hỗ trợ, theo dõi tiến độ xử lý và trao đổi với nhân viên hỗ trợ một cách nhanh chóng.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+=======
+        <section class="hero-section">
+            <div class="container hero-content">
+                <div class="row align-items-center g-5">
+                    <!-- Left Column: Text & Info -->
+                    <div class="col-lg-7 col-12 text-start hero-text-col animate-fade-up">
+                        <!-- Breadcrumbs -->
+                        <nav aria-label="breadcrumb" class="hero-breadcrumb mb-4">
+                            <ol class="breadcrumb m-0" itemscope itemtype="https://schema.org/BreadcrumbList">
+                                <li class="breadcrumb-item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                                    <a href="../index.html" itemprop="item" class="text-decoration-none d-inline-flex align-items-center">
+                                        <i class="fa-solid fa-house-door-fill me-1"></i>
+                                        <span itemprop="name">Trang chủ</span>
+                                    </a>
+                                    <meta itemprop="position" content="1" />
+                                </li>
+                                <li class="breadcrumb-item active" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem" aria-current="page">
+                                    <span itemprop="name">Hướng dẫn sử dụng</span>
+                                    <meta itemprop="position" content="2" />
+                                </li>
+                            </ol>
+                        </nav>
+                        
+                        <span class="hero-badge mb-3">
+                            <i class="fa-solid fa-circle-question me-2"></i>TRUNG TÂM HƯỚNG DẪN KHÁCH HÀNG
+                        </span>
+                        <h1 class="hero-title mb-3">Trung tâm <span class="highlight-red">hướng dẫn</span></h1>
+                        <p class="hero-desc mb-0">Tìm hiểu cách sử dụng hệ thống hỗ trợ kỹ thuật TechSupport, tạo phiếu hỗ trợ, theo dõi tiến độ xử lý và trao đổi với nhân viên hỗ trợ một cách nhanh chóng.</p>
+                    </div>
+
+                    <!-- Right Column: SVG Illustration -->
+                    <div class="col-lg-5 col-12 hero-banner-wrapper animate-fade-up delay-1 text-end">
+                        <svg class="hero-banner-svg float-svg" viewBox="0 0 500 400" xmlns="http://www.w3.org/2000/svg" aria-label="Help desk vector banner">
+                            <defs>
+                                <linearGradient id="gradRed" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#ee0033" />
+                                    <stop offset="100%" stop-color="#ff758c" />
+                                </linearGradient>
+                            </defs>
+                            <!-- Circle shape -->
+                            <circle cx="250" cy="200" r="160" fill="url(#gradRed)" opacity="0.1" />
+                            <circle cx="150" cy="100" r="40" fill="#ee0033" opacity="0.1" />
+                            <!-- Headset Support Rep illustration -->
+                            <rect x="150" y="160" width="200" height="180" rx="30" fill="#1f2937" stroke="rgba(255,255,255,0.08)" stroke-width="3" />
+                            <rect x="170" y="200" width="160" height="120" rx="12" fill="#111827" />
+                            <circle cx="250" cy="245" r="24" fill="url(#gradRed)" />
+                            <!-- Screen layout mockup -->
+                            <rect x="185" y="215" width="130" height="5" rx="2.5" fill="#ffffff" opacity="0.2" />
+                            <rect x="185" y="228" width="100" height="5" rx="2.5" fill="#ffffff" opacity="0.1" />
+                            <circle cx="215" cy="285" r="5" fill="#10b981" />
+                            <rect x="226" y="282" width="60" height="6" rx="3" fill="#ffffff" opacity="0.3" />
+                            <!-- Floating helper gears -->
+                            <g fill="#ee0033" opacity="0.6">
+                                <circle cx="390" cy="120" r="15" />
+                                <rect x="385" y="100" width="10" height="40" rx="3" transform="rotate(30 390 120)" />
+                                <rect x="385" y="100" width="10" height="40" rx="3" transform="rotate(120 390 120)" />
+                            </g>
+                        </svg>
+>>>>>>> 59a5e6f64da6c8eb44454bf22a5574b208c2f2b3
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========== 2. SEARCH FAQS HIGHLIGHTS ========== -->
+        <section class="py-0">
+            <div class="container">
+                <div class="search-wrapper mx-auto">
+                    <div class="search-card">
+                        <form class="needs-validation" novalidate>
+                            <div class="search-input-group">
+                                <i class="bi bi-magnifying-glass search-icon"></i>
+                                <input type="text" id="heroSearchInput" class="form-control search-input" placeholder="Bạn cần hỗ trợ điều gì?" required>
+                                <button type="submit" class="btn btn-search">Tìm kiếm</button>
+                            </div>
+                        </form>
+                        <div class="d-flex flex-wrap align-items-center gap-2 mt-3">
+                            <span class="search-tags-label me-2">Gợi ý tìm nhanh:</span>
+                            <a href="#" class="search-tag-link">Cách tạo phiếu hỗ trợ</a>
+                            <a href="#" class="search-tag-link">Cách tra cứu phiếu</a>
+                            <a href="#" class="search-tag-link">Cách trao đổi với nhân viên</a>
+                            <a href="#" class="search-tag-link">Cách đặt lịch hỗ trợ</a>
+                            <a href="#" class="search-tag-link">Cách đánh giá dịch vụ</a>
+                            <a href="#" class="search-tag-link">Cách gửi file đính kèm</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========== 3. HELP GUIDE CATEGORIES (6 CARDS) ========== -->
+        <section class="py-5">
+            <div class="container">
+                <div class="text-center mb-5" data-aos="fade-up">
+                    <h2 class="fw-bold text-dark fs-3">DANH MỤC HƯỚNG DẪN</h2>
+                    <p class="text-muted small">Chọn chủ đề bạn muốn tìm hiểu bên dưới để đi nhanh đến chi tiết</p>
+                </div>
+                <div class="row g-4">
+                    <!-- Card 1 -->
+                    <div class="col-lg-4 col-md-6 col-12" data-aos="fade-up">
+                        <a href="#guide-create" class="text-decoration-none category-card-link">
+                            <div class="card glass-card p-4 h-100">
+                                <div class="category-icon-box mb-3">
+                                    <i class="bi bi-ticket-perforated-fill"></i>
+                                </div>
+                                <h3 class="category-title">Tạo phiếu hỗ trợ</h3>
+                                <p class="category-desc">Tìm hiểu quy trình đăng ký báo hỏng thiết bị, yêu cầu lắp đặt wifi và các dịch vụ kỹ thuật.</p>
+                            </div>
+                        </a>
+                    </div>
+                    <!-- Card 2 -->
+                    <div class="col-lg-4 col-md-6 col-12" data-aos="fade-up" data-aos-delay="50">
+                        <a href="#guide-lookup" class="text-decoration-none category-card-link">
+                            <div class="card glass-card p-4 h-100">
+                                <div class="category-icon-box mb-3">
+                                    <i class="bi bi-search"></i>
+                                </div>
+                                <h3 class="category-title">Tra cứu phiếu</h3>
+                                <p class="category-desc">Theo dõi tiến trình xử lý, thời gian dự kiến kỹ thuật viên hoàn thành sự cố của bạn.</p>
+                            </div>
+                        </a>
+                    </div>
+                    <!-- Card 3 -->
+                    <div class="col-lg-4 col-md-6 col-12" data-aos="fade-up" data-aos-delay="100">
+                        <a href="#guide-chat" class="text-decoration-none category-card-link">
+                            <div class="card glass-card p-4 h-100">
+                                <div class="category-icon-box mb-3">
+                                    <i class="bi bi-chat-dots-fill"></i>
+                                </div>
+                                <h3 class="category-title">Trao đổi với nhân viên</h3>
+                                <p class="category-desc">Nhắn tin trực tiếp với nhân viên kỹ thuật phụ trách phiếu hỗ trợ để phản hồi sự cố.</p>
+                            </div>
+                        </a>
+                    </div>
+                    <!-- Card 4 -->
+                    <div class="col-lg-4 col-md-6 col-12" data-aos="fade-up" data-aos-delay="150">
+                        <a href="#guide-appointment" class="text-decoration-none category-card-link">
+                            <div class="card glass-card p-4 h-100">
+                                <div class="category-icon-box mb-3">
+                                    <i class="bi bi-calendar2-check-fill"></i>
+                                </div>
+                                <h3 class="category-title">Đặt lịch hỗ trợ</h3>
+                                <p class="category-desc">Hướng dẫn hẹn thời gian cụ thể để kỹ thuật viên ghé nhà kiểm tra trực tiếp đường truyền.</p>
+                            </div>
+                        </a>
+                    </div>
+                    <!-- Card 5 -->
+                    <div class="col-lg-4 col-md-6 col-12" data-aos="fade-up" data-aos-delay="200">
+                        <a href="#guide-rating" class="text-decoration-none category-card-link">
+                            <div class="card glass-card p-4 h-100">
+                                <div class="category-icon-box mb-3">
+                                    <i class="bi bi-star-fill"></i>
+                                </div>
+                                <h3 class="category-title">Đánh giá dịch vụ</h3>
+                                <p class="category-desc">Gửi phản hồi đánh giá sao đối với chất lượng xử lý sự cố và thái độ kỹ thuật viên.</p>
+                            </div>
+                        </a>
+                    </div>
+                    <!-- Card 6 -->
+                    <div class="col-lg-4 col-md-6 col-12" data-aos="fade-up" data-aos-delay="250">
+                        <a href="#guide-account" class="text-decoration-none category-card-link">
+                            <div class="card glass-card p-4 h-100">
+                                <div class="category-icon-box mb-3">
+                                    <i class="bi bi-person-gear"></i>
+                                </div>
+                                <h3 class="category-title">Tài khoản khách hàng</h3>
+                                <p class="category-desc">Quản lý hồ sơ cá nhân, cập nhật thông tin liên lạc và bảo mật mật khẩu tài khoản.</p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========== 4. DETAIL GUIDE CONTENT BLOCKS ========== -->
+        <section class="py-4">
+            <div class="container">
+
+                <!-- 4.1 HƯỚNG DẪN TẠO PHIẾU HỖ TRỢ -->
+                <div class="card glass-card p-4 mb-5" id="guide-create" data-aos="fade-up">
+                    <h3 class="guide-section-title mb-4"><i class="fa-solid fa-ticket text-danger me-2"></i>HƯỚNG DẪN TẠO PHIẾU HỖ TRỢ KỸ THUẬT</h3>
+                    <p class="text-muted">Khi gặp sự cố kỹ thuật về đường truyền hoặc dịch vụ, khách hàng thực hiện các bước sau để đăng ký phiếu:</p>
+
+                    <div class="step-timeline-container">
+                        <!-- Step 1 -->
+                        <div class="step-timeline-item">
+                            <div class="step-number-node">1</div>
+                            <div class="step-card">
+                                <h5 class="fw-bold mb-1">Đăng nhập tài khoản</h5>
+                                <p class="text-muted small mb-0">Truy cập hệ thống TechSupport và đăng nhập bằng tài khoản MyViettel hoặc Số điện thoại đăng ký gói mạng.</p>
+                            </div>
+                        </div>
+
+                        <!-- Step 2 -->
+                        <div class="step-timeline-item">
+                            <div class="step-number-node">2</div>
+                            <div class="step-card">
+                                <h5 class="fw-bold mb-1">Chọn Tạo phiếu hỗ trợ</h5>
+                                <p class="text-muted small mb-0">Tại thanh Menu chính hoặc Trang chủ, nhấp chọn nút <a href="create-ticket.html" class="text-danger fw-bold text-decoration-none"><i class="fa-solid fa-plus-circle me-1"></i>Tạo phiếu hỗ trợ</a>.</p>
+                            </div>
+                        </div>
+
+                        <!-- Step 3 -->
+                        <div class="step-timeline-item">
+                            <div class="step-number-node">3</div>
+                            <div class="step-card">
+                                <h5 class="fw-bold mb-2">Chọn dịch vụ kỹ thuật</h5>
+                                <p class="text-muted small mb-3">Lựa chọn dịch vụ Viettel mà bạn đang gặp sự cố. Dữ liệu dịch vụ bao gồm:</p>
+                                <div class="row g-2">
+                                    <div class="col-sm-6 col-12">
+                                        <div class="p-2 border rounded bg-light small"><i class="bi bi-wifi me-2 text-danger"></i>Internet Cáp Quang FTTH</div>
+                                    </div>
+                                    <div class="col-sm-6 col-12">
+                                        <div class="p-2 border rounded bg-light small"><i class="bi bi-tv me-2 text-danger"></i>Combo Internet + TV360</div>
+                                    </div>
+                                    <div class="col-sm-6 col-12">
+                                        <div class="p-2 border rounded bg-light small"><i class="bi bi-video me-2 text-danger"></i>Camera Giám Sát Home Camera</div>
+                                    </div>
+                                    <div class="col-sm-6 col-12">
+                                        <div class="p-2 border rounded bg-light small"><i class="bi bi-network-wired me-2 text-danger"></i>Mesh Wifi & LAN Doanh nghiệp</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 4 -->
+                        <div class="step-timeline-item">
+                            <div class="step-number-node">4</div>
+                            <div class="step-card">
+                                <h5 class="fw-bold mb-1">Nhập tiêu đề và nội dung mô tả lỗi</h5>
+                                <p class="text-muted small mb-0">Mô tả rõ ràng hiện trạng sự cố (Ví dụ: Modem nhấp nháy đèn đỏ, đầu thu không tải được hình, v.v.) để kỹ thuật viên nắm rõ.</p>
+                            </div>
+                        </div>
+
+                        <!-- Step 5 -->
+                        <div class="step-timeline-item">
+                            <div class="step-number-node">5</div>
+                            <div class="step-card">
+                                <h5 class="fw-bold mb-1">Đính kèm file hình ảnh/tài liệu (Nếu có)</h5>
+                                <p class="text-muted small mb-0">Tải lên hình ảnh thiết bị báo lỗi hoặc tài liệu liên quan giúp kỹ thuật viên chẩn đoán lỗi nhanh hơn (hỗ trợ JPG, PNG, PDF, DOCX, XLSX).</p>
+                            </div>
+                        </div>
+
+                        <!-- Step 6 -->
+                        <div class="step-timeline-item">
+                            <div class="step-number-node">6</div>
+                            <div class="step-card">
+                                <h5 class="fw-bold mb-1">Gửi phiếu hỗ trợ</h5>
+                                <p class="text-muted small mb-0">Xác nhận lại thông tin liên lạc và nhấp nút "Gửi phiếu" để hoàn tất đăng ký sự cố lên hệ thống điều hành kỹ thuật, đồng thời hệ thống sẽ tự động gửi thông báo xác nhận đồng bộ qua tin nhắn SMS và Email của bạn.</p>
+                            </div>
+                        </div>
+
+                        <!-- Step 7 -->
+                        <div class="step-timeline-item">
+                            <div class="step-number-node">7</div>
+                            <div class="step-card">
+                                <h5 class="fw-bold mb-2">Nhận mã phiếu hỗ trợ</h5>
+                                <p class="text-muted small mb-2">Hệ thống sẽ lập tức phản hồi mã phiếu hỗ trợ kỹ thuật dạng:</p>
+                                <span class="font-monospace fw-bold text-danger bg-danger bg-opacity-10 border border-danger border-opacity-20 px-3 py-1 rounded" style="font-size:0.9rem;">HT202600001</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4.2 HƯỚNG DẪN TRA CỨU PHIẾU HỖ TRỢ -->
+                <div class="card glass-card p-4 mb-5" id="guide-lookup" data-aos="fade-up">
+                    <h3 class="guide-section-title mb-4"><i class="fa-solid fa-search text-danger me-2"></i>HƯỚNG DẪN TRA CỨU PHIẾU HỖ TRỢ</h3>
+                    <p class="text-muted">Khách hàng có thể tự tra cứu tiến trình xử lý phiếu sự cố kỹ thuật của mình theo các cách thức sau:</p>
+
+                    <!-- Methods of lookup -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-4 col-12">
+                            <div class="p-3 border rounded-3 bg-light text-center height-100">
+                                <i class="bi bi-barcode fs-3 text-danger mb-2"></i>
+                                <h6 class="fw-bold mb-1">Tra cứu bằng Mã phiếu</h6>
+                                <p class="text-muted small mb-0">Nhập chính xác mã phiếu hỗ trợ (Ví dụ: HT202600001) để lấy thông tin tức thời.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-12">
+                            <div class="p-3 border rounded-3 bg-light text-center height-100">
+                                <i class="fa-solid fa-phone fs-3 text-danger mb-2"></i>
+                                <h6 class="fw-bold mb-1">Tra cứu bằng Số điện thoại</h6>
+                                <p class="text-muted small mb-0">Xem danh sách các phiếu hỗ trợ phát sinh từ số điện thoại liên kết của bạn.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-12">
+                            <div class="p-3 border rounded-3 bg-light text-center height-100">
+                                <i class="fa-solid fa-envelope fs-3 text-danger mb-2"></i>
+                                <h6 class="fw-bold mb-1">Tra cứu bằng Email</h6>
+                                <p class="text-muted small mb-0">Nhập email đã đăng ký thông tin hợp đồng internet để tra cứu lịch sử sự cố.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Status explanations -->
+                    <h5 class="fw-bold text-dark-emphasis mb-3"><i class="fa-solid fa-circle-info me-2 text-primary"></i>Các trạng thái xử lý phiếu trên hệ thống</h5>
+                    <div class="row g-3">
+                        <!-- Status 1 -->
+                        <div class="col-lg-25 col-md-4 col-6">
+                            <div class="status-representation-card">
+                                <div class="d-flex align-items-center gap-2 mb-2">
+                                    <span class="status-bullet-dot waiting"></span>
+                                    <strong class="small text-dark-emphasis">Chờ xử lý</strong>
+                                </div>
+                                <p class="text-muted fs-8 mb-0">Phiếu hỗ trợ đã được tạo và đang nằm trong hàng đợi điều phối kỹ thuật viên phụ trách.</p>
+                            </div>
+                        </div>
+                        <!-- Status 2 -->
+                        <div class="col-lg-25 col-md-4 col-6">
+                            <div class="status-representation-card">
+                                <div class="d-flex align-items-center gap-2 mb-2">
+                                    <span class="status-bullet-dot processing"></span>
+                                    <strong class="small text-primary">Đang xử lý</strong>
+                                </div>
+                                <p class="text-muted fs-8 mb-0">Kỹ thuật viên đã tiếp nhận thông tin và đang tiến hành khắc phục sự cố tại trạm hoặc ghé nhà.</p>
+                            </div>
+                        </div>
+                        <!-- Status 3 -->
+                        <div class="col-lg-25 col-md-4 col-6">
+                            <div class="status-representation-card">
+                                <div class="d-flex align-items-center gap-2 mb-2">
+                                    <span class="status-bullet-dot feedback"></span>
+                                    <strong class="small text-warning">Chờ phản hồi</strong>
+                                </div>
+                                <p class="text-muted fs-8 mb-0">Nhân viên cần khách hàng xác minh đường truyền hoặc phản hồi phản ánh bổ sung.</p>
+                            </div>
+                        </div>
+                        <!-- Status 4 -->
+                        <div class="col-lg-25 col-md-6 col-6">
+                            <div class="status-representation-card">
+                                <div class="d-flex align-items-center gap-2 mb-2">
+                                    <span class="status-bullet-dot completed"></span>
+                                    <strong class="small text-success">Hoàn thành</strong>
+                                </div>
+                                <p class="text-muted fs-8 mb-0">Sự cố đã được khắc phục hoàn tất. Đường truyền internet hoạt động bình thường trở lại.</p>
+                            </div>
+                        </div>
+                        <!-- Status 5 -->
+                        <div class="col-lg-25 col-md-6 col-12">
+                            <div class="status-representation-card">
+                                <div class="d-flex align-items-center gap-2 mb-2">
+                                    <span class="status-bullet-dot cancelled"></span>
+                                    <strong class="small text-danger">Đã hủy</strong>
+                                </div>
+                                <p class="text-muted fs-8 mb-0">Phiếu hỗ trợ bị hủy (do khách hàng tự sửa được hoặc phiếu bị trùng lặp thông tin).</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4.3 HƯỚNG DẪN CHAT VỚI NHÂN VIÊN KỸ THUẬT -->
+                <div class="card glass-card p-4 mb-5" id="guide-chat" data-aos="fade-up">
+                    <div class="row g-4 align-items-center">
+                        <div class="col-lg-6 col-12">
+                            <h3 class="guide-section-title mb-4"><i class="fa-solid fa-comments text-danger me-2"></i>HƯỚNG DẪN CHAT VỚI NHÂN VIÊN</h3>
+                            <p class="text-muted">Để trao đổi trực tiếp và gửi thông tin nhanh cho kỹ thuật viên phụ trách, bạn có thể sử dụng chức năng chat trực tuyến tích hợp sẵn tại trang chi tiết phiếu:</p>
+                            
+                            <!-- Flowchart chat process -->
+                            <div class="d-flex flex-column align-items-stretch gap-2 mb-4 fs-9">
+                                <div class="p-2 border rounded bg-white text-center shadow-sm"><i class="fa-solid fa-user me-2 text-danger"></i>Khách hàng gửi tin nhắn (Mô tả, gửi ảnh lỗi)</div>
+                                <div class="text-center text-muted"><i class="bi bi-arrow-down"></i></div>
+                                <div class="p-2 border rounded bg-white text-center shadow-sm"><i class="fa-solid fa-headset me-2 text-primary"></i>Kỹ thuật viên tiếp nhận và phản hồi giải đáp tức thời</div>
+                                <div class="text-center text-muted"><i class="bi bi-arrow-down"></i></div>
+                                <div class="p-2 border rounded bg-white text-center shadow-sm"><i class="bi bi-rotate me-2 text-success"></i>Hai bên trao đổi trực tiếp tìm phương án xử lý</div>
+                                <div class="text-center text-muted"><i class="bi bi-arrow-down"></i></div>
+                                <div class="p-2 border rounded bg-white text-center shadow-sm"><i class="fa-solid fa-circle-check me-2 text-success"></i>Giải quyết sự cố và đóng yêu cầu hỗ trợ</div>
+                            </div>
+                        </div>
+
+                        <!-- Chat Mockup representation -->
+                        <div class="col-lg-6 col-12 d-flex justify-content-center">
+                            <div class="chat-screen-mockup w-100">
+                                <div class="chat-screen-header">
+                                    <div class="chat-agent-avatar"><i class="fa-solid fa-headset"></i></div>
+                                    <div>
+                                        <p class="fw-bold mb-0" style="font-size:0.88rem; line-height:1.2;">Nguyễn Hữu Nam</p>
+                                        <p class="mb-0 small text-success-light" style="font-size:0.75rem; color:#34d399;"><i class="bi bi-circle me-1" style="font-size:0.55rem;"></i>Kỹ thuật viên phụ trách</p>
+                                    </div>
+                                </div>
+                                <div class="chat-screen-body">
+                                    <div class="chat-msg-bubble received">Chào anh/chị, tôi là Nam - kỹ thuật viên Viettel đang phụ trách phiếu sự cố HT202600001 của mình.</div>
+                                    <div class="chat-msg-bubble sent">Chào anh, mạng wifi nhà tôi từ sáng nay bị báo lỗi đèn đỏ chớp nháy liên tục không vào được mạng.</div>
+                                    <div class="chat-msg-bubble received">Dạ vâng, lỗi này có thể do suy hao tín hiệu đường cáp quang ngoài trạm. Tôi đang kiểm tra hệ thống và sẽ qua nhà mình xử lý ngay trong 15 phút tới nhé.</div>
+                                    <div class="chat-msg-bubble received py-2 px-3 align-self-start" style="background-color:rgba(0,0,0,0.05); border-radius:10px;">
+                                        <div class="chat-typing-dot"></div>
+                                        <div class="chat-typing-dot"></div>
+                                        <div class="chat-typing-dot"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4.4 HƯỚNG DẪN ĐẶT LỊCH HỖ TRỢ KỸ THUẬT -->
+                <div class="card glass-card p-4 mb-5" id="guide-appointment" data-aos="fade-up">
+                    <h3 class="guide-section-title mb-4"><i class="bi bi-calendar-alt text-danger me-2"></i>HƯỚNG DẪN ĐẶT LỊCH HẸN HỖ TRỢ TẠI NHÀ</h3>
+                    <p class="text-muted">Đối với các lỗi cần kiểm tra thiết bị trực tiếp tại nhà khách hàng, hệ thống hỗ trợ đăng ký lịch hẹn như sau:</p>
+
+                    <div class="appointment-list-wrapper mt-4">
+                        <div class="appointment-list-item">
+                            <div class="appointment-list-marker"></div>
+                            <h6 class="fw-bold mb-1">1. Đăng ký khi tạo phiếu hỗ trợ</h6>
+                            <p class="text-muted small mb-0">Khi tạo phiếu ở mục "Cần đặt lịch hẹn ghé nhà", khách hàng tick chọn "Có" để yêu cầu đăng ký lịch.</p>
+                        </div>
+                        <div class="appointment-list-item">
+                            <div class="appointment-list-marker"></div>
+                            <h6 class="fw-bold mb-1">2. Chọn thời gian mong muốn</h6>
+                            <p class="text-muted small mb-0">Khách hàng chọn Ngày hẹn và Khung giờ rảnh mong muốn (Buổi sáng, Buổi chiều, hoặc khoảng giờ cụ thể) cùng ghi chú lưu ý.</p>
+                        </div>
+                        <div class="appointment-list-item">
+                            <div class="appointment-list-marker"></div>
+                            <h6 class="fw-bold mb-1">3. Nhân viên điều phối liên hệ xác nhận</h6>
+                            <p class="text-muted small mb-0">Hệ thống chuyển phiếu đến Điều phối viên khu vực để kiểm tra lịch trống của kỹ thuật viên và liên hệ xác nhận thời gian.</p>
+                        </div>
+                        <div class="appointment-list-item">
+                            <div class="appointment-list-marker"></div>
+                            <h6 class="fw-bold mb-1">4. Theo dõi lịch hẹn được duyệt</h6>
+                            <p class="text-muted small mb-0">Lịch hẹn được duyệt sẽ cập nhật trạng thái "Đã duyệt lịch" hiển thị cụ thể trên giao diện thông tin phiếu để khách hàng theo dõi.</p>
+                        </div>
+                        <div class="appointment-list-item">
+                            <div class="appointment-list-marker"></div>
+                            <h6 class="fw-bold mb-1">5. Hỗ trợ tại nhà đúng giờ</h6>
+                            <p class="text-muted small mb-0">Kỹ thuật viên di chuyển và có mặt đúng thời gian đã chốt để khắc phục lỗi đường truyền cho khách hàng.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4.5 HƯỚNG DẪN ĐÁNH GIÁ CHẤT LƯỢNG DỊCH VỤ -->
+                <div class="card glass-card p-4 mb-5" id="guide-rating" data-aos="fade-up">
+                    <div class="row g-4 align-items-center">
+                        <div class="col-lg-6 col-12">
+                            <h3 class="guide-section-title mb-4"><i class="fa-solid fa-star text-danger me-2"></i>HƯỚNG DẪN ĐÁNH GIÁ DỊCH VỤ</h3>
+                            <p class="text-muted">Sau khi phiếu hỗ trợ chuyển sang trạng thái "Hoàn thành", khách hàng có thể tiến hành chấm điểm chất lượng hỗ trợ để Viettel nâng cấp dịch vụ:</p>
+                            <ul class="contact-info-list" style="padding-left:0; list-style:none;">
+                                <li class="mb-2"><i class="fa-solid fa-circle-check text-success me-2"></i><strong>Chất lượng dịch vụ:</strong> Đánh giá mức độ khắc phục sự cố triệt để.</li>
+                                <li class="mb-2"><i class="fa-solid fa-circle-check text-success me-2"></i><strong>Thái độ nhân viên:</strong> Đánh giá tác phong, độ nhiệt tình của kỹ thuật viên.</li>
+                                <li class="mb-2"><i class="fa-solid fa-circle-check text-success me-2"></i><strong>Tốc độ xử lý:</strong> Đánh giá thời gian phản hồi khắc phục lỗi.</li>
+                                <li><i class="fa-solid fa-circle-check text-success me-2"></i><strong>Nhận xét:</strong> Gửi kèm phản ánh chi tiết, góp ý nâng cấp hệ thống.</li>
+                            </ul>
+                        </div>
+
+                        <!-- Stars visual mock card -->
+                        <div class="col-lg-6 col-12">
+                            <div class="rating-mock-card text-center">
+                                <h6 class="fw-bold mb-2 text-dark-emphasis">Đánh giá phiếu hỗ trợ HT202600001</h6>
+                                <div class="rating-stars-wrapper mb-3">
+                                    <i class="fa-solid fa-star"></i>
+                                    <i class="fa-solid fa-star"></i>
+                                    <i class="fa-solid fa-star"></i>
+                                    <i class="fa-solid fa-star"></i>
+                                    <i class="fa-solid fa-star"></i>
+                                </div>
+                                <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-1 rounded-pill mb-2">Đánh giá 5 Sao (Rất hài lòng)</span>
+                                <p class="text-muted small mb-0 mt-2 italic">"Kỹ thuật viên rất nhiệt tình và chu đáo, nối dây mạng cáp quang cẩn thận và kiểm tra tốc độ mạng ổn định trước khi ra về."</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4.6 HƯỚNG DẪN GỬI TỆP TIN ĐÍNH KÈM -->
+                <div class="card glass-card p-4 mb-5" id="guide-attachment" data-aos="fade-up">
+                    <div class="row g-4 align-items-center">
+                        <div class="col-lg-6 col-12">
+                            <h3 class="guide-section-title mb-4"><i class="bi bi-cloud-arrow-up text-danger me-2"></i>HƯỚNG DẪN GỬI TỆP ĐÍNH KÈM</h3>
+                            <p class="text-muted">Để minh họa hình ảnh modem hư hỏng hoặc bảng đo tốc độ mạng chập chờn, hệ thống cho phép đính kèm tệp tin tài liệu:</p>
+                            <p class="small text-muted"><i class="fa-solid fa-circle-info text-info me-2"></i>Định dạng tệp tin cho phép tải lên:</p>
+                            <div class="d-flex flex-wrap gap-2 mb-3">
+                                <span class="badge bg-danger-subtle text-danger border border-danger-subtle font-monospace">.JPG</span>
+                                <span class="badge bg-danger-subtle text-danger border border-danger-subtle font-monospace">.PNG</span>
+                                <span class="badge bg-info-subtle text-info border border-info-subtle font-monospace">.PDF</span>
+                                <span class="badge bg-primary-subtle text-primary border border-primary-subtle font-monospace">.DOCX</span>
+                                <span class="badge bg-success-subtle text-success border border-success-subtle font-monospace">.XLSX</span>
+                            </div>
+                            <p class="small text-muted mb-0"><i class="bi bi-triangle-exclamation text-warning me-2"></i><strong>Lưu ý:</strong> Dung lượng tệp đính kèm không vượt quá 5MB mỗi file.</p>
+                        </div>
+
+                        <!-- Uploader mock card -->
+                        <div class="col-lg-6 col-12">
+                            <div class="attachment-card cursor-pointer" id="guideUploadArea" title="Nhấp vào để test upload thử">
+                                <div class="upload-icon"><i class="bi bi-cloud-arrow-up"></i></div>
+                                <h6 class="fw-bold mb-1 text-dark-emphasis">Tải tệp đính kèm mẫu</h6>
+                                <p class="text-muted small mb-1">Kéo thả tệp tin vào đây hoặc click để chọn tệp</p>
+                                <p class="text-muted fs-9 mb-0">Hỗ trợ JPG, PNG, PDF tối đa 5MB</p>
+                                <div class="file-progress-bar" id="guideProgressBar">
+                                    <div class="file-progress-bar-fill" id="guideProgressBarFill"></div>
+                                </div>
+                                <div class="small mt-3 font-monospace" id="guideUploadStatus"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4.7 TÀI KHOẢN KHÁCH HÀNG & BẢO MẬT -->
+                <div class="card glass-card p-4 mb-5" id="guide-account" data-aos="fade-up">
+                    <h3 class="guide-section-title mb-4"><i class="fa-solid fa-user-shield text-danger me-2"></i>TÀI KHOẢN KHÁCH HÀNG & BẢO MẬT</h3>
+                    <div class="row g-4">
+                        <div class="col-md-6 col-12 border-end-md">
+                            <h5 class="fw-bold text-dark-emphasis mb-3"><i class="bi bi-arrow-right-to-bracket text-primary me-2"></i>Đăng ký và Đăng nhập</h5>
+                            <p class="text-muted small mb-2"><strong>Đăng ký tài khoản:</strong> Nhấp nút Đăng ký ở thanh đầu trang, điền số điện thoại ký kết hợp đồng, thiết lập mật khẩu bảo mật và nhận mã xác minh OTP.</p>
+                            <p class="text-muted small mb-0"><strong>Đăng nhập tài khoản:</strong> Đăng nhập bằng Số điện thoại hoặc Tên đăng nhập đã chọn để xem danh sách toàn bộ phiếu hỗ trợ và quản lý hồ sơ.</p>
+                        </div>
+                        <div class="col-md-6 col-12">
+                            <h5 class="fw-bold text-dark-emphasis mb-3"><i class="fa-solid fa-shield-halved text-success me-2"></i>Hồ sơ và Bảo mật thông tin</h5>
+                            <p class="text-muted small mb-2"><strong>Quản lý hồ sơ:</strong> Khách hàng có thể thay đổi Avatar, Email, địa chỉ gửi nhận phiếu thông qua trang <a href="customer-profile.html" class="text-danger fw-bold text-decoration-none">👤 Hồ sơ cá nhân</a>.</p>
+                            <p class="text-muted small mb-0"><strong>Thay đổi mật khẩu:</strong> Khuyên dùng đổi mật khẩu định kỳ 6 tháng một lần để đảm bảo tuyệt đối tính an toàn của dữ liệu yêu cầu kỹ thuật.</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ========== 5. FAQ SECTION (WITH SEARCH FAQS ACCORDION) ========== -->
+        <section class="py-5" id="section-faq">
+            <div class="container" style="max-width: 900px;">
+                <div class="text-center mb-5" data-aos="fade-up">
+                    <h2 class="fw-bold text-dark fs-3">CÂU HỎI THƯỜNG GẶP (FAQ)</h2>
+                    <p class="text-muted small">Tìm kiếm nhanh câu hỏi thắc mắc của bạn bên dưới</p>
+                    
+                    <!-- Search FAQ input bar -->
+                    <div class="input-group mx-auto mt-4" style="max-width: 540px; border-radius:12px; overflow:hidden; border: 1.5px solid var(--vt-gray-medium);">
+                        <span class="input-group-text bg-transparent border-0"><i class="fa-solid fa-search text-muted"></i></span>
+                        <input type="text" id="faqSearchInput" class="form-control border-0 py-2 fs-9" placeholder="Tìm kiếm câu hỏi thường gặp...">
+                    </div>
+                </div>
+
+                <!-- Accordion FAQs -->
+                <div class="accordion faq-accordion" id="faqHelpAccordion" data-aos="fade-up">
+                    <!-- Q1 -->
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq-collapseOne" aria-expanded="true" aria-controls="faq-collapseOne">
+                                Tôi quên mã phiếu hỗ trợ kỹ thuật phải làm sao?
+                            </button>
+                        </h2>
+                        <div id="faq-collapseOne" class="accordion-collapse collapse show" data-bs-parent="#faqHelpAccordion">
+                            <div class="accordion-body">
+                                Khách hàng có thể dễ dàng tìm lại mã phiếu bằng các cách sau:<br>
+                                1. Nhấp chọn trang <a href="lookup-ticket.html" class="text-danger fw-bold text-decoration-none">Tra cứu phiếu</a>, nhập số điện thoại hoặc email đăng ký để hệ thống truy tìm lại toàn bộ danh sách phiếu.<br>
+                                2. Kiểm tra lại hộp thư tin nhắn SMS trên điện thoại (Hệ thống luôn gửi tin nhắn kèm mã phiếu dạng <strong>HT2026xxxxx</strong> khi tạo phiếu thành công).<br>
+                                3. Đăng nhập tài khoản và vào mục "Lịch sử phiếu hỗ trợ của tôi" để xem danh sách.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Q2 -->
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq-collapseTwo" aria-expanded="false" aria-controls="faq-collapseTwo">
+                                Tôi có thể chỉnh sửa nội dung phiếu hỗ trợ sau khi đã gửi đi không?
+                            </button>
+                        </h2>
+                        <div id="faq-collapseTwo" class="accordion-collapse collapse" data-bs-parent="#faqHelpAccordion">
+                            <div class="accordion-body">
+                                Hiện tại, để đảm bảo tính nhất quán của lịch trình kỹ thuật, hệ thống không cho phép khách hàng sửa trực tiếp thông tin cốt lõi (dịch vụ, loại yêu cầu) sau khi đã gửi. Tuy nhiên, khách hàng có thể sử dụng chức năng <strong>Chat với nhân viên</strong> tại trang chi tiết phiếu để bổ sung thêm mô tả lỗi, gửi thêm ảnh chụp, hoặc phản hồi thông tin trực tiếp để nhân viên cập nhật.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Q3 -->
+                    <h2 class="accordion-header d-none"></h2> <!-- Empty block for standard semantic index -->
+
+                    <!-- Q3 -->
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq-collapseThree" aria-expanded="false" aria-controls="faq-collapseThree">
+                                Sau bao lâu thì tôi nhận được phản hồi và có kỹ thuật viên liên hệ?
+                            </button>
+                        </h2>
+                        <div id="faq-collapseThree" class="accordion-collapse collapse" data-bs-parent="#faqHelpAccordion">
+                            <div class="accordion-body">
+                                Theo cam kết chất lượng dịch vụ (SLA) của Viettel Telecom:<br>
+                                - Đối với các phiếu sự cố <strong>Khẩn cấp</strong> (mất mạng diện rộng, đứt cáp): Nhân viên sẽ liên hệ phản hồi trong vòng <strong>30 phút</strong> và giải quyết trong vòng 2 giờ đến 4 giờ làm việc.<br>
+                                - Đối với các sự cố thông thường khác: Thời gian phản hồi tối đa là <strong>2 giờ</strong> và giải quyết xong trong ngày.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Q4 -->
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq-collapseFour" aria-expanded="false" aria-controls="faq-collapseFour">
+                                Làm sao để đăng ký lịch hẹn kỹ thuật viên ghé nhà kiểm tra trực tiếp?
+                            </button>
+                        </h2>
+                        <div id="faq-collapseFour" class="accordion-collapse collapse" data-bs-parent="#faqHelpAccordion">
+                            <div class="accordion-body">
+                                Khách hàng đăng ký đặt lịch trực tiếp bằng cách tick chọn mục <strong>"Cần lịch hẹn ghé nhà"</strong> tại form Tạo phiếu hỗ trợ. Sau khi phiếu được tiếp nhận, hệ thống sẽ hiển thị trạng thái và thông tin liên hệ của Kỹ thuật viên phụ trách. Bạn có thể chat hoặc gọi điện trực tiếp chốt giờ làm việc mong muốn.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Q5 -->
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq-collapseFive" aria-expanded="false" aria-controls="faq-collapseFive">
+                                Tôi có thể đính kèm nhiều hình ảnh/tài liệu cùng một lúc không?
+                            </button>
+                        </h2>
+                        <div id="faq-collapseFive" class="accordion-collapse collapse" data-bs-parent="#faqHelpAccordion">
+                            <div class="accordion-body">
+                                Có. Hệ thống hỗ trợ tải lên tối đa <strong>3 tệp tin đính kèm</strong> cho mỗi phiếu hỗ trợ kỹ thuật. Vui lòng đảm bảo dung lượng của mỗi tệp không vượt quá 5MB và định dạng tệp nằm trong nhóm hỗ trợ (.JPG, .PNG, .PDF, .DOCX, .XLSX).
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Q6 -->
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq-collapseSix" aria-expanded="false" aria-controls="faq-collapseSix">
+                                Làm sao tôi đánh giá được dịch vụ sau khi sự cố mạng đã xử lý xong?
+                            </button>
+                        </h2>
+                        <div id="faq-collapseSix" class="accordion-collapse collapse" data-bs-parent="#faqHelpAccordion">
+                            <div class="accordion-body">
+                                Khi sự cố được xử lý hoàn tất, trạng thái phiếu chuyển sang "Hoàn thành". Hệ thống sẽ hiển thị khối <strong>"Đánh giá chất lượng"</strong> tại trang chi tiết phiếu hỗ trợ của bạn (hoặc gửi thông báo đẩy qua ứng dụng MyViettel). Khách hàng nhấp số sao tương ứng (từ 1 đến 5 sao) và điền ý kiến đóng góp rồi lưu lại.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Empty state searching FAQ -->
+                <div class="empty-faq-box my-4 animate__animated animate__fadeIn" id="faqEmptyState" style="display: none;">
+                    <i class="bi bi-magnifying-glass text-muted fs-3 mb-2"></i>
+                    <h6 class="fw-bold text-dark">Không tìm thấy câu hỏi phù hợp</h6>
+                    <p class="text-muted small mb-0">Thử lại với từ khóa khác (ví dụ: mất mạng, đổi mật khẩu, v.v.)</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========== 6. VIDEO TUTORIALS SECTION ========== -->
+        <section class="py-5" style="background-color: #ffffff;">
+            <div class="container">
+                <div class="text-center mb-5" data-aos="fade-up">
+                    <h2 class="fw-bold text-dark fs-3">VIDEO HƯỚNG DẪN</h2>
+                    <p class="text-muted small">Theo dõi video hướng dẫn từng bước để làm quen nhanh với hệ thống</p>
+                </div>
+                <div class="row g-4">
+                    <!-- Video 1 -->
+                    <div class="col-lg-3 col-sm-6 col-12" data-aos="fade-up">
+                        <div class="video-guide-card">
+                            <div class="video-thumbnail-wrapper">
+                                <img src="https://images.unsplash.com/photo-1531403009284-440f080d1e12?auto=format&fit=crop&q=80&w=350" alt="Thumbnail tạo phiếu" class="video-thumbnail-img" loading="lazy">
+                                <button class="video-play-btn" data-video-type="create" aria-label="Play video"><i class="bi bi-play"></i></button>
+                            </div>
+                            <div class="video-card-body">
+                                <h4 class="video-card-title text-truncate">Video tạo phiếu hỗ trợ</h4>
+                                <span class="video-card-time"><i class="fa-solid fa-clock me-1"></i>01:45</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Video 2 -->
+                    <div class="col-lg-3 col-sm-6 col-12" data-aos="fade-up" data-aos-delay="50">
+                        <div class="video-guide-card">
+                            <div class="video-thumbnail-wrapper">
+                                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=350" alt="Thumbnail tra cứu" class="video-thumbnail-img" loading="lazy">
+                                <button class="video-play-btn" data-video-type="lookup" aria-label="Play video"><i class="bi bi-play"></i></button>
+                            </div>
+                            <div class="video-card-body">
+                                <h4 class="video-card-title text-truncate">Video tra cứu phiếu</h4>
+                                <span class="video-card-time"><i class="fa-solid fa-clock me-1"></i>01:20</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Video 3 -->
+                    <div class="col-lg-3 col-sm-6 col-12" data-aos="fade-up" data-aos-delay="100">
+                        <div class="video-guide-card">
+                            <div class="video-thumbnail-wrapper">
+                                <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&q=80&w=350" alt="Thumbnail chat" class="video-thumbnail-img" loading="lazy">
+                                <button class="video-play-btn" data-video-type="chat" aria-label="Play video"><i class="bi bi-play"></i></button>
+                            </div>
+                            <div class="video-card-body">
+                                <h4 class="video-card-title text-truncate">Video chat với nhân viên</h4>
+                                <span class="video-card-time"><i class="fa-solid fa-clock me-1"></i>02:10</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Video 4 -->
+                    <div class="col-lg-3 col-sm-6 col-12" data-aos="fade-up" data-aos-delay="150">
+                        <div class="video-guide-card">
+                            <div class="video-thumbnail-wrapper">
+                                <img src="https://images.unsplash.com/photo-1552581230-c01374138857?auto=format&fit=crop&q=80&w=350" alt="Thumbnail đánh giá" class="video-thumbnail-img" loading="lazy">
+                                <button class="video-play-btn" data-video-type="rating" aria-label="Play video"><i class="bi bi-play"></i></button>
+                            </div>
+                            <div class="video-card-body">
+                                <h4 class="video-card-title text-truncate">Video đánh giá dịch vụ</h4>
+                                <span class="video-card-time"><i class="fa-solid fa-clock me-1"></i>01:15</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========== 7. QUICK CONTACT CTA BLOCK ========== -->
+        <section class="py-5">
+            <div class="container text-center">
+                <div class="cta-help-card p-5" data-aos="zoom-in">
+                    <h2 class="cta-title text-white text-uppercase mb-3">Bạn vẫn cần hỗ trợ?</h2>
+                    <p class="cta-desc text-white-50">Đội ngũ kỹ thuật viên TechSupport Viettel luôn sẵn sàng hỗ trợ trực tuyến giải quyết mọi sự cố đường truyền.</p>
+                    <div class="d-flex flex-wrap align-items-center justify-content-center gap-3">
+                        <a href="create-ticket.html" class="btn btn-cta-white">
+                            <i class="fa-solid fa-plus-circle me-1"></i> Tạo phiếu hỗ trợ
+                        </a>
+                        <a href="contact.html" class="btn btn-cta-outline">
+                            <i class="fa-solid fa-phone me-1"></i> Liên hệ ngay
+                        </a>
+                        <a href="lookup-ticket.html" class="btn btn-cta-outline">
+                            <i class="fa-solid fa-search me-1"></i> Tra cứu phiếu
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ==================== FOOTER CONTAINER ==================== -->
+    <div id="footer-container">
+        <!-- Fallback Footer -->
+        <footer class="custom-footer" id="footerSection">
+            <div class="container">
+                <div class="row g-4">
+                    <div class="col-lg-4 col-12">
+                        <a class="footer-brand" href="../index.html">
+                            <i class="fa-solid fa-cpu-fill"></i> Tech<span>Support</span>
+                        </a>
+                        <p class="footer-desc">Hệ thống tiếp nhận sự cố kỹ thuật thông minh của Viettel Telecom. Cam kết chất lượng dịch vụ tốt nhất 24/7/365.</p>
+                        <div class="footer-social-icons">
+                            <a href="https://facebook.com" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+                            <a href="https://youtube.com" aria-label="Youtube"><i class="bi bi-youtube"></i></a>
+                            <a href="https://linkedin.com" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
+                            <a href="https://instagram.com" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-6">
+                        <h5 class="footer-title">Dịch Vụ</h5>
+                        <ul class="footer-links">
+                            <li><a href="../index.html#serviceGridSection">Internet Cáp Quang</a></li>
+                            <li><a href="../index.html#serviceGridSection">Home Camera</a></li>
+                            <li><a href="../index.html#serviceGridSection">Server & Cloud</a></li>
+                            <li><a href="../index.html#serviceGridSection">Mạng Nội Bộ</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-6">
+                        <h5 class="footer-title">Liên Kết</h5>
+                        <ul class="footer-links">
+                            <li><a href="../index.html">Trang chủ</a></li>
+                            <li><a href="lookup-ticket.html">Tra cứu phiếu</a></li>
+                            <li><a href="huong-dan.html">Hướng dẫn</a></li>
+                            <li><a href="contact.html">Liên hệ</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-12">
+                        <h5 class="footer-title">Hỗ Trợ Kỹ Thuật</h5>
+                        <ul class="footer-contact-list">
+                            <li><i class="fa-solid fa-phone"></i> <span>1800 8119 hoặc 1900 8098 (Miễn phí cuộc gọi)</span></li>
+                            <li><i class="fa-solid fa-envelope"></i> <span>support@viettel.com.vn</span></li>
+                            <li><i class="fa-solid fa-map-marker"></i> <span>210 Trần Phú, Cái Khế, Ninh Kiều, Cần Thơ</span></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="footer-bottom text-center">
+                    <div class="row align-items-center">
+                        <div class="col-md-6 col-12 text-md-start">
+                            <p class="m-0">&copy; 2026 Viettel Telecom TechSupport. Bảo lưu mọi quyền.</p>
+                        </div>
+                        <div class="col-md-6 col-12 text-md-end mt-2 mt-md-0 footer-bottom-links">
+                            <a href="#">Điều khoản sử dụng</a>
+                            <a href="#">Chính sách bảo mật</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button class="scroll-top-btn" aria-label="Quay lại đầu trang"><i class="bi bi-arrow-up-short"></i></button>
+        </footer>
+    </div>
+
+    <!-- ==================== CHATBOX CONTAINER ==================== -->
+    <div id="chatbox-container"></div>
+
+    <!-- ==================== SCRIPTS ==================== -->
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+    
+    <!-- AOS Animation JS -->
+    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+
+    <!-- Component loader script -->
+    <script src="../assets/js/header.js"></script>
+    <script src="../assets/js/sidebar.js"></script>
+    <script src="../assets/js/footer.js"></script>
+    <script src="../assets/js/chatbox.js"></script>
+    <script src="../assets/js/main.js"></script>
+    
+    <!-- Page script logic -->
+    <script src="../assets/js/huong-dan.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="vi" data-bs-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Quản Lý Phiếu Hỗ Trợ Kỹ Thuật - TechSupport Viettel</title>
+    <meta name="description"
+        content="Hệ thống quản lý, phân công và xử lý phiếu hỗ trợ kỹ thuật khách hàng TechSupport Viettel Telecom.">
+    <meta name="robots" content="noindex, nofollow">
+
+    <!-- Bootstrap 5.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <!-- Admin Dashboard CSS (base layout) -->
+    <link rel="stylesheet" href="../assets/css/staff/dashboard.css">
+    <!-- Page-specific CSS -->
+    <link rel="stylesheet" href="../assets/css/staff/staff-ticket-management.css">
+</head>
+
+<body>
+    <div id="adminLayout">
+
+        <!-- SIDEBAR MOUNT (Nội dung tự động tải từ sidebar-loader.js) -->
+        <div id="sidebarMount"></div>
+
+        <!-- MAIN WRAPPER -->
+        <div class="main-wrapper">
+
+            <!-- TOPBAR HEADER -->
+            <header class="admin-topbar" role="banner">
+                <div class="topbar-left">
+                    <!-- Toggle buttons for sidebar -->
+                    <button class="sidebar-toggle-btn d-lg-none" id="toggleMobileSidebar"
+                        aria-label="Open sidebar menu">
+                        <i class="bi bi-bars"></i>
+                    </button>
+                    <button class="sidebar-toggle-btn d-none d-lg-flex" id="toggleSidebar" aria-label="Toggle sidebar">
+                        <i class="bi bi-bars"></i>
+                    </button>
+
+                    <!-- Breadcrumbs -->
+                    <div class="d-none d-md-block">
+                        <p class="mb-0 fw-semibold" style="font-size:0.95rem; color: var(--text-main);">Quản Lý Phiếu Hỗ
+                            Trợ</p>
+                        <p class="mb-0" style="font-size: 0.75rem; color: var(--text-muted);">Hệ thống tiếp nhận & xử lý
+                            yêu cầu kỹ thuật</p>
+                    </div>
+                </div>
+
+                <!-- Search topbar form -->
+                <form class="topbar-search-form" role="search">
+                    <div class="search-input-group">
+                        <i class="fa-solid fa-search" aria-hidden="true"></i>
+                        <input type="search" class="form-control search-bar-input"
+                            placeholder="Tìm phiếu, dịch vụ, khách hàng..." autocomplete="off">
+                    </div>
+                </form>
+
+                <div class="topbar-right">
+                    <!-- Mobile Search Button -->
+                    <button class="topbar-action-btn d-md-none" id="mobileSearchTrigger" title="Tìm kiếm">
+                        <i class="fa-solid fa-search"></i>
+                    </button>
+
+                    <!-- Light/Dark Theme Toggle -->
+                    <button class="topbar-action-btn" id="toggleTheme" title="Chuyển chế độ tối/sáng">
+                        <i class="bi bi-moon"></i>
+                    </button>
+
+                    <!-- Notification bell -->
+                    <button class="topbar-action-btn" title="Thông báo hệ thống">
+                        <i class="fa-solid fa-bell"></i>
+                        <span class="notification-badge">5</span>
+                    </button>
+
+                    <!-- User Account profile -->
+                    <div class="dropdown">
+                        <a class="user-profile-dropdown" href="#" role="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            <img src="https://ui-avatars.com/api/?name=Admin+Viettel&background=EE0033&color=fff&size=38"
+                                alt="Avatar" class="user-avatar">
+                            <div class="d-none d-sm-block">
+                                <p class="user-profile-name mb-0">Nguyễn Văn Hùng</p>
+                                <p class="mb-0 user-profile-role">Kỹ thuật viên Trưởng</p>
+                            </div>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2" style="border-radius:12px;">
+                            <li><a class="dropdown-item py-2" href="admin-profile.html"><i
+                                        class="fa-solid fa-user me-2 text-primary"></i>Thông tin cá nhân</a></li>
+                            <li><a class="dropdown-item py-2" href="admin-profile.html#changePassword"><i
+                                        class="fa-solid fa-key me-2 text-warning"></i>Đổi mật khẩu</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item py-2 text-danger" href="../login.html"><i
+                                        class="fa-solid fa-right-from-bracket me-2"></i>Đăng xuất</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </header>
+
+            <!-- MAIN CONTENT AREA -->
+            <main class="admin-content container-fluid">
+
+                <!-- Navigation Breadcrumbs -->
+                <nav aria-label="breadcrumb" class="mb-4">
+                    <ol class="breadcrumb" style="font-size: 0.82rem; margin: 0; padding: 0;">
+                        <li class="breadcrumb-item">
+                            <a href="dashboard.html" class="text-danger text-decoration-none">
+                                <i class="fa-solid fa-gauge-high me-1"></i>Dashboard
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item active fw-semibold" style="color: var(--text-main);">Quản lý phiếu hỗ
+                            trợ</li>
+                    </ol>
+                </nav>
+
+                <!-- Page Header Title block -->
+                <div class="row align-items-center mb-4 g-3">
+                    <div class="col-12 col-md-8">
+                        <h1 class="h3 fw-bold mb-1" style="color: var(--text-main);">🎫 QUẢN LÝ PHIẾU HỖ TRỢ KỸ THUẬT
+                        </h1>
+                        <p class="text-muted mb-0" style="font-size: 0.9rem;">Quản lý, theo dõi và xử lý toàn bộ yêu cầu
+                            hỗ trợ kỹ thuật từ khách hàng.</p>
+                    </div>
+                    <div class="col-12 col-md-4 text-md-end">
+                        <button class="btn btn-viettel fw-bold px-3 py-2 w-100 w-md-auto" data-bs-toggle="modal"
+                            data-bs-target="#addTicketModal">
+                            <i class="fa-solid fa-plus-circle me-1"></i> Tạo phiếu mới
+                        </button>
+                    </div>
+                </div>
+
+                <!-- =============================================================
+                     SECTION 1: DASHBOARD KPI CARDS
+                     ============================================================= -->
+                <section aria-label="KPI Thống kê phiếu" class="mb-4">
+                    <div class="row g-3 kpi-grid">
+                        <!-- Total Tickets -->
+                        <div class="col-xl-3 col-md-6 col-12">
+                            <div class="kpi-card p-4">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div>
+                                        <p class="text-muted fw-bold small text-uppercase mb-1"
+                                            style="letter-spacing:0.5px;">Tổng phiếu hỗ trợ</p>
+                                        <h3 class="fw-bold mb-0" id="kpi-total">0</h3>
+                                    </div>
+                                    <div class="kpi-icon-box bg-secondary-subtle text-secondary">
+                                        <i class="fa-solid fa-ticket"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Waiting -->
+                        <div class="col-xl-3 col-md-6 col-12">
+                            <div class="kpi-card p-4">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div>
+                                        <p class="text-muted fw-bold small text-uppercase mb-1"
+                                            style="letter-spacing:0.5px;">Chờ xử lý</p>
+                                        <h3 class="fw-bold mb-0 text-muted" id="kpi-waiting">0</h3>
+                                    </div>
+                                    <div class="kpi-icon-box bg-light text-muted">
+                                        <i class="fa-solid fa-clock"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Processing -->
+                        <div class="col-xl-3 col-md-6 col-12">
+                            <div class="kpi-card p-4">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div>
+                                        <p class="text-muted fw-bold small text-uppercase mb-1"
+                                            style="letter-spacing:0.5px;">Đang xử lý</p>
+                                        <h3 class="fw-bold mb-0 text-primary" id="kpi-processing">0</h3>
+                                    </div>
+                                    <div class="kpi-icon-box bg-primary-subtle text-primary">
+                                        <i class="fa-solid fa-spinner fa-spin"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Completed -->
+                        <div class="col-xl-3 col-md-6 col-12">
+                            <div class="kpi-card p-4">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div>
+                                        <p class="text-muted fw-bold small text-uppercase mb-1"
+                                            style="letter-spacing:0.5px;">Hoàn thành</p>
+                                        <h3 class="fw-bold mb-0 text-success" id="kpi-completed">0</h3>
+                                    </div>
+                                    <div class="kpi-icon-box bg-success-subtle text-success">
+                                        <i class="fa-solid fa-check-circle"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Cancelled -->
+                        <div class="col-xl-3 col-md-6 col-12">
+                            <div class="kpi-card p-4">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div>
+                                        <p class="text-muted fw-bold small text-uppercase mb-1"
+                                            style="letter-spacing:0.5px;">Đã hủy</p>
+                                        <h3 class="fw-bold mb-0 text-danger" id="kpi-cancelled">0</h3>
+                                    </div>
+                                    <div class="kpi-icon-box bg-danger-subtle text-danger">
+                                        <i class="fa-solid fa-circle-xmark"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Urgent Priority -->
+                        <div class="col-xl-3 col-md-6 col-12">
+                            <div class="kpi-card p-4">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div>
+                                        <p class="text-muted fw-bold small text-uppercase mb-1"
+                                            style="letter-spacing:0.5px;">Ưu tiên khẩn cấp</p>
+                                        <h3 class="fw-bold mb-0 text-danger" id="kpi-urgent">0</h3>
+                                    </div>
+                                    <div class="kpi-icon-box bg-danger-subtle text-danger">
+                                        <i class="fa-solid fa-triangle-exclamation"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Need Appointment -->
+                        <div class="col-xl-3 col-md-6 col-12">
+                            <div class="kpi-card p-4">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div>
+                                        <p class="text-muted fw-bold small text-uppercase mb-1"
+                                            style="letter-spacing:0.5px;">Cần lịch hẹn</p>
+                                        <h3 class="fw-bold mb-0 text-warning" id="kpi-appointment">0</h3>
+                                    </div>
+                                    <div class="kpi-icon-box bg-warning-subtle text-warning">
+                                        <i class="fa-solid fa-calendar-check"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- New Customers -->
+                        <div class="col-xl-3 col-md-6 col-12">
+                            <div class="kpi-card p-4">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div>
+                                        <p class="text-muted fw-bold small text-uppercase mb-1"
+                                            style="letter-spacing:0.5px;">Khách hàng mới</p>
+                                        <h3 class="fw-bold mb-0 text-info">+12.5%</h3>
+                                    </div>
+                                    <div class="kpi-icon-box bg-info-subtle text-info">
+                                        <i class="fa-solid fa-arrow-trend-up"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- =============================================================
+                     SECTION 2: STATISTICS CHARTS (ROW 2)
+                     ============================================================= -->
+                <section aria-label="Biểu đồ phân tích phiếu" class="mb-4">
+                    <!-- Row 1: Monthly Trend -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-12">
+                            <div class="kpi-card p-4 h-100 monthly-chart-card">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h5 class="fw-bold mb-0 text-dark-emphasis">📊 Phiếu theo tháng</h5>
+                                    <span class="badge bg-danger-subtle text-danger border border-danger-subtle">Tháng 1
+                                        - Tháng 12</span>
+                                </div>
+                                <div class="monthly-chart-container" style="position: relative;">
+                                    <canvas id="monthlyBarChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Row 2: Secondary Charts & Top Staff -->
+                    <div class="row g-3">
+                        <!-- Horizontal Services requested -->
+                        <div class="col-xl-4 col-md-6 col-12">
+                            <div class="kpi-card p-4 h-100">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h5 class="fw-bold mb-0 text-dark-emphasis">⚙️ Dịch vụ yêu cầu nhiều nhất</h5>
+                                    <span class="badge bg-info-subtle text-info border border-info-subtle">Top
+                                        Services</span>
+                                </div>
+                                <div style="height: 250px; position: relative;">
+                                    <canvas id="serviceHorizontalChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Status Doughnut Chart -->
+                        <div class="col-xl-4 col-md-6 col-12">
+                            <div class="kpi-card p-4 h-100">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h5 class="fw-bold mb-0 text-dark-emphasis">🍩 Tỷ lệ trạng thái phiếu</h5>
+                                    <span
+                                        class="badge bg-warning-subtle text-warning border border-warning-subtle">Status</span>
+                                </div>
+                                <div style="height: 250px; position: relative;">
+                                    <canvas id="statusDonutChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Top Outstanding Staff Card -->
+                        <div class="col-xl-4 col-md-12 col-12">
+                            <div class="kpi-card p-4 h-100">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h5 class="fw-bold mb-0 text-dark-emphasis">🏆 Top nhân viên xuất sắc</h5>
+                                    <span
+                                        class="badge bg-success-subtle text-success border border-success-subtle">Tháng
+                                        này</span>
+                                </div>
+                                <div class="d-flex flex-column gap-3 overflow-auto" style="height: 250px;">
+                                    <!-- Staff 1 -->
+                                    <div
+                                        class="d-flex align-items-center justify-content-between p-2 rounded border bg-light-subtle">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <img src="https://ui-avatars.com/api/?name=Nguyen+Van+Hung&background=0d6efd&color=fff&size=36"
+                                                alt="Avatar" class="rounded-circle" style="width:36px; height:36px;">
+                                            <div>
+                                                <p class="mb-0 fw-semibold" style="font-size:0.88rem;">Nguyễn Văn Hùng
+                                                </p>
+                                                <p class="mb-0 text-muted" style="font-size:0.75rem;">Kỹ thuật viên
+                                                    Trưởng</p>
+                                            </div>
+                                        </div>
+                                        <div class="text-end">
+                                            <span class="badge bg-danger text-white fw-bold">45 phiếu</span>
+                                        </div>
+                                    </div>
+                                    <!-- Staff 2 -->
+                                    <div
+                                        class="d-flex align-items-center justify-content-between p-2 rounded border bg-light-subtle">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <img src="https://ui-avatars.com/api/?name=Nguyen+Huu+Nam&background=198754&color=fff&size=36"
+                                                alt="Avatar" class="rounded-circle" style="width:36px; height:36px;">
+                                            <div>
+                                                <p class="mb-0 fw-semibold" style="font-size:0.88rem;">Nguyễn Hữu Nam
+                                                </p>
+                                                <p class="mb-0 text-muted" style="font-size:0.75rem;">Kỹ thuật viên</p>
+                                            </div>
+                                        </div>
+                                        <div class="text-end">
+                                            <span class="badge bg-primary text-white fw-bold">38 phiếu</span>
+                                        </div>
+                                    </div>
+                                    <!-- Staff 3 -->
+                                    <div
+                                        class="d-flex align-items-center justify-content-between p-2 rounded border bg-light-subtle">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <img src="https://ui-avatars.com/api/?name=Tran+Minh+Hoang&background=ffc107&color=fff&size=36"
+                                                alt="Avatar" class="rounded-circle" style="width:36px; height:36px;">
+                                            <div>
+                                                <p class="mb-0 fw-semibold" style="font-size:0.88rem;">Trần Minh Hoàng
+                                                </p>
+                                                <p class="mb-0 text-muted" style="font-size:0.75rem;">Kỹ thuật viên</p>
+                                            </div>
+                                        </div>
+                                        <div class="text-end">
+                                            <span class="badge bg-info text-white fw-bold">32 phiếu</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- =============================================================
+                     SECTION 3: ADVANCED FILTERS PANEL
+                     ============================================================= -->
+                <section aria-label="Bộ lọc nâng cao" class="mb-4">
+                    <div class="kpi-card p-4 glass-panel">
+                        <div class="d-flex align-items-center mb-3">
+                            <h5 class="fw-bold mb-0 text-dark-emphasis"><i
+                                    class="bi bi-filter me-2 text-danger"></i>BỘ LỌC TÌM KIẾM NÂNG CAO</h5>
+                        </div>
+                        <div class="row g-3">
+                            <!-- Live search query -->
+                            <div class="col-lg-3 col-md-6 col-12">
+                                <label for="searchQuery" class="form-label fw-bold text-muted small text-uppercase mb-1"
+                                    style="font-size:0.75rem;">Từ khóa</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-transparent border-end-0 border"><i
+                                            class="bi bi-magnifying-glass text-muted"></i></span>
+                                    <input type="text" id="searchQuery"
+                                        class="form-control form-control-custom border-start-0"
+                                        placeholder="Mã phiếu, tiêu đề, khách hàng...">
+                                </div>
+                            </div>
+
+                            <!-- Status select -->
+                            <div class="col-lg-2 col-md-3 col-6">
+                                <label for="filterStatus"
+                                    class="form-label fw-bold text-muted small text-uppercase mb-1"
+                                    style="font-size:0.75rem;">Trạng thái</label>
+                                <select id="filterStatus" class="form-select form-select-custom border">
+                                    <option value="all" selected>Tất cả</option>
+                                    <option value="waiting">Chờ xử lý</option>
+                                    <option value="processing">Đang xử lý</option>
+                                    <option value="feedback">Chờ khách phản hồi</option>
+                                    <option value="completed">Hoàn thành</option>
+                                    <option value="cancelled">Hủy bỏ</option>
+                                </select>
+                            </div>
+
+                            <!-- Priority select -->
+                            <div class="col-lg-2 col-md-3 col-6">
+                                <label for="filterPriority"
+                                    class="form-label fw-bold text-muted small text-uppercase mb-1"
+                                    style="font-size:0.75rem;">Mức ưu tiên</label>
+                                <select id="filterPriority" class="form-select form-select-custom border">
+                                    <option value="all" selected>Tất cả</option>
+                                    <option value="Thấp">Thấp</option>
+                                    <option value="Trung Bình">Trung bình</option>
+                                    <option value="Cao">Cao</option>
+                                    <option value="Khẩn Cấp">Khẩn cấp</option>
+                                </select>
+                            </div>
+
+                            <!-- Service Select -->
+                            <div class="col-lg-2 col-md-6 col-12">
+                                <label for="filterService"
+                                    class="form-label fw-bold text-muted small text-uppercase mb-1"
+                                    style="font-size:0.75rem;">Dịch vụ</label>
+                                <select id="filterService" class="form-select form-select-custom border">
+                                    <!-- Populated via JS -->
+                                </select>
+                            </div>
+
+                            <!-- Assignee Staff -->
+                            <div class="col-lg-3 col-md-6 col-12">
+                                <label for="filterStaff" class="form-label fw-bold text-muted small text-uppercase mb-1"
+                                    style="font-size:0.75rem;">Nhân viên phụ trách</label>
+                                <select id="filterStaff" class="form-select form-select-custom border">
+                                    <!-- Populated via JS -->
+                                </select>
+                            </div>
+
+                            <!-- Date Range: From Date -->
+                            <div class="col-lg-3 col-md-6 col-12">
+                                <label for="filterFromDate"
+                                    class="form-label fw-bold text-muted small text-uppercase mb-1"
+                                    style="font-size:0.75rem;">Từ ngày</label>
+                                <input type="date" id="filterFromDate" class="form-control form-control-custom border">
+                            </div>
+
+                            <!-- Date Range: To Date -->
+                            <div class="col-lg-3 col-md-6 col-12">
+                                <label for="filterToDate"
+                                    class="form-label fw-bold text-muted small text-uppercase mb-1"
+                                    style="font-size:0.75rem;">Đến ngày</label>
+                                <input type="date" id="filterToDate" class="form-control form-control-custom border">
+                            </div>
+
+                            <!-- Actions Buttons -->
+                            <div class="col-lg-6 col-12 d-flex align-items-end justify-content-md-end gap-2 flex-wrap">
+                                <button id="btnApplyFilters"
+                                    class="btn btn-viettel fw-bold px-4 py-2 flex-grow-1 flex-md-grow-0"
+                                    style="height:44px;">
+                                    <i class="fa-solid fa-search me-1"></i> Lọc
+                                </button>
+                                <button id="btnResetFilters"
+                                    class="btn btn-outline-secondary fw-bold px-4 py-2 flex-grow-1 flex-md-grow-0"
+                                    style="border-radius:12px; height:44px;">
+                                    <i class="bi bi-rotate-right me-1"></i> Làm mới
+                                </button>
+                                <button id="btnExportExcel"
+                                    class="btn btn-success fw-bold px-4 py-2 text-white flex-grow-1 flex-md-grow-0"
+                                    style="background-color:#10B981; border:none; border-radius:12px; height:44px;">
+                                    <i class="fa-solid fa-file-excel me-1"></i> Xuất Excel
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- =============================================================
+                     SECTION 4: DATATABLE DATA LIST
+                     ============================================================= -->
+                <section aria-label="Danh sách phiếu hỗ trợ" class="mb-4">
+                    <div class="kpi-card p-0" style="overflow:hidden;">
+                        <!-- Header Details card -->
+                        <div
+                            class="p-4 d-flex justify-content-between align-items-center flex-wrap gap-2 border-bottom">
+                            <div>
+                                <h5 class="fw-bold mb-0 text-dark-emphasis">📋 Danh sách phiếu hỗ trợ kỹ thuật</h5>
+                                <p class="text-muted small mb-0 mt-1">Sắp xếp, tìm kiếm và thao tác trực tiếp trên dữ
+                                    liệu hệ thống.</p>
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                                <label for="pageSizeSelect" class="text-muted mb-0 small"
+                                    style="white-space:nowrap;">Dòng mỗi trang:</label>
+                                <select id="pageSizeSelect" class="form-select form-select-sm"
+                                    style="width:75px; border-radius:6px;">
+                                    <option value="10" selected>10</option>
+                                    <option value="20">20</option>
+                                    <option value="50">50</option>
+                                    <option value="100">100</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Desktop Table view -->
+                        <div class="table-responsive-wrapper">
+                            <table class="table align-middle custom-table table-hover"
+                                aria-label="Bảng quản lý phiếu hỗ trợ">
+                                <thead>
+                                    <tr>
+                                        <th scope="col" class="sortable" data-sort="id">STT</th>
+                                        <th scope="col" class="sortable" data-sort="ticketCode">Mã phiếu</th>
+                                        <th scope="col" class="sortable" data-sort="title">Tiêu đề</th>
+                                        <th scope="col" class="sortable" data-sort="customerName">Khách hàng</th>
+                                        <th scope="col">Số điện thoại</th>
+                                        <th scope="col" class="sortable" data-sort="serviceId">Dịch vụ</th>
+                                        <th scope="col" class="sortable" data-sort="staffId">Nhân viên phụ trách</th>
+                                        <th scope="col">Yêu cầu</th>
+                                        <th scope="col" class="sortable" data-sort="priority">Ưu tiên</th>
+                                        <th scope="col" class="sortable" data-sort="status">Trạng thái</th>
+                                        <th scope="col" class="sortable" data-sort="createdDate">Ngày tạo</th>
+                                        <th scope="col" class="sortable" data-sort="updatedDate">Ngày cập nhật</th>
+                                        <th scope="col" style="text-align:center;">Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="ticketsTableBody">
+                                    <!-- Populated via JS -->
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Mobile Cards view -->
+                        <div id="mobileTicketsContainer" class="mobile-ticket-list p-3">
+                            <!-- Populated via JS -->
+                        </div>
+
+                        <!-- Pagination Footer -->
+                        <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 p-4 border-top">
+                            <div class="small text-muted" id="tableCountDetails">
+                                Đang hiển thị 0-0 / 0 phiếu hỗ trợ
+                            </div>
+                            <nav aria-label="Điều hướng phân trang">
+                                <ul class="pagination pagination-sm mb-0" id="tablePagination">
+                                    <!-- Populated via JS -->
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                </section>
+
+            </main>
+            <!-- END MAIN CONTENT -->
+
+        </div>
+        <!-- END MAIN WRAPPER -->
+
+    </div>
+    <!-- END LAYOUT -->
+
+    <!-- =============================================================
+         SECTION 5: POPUPS & MODALS DIALOGS
+         ============================================================= -->
+
+    <!-- STATUS UPDATE MODAL -->
+    <div class="modal fade" id="statusUpdateModal" tabindex="-1" aria-labelledby="statusUpdateModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" style="max-width: 520px;">
+            <div class="modal-content border-0">
+                <!-- Header -->
+                <div class="modal-header">
+                    <div class="vt-modal-header-title">
+                        <div class="vt-modal-header-icon" style="background: rgba(99,102,241,0.12); color: #6366F1;">
+                            <i class="fa-solid fa-arrows-spin"></i>
+                        </div>
+                        <div class="vt-modal-header-text">
+                            <h3 id="statusUpdateModalLabel">Cập Nhật Trạng Thái</h3>
+                            <p id="statusUpdateTicketCode">Mã phiếu: —</p>
+                        </div>
+                    </div>
+                    <button type="button" class="vt-modal-close" data-bs-dismiss="modal" aria-label="Đóng">
+                        <i class="fa-solid fa-times"></i>
+                    </button>
+                </div>
+                <!-- Body -->
+                <div class="modal-body p-4">
+                    <!-- Ticket title preview -->
+                    <div class="su-ticket-preview mb-4">
+                        <div class="su-ticket-preview-icon">
+                            <i class="fa-solid fa-ticket"></i>
+                        </div>
+                        <div>
+                            <div class="su-ticket-preview-label">Phiếu hỗ trợ</div>
+                            <div class="su-ticket-preview-title" id="statusUpdateTicketTitle">—</div>
+                        </div>
+                    </div>
+
+                    <!-- Status cards grid -->
+                    <div class="su-label mb-2">Chọn trạng thái mới</div>
+                    <div class="su-status-grid" id="statusCardGrid">
+
+                        <button class="su-status-card" data-status="waiting" onclick="selectStatusCard(this)">
+                            <div class="su-status-icon waiting">
+                                <i class="fa-solid fa-clock"></i>
+                            </div>
+                            <div class="su-status-info">
+                                <span class="su-status-name">Chờ xử lý</span>
+                                <span class="su-status-desc">Phiếu chưa được tiếp nhận</span>
+                            </div>
+                            <div class="su-status-check"><i class="fa-solid fa-circle-check"></i></div>
+                        </button>
+
+                        <button class="su-status-card" data-status="processing" onclick="selectStatusCard(this)">
+                            <div class="su-status-icon processing">
+                                <i class="fa-solid fa-spinner"></i>
+                            </div>
+                            <div class="su-status-info">
+                                <span class="su-status-name">Đang xử lý</span>
+                                <span class="su-status-desc">Kỹ thuật viên đang hỗ trợ</span>
+                            </div>
+                            <div class="su-status-check"><i class="fa-solid fa-circle-check"></i></div>
+                        </button>
+
+                        <button class="su-status-card" data-status="feedback" onclick="selectStatusCard(this)">
+                            <div class="su-status-icon feedback">
+                                <i class="fa-solid fa-comment-dots"></i>
+                            </div>
+                            <div class="su-status-info">
+                                <span class="su-status-name">Chờ khách phản hồi</span>
+                                <span class="su-status-desc">Đang chờ thông tin từ khách</span>
+                            </div>
+                            <div class="su-status-check"><i class="fa-solid fa-circle-check"></i></div>
+                        </button>
+
+                        <button class="su-status-card" data-status="completed" onclick="selectStatusCard(this)">
+                            <div class="su-status-icon completed">
+                                <i class="fa-solid fa-circle-check"></i>
+                            </div>
+                            <div class="su-status-info">
+                                <span class="su-status-name">Hoàn thành</span>
+                                <span class="su-status-desc">Đã giải quyết xong sự cố</span>
+                            </div>
+                            <div class="su-status-check"><i class="fa-solid fa-circle-check"></i></div>
+                        </button>
+
+                        <button class="su-status-card" data-status="cancelled" onclick="selectStatusCard(this)">
+                            <div class="su-status-icon cancelled">
+                                <i class="fa-solid fa-circle-xmark"></i>
+                            </div>
+                            <div class="su-status-info">
+                                <span class="su-status-name">Hủy bỏ</span>
+                                <span class="su-status-desc">Phiếu bị hủy không xử lý</span>
+                            </div>
+                            <div class="su-status-check"><i class="fa-solid fa-circle-check"></i></div>
+                        </button>
+
+                    </div>
+
+                    <!-- Note input -->
+                    <div class="mt-4">
+                        <label for="statusUpdateNote" class="vt-form-label">
+                            <i class="fa-solid fa-pen-to-square me-1 text-muted"></i>Ghi chú cập nhật
+                            <span class="fw-normal text-muted" style="text-transform:none;">(tùy chọn)</span>
+                        </label>
+                        <textarea id="statusUpdateNote" class="vt-form-textarea" rows="2"
+                            placeholder="Nhập ghi chú về lý do thay đổi trạng thái..." style="height: 76px;"></textarea>
+                    </div>
+                </div>
+                <!-- Footer -->
+                <div class="modal-footer pb-4">
+                    <button type="button" class="vt-btn cancel" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" class="vt-btn primary" id="btnConfirmStatusUpdate" onclick="confirmStatusUpdate()">
+                        <i class="fa-solid fa-floppy-disk me-1"></i> Xác nhận cập nhật
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 1. VIEW DETAILED MODAL -->
+    <div class="modal fade" id="viewDetailsModal" tabindex="-1" aria-labelledby="viewDetailsModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+            <div class="modal-content border-0">
+                <div class="modal-header">
+                    <div class="vt-modal-header-title">
+                        <div class="vt-modal-header-icon view-info">
+                            <i class="fa-solid fa-circle-info"></i>
+                        </div>
+                        <div class="vt-modal-header-text">
+                            <h3 id="viewDetailsModalLabel">Chi Tiết Phiếu Hỗ Trợ Kỹ Thuật</h3>
+                            <p>Thông tin đầy đủ và lịch sử cập nhật phiếu sự cố</p>
+                        </div>
+                    </div>
+                    <button type="button" class="vt-modal-close" data-bs-dismiss="modal" aria-label="Đóng">
+                        <i class="fa-solid fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body p-0">
+                    <!-- Banner -->
+                    <div class="vt-view-banner">
+                        <div class="vt-view-avatar-large">
+                            <i class="fa-solid fa-headset"></i>
+                        </div>
+                        <div>
+                            <div class="vt-view-name" id="detTitle">—</div>
+                            <span class="vt-view-id" id="detCode">—</span>
+                        </div>
+                    </div>
+                    <!-- Details Card Layout Grid -->
+                    <div class="vt-view-details">
+                        <div class="row g-3">
+                            <!-- Card 1: Khách hàng -->
+                            <div class="col-md-6">
+                                <div class="p-3 border border-light-subtle rounded-3 bg-light-subtle h-100 shadow-sm" style="border-left: 4px solid var(--vt-red) !important;">
+                                    <h6 class="fw-bold mb-3 text-dark-emphasis d-flex align-items-center gap-2" style="font-size: 0.85rem;">
+                                        <i class="fa-solid fa-user-gear text-danger"></i> KHÁCH HÀNG LIÊN HỆ
+                                    </h6>
+                                    <div class="mb-2 d-flex align-items-center justify-content-between">
+                                        <span class="text-muted small fw-bold text-uppercase" style="font-size: 0.72rem;"><i class="fa-solid fa-user me-1 text-danger"></i> Họ và tên</span>
+                                        <span class="fw-bold text-dark-emphasis" id="detCustomer">—</span>
+                                    </div>
+                                    <div class="mb-2 d-flex align-items-center justify-content-between">
+                                        <span class="text-muted small fw-bold text-uppercase" style="font-size: 0.72rem;"><i class="fa-solid fa-phone me-1 text-danger"></i> Điện thoại</span>
+                                        <span class="fw-bold text-dark" id="detPhone">—</span>
+                                    </div>
+                                    <div class="mb-2 d-flex align-items-center justify-content-between">
+                                        <span class="text-muted small fw-bold text-uppercase" style="font-size: 0.72rem;"><i class="fa-solid fa-envelope me-1 text-danger"></i> Email</span>
+                                        <span class="text-dark-emphasis text-end small" id="detEmail">—</span>
+                                    </div>
+                                    <div class="pt-2 border-top">
+                                        <span class="text-muted small fw-bold text-uppercase d-block mb-1" style="font-size: 0.72rem;"><i class="fa-solid fa-location-dot me-1 text-danger"></i> Địa chỉ liên hệ</span>
+                                        <span class="text-dark-emphasis text-wrap small" id="detAddress">—</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Card 2: Dịch vụ & Kỹ thuật -->
+                            <div class="col-md-6">
+                                <div class="p-3 border border-light-subtle rounded-3 bg-light-subtle h-100 shadow-sm" style="border-left: 4px solid #3B82F6 !important;">
+                                    <h6 class="fw-bold mb-3 text-dark-emphasis d-flex align-items-center gap-2" style="font-size: 0.85rem;">
+                                        <i class="fa-solid fa-circle-nodes text-primary"></i> DỊCH VỤ & KỸ THUẬT
+                                    </h6>
+                                    <div class="mb-2 d-flex align-items-center justify-content-between">
+                                        <span class="text-muted small fw-bold text-uppercase" style="font-size: 0.72rem;"><i class="fa-solid fa-cube me-1 text-primary"></i> Dịch vụ</span>
+                                        <span class="fw-bold text-dark" id="detService">—</span>
+                                    </div>
+                                    <div class="mb-2 d-flex align-items-center justify-content-between">
+                                        <span class="text-muted small fw-bold text-uppercase" style="font-size: 0.72rem;"><i class="fa-solid fa-folder-open me-1 text-primary"></i> Danh mục</span>
+                                        <span class="text-dark-emphasis fw-semibold" id="detCategory">—</span>
+                                    </div>
+                                    <div class="mb-2 d-flex align-items-center justify-content-between">
+                                        <span class="text-muted small fw-bold text-uppercase" style="font-size: 0.72rem;"><i class="fa-solid fa-file-invoice me-1 text-primary"></i> Yêu cầu</span>
+                                        <span class="text-dark-emphasis" id="detReqType">—</span>
+                                    </div>
+                                    <div class="pt-2 border-top d-flex align-items-center justify-content-between">
+                                        <span class="text-muted small fw-bold text-uppercase" style="font-size: 0.72rem;"><i class="fa-solid fa-user-shield me-1 text-primary"></i> KTV Phụ trách</span>
+                                        <span class="fw-bold text-danger" id="detStaff">—</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Card 3: Phân loại & Trạng thái -->
+                            <div class="col-12">
+                                <div class="p-3 border border-light-subtle rounded-3 bg-light-subtle shadow-sm" style="border-left: 4px solid #F59E0B !important;">
+                                    <h6 class="fw-bold mb-3 text-dark-emphasis d-flex align-items-center gap-2" style="font-size: 0.85rem;">
+                                        <i class="fa-solid fa-tags text-warning"></i> TIẾN ĐỘ & PHÂN LOẠI PHIẾU
+                                    </h6>
+                                    <div class="row g-3">
+                                        <div class="col-sm-3 d-flex flex-column gap-1">
+                                            <span class="text-muted small fw-bold text-uppercase" style="font-size: 0.72rem;"><i class="fa-solid fa-triangle-exclamation me-1 text-warning"></i> Độ ưu tiên</span>
+                                            <div id="detPriority">—</div>
+                                        </div>
+                                        <div class="col-sm-3 d-flex flex-column gap-1">
+                                            <span class="text-muted small fw-bold text-uppercase" style="font-size: 0.72rem;"><i class="fa-solid fa-circle-check me-1 text-success"></i> Trạng thái</span>
+                                            <div id="detStatus">—</div>
+                                        </div>
+                                        <div class="col-sm-3 d-flex flex-column gap-1">
+                                            <span class="text-muted small fw-bold text-uppercase" style="font-size: 0.72rem;"><i class="fa-solid fa-calendar-plus me-1 text-muted"></i> Ngày tạo phiếu</span>
+                                            <div class="font-monospace text-muted small" id="detCreatedDate">—</div>
+                                        </div>
+                                        <div class="col-sm-3 d-flex flex-column gap-1">
+                                            <span class="text-muted small fw-bold text-uppercase" style="font-size: 0.72rem;"><i class="fa-solid fa-clock-rotate-left me-1 text-muted"></i> Cập nhật cuối</span>
+                                            <div class="font-monospace text-muted small" id="detUpdatedDate">—</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Description content -->
+                        <div class="mt-4">
+                            <label class="vt-form-label"><i class="fa-solid fa-align-left text-danger me-1"></i> Nội dung yêu cầu chi tiết</label>
+                            <div class="p-3 border border-light-subtle rounded-3 bg-light-subtle text-dark-emphasis shadow-sm" id="detDesc"
+                                style="font-size:0.88rem; line-height:1.5; white-space:pre-wrap; border-left: 4px solid #6B7280 !important;">—</div>
+                        </div>
+
+                        <!-- Timeline Log history column -->
+                        <div class="mt-4" id="timelineContainerCard">
+                            <h6 class="fw-bold mb-3 text-dark-emphasis">
+                                <i class="fa-solid fa-clock-rotate-left me-2 text-primary"></i>LỊCH SỬ HỖ TRỢ & UPDATE TIMELINE
+                            </h6>
+                            <div class="vertical-timeline" id="timelineContainer">
+                                <!-- Populated via JS -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer pb-4">
+                    <button type="button" class="vt-btn cancel" data-bs-dismiss="modal">Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. ADD TICKET MODAL -->
+    <div class="modal fade" id="addTicketModal" tabindex="-1" aria-labelledby="addTicketModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content border-0">
+                <div class="modal-header">
+                    <div class="vt-modal-header-title">
+                        <div class="vt-modal-header-icon add">
+                            <i class="fa-solid fa-plus"></i>
+                        </div>
+                        <div class="vt-modal-header-text">
+                            <h3 id="addTicketModalLabel">Tạo Phiếu Hỗ Trợ Kỹ Thuật Mới</h3>
+                            <p>Điền thông tin sự cố kỹ thuật của khách hàng để tạo phiếu</p>
+                        </div>
+                    </div>
+                    <button type="button" class="vt-modal-close" data-bs-dismiss="modal" aria-label="Đóng">
+                        <i class="fa-solid fa-times"></i>
+                    </button>
+                </div>
+                <form id="addTicketForm">
+                    <div class="modal-body p-4">
+                        <div class="row g-3">
+                            <!-- Customer Select -->
+                            <div class="col-md-6 vt-form-group">
+                                <label for="addCustomer" class="vt-form-label">Khách hàng <span>*</span></label>
+                                <select id="addCustomer" class="vt-form-select" required>
+                                    <!-- Populated via JS -->
+                                </select>
+                            </div>
+
+                            <!-- Customer phone (autofilled) -->
+                            <div class="col-md-6 vt-form-group">
+                                <label for="addCustomerPhone" class="vt-form-label">Số điện thoại khách hàng</label>
+                                <input type="tel" id="addCustomerPhone" class="vt-form-input" readonly placeholder="Số điện thoại...">
+                            </div>
+
+                            <!-- Service requested -->
+                            <div class="col-md-6 vt-form-group">
+                                <label for="addService" class="vt-form-label">Dịch vụ <span>*</span></label>
+                                <select id="addService" class="vt-form-select" required>
+                                    <!-- Populated via JS -->
+                                </select>
+                            </div>
+
+                            <!-- Request Type -->
+                            <div class="col-md-6 vt-form-group">
+                                <label for="addRequestType" class="vt-form-label">Loại yêu cầu <span>*</span></label>
+                                <select id="addRequestType" class="vt-form-select" required>
+                                    <option value="" disabled selected>-- Chọn loại yêu cầu --</option>
+                                    <option value="Báo Hỏng Thiết Bị">Báo Hỏng Thiết Bị</option>
+                                    <option value="Hỗ Trợ Kỹ Thuật">Hỗ Trợ Kỹ Thuật</option>
+                                    <option value="Đăng Ký Mới">Đăng Ký Mới</option>
+                                    <option value="Ý Kiến Phản Ánh">Ý Kiến Phản Ánh</option>
+                                </select>
+                            </div>
+
+                            <!-- Title -->
+                            <div class="col-12 vt-form-group">
+                                <label for="addTitle" class="vt-form-label">Tiêu đề phiếu hỗ trợ <span>*</span></label>
+                                <input type="text" id="addTitle" class="vt-form-input" required placeholder="Nhập tóm tắt lỗi (vd: Mất tín hiệu mạng GPON, v.v.)...">
+                            </div>
+
+                            <!-- Priority level -->
+                            <div class="col-md-4 vt-form-group">
+                                <label for="addPriority" class="vt-form-label">Mức ưu tiên <span>*</span></label>
+                                <select id="addPriority" class="vt-form-select" required>
+                                    <option value="" disabled selected>-- Chọn mức --</option>
+                                    <option value="Thấp">Thấp</option>
+                                    <option value="Trung Bình">Trung bình</option>
+                                    <option value="Cao">Cao</option>
+                                    <option value="Khẩn Cấp">Khẩn cấp</option>
+                                </select>
+                            </div>
+
+                            <!-- Need Appointment check -->
+                            <div class="col-md-4 vt-form-group">
+                                <label for="addNeedAppointment" class="vt-form-label">Cần lịch hẹn ghé nhà</label>
+                                <select id="addNeedAppointment" class="vt-form-select">
+                                    <option value="false" selected>Không cần</option>
+                                    <option value="true">Có (Cần đặt lịch)</option>
+                                </select>
+                            </div>
+
+                            <!-- Assignee Staff -->
+                            <div class="col-md-4 vt-form-group">
+                                <label for="addStaff" class="vt-form-label">KTV phụ trách</label>
+                                <select id="addStaff" class="vt-form-select">
+                                    <!-- Populated via JS -->
+                                </select>
+                            </div>
+
+                            <!-- Content details -->
+                            <div class="col-12 vt-form-group">
+                                <label for="addContent" class="vt-form-label">Nội dung yêu cầu chi tiết</label>
+                                <textarea id="addContent" class="vt-form-textarea" placeholder="Ghi nhận thông tin mô tả chi tiết từ khách hàng..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer pb-4">
+                        <button type="button" class="vt-btn cancel" data-bs-dismiss="modal">Hủy</button>
+                        <button type="submit" class="vt-btn primary"><i class="bi bi-floppy-disk me-1"></i> Lưu lại</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. EDIT TICKET MODAL -->
+    <div class="modal fade" id="editTicketModal" tabindex="-1" aria-labelledby="editTicketModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content border-0">
+                <div class="modal-header">
+                    <div class="vt-modal-header-title">
+                        <div class="vt-modal-header-icon edit">
+                            <i class="bi bi-pen-to-square"></i>
+                        </div>
+                        <div class="vt-modal-header-text">
+                            <h3 id="editTicketModalLabel">Chỉnh Sửa & Cập Nhật Phiếu Hỗ Trợ</h3>
+                            <p>Chỉnh sửa các thông số kỹ thuật của phiếu hỗ trợ</p>
+                        </div>
+                    </div>
+                    <button type="button" class="vt-modal-close" data-bs-dismiss="modal" aria-label="Đóng">
+                        <i class="fa-solid fa-times"></i>
+                    </button>
+                </div>
+                <form id="editTicketForm">
+                    <div class="modal-body p-4">
+                        <div class="row g-3">
+                            <!-- Title -->
+                            <div class="col-12 vt-form-group">
+                                <label for="editTitle" class="vt-form-label">Tiêu đề phiếu hỗ trợ <span>*</span></label>
+                                <input type="text" id="editTitle" class="vt-form-input" required placeholder="Nhập tiêu đề...">
+                            </div>
+
+                            <!-- Service requested -->
+                            <div class="col-md-6 vt-form-group">
+                                <label for="editService" class="vt-form-label">Dịch vụ <span>*</span></label>
+                                <select id="editService" class="vt-form-select" required>
+                                    <!-- Populated via JS -->
+                                </select>
+                            </div>
+
+                            <!-- Priority level -->
+                            <div class="col-md-6 vt-form-group">
+                                <label for="editPriority" class="vt-form-label">Mức ưu tiên <span>*</span></label>
+                                <select id="editPriority" class="vt-form-select" required>
+                                    <option value="Thấp">Thấp</option>
+                                    <option value="Trung Bình">Trung bình</option>
+                                    <option value="Cao">Cao</option>
+                                    <option value="Khẩn Cấp">Khẩn cấp</option>
+                                </select>
+                            </div>
+
+                            <!-- Assignee Staff -->
+                            <div class="col-md-6 vt-form-group">
+                                <label for="editStaff" class="vt-form-label">Nhân viên kỹ thuật phụ trách</label>
+                                <select id="editStaff" class="vt-form-select">
+                                    <!-- Populated via JS -->
+                                </select>
+                            </div>
+
+                            <!-- Status update -->
+                            <div class="col-md-6 vt-form-group">
+                                <label for="editStatus" class="vt-form-label">Trạng thái phiếu <span>*</span></label>
+                                <select id="editStatus" class="vt-form-select" required>
+                                    <option value="waiting">Chờ xử lý</option>
+                                    <option value="processing">Đang xử lý</option>
+                                    <option value="feedback">Chờ khách phản hồi</option>
+                                    <option value="completed">Hoàn thành</option>
+                                    <option value="cancelled">Hủy bỏ</option>
+                                </select>
+                            </div>
+
+                            <!-- Need Appointment check -->
+                            <div class="col-md-6 vt-form-group">
+                                <label for="editNeedAppointment" class="vt-form-label">Lịch hẹn ghé nhà</label>
+                                <select id="editNeedAppointment" class="vt-form-select">
+                                    <option value="false">Không cần đặt lịch</option>
+                                    <option value="true">Có đặt lịch hẹn</option>
+                                </select>
+                            </div>
+
+                            <!-- Content details -->
+                            <div class="col-12 vt-form-group">
+                                <label for="editContent" class="vt-form-label">Nội dung yêu cầu chi tiết</label>
+                                <textarea id="editContent" class="vt-form-textarea" placeholder="Ghi nhận thông tin mô tả chi tiết..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer pb-4">
+                        <button type="button" class="vt-btn cancel" data-bs-dismiss="modal">Hủy</button>
+                        <button type="submit" class="vt-btn primary"><i class="bi bi-floppy-disk me-1"></i> Lưu thay đổi</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5.3 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+    <!-- Core layout JS -->
+    <script src="../assets/js/staff/dashboard.js"></script>
+    <!-- Page script logic -->
+    <script src="../assets/js/staff/staff-ticket-management.js"></script>
+    <!-- Sidebar template dynamic loader -->
+    <script src="../assets/js/staff/sidebar-loader.js"></script>
+    <script>
+        document.getElementById('mobileSearchTrigger')?.addEventListener('click', function () {
+            document.querySelector('.topbar-search-form')?.classList.toggle('show-mobile-search');
+        });
+    </script>
+</body>
+
+</html>

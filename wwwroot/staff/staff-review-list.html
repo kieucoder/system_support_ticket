@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="vi" data-bs-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Danh Sách Đánh Giá Khách Hàng - TechSupport Viettel</title>
+    <meta name="description" content="Danh sách phản hồi và mức độ hài lòng của khách hàng đối với các dịch vụ hỗ trợ kỹ thuật Viettel.">
+    <meta name="robots" content="noindex, nofollow">
+
+    <!-- Bootstrap 5.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    
+    <!-- Admin Dashboard CSS (base layout) -->
+    <link rel="stylesheet" href="../assets/css/staff/dashboard.css">
+    <!-- Page-specific CSS -->
+    <link rel="stylesheet" href="../assets/css/staff/staff-review-list.css">
+</head>
+
+<body>
+    <div id="adminLayout">
+
+        <!-- SIDEBAR MOUNT (Nội dung tự động tải từ sidebar-loader.js) -->
+        <div id="sidebarMount"></div>
+
+        <!-- MAIN WRAPPER -->
+        <div class="main-wrapper">
+
+            <!-- TOPBAR HEADER -->
+            <header class="admin-topbar" role="banner">
+                <div class="topbar-left">
+                    <!-- Toggle buttons for sidebar -->
+                    <button class="sidebar-toggle-btn d-lg-none" id="toggleMobileSidebar" aria-label="Open sidebar menu">
+                        <i class="bi bi-bars"></i>
+                    </button>
+                    <button class="sidebar-toggle-btn d-none d-lg-flex" id="toggleSidebar" aria-label="Toggle sidebar">
+                        <i class="bi bi-bars"></i>
+                    </button>
+
+                    <!-- Breadcrumbs Summary -->
+                    <div class="d-none d-md-block">
+                        <p class="mb-0 fw-semibold" style="font-size:0.95rem; color: var(--text-main);">Đánh Giá Khách Hàng</p>
+                        <p class="mb-0" style="font-size: 0.75rem; color: var(--text-muted);">Hệ thống theo dõi và quản lý chất lượng dịch vụ</p>
+                    </div>
+                </div>
+
+                <!-- Search topbar form -->
+                <form class="topbar-search-form d-none d-md-block" role="search" onsubmit="event.preventDefault();">
+                    <div class="search-input-group">
+                        <i class="fa-solid fa-search" aria-hidden="true"></i>
+                        <input type="search" class="form-control search-bar-input" placeholder="Tìm phiếu, dịch vụ, khách hàng..." autocomplete="off">
+                    </div>
+                </form>
+
+                <div class="topbar-right">
+                    <!-- Light/Dark Theme Toggle -->
+                    <button class="topbar-action-btn" id="toggleTheme" title="Chuyển chế độ tối/sáng">
+                        <i class="bi bi-moon"></i>
+                    </button>
+
+                    <!-- Notification bell -->
+                    <button class="topbar-action-btn" title="Thông báo hệ thống">
+                        <i class="fa-solid fa-bell"></i>
+                        <span class="notification-badge">5</span>
+                    </button>
+
+                    <!-- User Account profile -->
+                    <div class="dropdown">
+                        <a class="user-profile-dropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <img src="https://ui-avatars.com/api/?name=Admin+Viettel&background=EE0033&color=fff&size=38" alt="Avatar" class="user-avatar">
+                            <div class="d-none d-sm-block">
+                                <p class="user-profile-name mb-0">Nguyễn Văn Hùng</p>
+                                <p class="mb-0 user-profile-role">Kỹ thuật viên Trưởng</p>
+                            </div>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2" style="border-radius:12px;">
+                            <li><a class="dropdown-item py-2" href="admin-profile.html"><i class="fa-solid fa-user me-2 text-primary"></i>Thông tin cá nhân</a></li>
+                            <li><a class="dropdown-item py-2" href="admin-profile.html#changePassword"><i class="fa-solid fa-key me-2 text-warning"></i>Đổi mật khẩu</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item py-2 text-danger" href="../login.html"><i class="fa-solid fa-right-from-bracket me-2"></i>Đăng xuất</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </header>
+
+            <!-- MAIN CONTENT AREA -->
+            <main class="admin-content container-fluid">
+
+                <!-- =============================================================
+                     1. HERO BREADCRUMB
+                     ============================================================= -->
+                <section class="list-hero-section" aria-label="Hero Breadcrumb">
+                    <nav aria-label="breadcrumb" class="hero-breadcrumb-nav">
+                        <ol class="breadcrumb m-0">
+                            <li class="breadcrumb-item"><a href="dashboard.html"><i class="fa-solid fa-house me-1"></i>Trang chủ</a></li>
+                            <li class="breadcrumb-item active fw-bold" aria-current="page" style="color: #0d6efd;">Đánh giá khách hàng</li>
+                        </ol>
+                    </nav>
+                    <h1 class="hero-title-main">Đánh giá khách hàng</h1>
+                    <p class="hero-desc-main">Theo dõi mức độ hài lòng của khách hàng đối với các phiếu hỗ trợ đã hoàn thành.</p>
+                </section>
+
+                <!-- =============================================================
+                     2. THỐNG KÊ TỔNG QUAN (4 Card)
+                     ============================================================= -->
+                <section aria-label="Tổng quan số liệu">
+                    <div class="stats-summary-grid">
+                        <!-- Card 1: Tổng đánh giá -->
+                        <div class="stats-summary-card">
+                            <div class="stats-card-info">
+                                <span class="stats-card-label">Tổng đánh giá</span>
+                                <p class="stats-card-value text-primary" id="statTotalReviews">0</p>
+                            </div>
+                            <div class="stats-card-icon-box variant-blue">
+                                <i class="fa-solid fa-comments"></i>
+                            </div>
+                        </div>
+
+                        <!-- Card 2: Điểm trung bình -->
+                        <div class="stats-summary-card">
+                            <div class="stats-card-info">
+                                <span class="stats-card-label">Điểm trung bình</span>
+                                <p class="stats-card-value text-warning" id="statAverageScore">0.0 ★</p>
+                            </div>
+                            <div class="stats-card-icon-box variant-yellow">
+                                <i class="fa-solid fa-star"></i>
+                            </div>
+                        </div>
+
+                        <!-- Card 3: Đánh giá 5 sao -->
+                        <div class="stats-summary-card">
+                            <div class="stats-card-info">
+                                <span class="stats-card-label">Đánh giá 5 sao</span>
+                                <p class="stats-card-value text-success" id="stat5StarCount">0</p>
+                            </div>
+                            <div class="stats-card-icon-box variant-green">
+                                <i class="fa-solid fa-face-smile"></i>
+                            </div>
+                        </div>
+
+                        <!-- Card 4: Đánh giá chưa hài lòng -->
+                        <div class="stats-summary-card border-danger-hover">
+                            <div class="stats-card-info">
+                                <span class="stats-card-label">Chưa hài lòng</span>
+                                <p class="stats-card-value text-danger" id="statUnhappyCount">0</p>
+                            </div>
+                            <div class="stats-card-icon-box variant-red">
+                                <i class="fa-solid fa-face-frown"></i>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- =============================================================
+                     3. BỘ LỌC (Filter Card)
+                     ============================================================= -->
+                <section aria-label="Bộ lọc tìm kiếm">
+                    <div class="filter-card-panel">
+                        <h2 class="fw-bold mb-3 text-dark-emphasis" style="font-size:1.02rem;">
+                            <i class="bi bi-filter text-primary me-2"></i> Bộ lọc tìm kiếm
+                        </h2>
+                        <form id="filterForm">
+                            <div class="filter-grid-layout">
+                                <!-- Mã phiếu -->
+                                <div class="filter-form-group">
+                                    <label for="filterTicketCode" class="filter-label-text">Mã phiếu</label>
+                                    <input type="text" id="filterTicketCode" class="filter-input-control" placeholder="Nhập mã phiếu...">
+                                </div>
+                                <!-- Khách hàng -->
+                                <div class="filter-form-group">
+                                    <label for="filterCustomerName" class="filter-label-text">Khách hàng</label>
+                                    <input type="text" id="filterCustomerName" class="filter-input-control" placeholder="Nhập tên khách hàng...">
+                                </div>
+                                <!-- Nhân viên -->
+                                <div class="filter-form-group">
+                                    <label for="filterStaff" class="filter-label-text">Nhân viên phụ trách</label>
+                                    <select id="filterStaff" class="filter-select-control">
+                                        <option value="all">Tất cả nhân viên</option>
+                                        <!-- Điền qua JS -->
+                                    </select>
+                                </div>
+                                <!-- Điểm đánh giá -->
+                                <div class="filter-form-group">
+                                    <label for="filterScore" class="filter-label-text">Điểm đánh giá</label>
+                                    <select id="filterScore" class="filter-select-control">
+                                        <option value="all">Tất cả</option>
+                                        <option value="5">5 sao</option>
+                                        <option value="4">4 sao</option>
+                                        <option value="3">3 sao</option>
+                                        <option value="2">2 sao</option>
+                                        <option value="1">1 sao</option>
+                                    </select>
+                                </div>
+                                <!-- Ngày bắt đầu -->
+                                <div class="filter-form-group">
+                                    <label for="filterFromDate" class="filter-label-text">Từ ngày</label>
+                                    <input type="date" id="filterFromDate" class="filter-input-control">
+                                </div>
+                                <!-- Ngày kết thúc -->
+                                <div class="filter-form-group">
+                                    <label for="filterToDate" class="filter-label-text">Đến ngày</label>
+                                    <input type="date" id="filterToDate" class="filter-input-control">
+                                </div>
+                                <!-- Nút thao tác -->
+                                <div class="filter-form-group filter-button-group col-span-2">
+                                    <button type="button" class="btn-filter-action btn-filter-reset" id="btnFilterReset">
+                                        <i class="bi bi-rotate-right"></i> Reset
+                                    </button>
+                                    <button type="button" class="btn-filter-action btn-filter-search" id="btnFilterSearch">
+                                        <i class="bi bi-magnifying-glass"></i> Tìm kiếm
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </section>
+
+                <!-- =============================================================
+                     4. DANH SÁCH ĐÁNH GIÁ (Main Data Panel)
+                     ============================================================= -->
+                <section aria-label="Bảng danh sách đánh giá">
+                    <div class="list-content-panel">
+                        <div class="list-panel-header">
+                            <h2 class="list-panel-title">
+                                <i class="bi bi-list-check"></i> Danh sách đánh giá khách hàng
+                            </h2>
+                        </div>
+
+                        <!-- 4.1 TABLE VIEW (Desktop & Tablet) -->
+                        <div class="desktop-table-container" id="desktopTableContainer">
+                            <table class="table align-middle review-data-table table-hover" aria-label="Bảng đánh giá">
+                                <thead>
+                                    <tr>
+                                        <th scope="col" style="width: 50px;">STT</th>
+                                        <th scope="col" style="width: 110px;">Mã phiếu</th>
+                                        <th scope="col">Khách hàng</th>
+                                        <th scope="col">Nhân viên phụ trách</th>
+                                        <th scope="col" style="width: 110px;">Chất lượng</th>
+                                        <th scope="col" style="width: 110px;">Thái độ</th>
+                                        <th scope="col" style="width: 110px;">Tốc độ</th>
+                                        <th scope="col" style="width: 170px;">Điểm TB</th>
+                                        <th scope="col" style="width: 120px;">Ngày đánh giá</th>
+                                        <th scope="col" style="width: 140px;">Trạng thái</th>
+                                        <th scope="col" style="text-align: center; width: 80px;">Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="reviewTableBody">
+                                    <!-- Đổ dòng dữ liệu qua JS -->
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- 4.2 CARD VIEW (Mobile) -->
+                        <div class="mobile-cards-container">
+                            <div id="mobileCardsList">
+                                <!-- Đổ card dữ liệu qua JS -->
+                            </div>
+                        </div>
+
+                        <!-- 10. EMPTY STATE (Trạng thái trống) -->
+                        <div class="empty-state-panel" id="emptyStatePanel">
+                            <i class="empty-state-icon fa-regular fa-solid fa-star"></i>
+                            <h3 class="empty-state-title">Chưa có đánh giá nào</h3>
+                            <p class="empty-state-desc">Các đánh giá từ khách hàng sẽ hiển thị tại đây sau khi phiếu được hoàn thành.</p>
+                        </div>
+
+                        <!-- 9. PHÂN TRANG (Panel Footer) -->
+                        <div class="list-panel-footer">
+                            <div class="pagination-text-info" id="paginationTextInfo">
+                                Hiển thị 0-0 trong 0 đánh giá
+                            </div>
+                            <nav aria-label="Điều hướng phân trang">
+                                <ul class="pagination pagination-sm mb-0 pagination-custom" id="reviewPagination">
+                                    <!-- Phân trang render qua JS -->
+                                </ul>
+                            </nav>
+                        </div>
+
+                    </div>
+                </section>
+
+            </main>
+            <!-- END MAIN CONTENT -->
+
+        </div>
+        <!-- END MAIN WRAPPER -->
+
+    </div>
+    <!-- END ADMIN LAYOUT -->
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Base dashboard script (theme & sidebar toggles) -->
+    <script src="../assets/js/staff/dashboard.js"></script>
+    <!-- Page controller script -->
+    <script src="../assets/js/staff/staff-review-list.js"></script>
+    <!-- Sidebar loader script -->
+    <script src="../assets/js/staff/sidebar-loader.js"></script>
+</body>
+
+</html>

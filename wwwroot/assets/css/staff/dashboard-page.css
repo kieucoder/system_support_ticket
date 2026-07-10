@@ -1,0 +1,63 @@
+/* =============================================================
+   dashboard-page.css — TechSupport Viettel Admin
+   Page-specific styles cho trang Dashboard Tổng Quan
+   Dùng kết hợp với dashboard.css (base)
+   ============================================================= */
+
+/* ── Utility font sizes ── */
+.fs-8  { font-size: 0.78rem; }
+.fs-9  { font-size: 0.7rem;  }
+.fs-10 { font-size: 0.65rem; }
+
+/* ── Topbar notification badge ── */
+.notification-badge {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 18px;
+    height: 18px;
+    background-color: var(--viettel-red);
+    color: white;
+    border-radius: 50%;
+    font-size: 0.6rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid var(--bg-topbar);
+}
+
+/* ── Chart container heights ── */
+.chart-container { height: 280px; }
+
+/* ── Section heading ── */
+.section-heading-line { font-size: 1.05rem; font-weight: 800; color: var(--text-main); margin: 0; }
+.section-heading-line small {
+    font-size: 0.78rem;
+    font-weight: 400;
+    color: var(--text-muted);
+    display: block;
+    margin-top: 2px;
+}
+
+/* ── Quick stat trend arrows ── */
+.stat-trend           { font-size: 0.78rem; font-weight: 600; }
+.stat-trend.up        { color: var(--color-success); }
+.stat-trend.down      { color: var(--color-danger);  }
+
+/* ── Sidebar scrollbar ── */
+.sidebar-menu::-webkit-scrollbar       { width: 4px; }
+.sidebar-menu::-webkit-scrollbar-track { background: transparent; }
+.sidebar-menu::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 2px; }
+
+/* ── Sidebar section label ── */
+.sidebar-section-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: rgba(156, 163, 175, 0.5);
+    padding: 10px 16px 4px;
+    margin-top: 8px;
+}
+.sidebar-collapsed .sidebar-section-label { display: none; }
