@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SupportTicketSysterm")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0442397115715df8adb62719305bdbd8c82d6a82")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0c64782f5378090688650499c67cf78541c70f71")]
 [assembly: System.Reflection.AssemblyProductAttribute("SupportTicketSysterm")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SupportTicketSysterm")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

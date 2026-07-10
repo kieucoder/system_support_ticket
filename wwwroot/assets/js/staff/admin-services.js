@@ -404,10 +404,18 @@ window.confirmDeleteService = function () {
         });
 };
 
-/* ══════════════════════════════════════════
-   TOGGLE STATUS
-   ══════════════════════════════════════════ */
-window.toggleServiceStatus = function (id) {
+window.toggleServiceStatus = function (id, currentStatus, categoryStatus) {
+    if (currentStatus !== 'Hoạt động' && (categoryStatus === 'Tạm khóa' || categoryStatus === 'Khóa')) {
+        Swal.fire({
+            title: 'Không thể kích hoạt',
+            text: 'Không thể kích hoạt dịch vụ này vì danh mục thuộc dịch vụ đang bị khóa.',
+            icon: 'warning',
+            confirmButtonText: 'Đóng',
+            confirmButtonColor: '#dc3545'
+        });
+        return;
+    }
+
     const tokenInput = document.querySelector('#addServiceForm input[name="__RequestVerificationToken"]');
     const token = tokenInput ? tokenInput.value : '';
 
@@ -426,7 +434,17 @@ window.toggleServiceStatus = function (id) {
                 applyFilters();
                 loadStats();
             } else {
-                showToast('error', data.message);
+                if (data.isCategoryLocked) {
+                    Swal.fire({
+                        title: 'Không thể kích hoạt',
+                        text: data.message,
+                        icon: 'warning',
+                        confirmButtonText: 'Đóng',
+                        confirmButtonColor: '#dc3545'
+                    });
+                } else {
+                    showToast('error', data.message);
+                }
             }
         })
         .catch(err => {

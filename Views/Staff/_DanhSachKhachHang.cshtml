@@ -1,0 +1,187 @@
+@model List<SupportTicketSysterm.Data.KhachHang>
+
+<div class="card-header bg-transparent border-0 pt-4 pb-0 d-flex justify-content-between align-items-center flex-wrap gap-2">
+    <div>
+        <h5 class="card-title fw-bold mb-0 text-dark">📋 Danh sách khách hàng</h5>
+        <p class="text-muted mb-0 mt-1" id="filteredCountText" style="font-size: 0.82rem;">
+            Hiển thị danh sách khách hàng dựa trên các điều kiện lọc.
+        </p>
+    </div>
+    <span class="badge bg-danger-subtle text-danger px-3 py-2 border border-danger-subtle rounded-pill"
+          style="font-size: 0.78rem;" id="customersCountText">
+        Đang hiển thị @Model.Count khách hàng
+    </span>
+</div>
+<div class="card-body px-0 pb-0">
+    <!-- Desktop Bootstrap Table Responsive -->
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0" id="customersMainTable"
+               aria-label="Bảng quản lý khách hàng">
+            <thead class="table-light">
+                <tr>
+                    <th style="padding-left: 20px; width: 50px;">#</th>
+                    <th style="width: 90px;">Mã KH</th>
+                    <th style="width: 180px;">Họ và tên</th>
+                    <th style="width: 140px;">Số điện thoại</th>
+                    <th>Email</th>
+                    <th style="width: 140px;">Tên đăng nhập</th>
+                    <th style="width: 120px;">Trạng thái</th>
+                    <th style="width: 110px;">Ngày tạo</th>
+                    <th style="padding-right: 20px; width: 170px; min-width: 170px; text-align: center;">Thao tác</th>
+                </tr>
+            </thead>
+            <tbody id="customersBody">
+                @if (Model == null || !Model.Any())
+                {
+                    <tr>
+                        <td colspan="9" class="text-center py-4 text-muted">
+                            <i class="fa-solid fa-folder-open fs-3 d-block mb-2 text-secondary"></i>
+                            Không tìm thấy khách hàng nào.
+                        </td>
+                    </tr>
+                }
+                else
+                {
+                    int stt = 1;
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td style="padding-left:20px;">@stt</td>
+                            <td>
+                                <span class="badge bg-secondary">
+                                    @item.MaKh
+                                </span>
+                            </td>
+                            <td>
+                                <div class="fw-semibold">@item.HoTen</div>
+                            </td>
+                            <td>@item.SoDienThoai</td>
+                            <td>
+                                @(string.IsNullOrEmpty(item.Email) ? "-" : item.Email)
+                            </td>
+                            <td>@item.TenDangNhap</td>
+                            <td>
+                                @if (item.TrangThai == "Hoạt động")
+                                {
+                                    <span class="badge bg-success status-badge">
+                                        @item.TrangThai
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger status-badge">
+                                        @item.TrangThai
+                                    </span>
+                                }
+                            </td>
+                            <td>
+                                @(item.NgayTao?.ToString("dd/MM/yyyy") ?? "—")
+                            </td>
+                            <td style="padding-right: 20px; min-width: 170px; text-align: center;">
+                                <div class="d-flex gap-2 justify-content-center flex-nowrap">
+                                    <button class="btn-action-custom view"
+                                            title="Chi tiết"
+                                            onclick="viewCustomerDetails('@item.IdKhachHang')">
+                                        <i class="fa-solid fa-eye"></i>
+                                    </button>
+                                    <button class="btn-action-custom history"
+                                            title="Lịch sử hỗ trợ"
+                                            onclick="viewTicketHistory('@item.IdKhachHang')">
+                                        <i class="fa-solid fa-clock-rotate-left"></i>
+                                    </button>
+                                    <button class="btn-action-custom @(item.TrangThai == "Hoạt động" ? "lock" : "unlock") btn-toggle-status"
+                                            data-id="@item.IdKhachHang"
+                                            title="@(item.TrangThai == "Hoạt động" ? "Khóa tài khoản" : "Mở khóa tài khoản")"
+                                            onclick="toggleLockStatus('@item.IdKhachHang')">
+                                        <i class="fa-solid @(item.TrangThai == "Hoạt động" ? "fa-lock" : "fa-lock-open")"></i>
+                                    </button>
+                                    <button class="btn-action-custom delete"
+                                            title="Xóa tài khoản"
+                                            onclick="deleteCustomer('@item.IdKhachHang')">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        stt++;
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Mobile Card List View -->
+    <div id="customersMobileContainer" class="d-lg-none px-3 pb-3 mt-3">
+        @if (Model != null && Model.Any())
+        {
+            @foreach (var item in Model)
+            {
+                <div class="card border border-light-subtle shadow-sm mb-3" style="border-radius: 12px; overflow: hidden;">
+                    <div class="card-header bg-light d-flex justify-content-between align-items-center py-2 px-3">
+                        <span class="fw-bold font-monospace" style="color: var(--vt-red);">@item.MaKh</span>
+                        @if (item.TrangThai == "Hoạt động")
+                        {
+                            <span class="badge bg-success">Hoạt động</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-danger">@item.TrangThai</span>
+                        }
+                    </div>
+                    <div class="card-body p-3">
+                        <h6 class="card-title fw-bold mb-1">@item.HoTen</h6>
+                        <p class="card-text text-muted mb-2" style="font-size: 0.82rem;">
+                            <strong>SĐT:</strong> @item.SoDienThoai <br/>
+                            <strong>Email:</strong> @(string.IsNullOrEmpty(item.Email) ? "-" : item.Email) <br/>
+                            <strong>Username:</strong> @item.TenDangNhap
+                        </p>
+                        <div class="d-flex justify-content-between align-items-center pt-2 border-top" style="font-size: 0.78rem;">
+                            <div class="text-muted">
+                                <i class="fa-solid fa-calendar-day me-1"></i>
+                                @(item.NgayTao?.ToString("dd/MM/yyyy") ?? "—")
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-transparent d-flex justify-content-end gap-1 p-2">
+                        <button class="btn btn-sm btn-outline-primary" onclick="viewCustomerDetails('@item.IdKhachHang')"><i class="fa-solid fa-eye me-1"></i> Chi tiết</button>
+                        <button class="btn btn-sm btn-outline-warning" onclick="viewTicketHistory('@item.IdKhachHang')"><i class="fa-solid fa-clock-rotate-left me-1"></i> Lịch sử</button>
+                        <button class="btn btn-sm btn-outline-secondary btn-toggle-status" data-id="@item.IdKhachHang" onclick="toggleLockStatus('@item.IdKhachHang')">
+                            <i class="fa-solid @(item.TrangThai == "Hoạt động" ? "fa-lock" : "fa-lock-open")"></i> Status
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteCustomer('@item.IdKhachHang')"><i class="fa-solid fa-trash me-1"></i> Xóa</button>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="text-center py-4 text-muted">
+                <i class="fa-solid fa-folder-open fs-3 d-block mb-2 text-secondary"></i>
+                Không tìm thấy khách hàng nào.
+            </div>
+        }
+    </div>
+
+    <!-- Table Pagination Footer -->
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 p-4 border-top">
+        <div class="d-flex align-items-center gap-2">
+            <label for="pageSizeSelect" class="text-muted mb-0"
+                   style="font-size: 0.82rem; white-space: nowrap;">Hiển thị:</label>
+            <select id="pageSizeSelect" class="form-select form-select-sm border"
+                   style="width: 75px; border-radius: 6px;">
+                <option value="10" selected>10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+            </select>
+            <span class="text-muted" style="font-size: 0.82rem; white-space: nowrap;">
+                bản ghi / trang
+            </span>
+        </div>
+        <nav aria-label="Điều hướng phân trang khách hàng">
+            <ul class="pagination pagination-sm mb-0" id="customersPagination">
+                <!-- Filled dynamically by JS -->
+            </ul>
+        </nav>
+    </div>
+</div>

@@ -86,209 +86,69 @@
 </div>
 
 <!-- Filters & Searching Panel -->
-<div class="card border-0 shadow-sm mb-4 rep-filter-card"
-     style="border-radius: var(--vt-border-radius);">
-    <div class="card-header bg-transparent border-0 pt-3 pb-0">
-        <h5 class="card-title fw-bold mb-0 text-dark">
-            <i class="bi bi-filter me-2 text-danger"></i>Bộ lọc tìm kiếm
-        </h5>
-    </div>
-    <div class="card-body">
-        <div class="row g-3">
-            <!-- Keyword Input -->
-            <div class="col-12 col-md-5 col-lg-4">
-                <label class="form-label-custom" for="searchCustomer">Tìm kiếm</label>
-                <div class="input-group">
-                    <span class="input-group-text bg-transparent border-end-0"
-                          style="border-radius: 10px 0 0 10px; border-color: var(--border-color);">
-                        <i class="bi bi-magnifying-glass text-muted"></i>
-                    </span>
-                    <input type="text" id="searchCustomer"
-                           class="form-control form-control-custom border-start-0"
-                           placeholder="Tìm kiếm tên khách hàng hoặc số điện thoại..."
-                           style="border-radius: 0 10px 10px 0 !important;">
+<form method="get" action="/Staff/QuanLyKH" id="filterFormKH" onsubmit="event.preventDefault(); applyFiltersKH();">
+    <div class="card border-0 shadow-sm mb-4 rep-filter-card"
+         style="border-radius: var(--vt-border-radius);">
+        <div class="card-header bg-transparent border-0 pt-3 pb-0">
+            <h5 class="card-title fw-bold mb-0 text-dark">
+                <i class="bi bi-filter me-2 text-danger"></i>Bộ lọc tìm kiếm
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+                <!-- Keyword Input -->
+                <div class="col-12 col-md-5 col-lg-4">
+                    <label class="form-label-custom" for="searchCustomer">Tìm kiếm</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-transparent border-end-0"
+                              style="border-radius: 10px 0 0 10px; border-color: var(--border-color);">
+                            <i class="bi bi-magnifying-glass text-muted"></i>
+                        </span>
+                        <input type="text" id="searchCustomer" name="keyword"
+                               class="form-control form-control-custom border-start-0"
+                               placeholder="Tìm kiếm tên khách hàng hoặc số điện thoại..."
+                               value="@ViewBag.Keyword"
+                               style="border-radius: 0 10px 10px 0 !important;">
+                    </div>
+                </div>
+                <!-- Status Filter -->
+                <div class="col-12 col-sm-6 col-md-3 col-lg-3">
+                    <label class="form-label-custom" for="filterStatus">Lọc trạng thái</label>
+                    <select id="filterStatus" name="status" class="form-select form-select-custom" onchange="applyFiltersKH()">
+                        <option value="all" selected="@(ViewBag.Status == "all" || string.IsNullOrEmpty(ViewBag.Status) ? "selected" : null)">Tất cả</option>
+                        <option value="Hoạt động" selected="@(ViewBag.Status == "Hoạt động" ? "selected" : null)">Hoạt động</option>
+                        <option value="Đã khóa" selected="@(ViewBag.Status == "Đã khóa" ? "selected" : null)">Đã khóa</option>
+                    </select>
+                </div>
+                <!-- Sort Filter -->
+                <div class="col-12 col-sm-6 col-md-2 col-lg-3">
+                    <label class="form-label-custom" for="filterSort">Sắp xếp</label>
+                    <select id="filterSort" name="sort" class="form-select form-select-custom" onchange="applyFiltersKH()">
+                        <option value="newest" selected="@(ViewBag.Sort == "newest" || string.IsNullOrEmpty(ViewBag.Sort) ? "selected" : null)">Mới nhất</option>
+                        <option value="oldest" selected="@(ViewBag.Sort == "oldest" ? "selected" : null)">Cũ nhất</option>
+                        <option value="az" selected="@(ViewBag.Sort == "az" ? "selected" : null)">Họ tên A → Z</option>
+                        <option value="za" selected="@(ViewBag.Sort == "za" ? "selected" : null)">Họ tên Z → A</option>
+                    </select>
+                </div>
+                <!-- Actions Buttons -->
+                <div class="col-12 col-sm-12 col-md-2 col-lg-2 d-flex align-items-end justify-content-lg-end gap-2 filter-actions-col">
+                    <button type="button" class="btn btn-danger fw-bold px-3 py-2 flex-grow-1" onclick="applyFiltersKH()"
+                            style="background-color: var(--vt-red); border-color: var(--vt-red); border-radius: var(--vt-border-radius-sm); height: 44px;">
+                        <i class="fa-solid fa-search me-1"></i> Tìm
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary fw-bold px-3 py-2 flex-grow-1" onclick="clearFiltersKH()"
+                            style="border-radius: var(--vt-border-radius-sm); height: 44px;">
+                        <i class="bi bi-rotate-right me-1"></i> Reset
+                    </button>
                 </div>
             </div>
-            <!-- Status Filter -->
-            <div class="col-12 col-sm-6 col-md-3 col-lg-3">
-                <label class="form-label-custom" for="filterStatus">Lọc trạng thái</label>
-                <select id="filterStatus" class="form-select form-select-custom">
-                    <option value="all">Tất cả</option>
-                    <option value="Hoạt động">Hoạt động</option>
-                    <option value="Đã khóa">Đã khóa</option>
-                </select>
-            </div>
-            <!-- Sort Filter -->
-            <div class="col-12 col-sm-6 col-md-2 col-lg-3">
-                <label class="form-label-custom" for="filterSort">Sắp xếp</label>
-                <select id="filterSort" class="form-select form-select-custom">
-                    <option value="newest">Mới nhất</option>
-                    <option value="oldest">Cũ nhất</option>
-                    <option value="az">Họ tên A → Z</option>
-                    <option value="za">Họ tên Z → A</option>
-                </select>
-            </div>
-            <!-- Actions Buttons -->
-            <div class="col-12 col-sm-12 col-md-2 col-lg-2 d-flex align-items-end justify-content-lg-end gap-2 filter-actions-col">
-                <button class="btn btn-danger fw-bold px-3 py-2 flex-grow-1" onclick="searchCustomers()"
-                        style="background-color: var(--vt-red); border-color: var(--vt-red); border-radius: var(--vt-border-radius-sm); height: 44px;">
-                    <i class="fa-solid fa-search me-1"></i>
-                </button>
-                <button class="btn btn-outline-secondary fw-bold px-3 py-2 flex-grow-1"
-                        onclick="clearFilters()"
-                        style="border-radius: var(--vt-border-radius-sm); height: 44px;">
-                    <i class="bi bi-rotate-right me-1"></i> Reset
-                </button>
-            </div>
         </div>
     </div>
-</div>
+</form>
 
-<!-- Detailed Customers List -->
-<div class="card border-0 shadow-sm mb-4"
-     style="border-radius: var(--vt-border-radius); overflow: hidden;">
-    <div class="card-header bg-transparent border-0 pt-4 pb-0 d-flex justify-content-between align-items-center flex-wrap gap-2">
-        <div>
-            <h5 class="card-title fw-bold mb-0 text-dark">📋 Danh sách khách hàng</h5>
-            <p class="text-muted mb-0 mt-1" id="filteredCountText" style="font-size: 0.82rem;">
-                Đang tải...
-            </p>
-        </div>
-        <span class="badge bg-danger-subtle text-danger px-3 py-2 border border-danger-subtle rounded-pill"
-              style="font-size: 0.78rem;" id="customersCountText">
-            Đang hiển thị 0 khách hàng
-        </span>
-    </div>
-    <div class="card-body px-0 pb-0">
-        <!-- Desktop Bootstrap Table Responsive -->
-        <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0" id="customersMainTable"
-                   aria-label="Bảng quản lý khách hàng">
-                <thead class="table-light">
-                    <tr>
-                        <th style="padding-left: 20px; width: 50px;">#</th>
-                        <th style="width: 90px;">Mã KH</th>
-                        <th style="width: 180px;">Họ và tên</th>
-                        <th style="width: 140px;">Số điện thoại</th>
-                        <th>Email</th>
-                        <th style="width: 140px;">Tên đăng nhập</th>
-                        <th style="width: 120px;">Trạng thái</th>
-                        <th style="width: 110px;">Ngày tạo</th>
-                        <th style="padding-right: 20px; width: 170px; min-width: 170px; text-align: center;">Thao tác</th>
-                    </tr>
-                </thead>
-                <tbody id="customersBody">
-                    @{
-                        int stt = 1;
-                    }
-
-                    @foreach (var item in Model)
-                    {
-                        <tr>
-                            <td style="padding-left:20px;">@stt</td>
-
-                            <td>
-                                <span class="badge bg-secondary">
-                                    @item.MaKh
-                                </span>
-                            </td>
-
-                            <td>
-                                <div class="fw-semibold">@item.HoTen</div>
-                            </td>
-
-                            <td>@item.SoDienThoai</td>
-
-                            <td>
-                                @(string.IsNullOrEmpty(item.Email) ? "-" : item.Email)
-                            </td>
-
-                            <td>@item.TenDangNhap</td>
-
-                            <td>
-                                @if (item.TrangThai == "Hoạt động")
-                                {
-                                    <span class="badge bg-success status-badge">
-                                        @item.TrangThai
-                                    </span>
-                                }
-                                else
-                                {
-                                    <span class="badge bg-danger status-badge">
-                                        @item.TrangThai
-                                    </span>
-                                }
-                            </td>
-
-                            <td>
-                                @(item.NgayTao?.ToString("dd/MM/yyyy") ?? "—")
-                            </td>
-
-                            <td style="padding-right: 20px; min-width: 170px; text-align: center;">
-                                <div class="d-flex gap-2 justify-content-center flex-nowrap">
-                                    <button class="btn-action-custom view"
-                                            title="Chi tiết"
-                                            onclick="viewCustomerDetails('@item.IdKhachHang')">
-                                        <i class="fa-solid fa-eye"></i>
-                                    </button>
-
-                                    <button class="btn-action-custom history"
-                                            title="Lịch sử hỗ trợ"
-                                            onclick="viewTicketHistory('@item.IdKhachHang')">
-                                        <i class="fa-solid fa-clock-rotate-left"></i>
-                                    </button>
-
-                                    <button class="btn-action-custom @(item.TrangThai == "Hoạt động" ? "lock" : "unlock") btn-toggle-status"
-                                            data-id="@item.IdKhachHang"
-                                            title="@(item.TrangThai == "Hoạt động" ? "Khóa tài khoản" : "Mở khóa tài khoản")"
-                                            onclick="toggleLockStatus('@item.IdKhachHang')">
-
-                                        <i class="fa-solid @(item.TrangThai == "Hoạt động" ? "fa-lock" : "fa-lock-open")"></i>
-
-                                    </button>
-
-                                    <button class="btn-action-custom delete"
-                                            title="Xóa tài khoản"
-                                            onclick="deleteCustomer('@item.IdKhachHang')">
-                                        <i class="fa-solid fa-trash"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                        stt++;
-                    }
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Mobile Card List View -->
-        <div id="customersMobileContainer" class="d-none px-3 pb-3">
-            <!-- Filled dynamically by JS -->
-        </div>
-
-        <!-- Table Pagination Footer -->
-        <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 p-4 border-top">
-            <div class="d-flex align-items-center gap-2">
-                <label for="pageSizeSelect" class="text-muted mb-0"
-                       style="font-size: 0.82rem; white-space: nowrap;">Hiển thị:</label>
-                <select id="pageSizeSelect" class="form-select form-select-sm border"
-                       style="width: 75px; border-radius: 6px;">
-                    <option value="10" selected>10</option>
-                    <option value="25">25</option>
-                    <option value="50">50</option>
-                    <option value="100">100</option>
-                </select>
-                <span class="text-muted" style="font-size: 0.82rem; white-space: nowrap;">
-                    bản ghi / trang
-                </span>
-            </div>
-            <nav aria-label="Điều hướng phân trang khách hàng">
-                <ul class="pagination pagination-sm mb-0" id="customersPagination">
-                    <!-- Filled dynamically by JS -->
-                </ul>
-            </nav>
-        </div>
-    </div>
+<!-- Detailed Customers List Wrapper Container for AJAX -->
+<div class="card border-0 shadow-sm mb-4" id="customersCardContainer" style="border-radius: var(--vt-border-radius); overflow: hidden;">
+    @await Html.PartialAsync("_DanhSachKhachHang", Model)
 </div>
 
 <!-- 1. ADD CUSTOMER DIALOG MODAL -->
@@ -468,7 +328,7 @@
 </div>
 
 @section Scripts {
-    <script src="~/assets/js/staff/admin-customers.js"></script>
+    <script src="~/assets/js/staff/admin-customers.js" asp-append-version="true"></script>
 }
 
 

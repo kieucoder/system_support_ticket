@@ -315,31 +315,29 @@ namespace SupportTicketSysterm.Controllers
 
 
         //Quản lý khách hàng 
+        [HttpGet]
+        [Route("Staff/QuanLyKH")]
         public IActionResult QuanLyKH(string keyword,
             string status,
             string sort = "newest")
         {
             var query = _context.KhachHangs.AsQueryable();
 
-           
-            // Tìm kiếm
-            
+            // Tìm kiếm (tên, số điện thoại, email)
             if (!string.IsNullOrWhiteSpace(keyword))
             {
-                query = query.Where(x => x.HoTen.Contains(keyword));
+                query = query.Where(x => x.HoTen.Contains(keyword) 
+                                      || (x.SoDienThoai != null && x.SoDienThoai.Contains(keyword)) 
+                                      || (x.Email != null && x.Email.Contains(keyword)));
             }
 
-          
-            // Lọc trạng thái
-           
-            if (!string.IsNullOrWhiteSpace(status))
+            // Lọc trạng thái (bỏ qua nếu chọn "Tất cả" - all)
+            if (!string.IsNullOrWhiteSpace(status) && status != "all")
             {
                 query = query.Where(x => x.TrangThai == status);
             }
 
-           
             // Sắp xếp
-            
             switch (sort)
             {
                 case "oldest":
@@ -359,8 +357,6 @@ namespace SupportTicketSysterm.Controllers
                     break;
             }
 
-            
-
             var today = DateOnly.FromDateTime(DateTime.Today);
             var firstDayOfMonth = new DateOnly(today.Year, today.Month, 1);
 
@@ -374,6 +370,49 @@ namespace SupportTicketSysterm.Controllers
             ViewBag.Sort = sort;
 
             return View(query.ToList());
+        }
+
+        [HttpGet]
+        [Route("Staff/DanhSachKhachHang")]
+        public IActionResult DanhSachKhachHang(string keyword, string status, string sort = "newest")
+        {
+            var query = _context.KhachHangs.AsQueryable();
+
+            // Tìm kiếm (tên, số điện thoại, email)
+            if (!string.IsNullOrWhiteSpace(keyword))
+            {
+                query = query.Where(x => x.HoTen.Contains(keyword) 
+                                      || (x.SoDienThoai != null && x.SoDienThoai.Contains(keyword)) 
+                                      || (x.Email != null && x.Email.Contains(keyword)));
+            }
+
+            // Lọc trạng thái (bỏ qua nếu chọn "Tất cả" - all)
+            if (!string.IsNullOrWhiteSpace(status) && status != "all")
+            {
+                query = query.Where(x => x.TrangThai == status);
+            }
+
+            // Sắp xếp
+            switch (sort)
+            {
+                case "oldest":
+                    query = query.OrderBy(x => x.NgayTao);
+                    break;
+
+                case "az":
+                    query = query.OrderBy(x => x.HoTen);
+                    break;
+
+                case "za":
+                    query = query.OrderByDescending(x => x.HoTen);
+                    break;
+
+                default:
+                    query = query.OrderByDescending(x => x.NgayTao);
+                    break;
+            }
+
+            return PartialView("_DanhSachKhachHang", query.ToList());
         }
 
         //Tạo mã khách hàng tự động tăng
@@ -744,6 +783,12 @@ namespace SupportTicketSysterm.Controllers
                     return Json(new { success = false, message = "Danh mục sự cố không tồn tại." });
                 }
 
+                // Kiểm tra nếu danh mục đang bị khóa mà thêm dịch vụ Hoạt động
+                if (model.TrangThai == "Hoạt động" && (dm.TrangThai == "Tạm khóa" || dm.TrangThai == "Khóa"))
+                {
+                    return Json(new { success = false, message = $"Không thể thêm dịch vụ ở trạng thái Hoạt động vì danh mục '{dm.TenDanhMuc}' đang bị khóa." });
+                }
+
                 // Kiểm tra trùng tên trong cùng danh mục
                 bool exists = await _context.DichVus.AnyAsync(x => x.IdDanhMuc == model.IdDanhMuc && x.TenDichVu.Trim().ToLower() == model.TenDichVu.Trim().ToLower());
                 if (exists)
@@ -794,6 +839,12 @@ namespace SupportTicketSysterm.Controllers
                     return Json(new { success = false, message = "Danh mục sự cố không tồn tại." });
                 }
 
+                // Kiểm tra nếu danh mục đang bị khóa mà cập nhật dịch vụ thành Hoạt động
+                if (model.TrangThai == "Hoạt động" && (dm.TrangThai == "Tạm khóa" || dm.TrangThai == "Khóa"))
+                {
+                    return Json(new { success = false, message = $"Không thể cập nhật dịch vụ ở trạng thái Hoạt động vì danh mục '{dm.TenDanhMuc}' đang bị khóa." });
+                }
+
                 // Kiểm tra trùng tên
                 bool exists = await _context.DichVus.AnyAsync(x => x.IdDichVu != model.IdDichVu && x.IdDanhMuc == model.IdDanhMuc && x.TenDichVu.Trim().ToLower() == model.TenDichVu.Trim().ToLower());
                 if (exists)
@@ -841,13 +892,28 @@ namespace SupportTicketSysterm.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> KhoaDichVu(int id)
         {
-            var model = await _context.DichVus.FindAsync(id);
+            var model = await _context.DichVus
+                                      .Include(d => d.IdDanhMucNavigation)
+                                      .FirstOrDefaultAsync(x => x.IdDichVu == id);
             if (model == null)
             {
                 return Json(new { success = false, message = "Dịch vụ không tồn tại." });
             }
 
             var isActive = model.TrangThai == "Hoạt động";
+            if (!isActive)
+            {
+                var dm = model.IdDanhMucNavigation;
+                if (dm != null && (dm.TrangThai == "Tạm khóa" || dm.TrangThai == "Khóa"))
+                {
+                    return Json(new { 
+                        success = false, 
+                        isCategoryLocked = true, 
+                        message = $"Không thể kích hoạt dịch vụ '{model.TenDichVu}' vì danh mục '{dm.TenDanhMuc}' đang bị khóa." 
+                    });
+                }
+            }
+
             model.TrangThai = isActive ? "Tạm khóa" : "Hoạt động";
 
             await _context.SaveChangesAsync();
