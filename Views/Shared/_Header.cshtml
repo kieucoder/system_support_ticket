@@ -1,0 +1,115 @@
+﻿<!-- Header Component Container -->
+<div id="header-container">
+    <!-- 1. TOPBAR HEADER -->
+    <header class="top-header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-8 col-12 top-header-info d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+                    <span class="me-4">
+                        <i class="fa-solid fa-phone"></i> Hotline kỹ thuật: <a href="tel:19008098">
+                            1900
+                            8098
+                        </a> (Miễn phí)
+                    </span>
+                    <span class="me-4">
+                        <i class="fa-solid fa-envelope"></i> Email: <a href="mailto:support@viettel.com.vn">support@viettel.com.vn</a>
+                    </span>
+                    <span><i class="fa-solid fa-clock"></i> Hỗ trợ kỹ thuật 24/7/365</span>
+                </div>
+                <div class="col-lg-4 col-12 top-header-social d-flex align-items-center justify-content-center justify-content-lg-end mt-2 mt-lg-0">
+                    <span class="me-2 d-none d-sm-inline">Kết nối:</span>
+                    <a href="https://facebook.com" target="_blank" class="me-2" aria-label="Facebook">
+                        <i class="bi bi-facebook"></i>
+                    </a>
+                    <a href="https://youtube.com" target="_blank" class="me-2" aria-label="Youtube">
+                        <i class="bi bi-youtube"></i>
+                    </a>
+                    <a href="https://linkedin.com" target="_blank" class="me-2" aria-label="LinkedIn">
+                        <i class="bi bi-linkedin"></i>
+                    </a>
+                    <a href="https://instagram.com" target="_blank" aria-label="Instagram">
+                        <i class="bi bi-instagram"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 2. NAVBAR STICKY (CUSTOM RESPONSIVE HEADER) -->
+    <header class="custom-header fixed-top" id="mainNavbar">
+        <div class="container container-header-wrapper">
+            <!-- Brand Logo -->
+            <a class="navbar-brand" href="#heroSection" id="navBrand">
+                <i class="fa-solid fa-cpu-fill"></i>
+                <span>TechSupport</span>
+            </a>
+
+            <!-- Desktop Menu (>=1200px) -->
+            <nav class="desktop-menu d-none d-xl-flex align-items-center justify-content-between flex-grow-1 ms-5">
+                <ul class="navbar-nav header-nav-list flex-row align-items-center gap-2">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="#heroSection" id="linkHome">
+                            Trang
+                            chủ
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown-custom">
+                        <a class="nav-link dropdown-toggle-custom d-inline-flex align-items-center" href="#"
+                           id="linkServices">
+                            Dịch vụ hỗ trợ <i class="fa-solid fa-chevron-down ms-1"
+                                              style="font-size: 0.8rem; transition: transform 0.3s ease;"></i>
+                        </a>
+                        <ul class="dropdown-menu-custom">
+                            <li>
+                                <a class="dropdown-item-custom" href="#serviceGridSection">
+                                    Hỗ trợ Internet Cáp
+                                    Quang
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item-custom" href="#serviceGridSection">Hỗ trợ Home Camera</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item-custom" href="#serviceGridSection">Hỗ trợ Server & Cloud</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item-custom" href="#serviceGridSection">
+                                    Hỗ trợ Phần mềm & Mạng
+                                    nội bộ
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#quickActionSection" id="linkSearch">Tra cứu phiếu</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#newsSection" id="linkGuides">Hướng dẫn</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="pages/contact.html" id="linkContact">Liên hệ</a>
+                    </li>
+                </ul>
+                <div class="header-buttons-group d-flex align-items-center gap-2">
+                    <a href="D:\SupportTech\login.html" class="btn btn-login-custom btn-ripple rounded-pill px-4"
+                       id="btnLogin">
+                        <i class="fa-solid fa-user me-1"></i> Đăng nhập
+                    </a>
+                    <a asp-controller="Auth" asp-action="DangKy" class="btn btn-create-ticket-custom btn-ripple px-4"
+                       id="btnCreateTicket">
+                        <i class="bi bi-person-plus-fill me-1"></i> Đăng ký
+                    </a>
+                </div>
+            </nav>
+
+            <!-- Hamburger Button (Tablet & Mobile <1200px) -->
+            <button class="navbar-hamburger d-xl-none" type="button" id="menuToggle" aria-label="Toggle navigation">
+                <div class="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </button>
+        </div>
+    </header>
+</div>

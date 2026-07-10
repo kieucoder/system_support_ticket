@@ -1,0 +1,123 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 400" width="100%" height="100%">
+  <defs>
+    <!-- Colors -->
+    <linearGradient id="mainRed" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E60012" />
+      <stop offset="100%" stop-color="#B3000E" />
+    </linearGradient>
+    <linearGradient id="mainBlue" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#102A43" />
+      <stop offset="100%" stop-color="#07192B" />
+    </linearGradient>
+    <linearGradient id="accentBlue" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#334E68" />
+      <stop offset="100%" stop-color="#102A43" />
+    </linearGradient>
+    <linearGradient id="lightBg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="100%" stop-color="#F5F7FA" />
+    </linearGradient>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FCE588" />
+      <stop offset="100%" stop-color="#F5B041" />
+    </linearGradient>
+    
+    <!-- Shadow -->
+    <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="12" stdDeviation="10" flood-color="#102a43" flood-opacity="0.12" />
+    </filter>
+    <filter id="glowRed" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="8" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Background decorative grid/networks -->
+  <g opacity="0.15">
+    <circle cx="250" cy="200" r="180" fill="none" stroke="#102A43" stroke-width="1.5" stroke-dasharray="10,10" />
+    <circle cx="250" cy="200" r="130" fill="none" stroke="#E60012" stroke-width="1" />
+    <circle cx="250" cy="200" r="80" fill="none" stroke="#102A43" stroke-width="1.5" stroke-dasharray="5,5" />
+    
+    <!-- Connection lines -->
+    <line x1="70" y1="200" x2="430" y2="200" stroke="#102A43" stroke-width="1" />
+    <line x1="250" y1="20" x2="250" y2="380" stroke="#102A43" stroke-width="1" />
+    <line x1="120" y1="70" x2="380" y2="330" stroke="#102A43" stroke-width="1" />
+    <line x1="120" y1="330" x2="380" y2="70" stroke="#102A43" stroke-width="1" />
+    
+    <!-- Nodes -->
+    <circle cx="120" cy="70" r="4" fill="#E60012" />
+    <circle cx="380" cy="330" r="4" fill="#102A43" />
+    <circle cx="120" cy="330" r="4" fill="#102A43" />
+    <circle cx="380" cy="70" r="4" fill="#E60012" />
+  </g>
+
+  <!-- Main Illustration Elements (Desk / Screen) -->
+  <g filter="url(#cardShadow)">
+    <!-- Base Plate/Desk Shadow -->
+    <ellipse cx="250" cy="340" rx="160" ry="12" fill="#102a43" opacity="0.2" />
+
+    <!-- Main Server / Tech Terminal Screen (Glassmorphism design) -->
+    <rect x="110" y="80" width="280" height="190" rx="16" fill="url(#lightBg)" stroke="#102A43" stroke-width="3" />
+    <!-- Screen Header Bar -->
+    <path d="M110 96 L390 96" stroke="#102A43" stroke-width="2" />
+    <!-- Top left window buttons -->
+    <circle cx="128" cy="88" r="4" fill="#E60012" />
+    <circle cx="140" cy="88" r="4" fill="#F5B041" />
+    <circle cx="152" cy="88" r="4" fill="#27AE60" />
+    
+    <!-- Screen Content - Code/Graph Graphics -->
+    <rect x="130" y="115" width="220" height="12" rx="4" fill="#102A43" opacity="0.1" />
+    <rect x="130" y="135" width="120" height="8" rx="3" fill="#E60012" opacity="0.2" />
+    <rect x="260" y="135" width="90" height="8" rx="3" fill="#102A43" opacity="0.2" />
+    
+    <!-- Inner Dashboard Mockup Charts -->
+    <rect x="130" y="155" width="100" height="65" rx="8" fill="#102A43" opacity="0.05" />
+    <path d="M140 210 L160 190 L180 200 L200 175 L220 185" fill="none" stroke="url(#mainRed)" stroke-width="3" stroke-linecap="round" />
+    <circle cx="200" cy="175" r="4" fill="#E60012" />
+
+    <rect x="240" y="155" width="130" height="65" rx="8" fill="#102A43" opacity="0.05" />
+    <!-- Code block representation -->
+    <line x1="250" y1="170" x2="310" y2="170" stroke="#102A43" stroke-width="2" stroke-linecap="round" />
+    <line x1="250" y1="180" x2="350" y2="180" stroke="#102A43" stroke-width="2" stroke-linecap="round" opacity="0.5" />
+    <line x1="250" y1="190" x2="330" y2="190" stroke="#E60012" stroke-width="2" stroke-linecap="round" />
+    <line x1="250" y1="200" x2="290" y2="200" stroke="#102A43" stroke-width="2" stroke-linecap="round" opacity="0.5" />
+    
+    <!-- Monitor Stand -->
+    <path d="M220 270 L280 270 L290 320 L210 320 Z" fill="url(#mainBlue)" stroke="#102A43" stroke-width="2" />
+    <ellipse cx="250" cy="320" rx="60" ry="10" fill="url(#mainBlue)" />
+  </g>
+
+  <!-- Ticket floating bubble (Viettel Red) -->
+  <g filter="url(#cardShadow)" transform="translate(-10, -10)">
+    <circle cx="110" cy="160" r="32" fill="url(#mainRed)" />
+    <!-- Checkmark/Ticket Document graphic -->
+    <path d="M98 160 L106 168 L122 152" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+    <!-- Badge -->
+    <circle cx="132" cy="138" r="8" fill="url(#goldGrad)" />
+    <path d="M132 135 L132 141 M132 141 L134 141" fill="none" stroke="#102A43" stroke-width="1.5" stroke-linecap="round" />
+  </g>
+
+  <!-- Support Chat Agent bubble (Dark Blue) -->
+  <g filter="url(#cardShadow)" transform="translate(15, -15)">
+    <circle cx="390" cy="180" r="38" fill="url(#mainBlue)" />
+    <!-- Chat Icon Graphic -->
+    <path d="M375 174 C375 167.3 381.7 162 390 162 C398.3 162 405 167.3 405 174 C405 180.7 398.3 186 390 186 C388 186 386.1 184.8 384.4 183.7 L375 186.5 L377.8 179.4 C376 177.8 375 176 375 174 Z" fill="none" stroke="#ffffff" stroke-width="3" stroke-linejoin="round" />
+    <circle cx="384" cy="174" r="2.5" fill="#ffffff" />
+    <circle cx="390" cy="174" r="2.5" fill="#ffffff" />
+    <circle cx="396" cy="174" r="2.5" fill="#ffffff" />
+  </g>
+
+  <!-- Network Gear floating (Gold / Security) -->
+  <g filter="url(#cardShadow)" transform="translate(0, 20)">
+    <circle cx="160" cy="270" r="24" fill="url(#goldGrad)" />
+    <!-- Shield / Security outline -->
+    <path d="M152 260 L160 256 L168 260 L168 270 C168 276 160 282 160 282 C160 282 152 276 152 270 Z" fill="#102A43" />
+    <path d="M155 264 L160 261.5 L165 264 L165 270 C165 274.5 160 279 160 279 C160 279 155 274.5 155 270 Z" fill="#ffffff" opacity="0.8" />
+  </g>
+
+  <!-- Gears floating top right -->
+  <g opacity="0.85">
+    <path d="M310 60 A12 12 0 1 0 310 84 A12 12 0 1 0 310 60" fill="none" stroke="#E60012" stroke-width="4" stroke-dasharray="4,2" />
+    <path d="M328 75 A8 8 0 1 0 328 91 A8 8 0 1 0 328 75" fill="none" stroke="#102A43" stroke-width="3" stroke-dasharray="2,2" />
+  </g>
+</svg>

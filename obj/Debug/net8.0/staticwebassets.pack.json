@@ -65,6 +65,10 @@
       "PackagePath": "staticwebassets\\assets\\css\\lookup-ticket.css"
     },
     {
+      "Id": "D:\\SupportTicketSysterm\\wwwroot\\assets\\css\\register.css",
+      "PackagePath": "staticwebassets\\assets\\css\\register.css"
+    },
+    {
       "Id": "D:\\SupportTicketSysterm\\wwwroot\\assets\\css\\responsive.css",
       "PackagePath": "staticwebassets\\assets\\css\\responsive.css"
     },
@@ -185,6 +189,10 @@
       "PackagePath": "staticwebassets\\assets\\images\\news_3_upgrade.png"
     },
     {
+      "Id": "D:\\SupportTicketSysterm\\wwwroot\\assets\\images\\register-banner.svg",
+      "PackagePath": "staticwebassets\\assets\\images\\register-banner.svg"
+    },
+    {
       "Id": "D:\\SupportTicketSysterm\\wwwroot\\assets\\js\\chatbox.js",
       "PackagePath": "staticwebassets\\assets\\js\\chatbox.js"
     },
@@ -235,6 +243,10 @@
     {
       "Id": "D:\\SupportTicketSysterm\\wwwroot\\assets\\js\\main.js",
       "PackagePath": "staticwebassets\\assets\\js\\main.js"
+    },
+    {
+      "Id": "D:\\SupportTicketSysterm\\wwwroot\\assets\\js\\register.js",
+      "PackagePath": "staticwebassets\\assets\\js\\register.js"
     },
     {
       "Id": "D:\\SupportTicketSysterm\\wwwroot\\assets\\js\\sidebar.js",
@@ -623,6 +635,10 @@
     {
       "Id": "D:\\SupportTicketSysterm\\wwwroot\\pages\\ticket-success.html",
       "PackagePath": "staticwebassets\\pages\\ticket-success.html"
+    },
+    {
+      "Id": "D:\\SupportTicketSysterm\\wwwroot\\register.html",
+      "PackagePath": "staticwebassets\\register.html"
     },
     {
       "Id": "D:\\SupportTicketSysterm\\wwwroot\\scratch\\replace_icons.js",

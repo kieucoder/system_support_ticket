@@ -1,0 +1,259 @@
+@model SupportTicketSysterm.Models.DangKyViewModel
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng ký | TechSupport</title>
+    <meta name="description" content="Đăng ký tài khoản TechSupport để quản lý phiếu hỗ trợ kỹ thuật.">
+    <link rel="icon" type="image/x-icon" href="https://viettel.com.vn/favicon.ico">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/assets/css/register.css">
+</head>
+<body>
+
+    <!-- Back to Home -->
+    <a href="/" class="btn-back-home" title="Quay về trang chủ" aria-label="Quay về trang chủ">
+        <i class="bi bi-arrow-left"></i>
+    </a>
+
+    <div class="register-wrapper">
+        <div class="register-container">
+            <div class="login-card shadow-lg">
+                <div class="row g-0">
+
+                    <!-- ===== LEFT PANEL ===== -->
+                    <div class="col-lg-6 register-info">
+                        <div class="brand">
+                            <i class="fa-solid fa-microchip"></i>
+                            <span>Tech<span class="text-danger">Support</span></span>
+                        </div>
+
+                        <h2 class="fw-bold">Tạo tài khoản mới</h2>
+                        <p class="text-white-50">Đăng ký thành viên để gửi phiếu hỗ trợ kỹ thuật, theo dõi tiến độ xử lý sự cố trực tuyến và nhận thông báo.</p>
+
+                        <div class="illustration-container">
+                            <img src="~/assets/images/register-banner.svg" alt="TechSupport Illustration" class="illustration-img">
+                        </div>
+
+                        <div class="feature-list">
+                            <div class="feature-item">
+                                <i class="fa-solid fa-circle-check"></i>
+                                <span>Theo dõi phiếu hỗ trợ trực quan</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fa-solid fa-circle-check"></i>
+                                <span>Hỗ trợ trực tuyến 24/7 chuyên nghiệp</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fa-solid fa-circle-check"></i>
+                                <span>Bảo mật tuyệt đối thông tin cá nhân</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fa-solid fa-circle-check"></i>
+                                <span>Bảo mật tuyệt đối thông tin cá nhân</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ===== RIGHT PANEL - FORM ===== -->
+                    <div class="col-lg-6 register-form">
+                        <div class="text-center" style="margin-bottom: 1.2rem;">
+                            <h3 class="fw-bold">Đăng ký</h3>
+                            <p class="text-muted">Nhập thông tin đăng ký tài khoản mới</p>
+                        </div>
+
+                        @* Hiển thị thông báo lỗi toàn cục (từ ModelState key rỗng) *@
+                        @if (!ViewData.ModelState.IsValid)
+                        {
+                            foreach (var error in ViewData.ModelState[""]?.Errors ?? new Microsoft.AspNetCore.Mvc.ModelBinding.ModelErrorCollection())
+                            {
+                                <div class="alert alert-danger py-2 px-3 mb-3" role="alert">
+                                    <i class="bi bi-exclamation-triangle-fill me-1"></i> @error.ErrorMessage
+                                </div>
+                            }
+                        }
+
+                        @* Thông báo thành công sau redirect *@
+                        @if (TempData["Success"] != null)
+                        {
+                            <div class="alert alert-success py-2 px-3 mb-3" role="alert">
+                                <i class="bi bi-check-circle-fill me-1"></i> @TempData["Success"]
+                            </div>
+                        }
+
+                        <form id="registerForm"
+                              asp-controller="Auth"
+                              asp-action="DangKy"
+                              method="post"
+                              novalidate>
+                            @Html.AntiForgeryToken()
+                            <!-- Họ và tên -->
+                            <div class="mb-3">
+                                <label class="form-label" asp-for="HoTen">Họ và tên <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fa-solid fa-user text-danger"></i></span>
+                                    <input type="text"
+                                           class="form-control @(ViewData.ModelState["HoTen"]?.Errors.Any() == true ? "is-invalid" : "")"
+                                           id="fullname"
+                                           asp-for="HoTen"
+                                           placeholder="Nguyễn Văn A"
+                                           autocomplete="name">
+                                </div>
+                                <span asp-validation-for="HoTen" class="text-danger small"></span>
+                            </div>
+
+                            <!-- Số điện thoại & Email -->
+                            <div class="row mb-3">
+                                <div class="col-md-6" style="margin-bottom: 0.7rem;">
+                                    <label class="form-label" asp-for="SoDienThoai">Số điện thoại <span class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fa-solid fa-phone text-danger"></i></span>
+                                        <input type="tel"
+                                               class="form-control @(ViewData.ModelState["SoDienThoai"]?.Errors.Any() == true ? "is-invalid" : "")"
+                                               id="phone"
+                                               asp-for="SoDienThoai"
+                                               placeholder="0987654321"
+                                               autocomplete="tel">
+                                    </div>
+                                    <span asp-validation-for="SoDienThoai" class="text-danger small"></span>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label" asp-for="Email">Email</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fa-solid fa-envelope text-danger"></i></span>
+                                        <input type="email"
+                                               class="form-control @(ViewData.ModelState["Email"]?.Errors.Any() == true ? "is-invalid" : "")"
+                                               id="email"
+                                               asp-for="Email"
+                                               placeholder="example@mail.vn"
+                                               autocomplete="email">
+                                    </div>
+                                    <span asp-validation-for="Email" class="text-danger small"></span>
+                                </div>
+                            </div>
+
+                            <!-- Địa chỉ & Ngày sinh -->
+                            <div class="row mb-3">
+                                <div class="col-md-6" style="margin-bottom: 0.7rem;">
+                                    <label class="form-label" asp-for="DiaChi">Địa chỉ</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fa-solid fa-location-dot text-danger"></i></span>
+                                        <input type="text"
+                                               class="form-control"
+                                               id="address"
+                                               asp-for="DiaChi"
+                                               placeholder="Hà Nội, Việt Nam"
+                                               autocomplete="street-address">
+                                    </div>
+                                    <span asp-validation-for="DiaChi" class="text-danger small"></span>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label" asp-for="NgaySinh">Ngày sinh</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fa-solid fa-calendar-days text-danger"></i></span>
+                                        <input type="date"
+                                               class="form-control"
+                                               id="birthdate"
+                                               asp-for="NgaySinh">
+                                    </div>
+                                    <span asp-validation-for="NgaySinh" class="text-danger small"></span>
+                                </div>
+                            </div>
+
+                            <!-- Tên đăng nhập -->
+                            <div class="mb-3">
+                                <label class="form-label" asp-for="TenDangNhap">Tên đăng nhập <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fa-solid fa-user-gear text-danger"></i></span>
+                                    <input type="text"
+                                           class="form-control @(ViewData.ModelState["TenDangNhap"]?.Errors.Any() == true ? "is-invalid" : "")"
+                                           id="username"
+                                           asp-for="TenDangNhap"
+                                           placeholder="nguyenvana123"
+                                           autocomplete="username">
+                                </div>
+                                <span asp-validation-for="TenDangNhap" class="text-danger small"></span>
+                            </div>
+
+                            <!-- Mật khẩu & Nhập lại -->
+                            <div class="row mb-3">
+                                <div class="col-md-6" style="margin-bottom: 0.7rem;">
+                                    <label class="form-label" asp-for="MatKhau">Mật khẩu <span class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-lock text-danger"></i></span>
+                                        <input type="password"
+                                               class="form-control has-toggle @(ViewData.ModelState["MatKhau"]?.Errors.Any() == true ? "is-invalid" : "")"
+                                               id="password"
+                                               asp-for="MatKhau"
+                                               placeholder="••••••••"
+                                               autocomplete="new-password">
+                                        <button class="btn-outline-secondary toggle-password" type="button" data-target="password" aria-label="Hiện mật khẩu">
+                                            <i class="bi bi-eye-slash"></i>
+                                        </button>
+                                    </div>
+                                    <span asp-validation-for="MatKhau" class="text-danger small"></span>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label" asp-for="NhapLaiMatKhau">Nhập lại mật khẩu <span class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-lock-fill text-danger"></i></span>
+                                        <input type="password"
+                                               class="form-control has-toggle @(ViewData.ModelState["NhapLaiMatKhau"]?.Errors.Any() == true ? "is-invalid" : "")"
+                                               id="confirmPassword"
+                                               asp-for="NhapLaiMatKhau"
+                                               placeholder="••••••••"
+                                               autocomplete="new-password">
+                                        <button class="btn-outline-secondary toggle-password" type="button" data-target="confirmPassword" aria-label="Hiện mật khẩu">
+                                            <i class="bi bi-eye-slash"></i>
+                                        </button>
+                                    </div>
+                                    <span asp-validation-for="NhapLaiMatKhau" class="text-danger small"></span>
+                                </div>
+                            </div>
+
+                            <!-- Điều khoản -->
+                            <div class="mb-4">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="agreeTerms">
+                                    <label class="form-check-label" for="agreeTerms">
+                                        Tôi đồng ý với <a href="#" class="text-danger fw-semibold text-decoration-none">điều khoản sử dụng</a> hệ thống.
+                                    </label>
+                                </div>
+                                <div id="agreeTermsError" class="text-danger small" style="display:none;">
+                                    Vui lòng đồng ý với điều khoản sử dụng để tiếp tục.
+                                </div>
+                            </div>
+
+                            <!-- Nút đăng ký -->
+                            <button type="submit" id="submitBtn" class="btn-login">
+                                <span class="btn-text">
+                                    <i class="bi bi-person-plus-fill" style="margin-right:6px;"></i>Đăng ký
+                                </span>
+                                <span class="spinner" style="display:none;">
+                                    <i class="fa-solid fa-circle-notch fa-spin"></i> Đang xử lý...
+                                </span>
+                            </button>
+
+                            <!-- Link đăng nhập -->
+                            <p class="text-center" style="font-size: 0.76rem; color: #94a3b8; margin-top: 0.9rem; margin-bottom: 0;">
+                                Đã có tài khoản?
+                                <a asp-controller="Auth" asp-action="DangNhap"
+                                   class="text-danger fw-semibold text-decoration-none">Đăng nhập ngay</a>
+                            </p>
+                        </form>
+                    </div>
+
+                </div><!-- /.row -->
+            </div><!-- /.login-card -->
+        </div><!-- /.register-container -->
+    </div><!-- /.register-wrapper -->
+
+    <script src="~/assets/js/register.js"></script>
+</body>
+</html>

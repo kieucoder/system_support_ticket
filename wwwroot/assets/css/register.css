@@ -1,0 +1,583 @@
+/* ==============================================================
+   FILE: assets/css/register.css
+   DESCRIPTION: Compact, modern & elegant registration page.
+                Redesigned to be smaller, refined and premium.
+   ============================================================== */
+
+/* ========== 1. DESIGN VARIABLES ========== */
+:root {
+    --red: #e11b1e;
+    --red-dark: #b91c1c;
+    --red-glow: rgba(225, 27, 30, 0.25);
+    --dark: #0f172a;
+    --dark-2: #1e293b;
+    --glass: rgba(255, 255, 255, 0.04);
+    --border-glass: rgba(255, 255, 255, 0.08);
+    --text-muted: #94a3b8;
+    --ease: cubic-bezier(0.25, 0.8, 0.25, 1);
+    --radius-card: 22px;
+    --radius-input: 11px;
+}
+
+/* ========== 2. RESET & BASE ========== */
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 15px;
+}
+
+body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: linear-gradient(135deg, var(--dark) 0%, var(--dark-2) 100%);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: #1e293b; }
+::-webkit-scrollbar-thumb { background: var(--red); border-radius: 8px; }
+
+/* ========== 3. BACK BUTTON ========== */
+.btn-back-home {
+    position: fixed;
+    top: 1.2rem;
+    left: 1.2rem;
+    width: 38px;
+    height: 38px;
+    background: linear-gradient(135deg, var(--red), var(--red-dark));
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    font-size: 0.9rem;
+    box-shadow: 0 4px 14px var(--red-glow);
+    transition: all 0.25s var(--ease);
+    z-index: 100;
+}
+
+.btn-back-home:hover {
+    transform: translateY(-2px) scale(1.08);
+    box-shadow: 0 8px 20px var(--red-glow);
+    color: white;
+}
+
+/* ========== 4. WRAPPER & LAYOUT ========== */
+.register-wrapper {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem 1rem;
+    overflow: hidden;
+}
+
+/* Animated background blobs */
+.register-wrapper::before,
+.register-wrapper::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.register-wrapper::before {
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(225, 27, 30, 0.12), transparent 70%);
+    top: -100px;
+    right: -100px;
+}
+
+.register-wrapper::after {
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(99, 102, 241, 0.08), transparent 70%);
+    bottom: -80px;
+    left: -80px;
+}
+
+.register-container {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 980px;
+}
+
+/* ========== 5. CARD ========== */
+.login-card {
+    border-radius: var(--radius-card);
+    overflow: hidden;
+    box-shadow:
+        0 0 0 1px var(--border-glass),
+        0 24px 60px rgba(0, 0, 0, 0.45);
+    animation: fadeSlide 0.5s ease-out forwards;
+    background: transparent;
+}
+
+/* ========== 6. TWO-COLUMN GRID ========== */
+.row {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.row.g-0 { margin: 0; }
+.row.g-0 > [class*="col-"] { padding: 0; }
+
+.col-lg-6 {
+    flex: 0 0 50%;
+    width: 50%;
+}
+
+/* ========== 7. LEFT PANEL ========== */
+.register-info {
+    background: linear-gradient(145deg, #0f1a2e 0%, #1a2a44 50%, #0f172a 100%);
+    color: white;
+    padding: 2.6rem 2.2rem !important;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Subtle grid texture */
+.register-info::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+    background-size: 28px 28px;
+    z-index: 0;
+}
+
+/* Red accent glow circle */
+.register-info::after {
+    content: '';
+    position: absolute;
+    top: -60px;
+    right: -60px;
+    width: 220px;
+    height: 220px;
+    background: radial-gradient(circle, rgba(225,27,30,0.18), transparent 65%);
+    z-index: 0;
+}
+
+.register-info > * {
+    position: relative;
+    z-index: 1;
+}
+
+/* Brand logo */
+.register-info .brand {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    font-size: 1.4rem;
+    font-weight: 800;
+    letter-spacing: -0.4px;
+    margin-bottom: 1.3rem;
+}
+
+.register-info .brand i {
+    font-size: 1.55rem;
+    color: var(--red);
+    filter: drop-shadow(0 2px 8px var(--red-glow));
+}
+
+.register-info h2 {
+    font-size: 1.55rem;
+    font-weight: 700;
+    line-height: 1.3;
+    margin-bottom: 0.55rem;
+}
+
+.register-info p {
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 0;
+}
+
+/* Illustration */
+.illustration-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+    padding: 1rem 0;
+}
+
+.illustration-img {
+    width: 100%;
+    max-width: 190px;
+    height: auto;
+    filter: drop-shadow(0 6px 18px rgba(0,0,0,0.3));
+    opacity: 0.9;
+}
+
+/* Feature list */
+.feature-list {
+    margin-top: auto;
+    padding-top: 0.8rem;
+    border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+.feature-item {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin-bottom: 0.6rem;
+    font-size: 0.84rem;
+    color: rgba(255,255,255,0.65);
+    transition: all 0.2s;
+}
+
+.feature-item:last-child { margin-bottom: 0; }
+
+.feature-item:hover {
+    color: white;
+    transform: translateX(3px);
+}
+
+.feature-item i {
+    color: var(--red);
+    font-size: 0.95rem;
+    flex-shrink: 0;
+}
+
+/* ========== 8. RIGHT PANEL - FORM ========== */
+.register-form {
+    background: white;
+    padding: 2.4rem 2.2rem !important;
+    display: flex;
+    flex-direction: column;
+}
+
+.register-form h3 {
+    font-size: 1.45rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 0.15rem;
+}
+
+.register-form .text-muted {
+    font-size: 0.82rem;
+    color: #94a3b8 !important;
+}
+
+.text-center { text-align: center !important; }
+
+/* ========== 9. FORM UTILITIES ========== */
+.mb-3 { margin-bottom: 0.85rem !important; }
+.mb-4 { margin-bottom: 1.1rem !important; }
+.fw-bold { font-weight: 700 !important; }
+.fw-semibold { font-weight: 600 !important; }
+.text-dark { color: #0f172a !important; }
+.text-danger { color: var(--red) !important; }
+.text-white-50 { color: rgba(255,255,255,0.5) !important; }
+.small { font-size: 0.8em !important; }
+.text-decoration-none { text-decoration: none !important; }
+.text-decoration-none:hover { text-decoration: underline !important; }
+.mt-auto { margin-top: auto !important; }
+
+/* Form label */
+.form-label {
+    display: block;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 0.35rem;
+    letter-spacing: 0.01em;
+}
+
+/* ========== 10. INPUT GROUP ========== */
+.input-group {
+    position: relative;
+    display: flex;
+    align-items: stretch;
+    width: 100%;
+    border-radius: var(--radius-input);
+    transition: box-shadow 0.2s;
+}
+
+.input-group:focus-within {
+    box-shadow: 0 0 0 3px rgba(225, 27, 30, 0.12);
+}
+
+.input-group-text {
+    display: flex;
+    align-items: center;
+    padding: 0 0.75rem;
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    border-right: none;
+    border-radius: var(--radius-input) 0 0 var(--radius-input);
+    color: #9ca3af;
+    font-size: 0.88rem;
+    transition: border-color 0.2s;
+    min-width: 38px;
+    justify-content: center;
+}
+
+.form-control {
+    flex: 1;
+    padding: 0.6rem 0.8rem;
+    font-size: 0.88rem;
+    color: #1f2937;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-left: none;
+    border-radius: 0 var(--radius-input) var(--radius-input) 0;
+    outline: none;
+    transition: border-color 0.2s;
+    line-height: 1.4;
+}
+
+.form-control::placeholder { color: #c4c9d4; font-size: 0.84rem; }
+
+.form-control:focus {
+    border-color: var(--red);
+}
+
+.input-group:focus-within .input-group-text,
+.input-group:focus-within .btn-outline-secondary {
+    border-color: var(--red);
+}
+
+/* Toggle password */
+.form-control.has-toggle {
+    border-radius: 0;
+    border-right: none;
+}
+
+.btn-outline-secondary {
+    display: flex;
+    align-items: center;
+    padding: 0 0.65rem;
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    border-left: none;
+    border-radius: 0 var(--radius-input) var(--radius-input) 0;
+    color: #9ca3af;
+    font-size: 0.88rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-outline-secondary:hover {
+    background: #f1f5f9;
+    color: var(--red);
+}
+
+/* ========== 11. ROW GRID ========== */
+.row:not(.g-0) {
+    margin: 0 -0.3rem;
+}
+
+.row:not(.g-0) > [class*="col-"] {
+    padding: 0 0.3rem;
+}
+
+.col-md-6 {
+    flex: 0 0 50%;
+    width: 50%;
+}
+
+/* ========== 12. CHECKBOX ========== */
+.form-check {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding-left: 0;
+    margin-bottom: 0;
+}
+
+.form-check-input {
+    width: 15px;
+    height: 15px;
+    min-width: 15px;
+    margin-top: 2px;
+    background: #fff;
+    border: 1.5px solid #d1d5db;
+    border-radius: 4px;
+    appearance: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    flex-shrink: 0;
+}
+
+.form-check-input:checked {
+    background: var(--red);
+    border-color: var(--red);
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='m6 10 3 3 6-6'/%3e%3c/svg%3e");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.form-check-input:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(225, 27, 30, 0.15);
+    border-color: var(--red);
+}
+
+.form-check-label {
+    font-size: 0.84rem;
+    color: #6b7280;
+    cursor: pointer;
+    user-select: none;
+    line-height: 1.4;
+}
+
+/* ========== 13. SUBMIT BUTTON ========== */
+.btn-login {
+    width: 100%;
+    background: linear-gradient(135deg, var(--red), var(--red-dark));
+    color: white;
+    border: none;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    padding: 0.72rem;
+    cursor: pointer;
+    transition: all 0.25s var(--ease);
+    box-shadow: 0 4px 14px rgba(225, 27, 30, 0.3);
+    position: relative;
+    overflow: hidden;
+    letter-spacing: 0.02em;
+    display: block;
+    text-align: center;
+}
+
+.btn-login::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
+    transition: left 0.4s;
+}
+
+.btn-login:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(225, 27, 30, 0.45);
+}
+
+.btn-login:hover::after { left: 0; }
+.btn-login:active { transform: translateY(0); }
+.btn-login:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+.w-100 { width: 100% !important; }
+.py-2 { padding-top: 0.45rem !important; padding-bottom: 0.45rem !important; }
+
+/* Spinner */
+@keyframes fa-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+.fa-spin { animation: fa-spin 1s infinite linear; }
+
+/* ========== 14. VALIDATION STATES ========== */
+.form-control.is-invalid { border-color: #ef4444 !important; }
+.form-control.is-valid { border-color: #10b981 !important; }
+
+.input-group.is-invalid .input-group-text,
+.input-group.is-invalid .form-control,
+.input-group.is-invalid .btn-outline-secondary {
+    border-color: #ef4444 !important;
+}
+
+.input-group.is-valid .input-group-text,
+.input-group.is-valid .form-control,
+.input-group.is-valid .btn-outline-secondary {
+    border-color: #10b981 !important;
+}
+
+.invalid-feedback {
+    display: none;
+    font-size: 0.69rem;
+    margin-top: 0.25rem;
+    color: #ef4444;
+    font-weight: 500;
+}
+
+.form-check-input.is-invalid {
+    border-color: #ef4444 !important;
+    box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.18) !important;
+}
+
+#agreeTermsError {
+    font-size: 0.78rem;
+    margin-top: 0.28rem;
+    color: #ef4444;
+    font-weight: 500;
+}
+
+/* ========== 15. RESPONSIVE ========== */
+@media (max-width: 980px) {
+    .register-container { max-width: 680px; }
+
+    .row { flex-direction: column; }
+    .col-lg-6 { width: 100%; }
+
+    .register-info {
+        padding: 1.8rem 2rem !important;
+        text-align: center;
+    }
+
+    .register-info .brand {
+        justify-content: center;
+    }
+
+    .illustration-container { padding: 0.5rem 0; }
+    .illustration-img { max-width: 130px; }
+
+    .feature-list {
+        display: inline-flex;
+        flex-direction: column;
+        text-align: left;
+    }
+
+    .register-form { padding: 2rem !important; }
+}
+
+@media (max-width: 640px) {
+    .register-wrapper { padding: 1rem 0.6rem; }
+    .login-card { border-radius: 16px; }
+    .register-form { padding: 1.5rem !important; }
+    .register-container { max-width: 100%; }
+    .col-md-6 { width: 100%; }
+    .illustration-container { display: none; }
+}
+
+/* ========== 16. ANIMATIONS ========== */
+@keyframes fadeSlide {
+    from {
+        opacity: 0;
+        transform: translateY(24px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* ========== 17. MISC UTILITIES ========== */
+.shadow-lg {
+    box-shadow:
+        0 0 0 1px rgba(255,255,255,0.06),
+        0 20px 50px rgba(0,0,0,0.4) !important;
+}

@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "3EPx0GVNk/GNKVtC6o9KgMEFhdSU3ZnwM+wMjaOXALE=",
+  "Hash": "DztEbhmFdNKEhjFu7DmfUWr+rfD6FMj5ST+tKqVEhao=",
   "Source": "SupportTicketSysterm",
   "BasePath": "_content/SupportTicketSysterm",
   "Mode": "Default",
@@ -338,6 +338,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\assets\\css\\lookup-ticket.css"
+    },
+    {
+      "Identity": "D:\\SupportTicketSysterm\\wwwroot\\assets\\css\\register.css",
+      "SourceId": "SupportTicketSysterm",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\SupportTicketSysterm\\wwwroot\\",
+      "BasePath": "_content/SupportTicketSysterm",
+      "RelativePath": "assets/css/register.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\assets\\css\\register.css"
     },
     {
       "Identity": "D:\\SupportTicketSysterm\\wwwroot\\assets\\css\\responsive.css",
@@ -910,6 +929,25 @@
       "OriginalItemSpec": "wwwroot\\assets\\images\\news_3_upgrade.png"
     },
     {
+      "Identity": "D:\\SupportTicketSysterm\\wwwroot\\assets\\images\\register-banner.svg",
+      "SourceId": "SupportTicketSysterm",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\SupportTicketSysterm\\wwwroot\\",
+      "BasePath": "_content/SupportTicketSysterm",
+      "RelativePath": "assets/images/register-banner.svg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\assets\\images\\register-banner.svg"
+    },
+    {
       "Identity": "D:\\SupportTicketSysterm\\wwwroot\\assets\\js\\chatbox.js",
       "SourceId": "SupportTicketSysterm",
       "SourceType": "Discovered",
@@ -1155,6 +1193,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\assets\\js\\main.js"
+    },
+    {
+      "Identity": "D:\\SupportTicketSysterm\\wwwroot\\assets\\js\\register.js",
+      "SourceId": "SupportTicketSysterm",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\SupportTicketSysterm\\wwwroot\\",
+      "BasePath": "_content/SupportTicketSysterm",
+      "RelativePath": "assets/js/register.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\assets\\js\\register.js"
     },
     {
       "Identity": "D:\\SupportTicketSysterm\\wwwroot\\assets\\js\\sidebar.js",
@@ -2998,6 +3055,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\pages\\ticket-success.html"
+    },
+    {
+      "Identity": "D:\\SupportTicketSysterm\\wwwroot\\register.html",
+      "SourceId": "SupportTicketSysterm",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\SupportTicketSysterm\\wwwroot\\",
+      "BasePath": "_content/SupportTicketSysterm",
+      "RelativePath": "register.html",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\register.html"
     },
     {
       "Identity": "D:\\SupportTicketSysterm\\wwwroot\\scratch\\replace_icons.js",
