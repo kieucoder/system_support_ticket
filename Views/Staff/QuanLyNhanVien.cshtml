@@ -1,0 +1,435 @@
+@model List<SupportTicketSysterm.Models.NhanVienViewModel>
+@{
+    ViewData["Title"] = "Quản Lý Nhân Viên - TechSupport Viettel Admin";
+    ViewData["HeaderTitle"] = "Quản Lý Nhân Viên";
+    ViewData["HeaderSubtitle"] = "Hệ thống giám sát, phân công và kiểm duyệt hiệu năng nhân sự kỹ thuật số";
+    Layout = "~/Views/Shared/_LayoutStaff.cshtml";
+}
+
+@section Styles {
+    <!-- Page-specific CSS -->
+    <link rel="stylesheet" href="~/assets/css/staff/admin-categories.css" asp-append-version="true">
+    <link rel="stylesheet" href="~/assets/css/staff/staff.css" asp-append-version="true">
+}
+
+<!-- Breadcrumb -->
+<nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb" style="font-size: 0.82rem; margin: 0; padding: 0;">
+        <li class="breadcrumb-item">
+            <a href="/Staff/Dashboard" class="text-danger text-decoration-none">
+                <i class="fa-solid fa-gauge-high me-1"></i>Dashboard
+            </a>
+        </li>
+        <li class="breadcrumb-item active fw-semibold" style="color: var(--text-main);">
+            Quản lý nhân viên
+        </li>
+    </ol>
+</nav>
+
+<!-- Header Section -->
+<div class="vt-header-container">
+    <div class="vt-header-left">
+        <h1>Quản lý nhân viên</h1>
+        <p>Theo dõi, quản lý và đánh giá hiệu suất đội ngũ hỗ trợ kỹ thuật</p>
+    </div>
+    <button class="vt-btn-add" onclick="openAddStaffModal()">
+        <i class="fa-solid fa-user-plus"></i> Thêm nhân viên
+    </button>
+</div>
+
+<!-- Statistics Cards -->
+<div class="vt-stats-grid">
+    <!-- KPI 1: Total Staff -->
+    <div class="vt-stat-card">
+        <div class="vt-stat-info">
+            <span class="vt-stat-label">Tổng nhân viên</span>
+            <span class="vt-stat-value" id="kpiTotalStaff">@ViewBag.TotalEmployees</span>
+            <small class="text-muted" style="font-size: 0.72rem; display: block; margin-top: 4px;">Nhân sự kỹ thuật số</small>
+        </div>
+        <div class="vt-stat-icon-box">
+            <i class="fa-solid fa-users-gear"></i>
+        </div>
+    </div>
+    <!-- KPI 2: Active Staff -->
+    <div class="vt-stat-card">
+        <div class="vt-stat-info">
+            <span class="vt-stat-label">Đang hoạt động</span>
+            <span class="vt-stat-value text-success" id="kpiActiveStaff">@ViewBag.ActiveEmployees</span>
+            <small class="text-muted" style="font-size: 0.72rem; display: block; margin-top: 4px;">Tài khoản mở</small>
+        </div>
+        <div class="vt-stat-icon-box">
+            <i class="fa-solid fa-user-check"></i>
+        </div>
+    </div>
+    <!-- KPI 3: New Staff -->
+    <div class="vt-stat-card">
+        <div class="vt-stat-info">
+            <span class="vt-stat-label">Mới trong tháng</span>
+            <span class="vt-stat-value text-primary" id="kpiNewThisMonth">@ViewBag.NewThisMonth</span>
+            <small class="text-muted" style="font-size: 0.72rem; display: block; margin-top: 4px;">Thành viên mới</small>
+        </div>
+        <div class="vt-stat-icon-box">
+            <i class="fa-solid fa-user-plus"></i>
+        </div>
+    </div>
+    <!-- KPI 4: Inactive Staff -->
+    <div class="vt-stat-card">
+        <div class="vt-stat-info">
+            <span class="vt-stat-label">Tạm khóa</span>
+            <span class="vt-stat-value text-danger" id="kpiInactiveEmployees">@ViewBag.InactiveEmployees</span>
+            <small class="text-muted" style="font-size: 0.72rem; display: block; margin-top: 4px;">Tài khoản khóa</small>
+        </div>
+        <div class="vt-stat-icon-box">
+            <i class="fa-solid fa-user-lock"></i>
+        </div>
+    </div>
+</div>
+
+<!-- Filters & Searching Panel -->
+<form id="filterForm" method="get" action="/Staff/QuanLyNhanVien">
+    <div class="vt-filter-toolbar">
+        <div class="vt-filter-left">
+            <div class="vt-search-input-group">
+                <i class="fa-solid fa-search"></i>
+                <input type="search"
+                       id="searchStaff"
+                       name="keyword"
+                       value="@ViewBag.Keyword"
+                       class="vt-search-input"
+                       placeholder="Tìm kiếm theo tên, email hoặc số điện thoại..." />
+            </div>
+
+            <select id="filterStatus" name="status" class="vt-filter-select">
+                <option value="all" selected="@(ViewBag.Status == "all" || string.IsNullOrEmpty(ViewBag.Status) ? "selected" : null)">Trạng thái: Tất cả</option>
+                <option value="Hoạt động" selected="@(ViewBag.Status == "Hoạt động" ? "selected" : null)">Hoạt động</option>
+                <option value="Tạm khóa" selected="@(ViewBag.Status == "Tạm khóa" ? "selected" : null)">Tạm khóa</option>
+            </select>
+
+            <select id="sortSelect" name="sort" class="vt-filter-select">
+                <option value="newest" selected="@(ViewBag.Sort == "newest" ? "selected" : null)">Mới nhất</option>
+                <option value="oldest" selected="@(ViewBag.Sort == "oldest" ? "selected" : null)">Cũ nhất</option>
+                <option value="az" selected="@(ViewBag.Sort == "az" ? "selected" : null)">Họ tên A → Z</option>
+                <option value="za" selected="@(ViewBag.Sort == "za" ? "selected" : null)">Họ tên Z → A</option>
+            </select>
+        </div>
+
+        <div class="vt-filter-actions">
+            <button type="submit" class="vt-btn-primary">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                Tìm kiếm
+            </button>
+
+            <button type="button"
+                    id="btnResetFilter"
+                    class="vt-btn-refresh"
+                    title="Làm mới bộ lọc">
+                <i class="fa-solid fa-rotate-right"></i>
+                Reset
+            </button>
+        </div>
+    </div>
+</form>
+
+<div class="row g-4">
+    <!-- MAIN STAFF LISTING -->
+    <div class="col-12">
+        <div class="vt-table-card" id="tableCardContainer">
+            @await Html.PartialAsync("_DanhSachNhanVien", Model)
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: THÊM NHÂN VIÊN MỚI -->
+@await Html.PartialAsync("_ThemNhanVien", new SupportTicketSysterm.Models.NhanVienViewModel())
+
+<!-- MODAL: CẬP NHẬT NHÂN VIÊN (EDIT) -->
+<div id="editStaffModal" class="vt-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="editStaffModalLabel">
+    <div class="vt-modal">
+        <div class="vt-modal-header">
+            <div class="vt-modal-header-title">
+                <div class="vt-modal-header-icon edit" style="background-color: rgba(245, 158, 11, 0.1); color: #F59E0B;">
+                    <i class="fa-solid fa-user-gear"></i>
+                </div>
+                <div class="vt-modal-header-text">
+                    <h3 id="editStaffModalLabel">Chỉnh Sửa Thông Tin Nhân Viên</h3>
+                    <p>Cập nhật thông tin chi tiết nhân sự hỗ trợ kỹ thuật</p>
+                </div>
+            </div>
+            <button class="vt-modal-close" onclick="closeEditStaffModal()" aria-label="Đóng">
+                <i class="fa-solid fa-times"></i>
+            </button>
+        </div>
+        <div class="vt-modal-body">
+            <form id="editStaffForm" novalidate>
+                @Html.AntiForgeryToken()
+                <input type="hidden" id="editStaffId" name="IdNhanVien" />
+                <div class="row g-3">
+                    <!-- Name -->
+                    <div class="col-12">
+                        <label for="editStaffName" class="vt-form-label">Họ và tên <span>*</span></label>
+                        <input type="text" id="editStaffName" name="HoTen" class="form-input-staff w-100" placeholder="Nhập họ và tên..." required autocomplete="off">
+                        <div class="vt-error-msg" id="editStaffNameError" style="display: none;">
+                            <i class="fa-solid fa-circle-exclamation"></i> Họ tên bắt buộc nhập!
+                        </div>
+                    </div>
+                    <!-- Email -->
+                    <div class="col-md-6">
+                        <label for="editStaffEmail" class="vt-form-label">Email <span>*</span></label>
+                        <input type="email" id="editStaffEmail" name="Email" class="form-input-staff w-100" placeholder="example@viettel.com.vn" required autocomplete="off">
+                        <div class="vt-error-msg" id="editStaffEmailError" style="display: none;">
+                            <i class="fa-solid fa-circle-exclamation"></i> Email không đúng định dạng!
+                        </div>
+                    </div>
+                    <!-- Phone -->
+                    <div class="col-md-6">
+                        <label for="editStaffPhone" class="vt-form-label">Số điện thoại <span>*</span></label>
+                        <input type="text" id="editStaffPhone" name="SoDienThoai" class="form-input-staff w-100" placeholder="Nhập số điện thoại..." required pattern="^(0[3|5|7|8|9])+([0-9]{8})$" autocomplete="off">
+                        <div class="vt-error-msg" id="editStaffPhoneError" style="display: none;">
+                            <i class="fa-solid fa-circle-exclamation"></i> Số điện thoại 10 số (Việt Nam)!
+                        </div>
+                    </div>
+                    <!-- Address -->
+                    <div class="col-12">
+                        <label for="editStaffAddress" class="vt-form-label">Địa chỉ làm việc</label>
+                        <input type="text" id="editStaffAddress" name="DiaChi" class="form-input-staff w-100" placeholder="Địa chỉ cơ quan chi nhánh..." autocomplete="off">
+                    </div>
+                    <!-- Username (Disabled in edit) -->
+                    <div class="col-md-6">
+                        <label for="editStaffUsername" class="vt-form-label">Tên đăng nhập</label>
+                        <input type="text" id="editStaffUsername" name="TenDangNhap" class="form-input-staff w-100" disabled style="opacity: 0.7; cursor: not-allowed; background-color: var(--border-color);">
+                    </div>
+                    <!-- Role -->
+                    <div class="col-md-6">
+                        <label for="editStaffRole" class="vt-form-label">Vai trò <span>*</span></label>
+                        <select id="editStaffRole" name="VaiTro" class="form-input-staff w-100" required>
+                            <option value="Nhân viên">Nhân viên hỗ trợ</option>
+                            <option value="Admin">Quản trị viên (Admin)</option>
+                        </select>
+                    </div>
+                    <!-- Status -->
+                    <div class="col-12">
+                        <label for="editStaffStatus" class="vt-form-label">Trạng thái <span>*</span></label>
+                        <select id="editStaffStatus" name="TrangThai" class="form-input-staff w-100" required>
+                            <option value="Hoạt động">Đang hoạt động</option>
+                            <option value="Tạm khóa">Tạm khóa</option>
+                        </select>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="vt-modal-footer">
+            <button type="button" class="vt-btn cancel" onclick="closeEditStaffModal()">
+                <i class="fa-solid fa-times me-1"></i> Hủy bỏ
+            </button>
+            <button type="submit" form="editStaffForm" class="vt-btn save" style="background-color: var(--staff-warning); border-color: var(--staff-warning); color: white;">
+                <i class="bi bi-floppy-disk me-1"></i> Lưu thay đổi
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: CHI TIẾT NHÂN VIÊN & HIỆU SUẤT -->
+<div id="staffDetailsModal" class="vt-modal-overlay" role="dialog" aria-modal="true"
+     aria-labelledby="staffDetailsModalLabel">
+    <div class="vt-modal modal-lg">
+        <div class="vt-modal-header">
+            <div class="vt-modal-header-title">
+                <div class="vt-modal-header-icon view" style="background-color: rgba(238, 0, 51, 0.1); color: #EE0033;">
+                    <i class="fa-solid fa-id-card"></i>
+                </div>
+                <div class="vt-modal-header-text">
+                    <h3 id="staffDetailsModalLabel">Hồ Sơ Nhân Sự Chi Tiết</h3>
+                    <p>Thông tin hành chính & báo cáo đánh giá KPI toàn diện</p>
+                </div>
+            </div>
+            <button class="vt-modal-close" onclick="closeStaffDetailsModal()" aria-label="Đóng">
+                <i class="fa-solid fa-times"></i>
+            </button>
+        </div>
+        <div class="vt-modal-body">
+            <!-- Header card -->
+            <div class="d-flex align-items-center gap-3 p-3 rounded bg-light mb-4 border border-light-subtle">
+                <img id="detAvatar" src="" alt="Avatar" class="rounded-circle border border-2 border-danger-subtle"
+                     style="width: 70px; height: 70px; object-fit: cover;">
+                <div>
+                    <h4 class="fw-bold mb-1 text-dark" id="detName">--</h4>
+                    <div class="d-flex align-items-center gap-2 flex-wrap">
+                        <span class="badge" id="detIdBadge" style="background-color: var(--border-color); color: var(--text-main); font-size: 0.72rem;">--</span>
+                        <span class="badge" id="detRoleBadge">--</span>
+                        <span class="badge" id="detStatusBadge">--</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab list -->
+            <ul class="nav nav-tabs vt-detail-tabs mb-3" role="tablist" style="border-bottom-color: var(--border-color);">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile-panel"
+                            type="button" role="tab" aria-controls="profile-panel" aria-selected="true">
+                        <i class="fa-solid fa-circle-info me-1"></i>Hồ sơ cá nhân
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="perf-tab" data-bs-toggle="tab" data-bs-target="#perf-panel"
+                            type="button" role="tab" aria-controls="perf-panel" aria-selected="false">
+                        <i class="fa-solid fa-chart-line me-1"></i>Hiệu suất KPI
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="ratings-tab" data-bs-toggle="tab" data-bs-target="#ratings-panel"
+                            type="button" role="tab" aria-controls="ratings-panel" aria-selected="false">
+                        <i class="fa-solid fa-star me-1"></i>Khách hàng đánh giá
+                    </button>
+                </li>
+            </ul>
+
+            <!-- Tab contents -->
+            <div class="tab-content pt-2">
+                <!-- TAB 1: PERSONAL INFO -->
+                <div class="tab-pane fade show active" id="profile-panel" role="tabpanel" aria-labelledby="profile-tab">
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <label class="text-muted fw-bold small text-uppercase d-block mb-1">Số điện thoại</label>
+                            <p class="fw-semibold text-dark fs-6" id="detPhone">--</p>
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="text-muted fw-bold small text-uppercase d-block mb-1">Thư điện tử</label>
+                            <p class="fw-semibold text-dark fs-6" id="detEmail">--</p>
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="text-muted fw-bold small text-uppercase d-block mb-1">Tài khoản đăng nhập</label>
+                            <p class="fw-semibold text-dark fs-6" id="detUsername">--</p>
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="text-muted fw-bold small text-uppercase d-block mb-1">Ngày tham gia hệ thống</label>
+                            <p class="fw-semibold text-dark fs-6" id="detCreatedDate">--</p>
+                        </div>
+                        <div class="col-12">
+                            <label class="text-muted fw-bold small text-uppercase d-block mb-1">Địa chỉ văn phòng</label>
+                            <p class="fw-semibold text-dark fs-6" id="detAddress">--</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 2: PERFORMANCE METRICS -->
+                <div class="tab-pane fade" id="perf-panel" role="tabpanel" aria-labelledby="perf-tab">
+                    <div class="row g-3 mb-4">
+                        <div class="col-4 text-center border-end">
+                            <h3 class="fw-bold text-dark mb-1" id="detPerfTotal">0</h3>
+                            <small class="text-muted text-uppercase" style="font-size:0.68rem; font-weight:600;">Phiếu Tiếp Nhận</small>
+                        </div>
+                        <div class="col-4 text-center border-end">
+                            <h3 class="fw-bold text-success mb-1" id="detPerfCompleted">0</h3>
+                            <small class="text-muted text-uppercase" style="font-size:0.68rem; font-weight:600;">Đã Hoàn Thành</small>
+                        </div>
+                        <div class="col-4 text-center">
+                            <h3 class="fw-bold text-danger mb-1" id="detPerfPending">0</h3>
+                            <small class="text-muted text-uppercase" style="font-size:0.68rem; font-weight:600;">Đang Xử Lý/Chờ</small>
+                        </div>
+                    </div>
+                    <h6 class="fw-bold text-dark mb-3" style="font-size:0.85rem;">
+                        <i class="fa-solid fa-chart-area me-1 text-danger"></i> Biểu đồ sản lượng hỗ trợ (6 tháng qua)
+                    </h6>
+                    <div class="chart-container border rounded p-3 bg-light" style="position: relative; height:200px;">
+                        <canvas id="performanceChartCanvas"></canvas>
+                    </div>
+                </div>
+
+                <!-- TAB 3: CUSTOMER RATINGS -->
+                <div class="tab-pane fade" id="ratings-panel" role="tabpanel" aria-labelledby="ratings-tab">
+                    <div class="row g-4">
+                        <!-- Left side rating metrics -->
+                        <div class="col-md-5">
+                            <div class="text-center border rounded p-4 h-100 bg-light"
+                                 style="display:flex; flex-direction:column; justify-content:center; align-items:center;">
+                                <h2 class="fw-bold text-warning mb-1" id="detRatingText" style="font-size:2.4rem;">
+                                    0.0
+                                </h2>
+                                <div class="rating-stars mb-2" id="detStarsContainer" style="font-size:1.15rem;">
+                                    <!-- Stars rendered dynamically -->
+                                </div>
+                                <small class="text-muted">Đánh giá chung từ khách hàng</small>
+                            </div>
+                        </div>
+                        <!-- Right side bars -->
+                        <div class="col-md-7 d-flex flex-column justify-content-center">
+                            <div class="mb-3">
+                                <div class="perf-bar-label">
+                                    <span>Chất lượng dịch vụ hỗ trợ</span>
+                                    <span id="detPerfSvcVal">0%</span>
+                                </div>
+                                <div class="perf-bar">
+                                    <div class="perf-bar-fill" id="detPerfSvcBar"></div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <div class="perf-bar-label">
+                                    <span>Thái độ giao tiếp, chuẩn mực ứng xử</span>
+                                    <span id="detPerfAttVal">0%</span>
+                                </div>
+                                <div class="perf-bar">
+                                    <div class="perf-bar-fill" id="detPerfAttBar"></div>
+                                </div>
+                            </div>
+                            <div class="mb-0">
+                                <div class="perf-bar-label">
+                                    <span>Tốc độ phản hồi và khắc phục</span>
+                                    <span id="detPerfSpdVal">0%</span>
+                                </div>
+                                <div class="perf-bar">
+                                    <div class="perf-bar-fill" id="detPerfSpdBar"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Customer feedback comments list -->
+                        <div class="col-12 mt-4">
+                            <h6 class="fw-bold text-dark mb-3" style="font-size:0.85rem;">
+                                <i class="fa-solid fa-comments me-1 text-primary"></i> Nhận xét từ khách hàng
+                            </h6>
+                            <div id="detCommentsContainer" style="max-height: 180px; overflow-y: auto;">
+                                <!-- Loaded dynamically -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="vt-modal-footer">
+            <button type="button" class="vt-btn cancel" onclick="closeStaffDetailsModal()">Đóng hồ sơ</button>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    @* <script>
+        window.INITIAL_STAFF = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Select(s => new {
+            id = "STAFF" + s.IdNhanVien.ToString("D3"),
+            fullname = s.HoTen,
+            email = s.Email,
+            phone = s.SoDienThoai,
+            address = s.DiaChi ?? "",
+            username = s.TenDangNhap,
+            role = s.VaiTro,
+            status = s.TrangThai,
+            ticketsHandled = s.PhieuHoTros?.Count ?? 0,
+            rating = 4.9,
+            createdDate = s.NgayTao?.ToString("dd/MM/yyyy") ?? "",
+            avatar = "https://ui-avatars.com/api/?name=" + System.Net.WebUtility.UrlEncode(s.HoTen) + "&background=EE0033&color=fff&size=100",
+            perfStats = new { total = s.PhieuHoTros?.Count ?? 0, completed = s.PhieuHoTros?.Count ?? 0, processing = 0, waiting = 0 },
+            monthlyPerformance = new int[] { 12, 18, 25, 30, 20, s.PhieuHoTros?.Count ?? 0 },
+            ratingsDetail = new { service = 96, attitude = 98, speed = 95 },
+            comments = new object[] {
+                new { user = "Trần Thị Lan", rating = 5.0, text = "Nhân viên hỗ trợ tận tình chu đáo" },
+                new { user = "Lê Văn Tiến", rating = 4.8, text = "Xử lý kỹ thuật nhanh chóng, chuyên nghiệp" }
+            }
+        })));
+    </script> *@
+    <!-- Page controller script -->
+    <script src="~/assets/js/staff/staff.js" asp-append-version="true"></script>
+}

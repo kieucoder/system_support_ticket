@@ -1,3 +1,10 @@
+@using Microsoft.AspNetCore.Http
+@using System.Security.Claims
+@{
+    var hoTen = Context.Session?.GetString("HoTen") ?? User.FindFirstValue("HoTen") ?? User.Identity?.Name ?? "Nhân viên";
+    var vaiTro = Context.Session?.GetString("Role") ?? User.FindFirstValue(ClaimTypes.Role) ?? "NhanVien";
+    var vaiTroVn = vaiTro == "Admin" ? "Quản trị viên" : "Nhân viên hỗ trợ";
+}
 <!DOCTYPE html>
 <html lang="vi" data-bs-theme="light">
 
@@ -83,12 +90,12 @@
                     <div class="dropdown">
                         <a class="user-profile-dropdown" href="#" role="button" data-bs-toggle="dropdown"
                            aria-expanded="false" id="userDropdown" aria-label="User profile menu">
-                            <img src="https://ui-avatars.com/api/?name=Admin+Viettel&background=EE0033&color=fff&size=38"
+                            <img src="https://ui-avatars.com/api/?name=@(System.Net.WebUtility.UrlEncode(hoTen))&background=EE0033&color=fff&size=38"
                                  alt="Avatar nhân viên" class="user-avatar">
                             <div class="d-none d-sm-block">
-                                <p class="user-profile-name mb-0">Nguyễn Văn Hùng</p>
+                                <p class="user-profile-name mb-0">@hoTen</p>
                                 <p class="mb-0 user-profile-role">
-                                    Kỹ thuật viên Trưởng
+                                    @vaiTroVn
                                 </p>
                             </div>
                         </a>
@@ -108,7 +115,7 @@
                                 <hr class="dropdown-divider">
                             </li>
                             <li>
-                                <a class="dropdown-item py-2 text-danger" href="../login.html">
+                                <a class="dropdown-item py-2 text-danger" asp-controller="Auth" asp-action="DangXuat">
                                     <i class="fa-solid fa-right-from-bracket me-2"></i>Đăng xuất
                                 </a>
                             </li>

@@ -1,0 +1,160 @@
+@using Microsoft.AspNetCore.Http
+@using System.Security.Claims
+@{
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+    ViewData["Title"] = "Trang Chủ Khách Hàng";
+    var hoTen = Context.Session?.GetString("HoTen") ?? User.FindFirstValue("HoTen") ?? User.Identity?.Name ?? "Quý khách";
+}
+
+<!-- Custom Styles for Customer Dashboard -->
+<style>
+    .dashboard-hero {
+        background: linear-gradient(135deg, #111827 0%, #1F2937 100%);
+        border-radius: 24px;
+        color: white;
+        padding: 3rem 2rem;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        margin-top: 100px;
+        margin-bottom: 2rem;
+    }
+
+    .dashboard-hero::after {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -20%;
+        width: 300px;
+        height: 300px;
+        background: radial-gradient(circle, rgba(238, 0, 51, 0.15) 0%, transparent 70%);
+        border-radius: 50%;
+    }
+
+    .quick-card {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 16px;
+        padding: 1.5rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        cursor: pointer;
+        display: block;
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .quick-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+        border-color: #EE0033;
+    }
+
+    .quick-card .icon-wrapper {
+        width: 50px;
+        height: 50px;
+        border-radius: 12px;
+        background: rgba(238, 0, 51, 0.08);
+        color: #EE0033;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        margin-bottom: 1.2rem;
+        transition: all 0.3s ease;
+    }
+
+    .quick-card:hover .icon-wrapper {
+        background: #EE0033;
+        color: white;
+    }
+
+    .service-badge {
+        font-size: 0.75rem;
+        padding: 0.25rem 0.75rem;
+        border-radius: 9999px;
+        font-weight: 600;
+    }
+</style>
+
+<div class="container pb-5">
+    <!-- Hero Banner -->
+    <div class="dashboard-hero">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <span class="badge bg-danger mb-3 px-3 py-2 rounded-pill" style="font-size: 0.8rem; background-color: #EE0033 !important;">Bảng điều khiển khách hàng</span>
+                <h1 class="fw-bold mb-2">Xin chào, @hoTen!</h1>
+                <p class="text-white-50 fs-5 mb-0">Rất vui được gặp lại bạn. Bạn cần hỗ trợ gì về dịch vụ kỹ thuật hôm nay?</p>
+            </div>
+            <div class="col-lg-4 text-lg-end mt-4 mt-lg-0">
+                <a href="#guiYeuCauSection" class="btn btn-light btn-ripple text-danger fw-semibold px-4 py-3 rounded-pill shadow-sm">
+                    <i class="bi bi-plus-circle-fill me-2"></i> Tạo yêu cầu hỗ trợ mới
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <h3 class="fw-bold text-dark mb-4">Lối tắt nhanh</h3>
+    <div class="row g-4 mb-5">
+        <!-- Card 1: Gửi Phiếu -->
+        <div class="col-md-4">
+            <a href="#guiYeuCauSection" class="quick-card">
+                <div class="icon-wrapper">
+                    <i class="bi bi-file-earmark-plus"></i>
+                </div>
+                <h5 class="fw-bold text-dark mb-2">Gửi Yêu Cầu Hỗ Trợ</h5>
+                <p class="text-muted mb-0 small">Gửi mô tả lỗi kỹ thuật internet, camera, cloud để kỹ thuật viên tiếp nhận nhanh chóng.</p>
+            </a>
+        </div>
+        <!-- Card 2: Tra Cứu Phiếu -->
+        <div class="col-md-4">
+            <a href="#quickActionSection" class="quick-card">
+                <div class="icon-wrapper">
+                    <i class="bi bi-search"></i>
+                </div>
+                <h5 class="fw-bold text-dark mb-2">Tra Cứu Lịch Sử Phiếu</h5>
+                <p class="text-muted mb-0 small">Theo dõi tiến độ xử lý sự cố realtime từ đội ngũ kỹ thuật Viettel Telecom.</p>
+            </a>
+        </div>
+        <!-- Card 3: Thông Tin -->
+        <div class="col-md-4">
+            <a href="/KhachHang/ThongTinCaNhan" class="quick-card">
+                <div class="icon-wrapper">
+                    <i class="bi bi-person-gear"></i>
+                </div>
+                <h5 class="fw-bold text-dark mb-2">Thông Tin Tài Khoản</h5>
+                <p class="text-muted mb-0 small">Quản lý hồ sơ cá nhân, đổi mật khẩu, và cập nhật thông tin liên hệ khẩn cấp.</p>
+            </a>
+        </div>
+    </div>
+
+    <!-- Simulated Active Service Health Check -->
+    <div class="card border-0 shadow-sm p-4 mb-4" style="border-radius: 20px;">
+        <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+            <div>
+                <h4 class="fw-bold text-dark mb-1">Trạng thái dịch vụ của bạn</h4>
+                <p class="text-muted small mb-0">Hệ thống đo lường tự động từ hạ tầng kỹ thuật</p>
+            </div>
+            <span class="service-badge bg-success-subtle text-success">Đang hoạt động ổn định</span>
+        </div>
+        <hr class="text-muted opacity-25">
+        <div class="row g-3 text-center">
+            <div class="col-6 col-md-3">
+                <p class="text-muted small mb-1">Gói dịch vụ</p>
+                <p class="fw-bold text-dark mb-0">Viettel Fast 150</p>
+            </div>
+            <div class="col-6 col-md-3">
+                <p class="text-muted small mb-1">Tốc độ đo được</p>
+                <p class="fw-bold text-success mb-0"><i class="bi bi-arrow-down-short"></i> 148.6 Mbps</p>
+            </div>
+            <div class="col-6 col-md-3">
+                <p class="text-muted small mb-1">IP tĩnh</p>
+                <p class="fw-bold text-dark mb-0">115.79.132.84</p>
+            </div>
+            <div class="col-6 col-md-3">
+                <p class="text-muted small mb-1">Ping</p>
+                <p class="fw-bold text-dark mb-0">4 ms</p>
+            </div>
+        </div>
+    </div>
+</div>

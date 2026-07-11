@@ -1,0 +1,217 @@
+@model List<SupportTicketSysterm.Models.NhanVienViewModel>
+
+<div class="vt-table-header">
+    <div class="vt-table-header-left">
+        <h2>📋 Danh sách nhân viên</h2>
+        <p>Tổng số: @(Model?.Count ?? 0) nhân viên</p>
+    </div>
+    <span class="vt-count-badge">
+        <i class="fa-solid fa-users me-1"></i>
+        <span>@(Model?.Count ?? 0)</span> nhân viên
+    </span>
+</div>
+
+<!-- Desktop & Tablet responsive table -->
+<div class="vt-custom-table-container d-none d-md-block">
+    <table class="vt-table" aria-label="Danh sách nhân viên">
+        <thead>
+            <tr>
+                <th style="width: 60px;">STT</th>
+                @* <th style="width: 70px;">Avatar</th>
+                <th style="width: 130px;">Mã nhân viên</th> *@
+                <th>Họ tên</th>
+                <th class="d-none d-lg-table-cell">Email</th>
+                <th style="width: 140px;">Số điện thoại</th>
+                <th style="width: 130px;">Vai trò</th>
+                <th style="width: 130px;">Trạng thái</th>
+                
+                <th style="width: 220px; text-align: center;">Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model == null || !Model.Any())
+            {
+                <tr>
+                    <td colspan="10" class="text-center text-muted py-5">
+                        <div style="font-size: 3rem; color: #ccc;" class="mb-3">
+                            <i class="fa-solid fa-user-slash"></i>
+                        </div>
+                        <h5>Không tìm thấy nhân viên nào</h5>
+                        <p class="text-muted small">Thử thay đổi từ khóa hoặc bộ lọc tìm kiếm.</p>
+                    </td>
+                </tr>
+            }
+            else
+            {
+                int stt = 1;
+                @foreach (var item in Model)
+                {
+                    var staffIdStr = "STAFF" + item.IdNhanVien.ToString("D3");
+                    var isRoleAdmin = item.VaiTro?.Trim() == "Admin";
+                    var isActive = item.TrangThai?.Trim() == "Hoạt động" || item.TrangThai?.Trim() == "Hoạt Động";
+                    
+                    // Extract name initial (e.g. Nguyễn Văn Hùng => H)
+                    string firstLetter = "N";
+                    if (!string.IsNullOrEmpty(item.HoTen))
+                    {
+                        var trimmedName = item.HoTen.Trim();
+                        var nameParts = trimmedName.Split(' ');
+                        var lastName = nameParts.LastOrDefault();
+                        if (!string.IsNullOrEmpty(lastName))
+                        {
+                            firstLetter = lastName.Substring(0, 1).ToUpper();
+                        }
+                    }
+
+                    <tr>
+                        <td style="color: var(--text-muted); font-weight: 600; font-size: 0.82rem;">@stt</td>
+                       @*  <td>
+                            <div class="staff-avatar-wrap">
+                                <div class="vt-avatar-circle" style="background-color: @(isRoleAdmin ? "#EE0033" : "#0d6efd")">
+                                    @firstLetter
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="vt-id-tag">@staffIdStr</span>
+                        </td> *@
+                        <td>
+                            <span class="fw-bold text-dark">@item.HoTen</span>
+                        </td>
+                        <td class="d-none d-lg-table-cell">
+                            <span style="color: var(--text-muted);">@(string.IsNullOrEmpty(item.Email) ? "—" : item.Email)</span>
+                        </td>
+                        <td>
+                            <span class="fw-semibold">@(string.IsNullOrEmpty(item.SoDienThoai) ? "—" : item.SoDienThoai)</span>
+                        </td>
+                        <td>
+                            <span class="vt-badge @(isRoleAdmin ? "badge-role-admin" : "badge-role-staff")">
+                                <i class="fa-solid @(isRoleAdmin ? "fa-user-shield" : "fa-user") me-1"></i>
+                                @item.VaiTro
+                            </span>
+                        </td>
+                        <td>
+                            <span class="vt-badge @(isActive ? "badge-status-active" : "badge-status-locked")">
+                                <i class="fa-solid @(isActive ? "fa-circle-check" : "fa-circle-pause") me-1"></i>
+                                @item.TrangThai
+                            </span>
+                        </td>
+                        <td>
+                            <div class="vt-action-wrap" style="justify-content: center;">
+                                <button class="vt-btn-action view btn-detail" data-tooltip="Chi tiết" data-id="@staffIdStr">
+                                    <i class="fa-solid fa-eye"></i>
+                                </button>
+                                <button class="vt-btn-action edit btn-edit" data-tooltip="Chỉnh sửa" data-id="@staffIdStr">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </button>
+                                <button class="vt-btn-action reset btn-reset-pw text-info" data-tooltip="Reset mật khẩu" data-id="@staffIdStr">
+                                    <i class="fa-solid fa-key"></i>
+                                </button>
+                                @if (isActive)
+                                {
+                                    <button class="vt-btn-action lock btn-lock text-warning" data-tooltip="Khóa tài khoản" data-id="@staffIdStr">
+                                        <i class="fa-solid fa-lock"></i>
+                                    </button>
+                                }
+                                else
+                                {
+                                    <button class="vt-btn-action unlock btn-lock text-success" data-tooltip="Mở khóa" data-id="@staffIdStr">
+                                        <i class="fa-solid fa-lock-open"></i>
+                                    </button>
+                                }
+                                <button class="vt-btn-action delete btn-delete text-danger" data-tooltip="Xóa" data-id="@staffIdStr" data-name="@item.HoTen">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    stt++;
+                }
+            }
+        </tbody>
+    </table>
+</div>
+
+<!-- Mobile Cards Listing -->
+<div class="vt-mobile-cards d-block d-md-none">
+    @if (Model == null || !Model.Any())
+    {
+        <div class="text-center text-muted py-4">
+            <i class="fa-solid fa-user-slash mb-2" style="font-size: 2rem;"></i>
+            <p class="small mb-0">Không tìm thấy nhân viên nào</p>
+        </div>
+    }
+    else
+    {
+        @foreach (var item in Model)
+        {
+            var staffIdStr = "STAFF" + item.IdNhanVien.ToString("D3");
+            var isRoleAdmin = item.VaiTro?.Trim() == "Admin";
+            var isActive = item.TrangThai?.Trim() == "Hoạt động" || item.TrangThai?.Trim() == "Hoạt Động";
+            
+            string firstLetter = "N";
+            if (!string.IsNullOrEmpty(item.HoTen))
+            {
+                var trimmedName = item.HoTen.Trim();
+                var nameParts = trimmedName.Split(' ');
+                var lastName = nameParts.LastOrDefault();
+                if (!string.IsNullOrEmpty(lastName))
+                {
+                    firstLetter = lastName.Substring(0, 1).ToUpper();
+                }
+            }
+
+            <div class="vt-mobile-card">
+                <div class="vt-mobile-card-header">
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="vt-avatar-circle" style="width: 32px; height: 32px; font-size: 0.85rem; background-color: @(isRoleAdmin ? "#EE0033" : "#0d6efd")">
+                            @firstLetter
+                        </div>
+                        <div>
+                            <div class="vt-mobile-card-title">@item.HoTen</div>
+                            <span class="vt-id-tag">@staffIdStr</span>
+                        </div>
+                    </div>
+                    <span class="vt-badge @(isActive ? "badge-status-active" : "badge-status-locked")" style="font-size: 0.6rem; padding: 2px 8px;">
+                        @item.TrangThai
+                    </span>
+                </div>
+                <div class="vt-mobile-card-body pt-1 pb-1">
+                    <div class="mb-1"><i class="fa-solid fa-phone me-1 text-muted" style="width: 14px;"></i> <strong>SĐT:</strong> @(string.IsNullOrEmpty(item.SoDienThoai) ? "—" : item.SoDienThoai)</div>
+                    <div class="mb-1 text-truncate"><i class="fa-solid fa-envelope me-1 text-muted" style="width: 14px;"></i> <strong>Email:</strong> @(string.IsNullOrEmpty(item.Email) ? "—" : item.Email)</div>
+                    <div><i class="fa-solid fa-user-shield me-1 text-muted" style="width: 14px;"></i> <strong>Vai trò:</strong> @item.VaiTro</div>
+                </div>
+                <div class="vt-mobile-card-meta">
+                    <span><i class="fa-regular fa-calendar-days me-1"></i> @(item.NgayTao?.ToString("yyyy-MM-dd") ?? "—")</span>
+                    
+                    <div class="vt-action-wrap">
+                        <button class="vt-btn-action view btn-detail" data-tooltip="Chi tiết" data-id="@staffIdStr">
+                            <i class="fa-solid fa-eye"></i>
+                        </button>
+                        <button class="vt-btn-action edit btn-edit" data-tooltip="Sửa" data-id="@staffIdStr">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </button>
+                        <button class="vt-btn-action reset btn-reset-pw text-info" data-tooltip="Reset mật khẩu" data-id="@staffIdStr">
+                            <i class="fa-solid fa-key"></i>
+                        </button>
+                        @if (isActive)
+                        {
+                            <button class="vt-btn-action lock btn-lock text-warning" data-tooltip="Khóa tài khoản" data-id="@staffIdStr">
+                                <i class="fa-solid fa-lock"></i>
+                            </button>
+                        }
+                        else
+                        {
+                            <button class="vt-btn-action unlock btn-lock text-success" data-tooltip="Mở khóa" data-id="@staffIdStr">
+                                <i class="fa-solid fa-lock-open"></i>
+                            </button>
+                        }
+                        <button class="vt-btn-action delete btn-delete text-danger" data-tooltip="Xóa" data-id="@staffIdStr" data-name="@item.HoTen">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+</div>

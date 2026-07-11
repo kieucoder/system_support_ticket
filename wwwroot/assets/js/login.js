@@ -103,54 +103,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // ========== FORM SUBMIT ==========
     form.addEventListener('submit', function(e) {
-        e.preventDefault();
-        
         const isIdentifierValid = validateIdentifier();
         const isPasswordValid = validatePassword();
         
-        if (isIdentifierValid && isPasswordValid) {
-            const identifier = identifierInput.value.trim();
-            const password = passwordInput.value;
-            
-            // Check credentials
-            const user = checkLogin(identifier, password);
-            
-            if (user) {
-                // Save login session
-                const sessionData = {
-                    isLoggedIn: true,
-                    user: {
-                        fullname: user.fullname,
-                        email: user.email,
-                        phone: user.phone,
-                        loginTime: new Date().toISOString()
-                    }
-                };
-                sessionStorage.setItem('techsupport_session', JSON.stringify(sessionData));
-                
-                // Handle "Remember Me"
-                if (rememberMeCheckbox.checked) {
-                    localStorage.setItem('techsupport_remembered', JSON.stringify({
-                        identifier: identifier,
-                        password: password
-                    }));
-                } else {
-                    localStorage.removeItem('techsupport_remembered');
-                }
-                
-                console.log('✅ Đăng nhập thành công:', user);
-                showToast('🎉 Đăng nhập thành công! Chào mừng ' + user.fullname + ' trở lại!', 'success');
-                
-                // Redirect to dashboard after 1.5 seconds
-                setTimeout(() => {
-                    window.location.href = 'dashboard.html';
-                }, 1500);
-            } else {
-                showToast('❌ Email/Số điện thoại hoặc mật khẩu không đúng!', 'danger');
-                passwordInput.value = '';
-                passwordInput.focus();
-            }
-        } else {
+        if (!isIdentifierValid || !isPasswordValid) {
+            e.preventDefault();
             showToast('⚠️ Vui lòng nhập đầy đủ thông tin đăng nhập', 'danger');
         }
     });

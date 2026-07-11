@@ -1,4 +1,11 @@
-﻿<!-- Header Component Container -->
+@using Microsoft.AspNetCore.Http
+@using System.Security.Claims
+@model ISession
+@{
+    var hoTen = Model?.GetString("HoTen") ?? User.FindFirstValue("HoTen") ?? User.Identity?.Name;
+    var isAuthenticated = !string.IsNullOrEmpty(hoTen);
+}
+<!-- Header Component Container -->
 <div id="header-container">
     <!-- 1. TOPBAR HEADER -->
     <header class="top-header">
@@ -6,9 +13,9 @@
             <div class="row align-items-center">
                 <div class="col-lg-8 col-12 top-header-info d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
                     <span class="me-4">
-                        <i class="fa-solid fa-phone"></i> Hotline kỹ thuật: <a href="tel:19008098">
+                        <i class="fa-solid fa-phone"></i> Hotline kỹ thuật: <a href="tel:18008119">
                             1900
-                            8098
+                            8119
                         </a> (Miễn phí)
                     </span>
                     <span class="me-4">
@@ -91,14 +98,49 @@
                     </li>
                 </ul>
                 <div class="header-buttons-group d-flex align-items-center gap-2">
-                    <a href="D:\SupportTech\login.html" class="btn btn-login-custom btn-ripple rounded-pill px-4"
-                       id="btnLogin">
-                        <i class="fa-solid fa-user me-1"></i> Đăng nhập
-                    </a>
-                    <a asp-controller="Auth" asp-action="DangKy" class="btn btn-create-ticket-custom btn-ripple px-4"
-                       id="btnCreateTicket">
-                        <i class="bi bi-person-plus-fill me-1"></i> Đăng ký
-                    </a>
+                    @if (isAuthenticated)
+                    {
+                        <div class="dropdown dropdown-custom">
+                            <a class="btn btn-login-custom btn-ripple rounded-pill px-4 dropdown-toggle d-inline-flex align-items-center" 
+                               href="#" role="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fa-solid fa-user me-2"></i> Xin chào, @hoTen
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="userDropdown" style="border-radius: 12px; border: 1px solid #e2e8f0; padding: 8px 0;">
+                                <li>
+                                    <a class="dropdown-item py-2 px-3" href="/KhachHang/ThongTinCaNhan" style="font-size: 14px; color: #1F2937;">
+                                        <i class="bi bi-person me-2 text-muted"></i> Thông tin cá nhân
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item py-2 px-3" href="/KhachHang/PhieuHoTro" style="font-size: 14px; color: #1F2937;">
+                                        <i class="bi bi-ticket-perforated me-2 text-muted"></i> Phiếu hỗ trợ của tôi
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item py-2 px-3" href="/KhachHang/DoiMatKhau" style="font-size: 14px; color: #1F2937;">
+                                        <i class="bi bi-shield-lock me-2 text-muted"></i> Đổi mật khẩu
+                                    </a>
+                                </li>
+                                <li><hr class="dropdown-divider" style="margin: 6px 0; border-color: #f1f5f9;"></li>
+                                <li>
+                                    <a class="dropdown-item py-2 px-3 text-danger" asp-controller="Auth" asp-action="DangXuat" style="font-size: 14px;">
+                                        <i class="bi bi-box-arrow-right me-2"></i> Đăng xuất
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    }
+                    else
+                    {
+                        <a asp-controller="Auth" asp-action="DangNhap" class="btn btn-login-custom btn-ripple rounded-pill px-4"
+                           id="btnLogin">
+                            <i class="fa-solid fa-user me-1"></i> Đăng nhập
+                        </a>
+                        <a asp-controller="Auth" asp-action="DangKy" class="btn btn-create-ticket-custom btn-ripple px-4"
+                           id="btnCreateTicket">
+                            <i class="bi bi-person-plus-fill me-1"></i> Đăng ký
+                        </a>
+                    }
                 </div>
             </nav>
 

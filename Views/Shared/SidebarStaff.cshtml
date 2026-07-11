@@ -80,8 +80,8 @@
                     <span>Khách Hàng</span>
                 </a>
             </li>
-            <li class="sidebar-item" data-page="staff.html">
-                <a href="/staff/staff.html" class="sidebar-link">
+            <li class="sidebar-item @(currentController == "Staff" && currentAction == "QuanLyNhanVien" ? "active" : "")" data-page="staff.html">
+                <a asp-controller="Staff" asp-action="QuanLyNhanVien" class="sidebar-link">
                     <i class="fa-solid fa-users-gear"></i>
                     <span>Nhân Viên</span>
                 </a>
@@ -114,7 +114,7 @@
 
     <!-- Sidebar Footer Logout -->
     <div class="sidebar-footer">
-        <a href="/login.html" class="sidebar-link text-danger">
+        <a asp-controller="Auth" asp-action="DangXuat" class="sidebar-link text-danger">
             <i class="fa-solid fa-right-from-bracket"></i>
             <span>Đăng Xuất</span>
         </a>

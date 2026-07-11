@@ -2,6 +2,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SupportTicketSysterm.Data;
 using SupportTicketSysterm.Models;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Security.Claims;
 
 namespace SupportTicketSysterm.Controllers
 {
@@ -85,8 +88,8 @@ namespace SupportTicketSysterm.Controllers
                 MaKh        = TaoMaKhachHang(),
                 HoTen       = model.HoTen.Trim(),
                 SoDienThoai = model.SoDienThoai.Trim(),
-                Email       = model.Email?.Trim(),
-                DiaChi      = model.DiaChi?.Trim(),
+                Email       = string.IsNullOrWhiteSpace(model.Email) ? null : model.Email.Trim(),
+                DiaChi      = string.IsNullOrWhiteSpace(model.DiaChi) ? null : model.DiaChi.Trim(),
                 NgaySinh    = model.NgaySinh,
                 TenDangNhap = model.TenDangNhap.Trim(),
                 MatKhau     = model.MatKhau,
@@ -133,52 +136,165 @@ namespace SupportTicketSysterm.Controllers
         // ===================== ĐĂNG NHẬP =====================
 
         [HttpGet]
-        public IActionResult DangNhap()
+        public IActionResult DangNhap(string? returnUrl = null)
         {
+            if (User.Identity != null && User.Identity.IsAuthenticated)
+            {
+                var role = User.FindFirstValue(ClaimTypes.Role) ?? HttpContext.Session.GetString("Role");
+                if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+                {
+                    return Redirect(returnUrl);
+                }
+                if (role == "Admin" || role == "NhanVien" || role == "Nhân viên" || role == "Nhân viên hỗ trợ")
+                {
+                    return RedirectToAction("Dashboard", "Staff");
+                }
+                else if (role == "KhachHang")
+                {
+                    return RedirectToAction("TrangChu", "KhachHang");
+                }
+            }
+            ViewBag.ReturnUrl = returnUrl;
             return View();
         }
 
         [HttpPost]
-        public IActionResult DangNhap(DangNhapViewModel model)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DangNhap(DangNhapViewModel model, string? returnUrl = null)
         {
+            ViewBag.ReturnUrl = returnUrl;
             if (!ModelState.IsValid)
+            {
                 return View(model);
+            }
 
-            // Tìm khách hàng
-            var khachHang = _context.KhachHangs
-                .FirstOrDefault(x => x.TenDangNhap == model.TaiKhoan || x.SoDienThoai == model.TaiKhoan);
+            var username = model.TenDangNhap?.Trim();
+            var password = model.MatKhau;
 
-            if (khachHang != null && khachHang.MatKhau == model.MatKhau)
+            // 1. Kiểm tra trong bảng Nhân viên
+            var nhanVien = await _context.NhanViens
+                .FirstOrDefaultAsync(x => x.TenDangNhap == username && x.MatKhau == password);
+
+            if (nhanVien != null)
             {
+                var trangThai = nhanVien.TrangThai?.Trim();
+                var hoTenTrimmed = nhanVien.HoTen?.Trim() ?? "";
+                var vaiTroTrimmed = nhanVien.VaiTro?.Trim() ?? "";
+
+                // Kiểm tra trạng thái hoạt động
+                if (trangThai == "Khóa" || trangThai == "Ngừng hoạt động" || trangThai == "Tạm khóa" || trangThai == "Đã khóa")
+                {
+                    ModelState.AddModelError(string.Empty, "Tài khoản của bạn đã bị khóa.");
+                    return View(model);
+                }
+
+                // Thiết lập Claims cho Cookie Authentication
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.NameIdentifier, nhanVien.IdNhanVien.ToString()),
+                    new Claim(ClaimTypes.Name, hoTenTrimmed),
+                    new Claim(ClaimTypes.Role, vaiTroTrimmed),
+                    new Claim("UserId", nhanVien.IdNhanVien.ToString()),
+                    new Claim("HoTen", hoTenTrimmed),
+                    new Claim("VaiTro", vaiTroTrimmed)
+                };
+
+                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                var authProperties = new AuthenticationProperties
+                {
+                    IsPersistent = model.RememberMe
+                };
+
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
+
+                // Lưu thông tin vào Session để hiển thị
+                HttpContext.Session.SetInt32("UserId", nhanVien.IdNhanVien);
+                HttpContext.Session.SetString("HoTen", hoTenTrimmed);
+                HttpContext.Session.SetString("Role", vaiTroTrimmed);
+                HttpContext.Session.SetString("VaiTro", vaiTroTrimmed);
+
+                if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+                {
+                    return Redirect(returnUrl);
+                }
+                return RedirectToAction("Dashboard", "Staff");
+            }
+
+            // 2. Kiểm tra trong bảng Khách hàng
+            var khachHang = await _context.KhachHangs
+                .FirstOrDefaultAsync(x => x.TenDangNhap == username && x.MatKhau == password);
+
+            if (khachHang != null)
+            {
+                var trangThai = khachHang.TrangThai?.Trim();
+                var hoTenTrimmed = khachHang.HoTen?.Trim() ?? "";
+
+                // Kiểm tra trạng thái hoạt động
+                if (trangThai == "Khóa" || trangThai == "Ngừng hoạt động" || trangThai == "Tạm khóa" || trangThai == "Đã khóa")
+                {
+                    ModelState.AddModelError(string.Empty, "Tài khoản của bạn đã bị khóa.");
+                    return View(model);
+                }
+
+                // Thiết lập Claims cho Cookie Authentication
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.NameIdentifier, khachHang.IdKhachHang.ToString()),
+                    new Claim(ClaimTypes.Name, hoTenTrimmed),
+                    new Claim(ClaimTypes.Role, "KhachHang"),
+                    new Claim("UserId", khachHang.IdKhachHang.ToString()),
+                    new Claim("HoTen", hoTenTrimmed),
+                    new Claim("VaiTro", "KhachHang")
+                };
+
+                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                var authProperties = new AuthenticationProperties
+                {
+                    IsPersistent = model.RememberMe
+                };
+
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
+
+                // Lưu thông tin vào Session để hiển thị
+                HttpContext.Session.SetInt32("UserId", khachHang.IdKhachHang);
+                HttpContext.Session.SetString("HoTen", hoTenTrimmed);
                 HttpContext.Session.SetString("Role", "KhachHang");
-                HttpContext.Session.SetInt32("IdKhachHang", khachHang.IdKhachHang);
-                return RedirectToAction("Dashboard", "KhachHang");
+                HttpContext.Session.SetString("VaiTro", "KhachHang");
+
+                if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+                {
+                    return Redirect(returnUrl);
+                }
+                return RedirectToAction("TrangChu", "KhachHang");
             }
 
-            // Tìm nhân viên
-            var nhanVien = _context.NhanViens
-                .FirstOrDefault(x => x.TenDangNhap == model.TaiKhoan || x.SoDienThoai == model.TaiKhoan);
-
-            if (nhanVien != null && nhanVien.MatKhau == model.MatKhau)
-            {
-                HttpContext.Session.SetString("Role", nhanVien.VaiTro);
-                HttpContext.Session.SetInt32("IdNhanVien", nhanVien.IdNhanVien);
-
-                return nhanVien.VaiTro == "Admin"
-                    ? RedirectToAction("Dashboard", "Admin")
-                    : RedirectToAction("Dashboard", "Staff");
-            }
-
-            ViewBag.Error = "Tên đăng nhập hoặc mật khẩu không đúng.";
+            // 3. Sai tài khoản / mật khẩu
+            ModelState.AddModelError(string.Empty, "Tên đăng nhập hoặc mật khẩu không chính xác.");
             return View(model);
         }
 
         // ===================== ĐĂNG XUẤT =====================
 
-        public IActionResult DangXuat()
+        [HttpGet]
+        public async Task<IActionResult> DangXuat()
         {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             HttpContext.Session.Clear();
-            return RedirectToAction("DangNhap", "Auth");
+            return RedirectToAction("Index", "Home");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            HttpContext.Session.Clear();
+            return RedirectToAction("Index", "Home");
+        }
+
+        [HttpGet]
+        public IActionResult AccessDenied()
+        {
+            return View();
         }
     }
 }

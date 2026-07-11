@@ -15,62 +15,7 @@
 /* =============================================================
    1. HERO SECTION - Premium Tech Theme
    ============================================================= */
-<<<<<<< HEAD
-/* 1. HERO SECTION - Premium Tech Theme */
 /* Removed old hero-section layout styles to inherit from style.css */
-=======
-.hero-section {
-    position: relative;
-    background-color: #ffffff;
-    background-image: 
-        radial-gradient(at 0% 0%, rgba(238, 0, 51, 0.05) 0px, transparent 50%),
-        radial-gradient(at 100% 0%, rgba(15, 17, 21, 0.03) 0px, transparent 50%),
-        radial-gradient(at 50% 100%, rgba(238, 0, 51, 0.02) 0px, transparent 50%),
-        linear-gradient(rgba(15, 17, 21, 0.008) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(15, 17, 21, 0.008) 1px, transparent 1px);
-    background-size: 100% 100%, 100% 100%, 100% 100%, 40px 40px, 40px 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-sizing: border-box;
-    z-index: 5;
-    border-bottom: 1px solid rgba(15, 17, 21, 0.04);
-    overflow: hidden;
-    
-    /* Base height guidelines (prioritizes 55vh and max 650px) */
-    min-height: 55vh;
-    max-height: 650px;
-    padding-top: 110px;
-    padding-bottom: 70px;
-    transition: var(--transition-smooth);
-}
-
-/* Ambient glow orb behind illustration */
-.hero-section::before {
-    content: '';
-    position: absolute;
-    top: 10%;
-    right: 15%;
-    width: 300px;
-    height: 300px;
-    background: radial-gradient(circle, rgba(238, 0, 51, 0.08) 0%, rgba(238, 0, 51, 0.01) 70%, transparent 100%);
-    filter: blur(50px);
-    z-index: 1;
-    pointer-events: none;
-    animation: pulseGlow 8s ease-in-out infinite alternate;
-}
-
-@keyframes pulseGlow {
-    0% { transform: scale(1) translate(0, 0); opacity: 0.8; }
-    100% { transform: scale(1.2) translate(-20px, 20px); opacity: 1; }
-}
-
-.hero-content {
-    position: relative;
-    z-index: 10;
-    width: 100%;
-}
->>>>>>> 59a5e6f64da6c8eb44454bf22a5574b208c2f2b3
 
 /* Breadcrumb Glassmorphic Container */
 .hero-breadcrumb {
@@ -161,30 +106,7 @@
     transform: translateY(-1px);
 }
 
-<<<<<<< HEAD
 /* Title Styling and Description text removed to inherit from style.css */
-=======
-/* Title Styling with elegant red-black gradient */
-.hero-title {
-    font-size: clamp(2.2rem, 3.8vw, 3rem);
-    font-weight: 850;
-    line-height: 1.2;
-    letter-spacing: -0.02em;
-    background: linear-gradient(135deg, #0f1115 30%, #ee0033 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    margin-bottom: 16px !important;
-}
-
-/* Description text */
-.hero-desc {
-    font-size: 1.05rem;
-    color: #4b5563;
-    max-width: 540px;
-    line-height: 1.6;
-    margin-bottom: 28px !important;
-}
->>>>>>> 59a5e6f64da6c8eb44454bf22a5574b208c2f2b3
 
 /* Hero Buttons */
 .btn-hero-create {
@@ -838,8 +760,7 @@ input[type="radio"]:checked + .priority-card-label .priority-title {
 }
 
 
-<<<<<<< HEAD
-/* /* HERO SECTION RESPONSIVE STYLES (GOOGLE CHROME OPTIMIZED) */
+/* HERO SECTION RESPONSIVE STYLES (GOOGLE CHROME OPTIMIZED) */
 /* Removed conflicting hero-section dimension limits to support fullscreen height of landing page */
 @media (min-width: 768px) and (max-width: 991.98px) {
     .hero-breadcrumb,
@@ -858,47 +779,6 @@ input[type="radio"]:checked + .priority-card-label .priority-title {
 }
 
 @media (max-width: 767.98px) {
-=======
-/* =============================================================
-   8. HERO SECTION RESPONSIVE STYLES (GOOGLE CHROME OPTIMIZED)
-   ============================================================= */
-
-/* --- Desktop Screens (>= 1440px, including 2K 2560x1440 & Full HD 1920x1080) --- */
-@media (min-width: 1440px) {
-    .hero-section {
-        min-height: clamp(480px, 55vh, 520px);
-        max-height: 520px;
-        padding-top: 120px;
-        padding-bottom: 80px;
-    }
-    .hero-banner-svg {
-        max-width: 460px;
-    }
-}
-
-/* --- Laptop Screens (992px to 1439.98px, including 1366x768 & 1440x900 viewports) --- */
-@media (min-width: 992px) and (max-width: 1439.98px) {
-    .hero-section {
-        min-height: clamp(450px, 55vh, 500px);
-        max-height: 500px;
-        padding-top: 110px;
-        padding-bottom: 70px;
-    }
-    .hero-banner-svg {
-        max-width: 380px;
-    }
-}
-
-/* --- Tablet Screens (768px to 991.98px) --- */
-@media (min-width: 768px) and (max-width: 991.98px) {
-    .hero-section {
-        min-height: 400px;
-        max-height: 450px;
-        padding-top: 100px;
-        padding-bottom: 60px;
-        text-align: center;
-    }
->>>>>>> 59a5e6f64da6c8eb44454bf22a5574b208c2f2b3
     .hero-breadcrumb,
     .hero-badge,
     .hero-title,
@@ -912,43 +792,7 @@ input[type="radio"]:checked + .priority-card-label .priority-title {
         margin-left: auto;
         margin-right: auto;
     }
-<<<<<<< HEAD
-=======
-    .hero-banner-wrapper {
-        display: none !important; /* Hide image on tablets */
-    }
-}
 
-/* --- Mobile Screens (< 768px) --- */
-@media (max-width: 767.98px) {
-    .hero-section {
-        min-height: clamp(320px, 50vh, 380px);
-        max-height: 380px;
-        padding-top: 100px;
-        padding-bottom: 60px;
-        text-align: center;
-    }
-    .hero-breadcrumb,
-    .hero-badge,
-    .hero-title,
-    .hero-desc,
-    .hero-cta-buttons {
-        margin-left: auto;
-        margin-right: auto;
-        justify-content: center;
-    }
-    .hero-desc {
-        margin-left: auto;
-        margin-right: auto;
-    }
-    .hero-title {
-        font-size: clamp(1.8rem, 5vw, 2.2rem);
-    }
-    .hero-banner-wrapper {
-        display: none !important; /* Hide image on mobile devices */
-    }
-    
->>>>>>> 59a5e6f64da6c8eb44454bf22a5574b208c2f2b3
     .ticket-main-card {
         padding: 24px 16px;
     }

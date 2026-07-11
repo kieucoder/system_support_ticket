@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using SupportTicketSysterm.Data;
 using System;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,7 +17,18 @@ builder.Services.AddDbContext<TechSupportContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("SupportTicketSystem")));
 
-<<<<<<< HEAD
+// Đăng ký Cookie Authentication
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Auth/DangNhap";
+        options.LogoutPath = "/Auth/DangXuat";
+        options.AccessDeniedPath = "/Auth/AccessDenied";
+        options.Cookie.HttpOnly = true;
+        options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+        options.Cookie.SameSite = SameSiteMode.Lax;
+    });
+
 // Đăng ký Session
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
@@ -25,9 +37,6 @@ builder.Services.AddSession(options =>
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
-
-=======
->>>>>>> f27fcf8921ddad14015781ef7ddf6a8f873bdde0
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.nôn
@@ -43,11 +52,8 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-<<<<<<< HEAD
 app.UseSession();
-
-=======
->>>>>>> f27fcf8921ddad14015781ef7ddf6a8f873bdde0
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(

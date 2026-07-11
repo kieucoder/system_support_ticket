@@ -106,8 +106,6 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         });
     }
-<<<<<<< HEAD
-
     // Đăng ký sự kiện tìm kiếm thời gian thực (real-time search)
     const searchCustomerInp = document.getElementById('searchCustomer');
     if (searchCustomerInp) {
@@ -119,59 +117,12 @@ document.addEventListener('DOMContentLoaded', function () {
             }, 300);
         });
     }
-=======
->>>>>>> f27fcf8921ddad14015781ef7ddf6a8f873bdde0
 });
 
 
 
 
 /* ══════════════════════════════════════════
-<<<<<<< HEAD
-   SEARCH & FILTERS AJAX (REAL-TIME UPDATES)
-   ══════════════════════════════════════════ */
-window.applyFiltersKH = function () {
-    const keyword = document.getElementById('searchCustomer')?.value.trim() || '';
-    const status = document.getElementById('filterStatus')?.value || 'all';
-    const sort = document.getElementById('filterSort')?.value || 'newest';
-
-    const cardContainer = document.getElementById('customersCardContainer');
-    if (cardContainer) {
-        cardContainer.style.opacity = '0.5';
-        cardContainer.style.transition = 'opacity 0.2s ease';
-    }
-
-    const url = `/Staff/DanhSachKhachHang?keyword=${encodeURIComponent(keyword)}&status=${encodeURIComponent(status)}&sort=${encodeURIComponent(sort)}`;
-
-    fetch(url)
-        .then(response => {
-            if (!response.ok) throw new Error('Không thể tải danh sách khách hàng');
-            return response.text();
-        })
-        .then(html => {
-            if (cardContainer) {
-                cardContainer.innerHTML = html;
-                cardContainer.style.opacity = '1';
-            }
-        })
-        .catch(err => {
-            console.error(err);
-            showToast('error', 'Đã xảy ra lỗi khi tải danh sách khách hàng');
-            if (cardContainer) cardContainer.style.opacity = '1';
-        });
-};
-
-window.clearFiltersKH = function () {
-    const searchInp = document.getElementById('searchCustomer');
-    const statusInp = document.getElementById('filterStatus');
-    const sortInp = document.getElementById('filterSort');
-
-    if (searchInp) searchInp.value = '';
-    if (statusInp) statusInp.value = 'all';
-    if (sortInp) sortInp.value = 'newest';
-
-    window.applyFiltersKH();
-=======
    SEARCH & FILTERS REDIRECTS (BACKEND-HANDLED)
    ══════════════════════════════════════════ */
 window.searchCustomers = function () {

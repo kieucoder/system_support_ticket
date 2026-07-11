@@ -83,8 +83,13 @@
                             <label for="addCustomerPassword" class="form-label fw-semibold text-dark mb-1">
                                 Mật khẩu <span class="text-danger">*</span>
                             </label>
-                            <input asp-for="MatKhau" type="password" id="addCustomerPassword" class="form-control form-control-custom"
-                                   placeholder="Mật khẩu tài khoản..." required>
+                            <div class="position-relative">
+                                <input asp-for="MatKhau" type="password" id="addCustomerPassword" class="form-control form-control-custom pe-5"
+                                       placeholder="Mật khẩu tài khoản..." required>
+                                <button type="button" class="btn-toggle-password" onclick="togglePasswordVisibility('addCustomerPassword', this)" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); border: none; background: none; color: var(--text-muted); cursor: pointer; padding: 0; z-index: 10;">
+                                    <i class="fa-regular fa-eye"></i>
+                                </button>
+                            </div>
                             <span asp-validation-for="MatKhau" class="text-danger small"></span>
                         </div>
                     </div>
@@ -103,3 +108,23 @@
         </div>
     </div>
 </div>
+
+<script>
+    if (typeof togglePasswordVisibility !== 'function') {
+        function togglePasswordVisibility(inputId, btn) {
+            const input = document.getElementById(inputId);
+            if (input) {
+                const icon = btn.querySelector('i');
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    icon.classList.remove('fa-eye');
+                    icon.classList.add('fa-eye-slash');
+                } else {
+                    input.type = 'password';
+                    icon.classList.remove('fa-eye-slash');
+                    icon.classList.add('fa-eye');
+                }
+            }
+        }
+    }
+</script>

@@ -15,7 +15,19 @@ namespace SupportTicketSysterm.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            if (User.Identity != null && User.Identity.IsAuthenticated)
+            {
+                var role = User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value ?? HttpContext.Session.GetString("Role");
+                if (role == "Admin" || role == "NhanVien" || role == "Nhân viên" || role == "Nhân viên hỗ trợ")
+                {
+                    return RedirectToAction("Dashboard", "Staff");
+                }
+                else if (role == "KhachHang")
+                {
+                    return RedirectToAction("TrangChu", "KhachHang");
+                }
+            }
+            return RedirectToAction("DangNhap", "Auth");
         }
 
         public IActionResult Privacy()

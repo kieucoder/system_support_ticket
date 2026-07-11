@@ -1,4 +1,9 @@
-﻿<!DOCTYPE html>
+@{
+    Layout = null;
+}
+@model SupportTicketSysterm.Models.DangNhapViewModel
+
+<!DOCTYPE html>
 <html lang="vi">
 
 <head>
@@ -27,7 +32,7 @@
 <body>
 
     <!-- Back to Home Button -->
-    <a href="../index.html" class="btn-back-home" title="Quay về trang chủ">
+    <a href="/" class="btn-back-home" title="Quay về trang chủ">
         <i class="bi bi-arrow-left"></i>
     </a>
 
@@ -82,47 +87,49 @@
                                     <p class="text-muted">Nhập thông tin tài khoản của bạn</p>
                                 </div>
 
-                                <form id="loginForm" action="#" method="POST">
-                                    <!-- Email / Số điện thoại -->
+                                @if (!ViewData.ModelState.IsValid)
+                                {
+                                    <div asp-validation-summary="All" class="alert alert-danger py-2 px-3 mb-3" role="alert"></div>
+                                }
+
+                                <form id="loginForm" asp-controller="Auth" asp-action="DangNhap" asp-route-returnUrl="@ViewBag.ReturnUrl" method="post">
+                                    @Html.AntiForgeryToken()
+                                    <!-- Tên đăng nhập -->
                                     <div class="mb-3">
-                                        <label class="form-label fw-semibold">Email hoặc Số điện thoại</label>
+                                        <label class="form-label fw-semibold" asp-for="TenDangNhap">Tên đăng nhập</label>
                                         <div class="input-group">
                                             <span class="input-group-text bg-light border-end-0">
                                                 <i class="fa-solid fa-user text-danger"></i>
                                             </span>
-                                            <input type="text" class="form-control border-start-0" id="loginIdentifier"
-                                                   placeholder="example@techsupport.vn / 0912345678" required>
+                                            <input asp-for="TenDangNhap" type="text" class="form-control border-start-0" id="loginIdentifier"
+                                                   placeholder="Nhập tên đăng nhập" required>
                                         </div>
-                                        <div class="invalid-feedback" id="identifierError">
-                                            Vui lòng nhập email hoặc số
-                                            điện thoại
-                                        </div>
+                                        <span asp-validation-for="TenDangNhap" class="text-danger small"></span>
                                     </div>
 
                                     <!-- Mật khẩu -->
                                     <div class="mb-3">
-                                        <label class="form-label fw-semibold">Mật khẩu</label>
+                                        <label class="form-label fw-semibold" asp-for="MatKhau">Mật khẩu</label>
                                         <div class="input-group">
                                             <span class="input-group-text bg-light border-end-0">
                                                 <i class="bi bi-lock text-danger"></i>
                                             </span>
-                                            <input type="password" class="form-control border-start-0" id="password"
+                                            <input asp-for="MatKhau" type="password" class="form-control border-start-0" id="password"
                                                    placeholder="••••••••" required>
                                             <button class="btn btn-outline-secondary border-start-0 toggle-password"
                                                     type="button" data-target="password">
                                                 <i class="bi bi-eye-slash"></i>
                                             </button>
                                         </div>
-                                        <div class="invalid-feedback" id="passwordError">Vui lòng nhập mật khẩu</div>
+                                        <span asp-validation-for="MatKhau" class="text-danger small"></span>
                                     </div>
 
                                     <!-- Remember me & Forgot password -->
                                     <div class="d-flex justify-content-between align-items-center mb-4">
                                         <div class="form-check">
-                                            <input type="checkbox" class="form-check-input" id="rememberMe">
-                                            <label class="form-check-label small" for="rememberMe">
-                                                Ghi nhớ đăng
-                                                nhập
+                                            <input asp-for="RememberMe" type="checkbox" class="form-check-input" id="rememberMe">
+                                            <label class="form-check-label small" asp-for="RememberMe">
+                                                Ghi nhớ đăng nhập
                                             </label>
                                         </div>
                                         <a href="/auth/step1-verify-account.html"
@@ -137,7 +144,7 @@
                                     <!-- Link to Register -->
                                     <div class="text-center">
                                         <p class="mb-0">
-                                            Chưa có tài khoản? <a href="/auth/register.html"
+                                            Chưa có tài khoản? <a asp-controller="Auth" asp-action="DangKy"
                                                                   class="text-danger fw-semibold text-decoration-none">Đăng ký ngay</a>
                                         </p>
                                     </div>
@@ -196,7 +203,7 @@
     <script src="~/assets/js/login.js"></script>
     <!-- Chatbox Widget -->
     <div id="chatbox-container" style="position:fixed;bottom:0;right:0;z-index:99990"></div>
-    <script src="assets/js/chatbox.js"></script>
+    <script src="~/assets/js/chatbox.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
           const el = document.getElementById('chatbox-container');

@@ -1,9 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SupportTicketSysterm.Data;
+using Microsoft.AspNetCore.Authorization;
+using SupportTicketSysterm.Models;
+using Microsoft.CodeAnalysis.Scripting;
 
 namespace SupportTicketSysterm.Controllers
 {
+    [Authorize(Roles = "Admin,NhanVien,Nhân viên,Nhân viên hỗ trợ")]
     public class StaffController : Controller
     {
         private readonly TechSupportContext _context;
@@ -86,7 +90,7 @@ namespace SupportTicketSysterm.Controllers
 
             var today = DateOnly.FromDateTime(DateTime.Today);
             var firstDayOfMonth = new DateOnly(today.Year, today.Month, 1);
-            
+
             ViewBag.TotalCategories = _context.DanhMucs.Count();
             ViewBag.ActiveCategories = _context.DanhMucs.Count(x => x.TrangThai == "Hoạt động" || x.TrangThai == "Hoạt Động");
             ViewBag.InactiveCategories = ViewBag.TotalCategories - ViewBag.ActiveCategories;
@@ -158,7 +162,7 @@ namespace SupportTicketSysterm.Controllers
         {
             var today = DateOnly.FromDateTime(DateTime.Today);
             var firstDayOfMonth = new DateOnly(today.Year, today.Month, 1);
-            
+
             ViewBag.TotalCategories = _context.DanhMucs.Count();
             ViewBag.ActiveCategories = _context.DanhMucs.Count(x => x.TrangThai == "Hoạt động" || x.TrangThai == "Hoạt Động");
             ViewBag.InactiveCategories = ViewBag.TotalCategories - ViewBag.ActiveCategories;
@@ -315,53 +319,29 @@ namespace SupportTicketSysterm.Controllers
 
 
         //Quản lý khách hàng 
-<<<<<<< HEAD
         [HttpGet]
         [Route("Staff/QuanLyKH")]
-=======
->>>>>>> f27fcf8921ddad14015781ef7ddf6a8f873bdde0
         public IActionResult QuanLyKH(string keyword,
             string status,
             string sort = "newest")
         {
             var query = _context.KhachHangs.AsQueryable();
 
-<<<<<<< HEAD
             // Tìm kiếm (tên, số điện thoại, email)
             if (!string.IsNullOrWhiteSpace(keyword))
             {
-                query = query.Where(x => x.HoTen.Contains(keyword) 
-                                      || (x.SoDienThoai != null && x.SoDienThoai.Contains(keyword)) 
+                query = query.Where(x => x.HoTen.Contains(keyword)
+                                      || (x.SoDienThoai != null && x.SoDienThoai.Contains(keyword))
                                       || (x.Email != null && x.Email.Contains(keyword)));
             }
 
             // Lọc trạng thái (bỏ qua nếu chọn "Tất cả" - all)
             if (!string.IsNullOrWhiteSpace(status) && status != "all")
-=======
-           
-            // Tìm kiếm
-            
-            if (!string.IsNullOrWhiteSpace(keyword))
-            {
-                query = query.Where(x => x.HoTen.Contains(keyword));
-            }
-
-          
-            // Lọc trạng thái
-           
-            if (!string.IsNullOrWhiteSpace(status))
->>>>>>> f27fcf8921ddad14015781ef7ddf6a8f873bdde0
             {
                 query = query.Where(x => x.TrangThai == status);
             }
 
-<<<<<<< HEAD
             // Sắp xếp
-=======
-           
-            // Sắp xếp
-            
->>>>>>> f27fcf8921ddad14015781ef7ddf6a8f873bdde0
             switch (sort)
             {
                 case "oldest":
@@ -381,11 +361,7 @@ namespace SupportTicketSysterm.Controllers
                     break;
             }
 
-<<<<<<< HEAD
-=======
-            
 
->>>>>>> f27fcf8921ddad14015781ef7ddf6a8f873bdde0
             var today = DateOnly.FromDateTime(DateTime.Today);
             var firstDayOfMonth = new DateOnly(today.Year, today.Month, 1);
 
@@ -401,7 +377,6 @@ namespace SupportTicketSysterm.Controllers
             return View(query.ToList());
         }
 
-<<<<<<< HEAD
         [HttpGet]
         [Route("Staff/DanhSachKhachHang")]
         public IActionResult DanhSachKhachHang(string keyword, string status, string sort = "newest")
@@ -411,8 +386,8 @@ namespace SupportTicketSysterm.Controllers
             // Tìm kiếm (tên, số điện thoại, email)
             if (!string.IsNullOrWhiteSpace(keyword))
             {
-                query = query.Where(x => x.HoTen.Contains(keyword) 
-                                      || (x.SoDienThoai != null && x.SoDienThoai.Contains(keyword)) 
+                query = query.Where(x => x.HoTen.Contains(keyword)
+                                      || (x.SoDienThoai != null && x.SoDienThoai.Contains(keyword))
                                       || (x.Email != null && x.Email.Contains(keyword)));
             }
 
@@ -444,9 +419,6 @@ namespace SupportTicketSysterm.Controllers
 
             return PartialView("_DanhSachKhachHang", query.ToList());
         }
-
-=======
->>>>>>> f27fcf8921ddad14015781ef7ddf6a8f873bdde0
         //Tạo mã khách hàng tự động tăng
         private string TaoMaKhachHang()
         {
@@ -555,7 +527,7 @@ namespace SupportTicketSysterm.Controllers
                 {
                     var errorMsg = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
                     ModelState.AddModelError(string.Empty, $"Lỗi khi lưu cơ sở dữ liệu: {errorMsg}");
-                    
+
                     if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
                     {
                         return Json(new { success = false, error = "DatabaseError", message = $"Lỗi khi lưu cơ sở dữ liệu: {errorMsg}" });
@@ -583,7 +555,7 @@ namespace SupportTicketSysterm.Controllers
         [Route("KhachHang/KhoaKhachHang")]
         [ValidateAntiForgeryToken]
         public IActionResult KhoaKhachHang(int? id, int? idKhachHang)
-        {   
+        {
             int targetId = id ?? idKhachHang ?? 0;
             try
             {
@@ -815,15 +787,11 @@ namespace SupportTicketSysterm.Controllers
                     return Json(new { success = false, message = "Danh mục sự cố không tồn tại." });
                 }
 
-<<<<<<< HEAD
                 // Kiểm tra nếu danh mục đang bị khóa mà thêm dịch vụ Hoạt động
                 if (model.TrangThai == "Hoạt động" && (dm.TrangThai == "Tạm khóa" || dm.TrangThai == "Khóa"))
                 {
                     return Json(new { success = false, message = $"Không thể thêm dịch vụ ở trạng thái Hoạt động vì danh mục '{dm.TenDanhMuc}' đang bị khóa." });
                 }
-
-=======
->>>>>>> f27fcf8921ddad14015781ef7ddf6a8f873bdde0
                 // Kiểm tra trùng tên trong cùng danh mục
                 bool exists = await _context.DichVus.AnyAsync(x => x.IdDanhMuc == model.IdDanhMuc && x.TenDichVu.Trim().ToLower() == model.TenDichVu.Trim().ToLower());
                 if (exists)
@@ -874,15 +842,11 @@ namespace SupportTicketSysterm.Controllers
                     return Json(new { success = false, message = "Danh mục sự cố không tồn tại." });
                 }
 
-<<<<<<< HEAD
                 // Kiểm tra nếu danh mục đang bị khóa mà cập nhật dịch vụ thành Hoạt động
                 if (model.TrangThai == "Hoạt động" && (dm.TrangThai == "Tạm khóa" || dm.TrangThai == "Khóa"))
                 {
                     return Json(new { success = false, message = $"Không thể cập nhật dịch vụ ở trạng thái Hoạt động vì danh mục '{dm.TenDanhMuc}' đang bị khóa." });
                 }
-
-=======
->>>>>>> f27fcf8921ddad14015781ef7ddf6a8f873bdde0
                 // Kiểm tra trùng tên
                 bool exists = await _context.DichVus.AnyAsync(x => x.IdDichVu != model.IdDichVu && x.IdDanhMuc == model.IdDanhMuc && x.TenDichVu.Trim().ToLower() == model.TenDichVu.Trim().ToLower());
                 if (exists)
@@ -930,35 +894,28 @@ namespace SupportTicketSysterm.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> KhoaDichVu(int id)
         {
-<<<<<<< HEAD
             var model = await _context.DichVus
                                       .Include(d => d.IdDanhMucNavigation)
                                       .FirstOrDefaultAsync(x => x.IdDichVu == id);
-=======
-            var model = await _context.DichVus.FindAsync(id);
->>>>>>> f27fcf8921ddad14015781ef7ddf6a8f873bdde0
             if (model == null)
             {
                 return Json(new { success = false, message = "Dịch vụ không tồn tại." });
             }
 
             var isActive = model.TrangThai == "Hoạt động";
-<<<<<<< HEAD
             if (!isActive)
             {
                 var dm = model.IdDanhMucNavigation;
                 if (dm != null && (dm.TrangThai == "Tạm khóa" || dm.TrangThai == "Khóa"))
                 {
-                    return Json(new { 
-                        success = false, 
-                        isCategoryLocked = true, 
-                        message = $"Không thể kích hoạt dịch vụ '{model.TenDichVu}' vì danh mục '{dm.TenDanhMuc}' đang bị khóa." 
+                    return Json(new
+                    {
+                        success = false,
+                        isCategoryLocked = true,
+                        message = $"Không thể kích hoạt dịch vụ '{model.TenDichVu}' vì danh mục '{dm.TenDanhMuc}' đang bị khóa."
                     });
                 }
             }
-
-=======
->>>>>>> f27fcf8921ddad14015781ef7ddf6a8f873bdde0
             model.TrangThai = isActive ? "Tạm khóa" : "Hoạt động";
 
             await _context.SaveChangesAsync();
@@ -978,6 +935,214 @@ namespace SupportTicketSysterm.Controllers
                 return NotFound();
             }
             return PartialView("_ChiTietDichVu", model);
+        }
+
+
+
+        //quản lý nhân viên
+        [HttpGet]
+        public async Task<IActionResult> QuanLyNhanVien(string keyword, string status, string sort = "newest")
+        {
+            var query = _context.NhanViens.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(keyword))
+            {
+                query = query.Where(x => x.HoTen.Contains(keyword) || (x.SoDienThoai != null && x.SoDienThoai.Contains(keyword)) || (x.Email != null && x.Email.Contains(keyword)));
+            }
+
+            if (!string.IsNullOrWhiteSpace(status) && status != "all")
+            {
+                query = query.Where(x => x.TrangThai == status);
+            }
+
+            switch (sort)
+            {
+                case "oldest":
+                    query = query.OrderBy(x => x.NgayTao);
+                    break;
+                case "az":
+                    query = query.OrderBy(x => x.HoTen);
+                    break;
+                case "za":
+                    query = query.OrderByDescending(x => x.HoTen);
+                    break;
+                default:
+                    query = query.OrderByDescending(x => x.NgayTao);
+                    break;
+            }
+
+            var today = DateOnly.FromDateTime(DateTime.Today);
+            var firstDayOfMonth = new DateOnly(today.Year, today.Month, 1);
+
+            ViewBag.TotalEmployees = await _context.NhanViens.CountAsync();
+            ViewBag.ActiveEmployees = await _context.NhanViens.CountAsync(x => x.TrangThai == "Hoạt động" || x.TrangThai == "Hoạt Động");
+            ViewBag.InactiveEmployees = ViewBag.TotalEmployees - ViewBag.ActiveEmployees;
+            ViewBag.NewThisMonth = await _context.NhanViens.CountAsync(x => x.NgayTao != null && x.NgayTao >= firstDayOfMonth);
+
+            ViewBag.Keyword = keyword;
+            ViewBag.Status = status;
+            ViewBag.Sort = sort;
+
+            var nhanViens = await query.ToListAsync();
+            var modelList = nhanViens.Select(x => new NhanVienViewModel
+            {
+                IdNhanVien = x.IdNhanVien,
+                HoTen = x.HoTen?.Trim() ?? "",
+                SoDienThoai = x.SoDienThoai?.Trim() ?? "",
+                Email = x.Email?.Trim() ?? "",
+                DiaChi = x.DiaChi?.Trim(),
+                TenDangNhap = x.TenDangNhap?.Trim() ?? "",
+                VaiTro = x.VaiTro?.Trim() ?? "",
+                MatKhau = x.MatKhau?.Trim() ?? "",
+                TrangThai = x.TrangThai?.Trim() ?? "",
+                NgayTao = x.NgayTao
+            }).ToList();
+
+            return View(modelList);
+        }
+
+        [HttpPost]
+        [Route("Staff/KhoaNhanVien")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> KhoaNhanVien(int id)
+        {
+            try
+            {
+                var nv = await _context.NhanViens.FindAsync(id);
+                if (nv == null) return Json(new { success = false, message = "Nhân viên không tồn tại." });
+
+                nv.TrangThai = nv.TrangThai?.Trim() == "Hoạt động" ? "Tạm khóa" : "Hoạt động";
+                await _context.SaveChangesAsync();
+
+                return Json(new { success = true, message = $"Đã {(nv.TrangThai == "Hoạt động" ? "mở khóa" : "tạm khóa")} nhân viên thành công!", newStatus = nv.TrangThai });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        [Route("Staff/ResetMatKhau")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ResetMatKhau(int id)
+        {
+            try
+            {
+                var nv = await _context.NhanViens.FindAsync(id);
+                if (nv == null) return Json(new { success = false, message = "Nhân viên không tồn tại." });
+
+                nv.MatKhau = "Viettel@1234";
+                await _context.SaveChangesAsync();
+
+                return Json(new { success = true, message = $"Đã reset mật khẩu của {nv.HoTen} thành: 'Viettel@1234'" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        [Route("Staff/ThemNhanVien")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ThemNhanVien(NhanVienViewModel model)
+        {
+            try
+            {
+                // Kiểm tra trùng username
+                bool exists = await _context.NhanViens.AnyAsync(x => x.TenDangNhap == model.TenDangNhap);
+                if (exists) return Json(new { success = false, message = $"Tên đăng nhập '{model.TenDangNhap}' đã tồn tại!" });
+
+                // Kiểm tra trùng số điện thoại
+                if (!string.IsNullOrEmpty(model.SoDienThoai))
+                {
+                    bool phoneExists = await _context.NhanViens.AnyAsync(x => x.SoDienThoai == model.SoDienThoai);
+                    if (phoneExists) return Json(new { success = false, message = $"Số điện thoại '{model.SoDienThoai}' đã tồn tại!" });
+                }
+
+                // Kiểm tra trùng email
+                if (!string.IsNullOrEmpty(model.Email))
+                {
+                    bool emailExists = await _context.NhanViens.AnyAsync(x => x.Email == model.Email);
+                    if (emailExists) return Json(new { success = false, message = $"Email '{model.Email}' đã tồn tại!" });
+                }
+
+                var nv = new NhanVien
+                {
+                    HoTen = model.HoTen,
+                    Email = model.Email,
+                    SoDienThoai = model.SoDienThoai,
+                    DiaChi = model.DiaChi,
+                    TenDangNhap = model.TenDangNhap,
+                    MatKhau = string.IsNullOrEmpty(model.MatKhau) ? "Viettel@1234" : model.MatKhau,
+                    VaiTro = model.VaiTro,
+                    TrangThai = model.TrangThai,
+                    NgayTao = DateOnly.FromDateTime(DateTime.Now)
+                };
+
+                _context.NhanViens.Add(nv);
+                await _context.SaveChangesAsync();
+                return Json(new { success = true, message = $"✔ Thêm mới nhân viên {nv.HoTen} thành công!" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        [Route("Staff/LuuNhanVien")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> LuuNhanVien(NhanVienViewModel model)
+        {
+            try
+            {
+                if (model.IdNhanVien > 0)
+                {
+                    // Chỉnh sửa
+                    var nv = await _context.NhanViens.FindAsync(model.IdNhanVien);
+                    if (nv == null) return Json(new { success = false, message = "Nhân viên không tồn tại." });
+
+                    nv.HoTen = model.HoTen;
+                    nv.Email = model.Email;
+                    nv.SoDienThoai = model.SoDienThoai;
+                    nv.DiaChi = model.DiaChi;
+                    nv.VaiTro = model.VaiTro;
+                    nv.TrangThai = model.TrangThai;
+
+                    await _context.SaveChangesAsync();
+                    return Json(new { success = true, message = $"Cập nhật nhân viên {nv.HoTen} thành công!" });
+                }
+                else
+                {
+                    // Thêm mới
+                    // Kiểm tra trùng username
+                    bool exists = await _context.NhanViens.AnyAsync(x => x.TenDangNhap == model.TenDangNhap);
+                    if (exists) return Json(new { success = false, message = $"Tên đăng nhập '{model.TenDangNhap}' đã tồn tại!" });
+
+                    var nv = new NhanVien
+                    {
+                        HoTen = model.HoTen,
+                        Email = model.Email,
+                        SoDienThoai = model.SoDienThoai,
+                        DiaChi = model.DiaChi,
+                        TenDangNhap = model.TenDangNhap,
+                        MatKhau = string.IsNullOrEmpty(model.MatKhau) ? "Viettel@1234" : model.MatKhau,
+                        VaiTro = model.VaiTro,
+                        TrangThai = model.TrangThai,
+                        NgayTao = DateOnly.FromDateTime(DateTime.Now)
+                    };
+
+                    _context.NhanViens.Add(nv);
+                    await _context.SaveChangesAsync();
+                    return Json(new { success = true, message = $"Thêm mới nhân viên {nv.HoTen} thành công!" });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
         }
     }
 }
