@@ -160,6 +160,89 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     ];
 
+    // đổi mật khẩu 
+    const changePasswordForm = document.getElementById("changePasswordForm");
+
+    changePasswordForm.addEventListener("submit", function (e) {
+
+        e.preventDefault();
+
+        const currentPassword =
+            document.getElementById("currentPassword").value.trim();
+
+        const newPassword =
+            document.getElementById("newPassword").value.trim();
+
+        const confirmPassword =
+            document.getElementById("confirmPassword").value.trim();
+
+        if (currentPassword === "") {
+            alert("Vui lòng nhập mật khẩu hiện tại.");
+            return;
+        }
+
+        if (newPassword.length < 6) {
+            alert("Mật khẩu mới tối thiểu 6 ký tự.");
+            return;
+        }
+
+        if (newPassword !== confirmPassword) {
+            alert("Xác nhận mật khẩu không khớp.");
+            return;
+        }
+
+        fetch("/Customers/DoiMatKhau", {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json",
+                "RequestVerificationToken":
+                    document.querySelector('input[name="__RequestVerificationToken"]').value
+            },
+
+            body: JSON.stringify({
+
+                MatKhauCu: currentPassword,
+                MatKhauMoi: newPassword,
+                XacNhanMatKhau: confirmPassword
+
+            })
+
+        })
+
+            .then(res => res.json())
+
+            .then(result => {
+
+                if (result.success) {
+
+                    alert(result.message);
+
+                    changePasswordForm.reset();
+
+                    document
+                        .getElementById("changePasswordModal")
+                        .classList.remove("show");
+
+                }
+                else {
+
+                    alert(result.message);
+
+                }
+
+            })
+
+            .catch(() => {
+
+                alert("Có lỗi xảy ra.");
+
+            });
+
+    });
+    //
+
     // Initialize mock database in localStorage if empty
     const initLocalStorageDatabases = () => {
         // Users database
@@ -240,10 +323,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ==================== 2. APPLICATION STATE & DATABASES ====================
     let usersDb = JSON.parse(localStorage.getItem('techsupport_users') || '[]');
-    let currentUser = usersDb.find(u => u.email === activeSessionUser.email || u.phone === activeSessionUser.phone) || DEFAULT_MOCK_USER;
+    let currentUser = window.RealCustomerData || usersDb.find(u => u.email === activeSessionUser.email || u.phone === activeSessionUser.phone) || DEFAULT_MOCK_USER;
     
-    let ticketsList = JSON.parse(localStorage.getItem('techsupport_tickets') || '[]');
-    let appointmentsList = JSON.parse(localStorage.getItem('techsupport_appointments') || '[]');
+    let ticketsList = window.RealTicketsData || JSON.parse(localStorage.getItem('techsupport_tickets') || '[]');
+    let appointmentsList = window.RealAppointmentsData || JSON.parse(localStorage.getItem('techsupport_appointments') || '[]');
 
     // Active Ticket Filters
     let currentFilter = 'all';
@@ -972,53 +1055,83 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             if (isValid) {
-                const origEmail = currentUser.email;
-                const origPhone = currentUser.phone;
+                const formData = new FormData();
+                formData.append("HoTen", editFullname.value.trim());
+                formData.append("SoDienThoai", editPhone.value.trim());
+                formData.append("Email", editEmail.value.trim());
+                formData.append("DiaChi", editAddress.value.trim());
 
-                currentUser.fullname = editFullname.value.trim();
-                currentUser.phone = editPhone.value.trim();
-                currentUser.email = editEmail.value.trim();
-                currentUser.identity = editIdentity.value.trim();
-                currentUser.address = editAddress.value.trim();
-
-                usersDb = JSON.parse(localStorage.getItem('techsupport_users') || '[]');
-                const idx = usersDb.findIndex(u => u.email === origEmail || u.phone === origPhone);
-                if (idx > -1) {
-                    usersDb[idx] = currentUser;
-                } else {
-                    usersDb.push(currentUser);
-                }
-                localStorage.setItem('techsupport_users', JSON.stringify(usersDb));
-
-                const sessionStr = sessionStorage.getItem('techsupport_session');
-                if (sessionStr) {
-                    try {
-                        const sessionData = JSON.parse(sessionStr);
-                        if (sessionData && sessionData.user) {
-                            sessionData.user.fullname = currentUser.fullname;
-                            sessionData.user.email = currentUser.email;
-                            sessionData.user.phone = currentUser.phone;
-                            sessionStorage.setItem('techsupport_session', JSON.stringify(sessionData));
-                        }
-                    } catch (err) {
-                        console.error("Error updates session storage:", err);
+                // Post to ASP.NET Core MVC Action
+                fetch('/Customers/CapNhatThongTin', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value || ''
                     }
-                }
-                sessionStorage.setItem('ts_customer_name', currentUser.fullname);
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const origEmail = currentUser.email;
+                        const origPhone = currentUser.phone;
 
-                if (window.TechSupportAuth && typeof window.TechSupportAuth.login === 'function') {
-                    window.TechSupportAuth.login(currentUser.fullname, false);
-                } else {
-                    const navDisplayName = document.getElementById('userDisplayName');
-                    if (navDisplayName) navDisplayName.textContent = currentUser.fullname;
-                }
+                        currentUser.fullname = editFullname.value.trim();
+                        currentUser.phone = editPhone.value.trim();
+                        currentUser.email = editEmail.value.trim();
+                        currentUser.identity = editIdentity.value.trim();
+                        currentUser.address = editAddress.value.trim();
 
-                // Close the modal
-                closeProfileModal(document.getElementById('editProfileModal'));
+                        usersDb = JSON.parse(localStorage.getItem('techsupport_users') || '[]');
+                        const idx = usersDb.findIndex(u => u.email === origEmail || u.phone === origPhone);
+                        if (idx > -1) {
+                            usersDb[idx] = currentUser;
+                        } else {
+                            usersDb.push(currentUser);
+                        }
+                        localStorage.setItem('techsupport_users', JSON.stringify(usersDb));
 
-                // Rerender page UI elements
-                renderUserProfile();
-                showProfileToast("Cập nhật thông tin cá nhân thành công!", "success");
+                        const sessionStr = sessionStorage.getItem('techsupport_session');
+                        if (sessionStr) {
+                            try {
+                                const sessionData = JSON.parse(sessionStr);
+                                if (sessionData && sessionData.user) {
+                                    sessionData.user.fullname = currentUser.fullname;
+                                    sessionData.user.email = currentUser.email;
+                                    sessionData.user.phone = currentUser.phone;
+                                    sessionStorage.setItem('techsupport_session', JSON.stringify(sessionData));
+                                }
+                            } catch (err) {
+                                console.error("Error updating session storage:", err);
+                            }
+                        }
+                        sessionStorage.setItem('ts_customer_name', currentUser.fullname);
+
+                        if (window.TechSupportAuth && typeof window.TechSupportAuth.login === 'function') {
+                            window.TechSupportAuth.login(currentUser.fullname, false);
+                        } else {
+                            const navDisplayName = document.getElementById('userDisplayName');
+                            if (navDisplayName) navDisplayName.textContent = currentUser.fullname;
+                        }
+
+                        // Close the modal
+                        closeProfileModal(document.getElementById('editProfileModal'));
+
+                        // Rerender page UI elements
+                        renderUserProfile();
+                        showProfileToast("Cập nhật thông tin cá nhân thành công!", "success");
+
+                        // Reload page after a delay to ensure MVC updates are propagated
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1200);
+                    } else {
+                        showProfileToast(data.message || "Cập nhật thất bại!", "danger");
+                    }
+                })
+                .catch(err => {
+                    console.error("Error updating profile:", err);
+                    showProfileToast("Không thể kết nối đến máy chủ!", "danger");
+                });
             } else {
                 showProfileToast("Vui lòng kiểm tra lại thông tin biểu mẫu nhập!", "danger");
             }

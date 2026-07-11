@@ -1,17 +1,17 @@
 /* -------------------------------------------------------------
  * FILE: assets/css/staff/staff.css
  * AUTHOR: Antigravity
- * DESCRIPTION: Stylesheet for Admin Staff Management (SaaS style) - Redesigned to match Categories and Services pages
+ * DESCRIPTION: Stylesheet for Admin Staff Management (SaaS style)
  * ------------------------------------------------------------- */
 
 /* Page Custom Colors Override & SaaS Variables */
 :root {
-    --staff-primary: #EE0033;
-    --staff-primary-hover: #FF1744;
-    --staff-primary-light: rgba(238, 0, 51, 0.1);
+    --staff-primary: #4F46E5;
+    --staff-primary-hover: #4338CA;
+    --staff-primary-light: rgba(79, 70, 229, 0.1);
     
-    --staff-secondary: #2C3E50;
-    --staff-secondary-light: rgba(44, 62, 80, 0.1);
+    --staff-secondary: #7C3AED;
+    --staff-secondary-light: rgba(124, 58, 237, 0.1);
     
     --staff-success: #10B981;
     --staff-success-light: rgba(16, 185, 129, 0.1);
@@ -29,8 +29,8 @@
     /* Layout Constants */
     --vt-border-radius: 16px;
     --vt-border-radius-sm: 10px;
-    --vt-shadow-soft: 0 10px 30px rgba(238, 0, 51, 0.04);
-    --vt-shadow-hover: 0 20px 40px rgba(238, 0, 51, 0.08);
+    --vt-shadow-soft: 0 10px 30px rgba(79, 70, 229, 0.04);
+    --vt-shadow-hover: 0 20px 40px rgba(79, 70, 229, 0.08);
     --vt-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -60,13 +60,13 @@
    1. HERO BREADCRUMB SECTION
    ============================================================= */
 .staff-hero-banner {
-    background: linear-gradient(135deg, #EE0033 0%, #2C3E50 100%);
+    background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 50%, #4f46e5eb 100%);
     border-radius: var(--vt-border-radius);
     padding: 30px 40px;
     color: #FFFFFF;
     position: relative;
     overflow: hidden;
-    box-shadow: 0 10px 30px rgba(238, 0, 51, 0.15);
+    box-shadow: 0 10px 30px rgba(79, 70, 229, 0.15);
     margin-bottom: 24px;
     display: flex;
     align-items: center;
@@ -251,90 +251,43 @@
 /* =============================================================
    4. DATA TABLES AND ACTIONS
    ============================================================= */
-.vt-table-card-custom {
-    background-color: var(--bg-card);
-    border: 1px solid var(--border-color);
-    border-radius: 18px;
-    padding: 24px 0 0 0;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+.data-card {
+    background-color: var(--staff-bg-card);
+    border-radius: var(--vt-border-radius);
+    border: 1px solid var(--staff-border);
+    box-shadow: var(--vt-shadow-soft);
+    padding: 24px;
     margin-bottom: 24px;
-    overflow: visible; /* Keep visible for z-index dropdown menus */
+    overflow: hidden;
 }
 
-.vt-table-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 24px 18px 24px;
-    border-bottom: 1px solid var(--border-color);
-}
-
-.vt-table-header-left h2 {
-    font-size: 1.1rem;
-    font-weight: 800;
-    color: var(--vt-dark-blue);
-    margin: 0;
-}
-
-.vt-table-header-left p {
-    font-size: 0.8rem;
-    color: var(--text-muted);
-    margin: 4px 0 0 0;
-}
-
-.vt-count-badge {
-    background-color: var(--vt-red-glow);
-    color: var(--vt-red);
-    font-size: 0.75rem;
-    font-weight: 700;
-    padding: 6px 14px;
-    border-radius: 20px;
-}
-
-/* Responsive Table Staff */
-.vt-custom-table-container-staff {
-    width: 100%;
-}
-
-.vt-table-staff {
-    width: 100%;
-    border-collapse: collapse;
+.staff-table {
+    margin-bottom: 0;
     vertical-align: middle;
 }
 
-.vt-table-staff th {
-    font-size: 0.72rem;
+.staff-table th {
+    font-size: 0.75rem;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.8px;
-    color: var(--text-muted);
-    border-bottom: 1.5px solid var(--border-color);
-    padding: 16px 24px;
-    background-color: #f8fafc;
-    text-align: left;
+    color: var(--staff-muted);
+    border-bottom: 2px solid var(--staff-border);
+    padding: 16px;
+    background-color: rgba(79, 70, 229, 0.02);
 }
 
-[data-bs-theme="dark"] .vt-table-staff th {
-    background-color: rgba(255, 255, 255, 0.02);
+.staff-table td {
+    padding: 16px;
+    border-bottom: 1px solid var(--staff-border);
+    font-size: 0.88rem;
 }
 
-.vt-table-staff td {
-    padding: 16px 24px;
-    font-size: 0.875rem;
-    color: var(--text-main);
-    border-bottom: 1px solid var(--border-color);
-}
-
-.vt-table-staff tbody tr {
+.staff-row {
     transition: var(--vt-transition);
 }
 
-.vt-table-staff tbody tr:hover {
-    background-color: #f7f9fc;
-}
-
-[data-bs-theme="dark"] .vt-table-staff tbody tr:hover {
-    background-color: rgba(255, 255, 255, 0.02);
+.staff-row:hover {
+    background-color: rgba(79, 70, 229, 0.02) !important;
 }
 
 .staff-avatar-wrap {
@@ -343,222 +296,67 @@
     gap: 12px;
 }
 
-/* Avatar circle if no image */
-.vt-avatar-circle {
-    width: 38px;
-    height: 38px;
-    border-radius: 50%;
-    background-color: #0d6efd; /* Modern blue */
-    color: #ffffff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-    font-size: 0.95rem;
-    box-shadow: 0 2px 6px rgba(13, 110, 253, 0.2);
-    flex-shrink: 0;
-}
-
-.avatar {
-    width: 38px;
-    height: 38px;
+.staff-avatar {
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     object-fit: cover;
-    border: 1.5px solid var(--border-color);
-    flex-shrink: 0;
+    border: 2px solid var(--staff-primary);
 }
 
-/* Custom Action Dropdown for Rows */
-.vt-dropdown-container {
-    position: relative;
-    display: inline-block;
-}
-
-.vt-dropdown-trigger {
-    width: 34px;
-    height: 34px;
-    border-radius: 50%;
-    border: 1px solid var(--border-color);
-    background-color: var(--bg-card);
-    color: var(--text-muted);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    font-size: 0.9rem;
-    transition: var(--vt-transition);
-}
-
-.vt-dropdown-trigger:hover {
-    background-color: #f1f5f9;
-    color: var(--vt-red);
-    border-color: rgba(238, 0, 51, 0.25);
-    transform: scale(1.05);
-}
-
-.dropdown-action {
-    position: absolute;
-    right: 0;
-    top: 100%;
-    z-index: 99999;
-    display: none;
-    min-width: 220px;
-    background: #ffffff;
-    border-radius: 14px;
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18);
-    border: 1px solid #eeeeee;
-    padding: 8px;
-    text-align: left;
-}
-
-.dropdown-action.show {
-    display: block;
-}
-
-.dropdown-item-custom {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px 14px;
-    color: var(--text-main);
-    text-decoration: none;
-    font-size: 0.85rem;
-    font-weight: 600;
-    border-radius: 8px;
-    transition: background-color 0.2s ease, color 0.2s ease;
-}
-
-.dropdown-item-custom:hover {
-    background-color: #f7f9fc;
-    color: var(--vt-red);
-}
-
-[data-bs-theme="dark"] .dropdown-action {
-    background: #1e293b;
-    border-color: #334155;
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
-}
-
-[data-bs-theme="dark"] .dropdown-item-custom {
-    color: #f1f5f9;
-}
-
-[data-bs-theme="dark"] .dropdown-item-custom:hover {
-    background-color: rgba(255, 255, 255, 0.05);
-}
-
-/* Custom horizontal Action Button hover colors */
-.vt-btn-action.reset:hover {
-    color: #3B82F6 !important;
-    border-color: rgba(59, 130, 246, 0.4) !important;
-    background-color: rgba(59, 130, 246, 0.1) !important;
-}
-
-.vt-btn-action.lock:hover {
-    color: #F59E0B !important;
-    border-color: rgba(245, 158, 11, 0.4) !important;
-    background-color: rgba(245, 158, 11, 0.1) !important;
-}
-
-.vt-btn-action.unlock:hover {
-    color: #10B981 !important;
-    border-color: rgba(16, 185, 129, 0.4) !important;
-    background-color: rgba(16, 185, 129, 0.1) !important;
-}
-
-/* Modern Badges */
-.badge-custom {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
+/* Custom badges */
+.badge-role {
     font-size: 0.72rem;
     font-weight: 700;
-    padding: 5px 12px;
-    border-radius: 30px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    white-space: nowrap;
+    padding: 4px 8px;
+    border-radius: 6px;
 }
+.badge-role.admin { background-color: var(--staff-secondary-light); color: var(--staff-secondary); }
+.badge-role.staff { background-color: rgba(59, 130, 246, 0.1); color: #3B82F6; }
 
-.badge-role-admin {
-    background-color: rgba(239, 68, 68, 0.1);
-    color: #ef4444;
-    border: 1px solid rgba(239, 68, 68, 0.2);
+.badge-status-staff {
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 4px 8px;
+    border-radius: 6px;
 }
-
-.badge-role-staff {
-    background-color: rgba(59, 130, 246, 0.1);
-    color: #3b82f6;
-    border: 1px solid rgba(59, 130, 246, 0.2);
-}
-
-.badge-status-active {
-    background-color: rgba(16, 185, 129, 0.1);
-    color: #10b981;
-    border: 1px solid rgba(16, 185, 129, 0.2);
-}
-
-.badge-status-locked {
-    background-color: rgba(107, 114, 128, 0.1);
-    color: #6b7280;
-    border: 1px solid rgba(107, 114, 128, 0.2);
-}
+.badge-status-staff.active { background-color: var(--staff-success-light); color: var(--staff-success); }
+.badge-status-staff.blocked { background-color: var(--staff-danger-light); color: var(--staff-danger); }
 
 /* Rating stars color */
 .rating-stars {
     color: #F59E0B;
 }
 
+/* Action button inside table row */
+.action-btn-circle {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: none;
+    background-color: rgba(79, 70, 229, 0.05);
+    color: var(--staff-primary);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--vt-transition);
+}
+
+.action-btn-circle:hover {
+    background-color: var(--staff-primary);
+    color: #FFFFFF;
+}
+
 /* =============================================================
    5. MOBILE CARD VIEW
    ============================================================= */
-.vt-mobile-cards {
-    display: none;
-    flex-direction: column;
-    gap: 16px;
-    padding: 0 20px 20px 20px;
-}
-
-.vt-mobile-card {
-    background-color: var(--bg-card);
-    border: 1px solid var(--border-color);
-    border-radius: var(--vt-border-radius-sm);
+.mobile-staff-card {
+    background-color: var(--staff-bg-card);
+    border: 1px solid var(--staff-border);
+    border-radius: 12px;
     padding: 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
-}
-
-.vt-mobile-card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 8px;
-}
-
-.vt-mobile-card-title {
-    font-weight: 700;
-    font-size: 0.95rem;
-    color: var(--text-main);
-}
-
-.vt-mobile-card-body {
-    font-size: 0.82rem;
-    color: var(--text-muted);
-    line-height: 1.5;
-}
-
-.vt-mobile-card-meta {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-top: 1px dashed var(--border-color);
-    padding-top: 10px;
-    font-size: 0.78rem;
-    flex-wrap: wrap;
-    gap: 8px;
+    margin-bottom: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.02);
 }
 
 /* =============================================================
@@ -593,11 +391,11 @@
     border-radius: var(--vt-border-radius);
     border: none;
     overflow: hidden;
-    box-shadow: 0 20px 50px rgba(238, 0, 51, 0.25);
+    box-shadow: 0 20px 50px rgba(79, 70, 229, 0.25);
 }
 
 .modal-header-staff {
-    background: linear-gradient(135deg, #EE0033 0%, #2C3E50 100%);
+    background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
     color: #FFFFFF;
     padding: 18px 24px;
     border-bottom: none;
@@ -643,7 +441,7 @@
 
 .form-input-staff:focus {
     border-color: var(--staff-primary);
-    box-shadow: 0 0 0 3px rgba(238, 0, 51, 0.15);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
     outline: none;
 }
 
@@ -695,7 +493,7 @@ textarea.form-input-staff {
     height: 100px;
     border-radius: 50%;
     object-fit: cover;
-    border: 4px solid rgba(238, 0, 51, 0.1);
+    border: 4px solid var(--staff-primary-light);
     box-shadow: var(--vt-shadow-soft);
 }
 
@@ -728,7 +526,7 @@ textarea.form-input-staff {
 .comment-card {
     padding: 12px 16px;
     border-radius: 10px;
-    background-color: rgba(238, 0, 51, 0.02);
+    background-color: rgba(79, 70, 229, 0.02);
     border: 1px solid var(--staff-border);
     margin-bottom: 10px;
 }

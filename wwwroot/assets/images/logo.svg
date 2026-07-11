@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%" height="100%">
+  <defs>
+    <!-- Gradients -->
+    <linearGradient id="viettelRedGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E60012" />
+      <stop offset="100%" stop-color="#A5000A" />
+    </linearGradient>
+    <linearGradient id="techDarkGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#102A43" />
+      <stop offset="100%" stop-color="#07192B" />
+    </linearGradient>
+    <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FCE588" />
+      <stop offset="100%" stop-color="#F5B041" />
+    </linearGradient>
+    <!-- Drop Shadow Filter -->
+    <filter id="logoShadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="8" stdDeviation="6" flood-color="#102a43" flood-opacity="0.15" />
+    </filter>
+  </defs>
+
+  <g filter="url(#logoShadow)">
+    <!-- Base Shape: Rounded Hexagon/Shield -->
+    <path d="M100 20 L160 55 L160 125 L100 180 L40 125 L40 55 Z" fill="url(#techDarkGradient)" stroke="url(#viettelRedGradient)" stroke-width="6" stroke-linejoin="round" />
+    
+    <!-- Secondary inner shield outline -->
+    <path d="M100 32 L148 60 L148 118 L100 165 L52 118 L52 60 Z" fill="none" stroke="#F5F7FA" stroke-width="2" stroke-dasharray="4,4" opacity="0.6" />
+
+    <!-- CPU Center Body -->
+    <rect x="75" y="75" width="50" height="50" rx="8" fill="url(#viettelRedGradient)" />
+    
+    <!-- CPU Core Wrench & Screwdriver/Gears Detail -->
+    <path d="M92 90 L108 90 L108 110 L92 110 Z" fill="#ffffff" opacity="0.1" />
+    
+    <!-- CPU Wrench Graphic -->
+    <path d="M93 91 C88 91 85 95 85 100 C85 104 88 108 92 109 L92 115 C92 116 93 117 95 117 L105 117 C107 117 108 116 108 115 L108 109 C112 108 115 104 115 100 C115 95 112 91 107 91 L105 91 L105 96 C105 97 104 98 103 98 L97 98 C96 98 95 97 95 96 L95 91 Z M100 95 C102.8 95 105 97.2 105 100 C105 102.8 102.8 105 100 105 C97.2 105 95 102.8 95 100 C95 97.2 97.2 95 100 95 Z" fill="#ffffff" />
+    
+    <!-- CPU Pins/Lines connecting to center -->
+    <!-- Top Pins -->
+    <line x1="88" y1="63" x2="88" y2="75" stroke="#ffffff" stroke-width="3" stroke-linecap="round" opacity="0.9" />
+    <line x1="100" y1="58" x2="100" y2="75" stroke="url(#goldGradient)" stroke-width="3" stroke-linecap="round" />
+    <line x1="112" y1="63" x2="112" y2="75" stroke="#ffffff" stroke-width="3" stroke-linecap="round" opacity="0.9" />
+    
+    <!-- Bottom Pins -->
+    <line x1="88" y1="125" x2="88" y2="137" stroke="#ffffff" stroke-width="3" stroke-linecap="round" opacity="0.9" />
+    <line x1="100" y1="125" x2="100" y2="142" stroke="url(#goldGradient)" stroke-width="3" stroke-linecap="round" />
+    <line x1="112" y1="125" x2="112" y2="137" stroke="#ffffff" stroke-width="3" stroke-linecap="round" opacity="0.9" />
+    
+    <!-- Left Pins -->
+    <line x1="63" y1="88" x2="75" y2="88" stroke="#ffffff" stroke-width="3" stroke-linecap="round" opacity="0.9" />
+    <line x1="58" y1="100" x2="75" y2="100" stroke="url(#goldGradient)" stroke-width="3" stroke-linecap="round" />
+    <line x1="63" y1="112" x2="75" y2="112" stroke="#ffffff" stroke-width="3" stroke-linecap="round" opacity="0.9" />
+    
+    <!-- Right Pins -->
+    <line x1="125" y1="88" x2="137" y2="88" stroke="#ffffff" stroke-width="3" stroke-linecap="round" opacity="0.9" />
+    <line x1="125" y1="100" x2="142" y2="100" stroke="url(#goldGradient)" stroke-width="3" stroke-linecap="round" />
+    <line x1="125" y1="112" x2="137" y2="112" stroke="#ffffff" stroke-width="3" stroke-linecap="round" opacity="0.9" />
+    
+    <!-- Tiny Circuit nodes -->
+    <circle cx="100" cy="53" r="3.5" fill="url(#goldGradient)" />
+    <circle cx="100" cy="147" r="3.5" fill="url(#goldGradient)" />
+    <circle cx="53" cy="100" r="3.5" fill="url(#goldGradient)" />
+    <circle cx="147" cy="100" r="3.5" fill="url(#goldGradient)" />
+    
+    <!-- Pulse Ring -->
+    <circle cx="100" cy="100" r="62" fill="none" stroke="url(#viettelRedGradient)" stroke-width="1" opacity="0.3" stroke-dasharray="10,15" />
+  </g>
+</svg>

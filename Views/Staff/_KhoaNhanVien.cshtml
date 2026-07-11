@@ -1,0 +1,84 @@
+@model SupportTicketSysterm.Models.NhanVienViewModel
+
+<!-- MODAL: XÁC NHẬN KHÓA TÀI KHOẢN -->
+<div id="lockStaffModal" class="vt-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="lockStaffModalTitle">
+    <div class="vt-modal" style="max-width: 550px;">
+        <div class="vt-modal-header">
+            <div class="vt-modal-header-title">
+                <div class="vt-modal-header-icon" style="background-color: rgba(239, 68, 68, 0.1); color: #EF4444;">
+                    <i class="fa-solid fa-user-lock"></i>
+                </div>
+                <div class="vt-modal-header-text">
+                    <h3 id="lockStaffModalTitle">Xác nhận khóa tài khoản</h3>
+                    <p>Bạn có chắc chắn muốn thay đổi trạng thái tài khoản nhân viên này?</p>
+                </div>
+            </div>
+            <button class="vt-modal-close" onclick="closeLockStaffModal()" aria-label="Đóng">
+                <i class="fa-solid fa-times"></i>
+            </button>
+        </div>
+        <div class="vt-modal-body">
+            <form asp-controller="Staff" asp-action="KhoaNhanVien" method="post" id="lockStaffForm" novalidate>
+                @Html.AntiForgeryToken()
+                <input type="hidden" id="lockStaffId" name="IdNhanVien" />
+                
+                <div class="d-flex align-items-center gap-3 p-3 mb-3" style="background-color: #f8fafc; border-radius: 12px;">
+                    <img id="lockStaffAvatar" src="https://ui-avatars.com/api/?name=Staff&background=EF4444&color=fff&size=80" 
+                         class="avatar-selector-preview mb-0" style="object-fit: cover; width: 70px; height: 70px; border-radius: 50%; border: 2px solid rgba(239, 68, 68, 0.2);" alt="Avatar">
+                    <div style="flex: 1; min-width: 0;">
+                        <h4 id="lockStaffName" class="mb-1 fw-bold text-dark text-truncate">—</h4>
+                        <div class="text-muted small mb-1"><i class="fa-solid fa-hashtag me-1"></i> <span id="lockStaffCode">—</span></div>
+                        <div class="text-muted small"><i class="fa-solid fa-user-shield me-1"></i> <span id="lockStaffRole">—</span></div>
+                    </div>
+                </div>
+
+                <div class="row g-3">
+                    <!-- Email -->
+                    <div class="col-md-6">
+                        <label class="vt-form-label"><i class="fa-solid fa-envelope me-1 text-muted"></i> Email</label>
+                        <div class="form-control-plaintext text-dark fw-medium ps-1" id="lockStaffEmail" style="word-break: break-all;">—</div>
+                    </div>
+
+                    <!-- Số điện thoại -->
+                    <div class="col-md-6">
+                        <label class="vt-form-label"><i class="fa-solid fa-phone me-1 text-muted"></i> Số điện thoại</label>
+                        <div class="form-control-plaintext text-dark fw-medium ps-1" id="lockStaffPhone">—</div>
+                    </div>
+
+                    <!-- Trạng thái hiện tại -->
+                    <div class="col-md-6">
+                        <label class="vt-form-label"><i class="fa-solid fa-circle-info me-1 text-muted"></i> Trạng thái hiện tại</label>
+                        <div class="ps-1 mt-1">
+                            <span id="lockStaffCurrentStatusBadge" class="badge"></span>
+                        </div>
+                    </div>
+
+                    <!-- Trạng thái mới -->
+                    <div class="col-md-6">
+                        <label asp-for="TrangThai" class="vt-form-label">Trạng thái mới <span>*</span></label>
+                        <select asp-for="TrangThai" id="lockStaffStatus" name="TrangThai" class="form-input-staff w-100" required>
+                            <option value="Hoạt động">Hoạt động</option>
+                            <option value="Tạm khóa">Tạm khóa</option>
+                        </select>
+                    </div>
+
+                    <!-- Warning Alert Banner -->
+                    <div class="col-12" id="lockStaffWarning" style="display: none;">
+                        <div class="alert alert-danger d-flex align-items-center gap-2 mb-0 py-2 px-3" style="border-radius: 8px;">
+                            <i class="fa-solid fa-circle-exclamation text-danger fs-5"></i>
+                            <span class="small fw-semibold text-danger">Tài khoản sẽ không thể đăng nhập vào hệ thống.</span>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="vt-modal-footer">
+            <button type="button" class="vt-btn cancel" onclick="closeLockStaffModal()">
+                <i class="fa-solid fa-times me-1"></i> Hủy
+            </button>
+            <button type="submit" form="lockStaffForm" class="vt-btn save" style="background-color: var(--vt-red); border-color: var(--vt-red); color: white;">
+                <i class="bi bi-floppy-disk me-1"></i> Lưu thay đổi
+            </button>
+        </div>
+    </div>
+</div>

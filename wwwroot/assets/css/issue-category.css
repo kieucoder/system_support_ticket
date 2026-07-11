@@ -475,8 +475,36 @@ body {
 }
 
 /* HERO SECTION */
-/* HERO SECTION */
-/* Removed old hero-section layout styles to inherit from style.css */
+.hero-section {
+    background: 
+        radial-gradient(circle at 10% 20%, rgba(230, 0, 18, 0.05) 0%, transparent 60%),
+        radial-gradient(circle at 90% 80%, rgba(230, 0, 18, 0.02) 0%, transparent 60%),
+        linear-gradient(rgba(0, 0, 0, 0.003) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 0, 0, 0.003) 1px, transparent 1px),
+        linear-gradient(135deg, #eef2f6 0%, #f8fafc 50%, #ffe4e6 100%);
+    background-size: 100% 100%, 100% 100%, 32px 32px, 32px 32px, 100% 100%;
+    color: #1f2937;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    z-index: 5;
+    border-bottom: 1px solid rgba(230, 0, 18, 0.08);
+    
+    /* Responsive sizing based on guidelines */
+    min-height: 55vh;
+    min-height: clamp(480px, 55vh, 520px);
+    max-height: 650px;
+    padding-top: 110px;
+    padding-bottom: 70px;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+}
 
 .hero-badge {
     display: inline-flex;
@@ -495,7 +523,24 @@ body {
     width: fit-content;
 }
 
-/* Title Styling and Description text removed to inherit from style.css */
+.hero-title {
+    font-size: clamp(2.2rem, 3.8vw, 2.8rem);
+    font-weight: 850;
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+    background: linear-gradient(180deg, #111827 0%, #374151 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 16px;
+}
+
+.hero-desc {
+    font-size: 1.05rem;
+    color: #4b5563;
+    max-width: 540px;
+    line-height: 1.6;
+    margin-bottom: 24px;
+}
 
 /* Hero Search Bar */
 .hero-search-wrapper {
@@ -1352,8 +1397,20 @@ body {
 
 /* RESPONSIVE LAYOUT MEDIA QUERIES */
 
-/* RESPONSIVE LAYOUT MEDIA QUERIES */
-/* Removed conflicting hero-section dimension limits to support fullscreen height of landing page */
+/* --- Laptop Screens (1200px to 1399.98px) --- */
+@media (min-width: 1200px) and (max-width: 1399.98px) {
+    .hero-section {
+        min-height: clamp(450px, 55vh, 500px);
+        padding-top: 110px;
+        padding-bottom: 70px;
+    }
+
+    .hero-banner-svg {
+        max-width: 380px;
+    }
+}
+
+/* --- Tablet / Mobile Landscape (< 1200px) --- */
 @media (max-width: 1199.98px) {
     .navbar-hamburger {
         display: flex;
@@ -1363,11 +1420,20 @@ body {
         display: none !important;
     }
 
+    .hero-section {
+        padding-top: 100px;
+        padding-bottom: 60px;
+        min-height: 400px;
+        text-align: center;
+    }
 
     .hero-badge {
         margin-bottom: 12px;
     }
 
+    .hero-title {
+        font-size: 2.2rem;
+    }
 
     .hero-desc {
         margin: 0 auto 20px;
@@ -1378,6 +1444,9 @@ body {
         margin-right: auto;
     }
 
+    .hero-banner-wrapper {
+        margin-top: 40px;
+    }
 
     .category-grid {
         grid-template-columns: repeat(2, 1fr);
@@ -1385,7 +1454,21 @@ body {
     }
 }
 
+/* --- Hide illustration SVG on Tablets & Mobiles to preserve spacing --- */
+@media (max-width: 991.98px) {
+    .hero-banner-wrapper {
+        display: none !important;
+    }
+}
 
+/* --- Mobile portrait (< 768px) --- */
+@media (max-width: 767.98px) {
+    .hero-section {
+        padding-top: 100px;
+        padding-bottom: 60px;
+        min-height: clamp(320px, 55vh, 380px);
+    }
+}
 @media (max-width: 768px) {
     .top-header {
         display: none;

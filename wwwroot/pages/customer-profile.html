@@ -276,216 +276,153 @@
     </div>
 
     <!-- HERO SECTION -->
-    <section class="hero-section p-0" id="heroSection">
-        <div class="hero-carousel">
-            <div class="carousel-inner">
-                <div class="carousel-item active"
-                    style="background-image: url('../assets/images/hero_smart_home.png');">
-                    <div class="hero-carousel-overlay"></div>
-                    <div class="hero-carousel-content">
-                        <div class="container">
-                            <div class="row">
-                                <div class="col-lg-8 col-md-10 col-12 text-start">
-                                    <!-- Breadcrumb Navigation -->
-                                    <nav aria-label="breadcrumb" class="hero-breadcrumb">
-                                        <ol class="breadcrumb m-0" itemscope
-                                            itemtype="https://schema.org/BreadcrumbList">
-                                            <li class="breadcrumb-item" itemprop="itemListElement" itemscope
-                                                itemtype="https://schema.org/ListItem">
-                                                <a href="../index.html" itemprop="item"
-                                                    class="text-decoration-none d-inline-flex align-items-center">
-                                                    <i class="fa-solid fa-house-door-fill me-1"></i>
-                                                    <span itemprop="name">Trang chủ</span>
-                                                </a>
-                                                <meta itemprop="position" content="1" />
-                                            </li>
-                                            <li class="breadcrumb-item active" itemprop="itemListElement" itemscope
-                                                itemtype="https://schema.org/ListItem" aria-current="page">
-                                                <span itemprop="name">Thông tin cá nhân</span>
-                                                <meta itemprop="position" content="2" />
-                                            </li>
-                                        </ol>
-                                    </nav>
+    <section class="hero-section">
+        <div class="container hero-content">
+            <div class="row align-items-center g-5"
+                style="display: flex; flex-wrap: wrap; width: 100%; margin: 0; align-items: center;">
 
-                                    <!-- Badge -->
-                                    <span class="hero-badge animate-fade-up">
-                                        <i class="bi bi-person-check-fill me-1"></i> Cổng thông tin khách hàng
-                                    </span>
+                <!-- Left Column (Text & CTAs) -->
+                <div class="col-left" style="flex: 1 1 500px; padding: 0 15px; text-align: left;">
+                    <!-- Breadcrumb Navigation -->
+                    <nav aria-label="breadcrumb" class="hero-breadcrumb">
+                        <ol class="breadcrumb m-0"
+                            style="display: flex; list-style: none; padding: 0; margin: 0; gap: 0.5rem;">
+                            <li class="breadcrumb-item">
+                                <a href="../index.html"
+                                    style="color: #4b5563; text-decoration: none; display: inline-flex; align-items: center; gap: 0.25rem;">
+                                    <i class="fa-solid fa-house-door-fill"></i> Trang chủ
+                                </a>
+                            </li>
+                            <li class="breadcrumb-item active" aria-current="page"
+                                style="color: #0f1115; font-weight: 600;">
+                                Thông tin cá nhân
+                            </li>
+                        </ol>
+                    </nav>
 
-                                    <!-- Title -->
-                                    <h1 class="hero-title animate-fade-up delay-1">Hồ Sơ Cá Nhân</h1>
+                    <!-- Badge -->
+                    <span class="hero-badge">
+                        <i class="bi bi-person-check-fill me-1"></i> Cổng thông tin khách hàng
+                    </span>
 
-                                    <!-- Description -->
-                                    <p class="hero-desc animate-fade-up delay-2">
-                                        Quản lý thông tin tài khoản, theo dõi tiến độ xử lý phiếu kỹ thuật, lịch hẹn và
-                                        các gói dịch vụ Viettel Telecom của bạn.
-                                    </p>
+                    <!-- Title -->
+                    <h1 class="hero-title text-uppercase">Hồ Sơ Cá Nhân</h1>
 
-                                    <!-- CTA Buttons -->
-                                    <div class="hero-buttons animate-fade-up delay-3">
-                                        <a href="#my-tickets" class="btn btn-create-ticket-custom btn-ripple">
-                                            <i class="bi bi-ticket-detailed me-1"></i> Phiếu Của Tôi
-                                        </a>
-                                        <a href="#my-appointments" class="btn btn-outline-light-custom btn-ripple">
-                                            <i class="bi bi-calendar2-week me-1"></i> Lịch Hẹn Hỗ Trợ
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    <!-- Description -->
+                    <p class="hero-desc">
+                        Quản lý thông tin tài khoản, theo dõi tiến độ xử lý phiếu kỹ thuật, lịch hẹn và các
+                        gói dịch vụ Viettel Telecom của bạn.
+                    </p>
+
+                    <!-- CTA Buttons -->
+                    <div class="hero-cta-buttons"
+                        style="display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 1.5rem;">
+                        <a href="#my-tickets" class="btn btn-hero-create px-4 py-2"
+                            style="text-decoration: none;">
+                            <i class="bi bi-ticket-detailed me-1"></i> Phiếu Của Tôi
+                        </a>
+                        <a href="#my-appointments" class="btn btn-hero-contact px-4 py-2"
+                            style="text-decoration: none;">
+                            <i class="bi bi-calendar2-week me-1"></i> Lịch Hẹn Hỗ Trợ
+                        </a>
                     </div>
                 </div>
-                =======
-                <section class="hero-section">
-                    <div class="container hero-content">
-                        <div class="row align-items-center g-5"
-                            style="display: flex; flex-wrap: wrap; width: 100%; margin: 0; align-items: center;">
 
-                            <!-- Left Column (Text & CTAs) -->
-                            <div class="col-left" style="flex: 1 1 500px; padding: 0 15px; text-align: left;">
-                                <!-- Breadcrumb Navigation -->
-                                <nav aria-label="breadcrumb" class="hero-breadcrumb">
-                                    <ol class="breadcrumb m-0"
-                                        style="display: flex; list-style: none; padding: 0; margin: 0; gap: 0.5rem;">
-                                        <li class="breadcrumb-item">
-                                            <a href="../index.html"
-                                                style="color: #4b5563; text-decoration: none; display: inline-flex; align-items: center; gap: 0.25rem;">
-                                                <i class="fa-solid fa-house-door-fill"></i> Trang chủ
-                                            </a>
-                                        </li>
-                                        <li class="breadcrumb-item active" aria-current="page"
-                                            style="color: #0f1115; font-weight: 600;">
-                                            Thông tin cá nhân
-                                        </li>
-                                    </ol>
-                                </nav>
+                <!-- Right Column (Vector Illustration) -->
+                <div class="col-right hero-banner-wrapper"
+                    style="flex: 1 1 400px; padding: 0 15px; display: flex; justify-content: center; align-items: center;">
+                    <!-- SVG illustration representing profile dashboard -->
+                    <svg class="hero-banner-svg" viewBox="0 0 500 400" xmlns="http://www.w3.org/2000/svg"
+                        aria-label="Customer Profile Tech Illustration">
+                        <defs>
+                            <linearGradient id="svgGradRed" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#ee0033" />
+                                <stop offset="100%" stop-color="#ff4d6d" />
+                            </linearGradient>
+                            <linearGradient id="svgGradDarkGray" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#1f2937" />
+                                <stop offset="100%" stop-color="#111827" />
+                            </linearGradient>
+                        </defs>
+                        <!-- Shapes & Decorative Glow -->
+                        <circle cx="250" cy="200" r="160" fill="url(#svgGradRed)" opacity="0.05" />
+                        <rect x="360" y="50" width="80" height="80" rx="16" fill="url(#svgGradRed)"
+                            opacity="0.08" transform="rotate(15 400 90)" />
 
-                                <!-- Badge -->
-                                <span class="hero-badge">
-                                    <i class="bi bi-person-check-fill me-1"></i> Cổng thông tin khách hàng
-                                </span>
+                        <!-- Main Profile Dashboard representation -->
+                        <rect x="80" y="60" width="340" height="280" rx="24" fill="#ffffff"
+                            stroke="rgba(15, 17, 21, 0.05)" stroke-width="2"
+                            filter="drop-shadow(0 20px 40px rgba(0,0,0,0.06))" />
+                        <!-- Header bar of dashboard -->
+                        <path
+                            d="M80 84 C80 70.74, 90.74 60, 104 60 L396 60 C409.26 60, 420 70.74, 420 84 L420 100 L80 100 Z"
+                            fill="url(#svgGradDarkGray)" />
+                        <!-- Window buttons -->
+                        <circle cx="105" cy="80" r="5" fill="#ee0033" />
+                        <circle cx="120" cy="80" r="5" fill="#eab308" />
+                        <circle cx="135" cy="80" r="5" fill="#10b981" />
+                        <!-- User title in browser window -->
+                        <rect x="160" y="74" width="180" height="12" rx="6" fill="rgba(255,255,255,0.15)" />
 
-                                <!-- Title -->
-                                <h1 class="hero-title text-uppercase">Hồ Sơ Cá Nhân</h1>
+                        <!-- Avatar Representation -->
+                        <circle cx="160" cy="170" r="45" fill="url(#svgGradRed)" />
+                        <!-- Avatar Inner symbol (User icon shape) -->
+                        <circle cx="160" cy="155" r="16" fill="#ffffff" />
+                        <path d="M130 195 C130 180, 190 180, 190 195 Z" fill="#ffffff" />
 
-                                <!-- Description -->
-                                <p class="hero-desc">
-                                    Quản lý thông tin tài khoản, theo dõi tiến độ xử lý phiếu kỹ thuật, lịch hẹn và các
-                                    gói dịch vụ
-                                    Viettel Telecom của bạn.
-                                </p>
+                        <!-- Account Status Badge in SVG -->
+                        <rect x="120" y="230" width="80" height="20" rx="10" fill="#d1fae5" />
+                        <rect x="135" y="236" width="50" height="8" rx="4" fill="#065f46" />
 
-                                <!-- CTA Buttons -->
-                                <div class="hero-cta-buttons"
-                                    style="display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 1.5rem;">
-                                    <a href="#my-tickets" class="btn btn-hero-create px-4 py-2"
-                                        style="text-decoration: none;">
-                                        <i class="bi bi-ticket-detailed me-1"></i> Phiếu Của Tôi
-                                    </a>
-                                    <a href="#my-appointments" class="btn btn-hero-contact px-4 py-2"
-                                        style="text-decoration: none;">
-                                        <i class="bi bi-calendar2-week me-1"></i> Lịch Hẹn Hỗ Trợ
-                                    </a>
-                                </div>
-                            </div>
+                        <!-- User Info Form Lines on the Right side of the window -->
+                        <!-- Input 1 Title -->
+                        <rect x="235" y="130" width="80" height="8" rx="3" fill="#ee0033" opacity="0.8" />
+                        <rect x="235" y="145" width="145" height="18" rx="6" fill="#f8fafc" stroke="#e2e8f0"
+                            stroke-width="1.5" />
+                        <rect x="245" y="150" width="100" height="8" rx="4" fill="#94a3b8" />
 
-                            <!-- Right Column (Vector Illustration) -->
-                            <div class="col-right hero-banner-wrapper"
-                                style="flex: 1 1 400px; padding: 0 15px; display: flex; justify-content: center; align-items: center;">
-                                <!-- SVG illustration representing profile dashboard -->
-                                <svg class="hero-banner-svg" viewBox="0 0 500 400" xmlns="http://www.w3.org/2000/svg"
-                                    aria-label="Customer Profile Tech Illustration">
-                                    <defs>
-                                        <linearGradient id="svgGradRed" x1="0%" y1="0%" x2="100%" y2="100%">
-                                            <stop offset="0%" stop-color="#ee0033" />
-                                            <stop offset="100%" stop-color="#ff4d6d" />
-                                        </linearGradient>
-                                        <linearGradient id="svgGradDarkGray" x1="0%" y1="0%" x2="100%" y2="100%">
-                                            <stop offset="0%" stop-color="#1f2937" />
-                                            <stop offset="100%" stop-color="#111827" />
-                                        </linearGradient>
-                                    </defs>
-                                    <!-- Shapes & Decorative Glow -->
-                                    <circle cx="250" cy="200" r="160" fill="url(#svgGradRed)" opacity="0.05" />
-                                    <rect x="360" y="50" width="80" height="80" rx="16" fill="url(#svgGradRed)"
-                                        opacity="0.08" transform="rotate(15 400 90)" />
+                        <!-- Input 2 Title -->
+                        <rect x="235" y="180" width="80" height="8" rx="3" fill="#475569" />
+                        <rect x="235" y="195" width="145" height="18" rx="6" fill="#f8fafc" stroke="#e2e8f0"
+                            stroke-width="1.5" />
+                        <rect x="245" y="200" width="80" height="8" rx="4" fill="#94a3b8" />
 
-                                    <!-- Main Profile Dashboard representation -->
-                                    <rect x="80" y="60" width="340" height="280" rx="24" fill="#ffffff"
-                                        stroke="rgba(15, 17, 21, 0.05)" stroke-width="2"
-                                        filter="drop-shadow(0 20px 40px rgba(0,0,0,0.06))" />
-                                    <!-- Header bar of dashboard -->
-                                    <path
-                                        d="M80 84 C80 70.74, 90.74 60, 104 60 L396 60 C409.26 60, 420 70.74, 420 84 L420 100 L80 100 Z"
-                                        fill="url(#svgGradDarkGray)" />
-                                    <!-- Window buttons -->
-                                    <circle cx="105" cy="80" r="5" fill="#ee0033" />
-                                    <circle cx="120" cy="80" r="5" fill="#eab308" />
-                                    <circle cx="135" cy="80" r="5" fill="#10b981" />
-                                    <!-- User title in browser window -->
-                                    <rect x="160" y="74" width="180" height="12" rx="6" fill="rgba(255,255,255,0.15)" />
+                        <!-- Input 3 Title -->
+                        <rect x="235" y="230" width="80" height="8" rx="3" fill="#475569" />
+                        <rect x="235" y="245" width="145" height="18" rx="6" fill="#f8fafc" stroke="#e2e8f0"
+                            stroke-width="1.5" />
+                        <rect x="245" y="250" width="110" height="8" rx="4" fill="#94a3b8" />
 
-                                    <!-- Avatar Representation -->
-                                    <circle cx="160" cy="170" r="45" fill="url(#svgGradRed)" />
-                                    <!-- Avatar Inner symbol (User icon shape) -->
-                                    <circle cx="160" cy="155" r="16" fill="#ffffff" />
-                                    <path d="M130 195 C130 180, 190 180, 190 195 Z" fill="#ffffff" />
+                        <!-- Footer/Action buttons in dashboard representation -->
+                        <rect x="110" y="290" width="120" height="28" rx="8" fill="url(#svgGradRed)" />
+                        <rect x="135" y="300" width="70" height="8" rx="4" fill="#ffffff" />
 
-                                    <!-- Account Status Badge in SVG -->
-                                    <rect x="120" y="230" width="80" height="20" rx="10" fill="#d1fae5" />
-                                    <rect x="135" y="236" width="50" height="8" rx="4" fill="#065f46" />
+                        <rect x="250" y="290" width="120" height="28" rx="8" fill="#f1f5f9" stroke="#cbd5e1"
+                            stroke-width="1" />
+                        <rect x="275" y="300" width="70" height="8" rx="4" fill="#475569" />
 
-                                    <!-- User Info Form Lines on the Right side of the window -->
-                                    <!-- Input 1 Title -->
-                                    <rect x="235" y="130" width="80" height="8" rx="3" fill="#ee0033" opacity="0.8" />
-                                    <rect x="235" y="145" width="145" height="18" rx="6" fill="#f8fafc" stroke="#e2e8f0"
-                                        stroke-width="1.5" />
-                                    <rect x="245" y="150" width="100" height="8" rx="4" fill="#94a3b8" />
+                        <!-- Floating check badge -->
+                        <g transform="translate(350, 110)">
+                            <circle cx="20" cy="20" r="20" fill="#10b981"
+                                filter="drop-shadow(0 4px 10px rgba(16,185,129,0.3))" />
+                            <path d="M12 20 L17 25 L28 14" stroke="#ffffff" stroke-width="3" fill="none"
+                                stroke-linecap="round" stroke-linejoin="round" />
+                        </g>
 
-                                    <!-- Input 2 Title -->
-                                    <rect x="235" y="180" width="80" height="8" rx="3" fill="#475569" />
-                                    <rect x="235" y="195" width="145" height="18" rx="6" fill="#f8fafc" stroke="#e2e8f0"
-                                        stroke-width="1.5" />
-                                    <rect x="245" y="200" width="80" height="8" rx="4" fill="#94a3b8" />
-
-                                    <!-- Input 3 Title -->
-                                    <rect x="235" y="230" width="80" height="8" rx="3" fill="#475569" />
-                                    <rect x="235" y="245" width="145" height="18" rx="6" fill="#f8fafc" stroke="#e2e8f0"
-                                        stroke-width="1.5" />
-                                    <rect x="245" y="250" width="110" height="8" rx="4" fill="#94a3b8" />
-
-                                    <!-- Footer/Action buttons in dashboard representation -->
-                                    <rect x="110" y="290" width="120" height="28" rx="8" fill="url(#svgGradRed)" />
-                                    <rect x="135" y="300" width="70" height="8" rx="4" fill="#ffffff" />
-
-                                    <rect x="250" y="290" width="120" height="28" rx="8" fill="#f1f5f9" stroke="#cbd5e1"
-                                        stroke-width="1" />
-                                    <rect x="275" y="300" width="70" height="8" rx="4" fill="#475569" />
-
-                                    <!-- Floating check badge -->
-                                    <g transform="translate(350, 110)">
-                                        <circle cx="20" cy="20" r="20" fill="#10b981"
-                                            filter="drop-shadow(0 4px 10px rgba(16,185,129,0.3))" />
-                                        <path d="M12 20 L17 25 L28 14" stroke="#ffffff" stroke-width="3" fill="none"
-                                            stroke-linecap="round" stroke-linejoin="round" />
-                                    </g>
-
-                                    <!-- Floating gear representing settings -->
-                                    <g transform="translate(60, 240)">
-                                        <circle cx="20" cy="20" r="15" fill="#f8fafc" stroke="#e2e8f0"
-                                            stroke-width="1.5" filter="drop-shadow(0 4px 10px rgba(0,0,0,0.05))" />
-                                        <path
-                                            d="M20 12 L20 15 M20 25 L20 28 M12 20 L15 20 M25 20 L28 20 M14 14 L16 16 M24 24 L26 26 M14 26 L16 24 M24 14 L26 16"
-                                            stroke="#4b5563" stroke-width="2" stroke-linecap="round" />
-                                        <circle cx="20" cy="20" r="4" fill="#4b5563" />
-                                    </g>
-                                </svg>
-                            </div>
-
-                            >>>>>>> 59a5e6f64da6c8eb44454bf22a5574b208c2f2b3
-                        </div>
-                    </div>
-                </section>
+                        <!-- Floating gear representing settings -->
+                        <g transform="translate(60, 240)">
+                            <circle cx="20" cy="20" r="15" fill="#f8fafc" stroke="#e2e8f0"
+                                stroke-width="1.5" filter="drop-shadow(0 4px 10px rgba(0,0,0,0.05))" />
+                            <path
+                                d="M20 12 L20 15 M20 25 L20 28 M12 20 L15 20 M25 20 L28 20 M14 14 L16 16 M24 24 L26 26 M14 26 L16 24 M24 14 L26 16"
+                                stroke="#4b5563" stroke-width="2" stroke-linecap="round" />
+                            <circle cx="20" cy="20" r="4" fill="#4b5563" />
+                        </g>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </section>
 
                 <!-- Main Workspace -->
                 <main class="profile-workspace">

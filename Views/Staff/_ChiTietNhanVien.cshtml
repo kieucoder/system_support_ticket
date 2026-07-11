@@ -1,0 +1,96 @@
+@model SupportTicketSysterm.Models.NhanVienViewModel
+
+<!-- MODAL: CHI TIẾT NHÂN VIÊN -->
+<div id="detailStaffModal" class="vt-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="detailStaffModalTitle">
+    <div class="vt-modal" style="max-width: 750px;">
+        <div class="vt-modal-header">
+            <div class="vt-modal-header-title">
+                <div class="vt-modal-header-icon" style="background-color: rgba(16, 185, 129, 0.1); color: #10B981;">
+                    <i class="fa-solid fa-id-card"></i>
+                </div>
+                <div class="vt-modal-header-text">
+                    <h3 id="detailStaffModalTitle">Chi Tiết Nhân Viên</h3>
+                    <p>Thông tin chi tiết nhân sự hỗ trợ kỹ thuật</p>
+                </div>
+            </div>
+            <button class="vt-modal-close" onclick="closeDetailStaffModal()" aria-label="Đóng">
+                <i class="fa-solid fa-times"></i>
+            </button>
+        </div>
+        <div class="vt-modal-body">
+            <div class="row g-3">
+                <!-- Avatar Preview -->
+                <div class="col-12 text-center mb-3">
+                    <div class="avatar-selector">
+                        <img id="detStaffAvatar"
+                             src="https://ui-avatars.com/api/?name=Staff&background=10B981&color=fff&size=100"
+                             class="avatar-selector-preview" style="object-fit: cover; width: 100px; height: 100px; border-radius: 50%; border: 3px solid rgba(16, 185, 129, 0.2);" alt="Avatar Preview">
+                    </div>
+                </div>
+                
+                <!-- Mã nhân viên -->
+                <div class="col-md-6">
+                    <label class="vt-form-label"><i class="fa-solid fa-hashtag me-1 text-muted"></i> Mã nhân viên</label>
+                    <input type="text" id="detStaffCode" class="form-input-staff w-100" style="background-color: #f8fafc; cursor: not-allowed;" readonly>
+                </div>
+                
+                <!-- Họ tên -->
+                <div class="col-md-6">
+                    <label class="vt-form-label"><i class="fa-solid fa-user me-1 text-muted"></i> Họ và tên</label>
+                    <input type="text" id="detStaffName" class="form-input-staff w-100" style="background-color: #f8fafc; cursor: not-allowed;" readonly>
+                </div>
+                
+                <!-- Email -->
+                <div class="col-md-6">
+                    <label class="vt-form-label"><i class="fa-solid fa-envelope me-1 text-muted"></i> Email</label>
+                    <input type="text" id="detStaffEmail" class="form-input-staff w-100" style="background-color: #f8fafc; cursor: not-allowed;" readonly>
+                </div>
+                
+                <!-- Số điện thoại -->
+                <div class="col-md-6">
+                    <label class="vt-form-label"><i class="fa-solid fa-phone me-1 text-muted"></i> Số điện thoại</label>
+                    <input type="text" id="detStaffPhone" class="form-input-staff w-100" style="background-color: #f8fafc; cursor: not-allowed;" readonly>
+                </div>
+                
+                <!-- Địa chỉ -->
+                <div class="col-12">
+                    <label class="vt-form-label"><i class="fa-solid fa-location-dot me-1 text-muted"></i> Địa chỉ làm việc</label>
+                    <input type="text" id="detStaffAddress" class="form-input-staff w-100" style="background-color: #f8fafc; cursor: not-allowed;" readonly>
+                </div>
+                
+                <!-- Tên đăng nhập -->
+                <div class="col-md-6">
+                    <label class="vt-form-label"><i class="fa-solid fa-user-gear me-1 text-muted"></i> Tên đăng nhập</label>
+                    <input type="text" id="detStaffUsername" class="form-input-staff w-100" style="background-color: #f8fafc; cursor: not-allowed;" readonly>
+                </div>
+                
+                <!-- Ngày tạo -->
+                <div class="col-md-6">
+                    <label class="vt-form-label"><i class="fa-solid fa-calendar-days me-1 text-muted"></i> Ngày tham gia</label>
+                    <input type="text" id="detStaffCreatedDate" class="form-input-staff w-100" style="background-color: #f8fafc; cursor: not-allowed;" readonly>
+                </div>
+                
+                <!-- Vai trò -->
+                <div class="col-md-6">
+                    <label class="vt-form-label"><i class="fa-solid fa-user-shield me-1 text-muted"></i> Vai trò</label>
+                    <div class="form-input-staff w-100 d-flex align-items-center" style="background-color: #f8fafc; min-height: 38px; cursor: not-allowed;">
+                        <span id="detStaffRoleBadge" class="badge"></span>
+                    </div>
+                </div>
+                
+                <!-- Trạng thái -->
+                <div class="col-md-6">
+                    <label class="vt-form-label"><i class="fa-solid fa-circle-check me-1 text-muted"></i> Trạng thái</label>
+                    <div class="form-input-staff w-100 d-flex align-items-center" style="background-color: #f8fafc; min-height: 38px; cursor: not-allowed;">
+                        <span id="detStaffStatusBadge" class="badge"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="vt-modal-footer">
+            <button type="button" class="vt-btn cancel" onclick="closeDetailStaffModal()">
+                <i class="fa-solid fa-times me-1"></i> Đóng
+            </button>
+        </div>
+    </div>
+</div>

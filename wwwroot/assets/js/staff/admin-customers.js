@@ -1,25 +1,74 @@
 /**
  * admin-customers.js — TechSupport Viettel Admin
- * Hỗ trợ giao diện, Client-side validation, hiển thị Modal và gọi AJAX lấy chi tiết từ Backend
+ * Customers CRUD, history lookup, status locking, and pagination controller
  */
 'use strict';
 
 /* ══════════════════════════════════════════
-   STATE & MODALS
+   CONFIG & STORAGE KEYS
    ══════════════════════════════════════════ */
+const CUSTOMERS_STORAGE_KEY = 'viettel_customers';
+const TICKETS_STORAGE_KEY = 'viettel_tickets';
+const APPOINTMENTS_STORAGE_KEY = 'viettel_appointments';
+
+/* ══════════════════════════════════════════
+   STATE
+   ══════════════════════════════════════════ */
+let customersList = [];
+let ticketsList = [];
+let appointmentsList = [];
+
+let filteredCustomers = [];
+let currentPage = 1;
+let pageSize = 10; // default entries per page
+
+let selectedCustomerId = null;
+let activeHistoryCustomerId = null; // tracking which customer's history is open
+let filteredHistoryTickets = []; // current history tickets list being filtered
+
+// Modals
 let addCustomerModal = null;
 let viewCustomerModal = null;
 let ticketHistoryModal = null;
 let ticketDetailsModal = null;
 
-// Lưu trữ ID khách hàng đang mở lịch sử phiếu
-window.activeHistoryCustomerId = null;
+/* ══════════════════════════════════════════
+   LOAD DATA & SEED FALLBACKS
+   ══════════════════════════════════════════ */
+function loadCustomersData() {
+    const rawCustomers = localStorage.getItem(CUSTOMERS_STORAGE_KEY);
+    const rawTickets = localStorage.getItem(TICKETS_STORAGE_KEY);
+    const rawAppointments = localStorage.getItem(APPOINTMENTS_STORAGE_KEY);
+
+    ticketsList = rawTickets ? JSON.parse(rawTickets) : [];
+    appointmentsList = rawAppointments ? JSON.parse(rawAppointments) : [];
+    customersList = rawCustomers ? JSON.parse(rawCustomers) : [];
+
+    // Fallbacks if localStorage is empty
+    if (!customersList.length) {
+        customersList = [
+            { id: 'KH001', hoTen: 'Trần Quốc Bảo', soDienThoai: '0986123456', email: 'bao.tq@gmail.com', diaChi: 'Số 1 Giang Văn Minh, Ba Đình, Hà Nội', ngaySinh: '1990-05-12', tenDangNhap: 'baotq', trangThai: 'Hoạt động', ngayTao: '10/01/2026' },
+            { id: 'KH002', hoTen: 'Nguyễn Thị Hoa', soDienThoai: '0975888999', email: 'hoa.nt@gmail.com', diaChi: 'Ngõ 106 Hoàng Quốc Việt, Cầu Giấy, Hà Nội', ngaySinh: '1995-08-20', tenDangNhap: 'hoant', trangThai: 'Hoạt động', ngayTao: '15/01/2026' },
+            { id: 'KH003', hoTen: 'Phạm Minh Tuấn', soDienThoai: '0912345678', email: 'tuan.pm@gmail.com', diaChi: 'Tòa nhà Viettel, Trần Hưng Đạo, Quận 1, TP. HCM', ngaySinh: '1988-11-03', tenDangNhap: 'tuanpm', trangThai: 'Hoạt động', ngayTao: '20/01/2026' },
+            { id: 'KH004', hoTen: 'Lê Hoàng Hải', soDienThoai: '0963111222', email: 'hai.lh@gmail.com', diaChi: '156 Lê Lợi, Hải Châu, Đà Nẵng', ngaySinh: '1992-03-25', tenDangNhap: 'hailh', trangThai: 'Hoạt động', ngayTao: '28/01/2026' },
+            { id: 'KH005', hoTen: 'Vũ Minh Đức', soDienThoai: '0988456123', email: 'duc.vm@gmail.com', diaChi: 'Số 5 Chùa Bộc, Đống Đa, Hà Nội', ngaySinh: '1994-07-15', tenDangNhap: 'ducvm', trangThai: 'Đã khóa', ngayTao: '05/02/2026' },
+            { id: 'KH006', hoTen: 'Nguyễn Văn Đạt', soDienThoai: '0979555666', email: 'dat.nv@gmail.com', diaChi: '24 Quang Trung, Hà Đông, Hà Nội', ngaySinh: '1991-09-30', tenDangNhap: 'datnv', trangThai: 'Hoạt động', ngayTao: '12/02/2026' },
+            { id: 'KH007', hoTen: 'Đỗ Thị Mai', soDienThoai: '0968999888', email: 'mai.dt@gmail.com', diaChi: '88 Nguyễn Trãi, Thanh Xuân, Hà Nội', ngaySinh: '1996-01-18', tenDangNhap: 'maidt', trangThai: 'Hoạt động', ngayTao: '18/02/2026' },
+            { id: 'KH008', hoTen: 'Hoàng Anh Tuấn', soDienThoai: '0977222111', email: 'tuan.ha@gmail.com', diaChi: '12 Trần Phú, Ngô Quyền, Hải Phòng', ngaySinh: '1985-04-05', tenDangNhap: 'tuanha', trangThai: 'Hoạt động', ngayTao: '20/02/2026' },
+            { id: 'KH009', hoTen: 'Bùi Minh Trí', soDienThoai: '0987555444', email: 'tri.bm@gmail.com', diaChi: '45 Nguyễn Văn Linh, Long Biên, Hà Nội', ngaySinh: '1989-10-12', tenDangNhap: 'tribm', trangThai: 'Đã khóa', ngayTao: '25/02/2026' },
+            { id: 'KH010', hoTen: 'Nguyễn Bích Ngọc', soDienThoai: '0915666777', email: 'ngoc.nb@gmail.com', diaChi: 'Tòa nhà Landmark 81, Bình Thạnh, TP. HCM', ngaySinh: '1993-12-08', tenDangNhap: 'ngocnb', trangThai: 'Hoạt động', ngayTao: '28/02/2026' },
+            { id: 'KH011', hoTen: 'Trần Văn Cường', soDienThoai: '0981999222', email: 'cuong.tv@gmail.com', diaChi: 'Số 10 Hùng Vương, Ba Đình, Hà Nội', ngaySinh: '1987-02-14', tenDangNhap: 'cuongtv', trangThai: 'Hoạt động', ngayTao: '05/06/2026' },
+            { id: 'KH012', hoTen: 'Lê Thị Thủy', soDienThoai: '0973444555', email: 'thuy.lt@gmail.com', diaChi: '15 Trần Phú, Hà Đông, Hà Nội', ngaySinh: '1998-06-02', tenDangNhap: 'thuylt', trangThai: 'Hoạt động', ngayTao: '08/06/2026' }
+        ];
+        localStorage.setItem(CUSTOMERS_STORAGE_KEY, JSON.stringify(customersList));
+    }
+}
 
 /* ══════════════════════════════════════════
-   INITIALIZATION
+   DOM POPULATION & INITIALIZATION
    ══════════════════════════════════════════ */
-document.addEventListener('DOMContentLoaded', function () {
-    // Khởi tạo các Bootstrap Modals
+function initCustomersDom() {
+    // 1. Instantiating Bootstrap Modals
     const addCustomerEl = document.getElementById('addCustomerModal');
     const viewCustomerEl = document.getElementById('viewCustomerModal');
     const ticketHistoryEl = document.getElementById('ticketHistoryModal');
@@ -30,126 +79,442 @@ document.addEventListener('DOMContentLoaded', function () {
     if (ticketHistoryEl) ticketHistoryModal = new bootstrap.Modal(ticketHistoryEl);
     if (ticketDetailsEl) ticketDetailsModal = new bootstrap.Modal(ticketDetailsEl);
 
-    // Kích hoạt Tooltips
-    initializeTooltips();
+    // 2. Page size dropdown listener
+    const pageSizeSel = document.getElementById('pageSizeSelect');
+    if (pageSizeSel) {
+        pageSizeSel.addEventListener('change', function () {
+            pageSize = parseInt(this.value, 10);
+            currentPage = 1;
+            applyFilters();
+        });
+    }
 
-    // Đăng ký sự kiện click cho các nút có class .btn-toggle-status
-    document.addEventListener('click', function (e) {
-        const toggleBtn = e.target.closest('.btn-toggle-status');
-        if (toggleBtn) {
-            e.preventDefault();
-            const id = toggleBtn.getAttribute('data-id');
-            if (id) {
-                window.toggleLockStatus(id);
-            }
-        }
-    });
+    // 3. Live filters setup
+    const searchInp = document.getElementById('searchCustomer');
+    const statFil = document.getElementById('filterStatus');
+    const sortFil = document.getElementById('filterSort');
 
-    // Đăng ký sự kiện kiểm duyệt form Thêm khách hàng và gửi qua AJAX
+    if (searchInp) searchInp.addEventListener('input', () => { currentPage = 1; applyFilters(); });
+    if (statFil) statFil.addEventListener('change', () => { currentPage = 1; applyFilters(); });
+    if (sortFil) sortFil.addEventListener('change', () => { currentPage = 1; applyFilters(); });
+
+    // 4. Submit Form Listeners
     const addForm = document.getElementById('addCustomerForm');
     if (addForm) {
         addForm.addEventListener('submit', function (e) {
-            e.preventDefault(); // Chặn hành vi submit truyền thống của trình duyệt
-
-            // Kiểm tra tính hợp lệ ở phía client trước
-            if (!validateCustomerForm()) {
-                return;
-            }
-
-            const formData = new FormData(addForm);
-
-            fetch(addForm.action || '/Staff/ThemKhachHang', {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
-            })
-            .then(async response => {
-                if (response.ok) {
-                    const data = await response.json();
-                    if (data.success) {
-                        // Thêm khách hàng thành công -> Chuyển hướng để tải lại trang chính
-                        window.location.href = '/Staff/QuanLyKH';
-                    } else if (data.error === "EmailDuplicate") {
-                        // Email đã tồn tại -> Hiển thị SweetAlert2 dạng lỗi
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Email đã tồn tại',
-                            text: 'Email này đã được đăng ký trong hệ thống.\nVui lòng sử dụng Email khác.',
-                            confirmButtonText: 'Đóng',
-                            confirmButtonColor: '#EE0033'
-                        });
-
-                        // Đánh dấu đỏ cho input Email
-                        const emailInp = document.getElementById('addCustomerEmail');
-                        if (emailInp) {
-                            emailInp.classList.add('is-invalid');
-                        }
-                    } else {
-                        // Lỗi ModelState hoặc DB khác
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Lỗi',
-                            text: data.message || 'Đã xảy ra lỗi khi thêm khách hàng.',
-                            confirmButtonText: 'Đóng',
-                            confirmButtonColor: '#EE0033'
-                        });
-                    }
-                } else {
-                    showToast('error', 'Yêu cầu không hợp lệ hoặc lỗi máy chủ.');
-                }
-            })
-            .catch(error => {
-                console.error("Lỗi AJAX: ", error);
-                showToast('error', 'Không thể kết nối đến máy chủ.');
-            });
+            e.preventDefault();
+            saveNewCustomer();
         });
     }
-    // Đăng ký sự kiện tìm kiếm thời gian thực (real-time search)
-    const searchCustomerInp = document.getElementById('searchCustomer');
-    if (searchCustomerInp) {
-        let debounceTimer = null;
-        searchCustomerInp.addEventListener('input', function () {
-            clearTimeout(debounceTimer);
-            debounceTimer = setTimeout(() => {
-                window.applyFiltersKH();
-            }, 300);
-        });
-    }
-});
-
-
-
+}
 
 /* ══════════════════════════════════════════
-   SEARCH & FILTERS REDIRECTS (BACKEND-HANDLED)
+   FILTERS & SEARCH ACTIONS
    ══════════════════════════════════════════ */
 window.searchCustomers = function () {
-    const searchVal = document.getElementById('searchCustomer')?.value.trim() || '';
-    const statusVal = document.getElementById('filterStatus')?.value || 'all';
-    const sortVal = document.getElementById('filterSort')?.value || 'newest';
-
-    // Chuyển hướng trang kèm tham số truy vấn để Backend xử lý lọc và phân trang
-    window.location.href = `/Staff/QuanLyKH?search=${encodeURIComponent(searchVal)}&status=${encodeURIComponent(statusVal)}&sort=${encodeURIComponent(sortVal)}`;
+    currentPage = 1;
+    applyFilters();
+    showToast('success', 'Đã cập nhật kết quả tìm kiếm khách hàng!');
 };
 
 window.clearFilters = function () {
-    window.location.href = '/Staff/QuanLyKH';
->>>>>>> f27fcf8921ddad14015781ef7ddf6a8f873bdde0
+    const searchInp = document.getElementById('searchCustomer');
+    const statFil = document.getElementById('filterStatus');
+    const sortFil = document.getElementById('filterSort');
+
+    if (searchInp) searchInp.value = '';
+    if (statFil) statFil.value = 'all';
+    if (sortFil) sortFil.value = 'newest';
+
+    currentPage = 1;
+    applyFilters();
+    showToast('info', 'Đã đặt lại bộ lọc về mặc định.');
+};
+
+function applyFilters() {
+    const searchVal = document.getElementById('searchCustomer')?.value.toLowerCase().trim() || '';
+    const statVal = document.getElementById('filterStatus')?.value || 'all';
+    const sortVal = document.getElementById('filterSort')?.value || 'newest';
+
+    // 1. Search keyword + status checks
+    filteredCustomers = customersList.filter(c => {
+        const matchesQuery = !searchVal || 
+                             c.hoTen.toLowerCase().includes(searchVal) || 
+                             c.soDienThoai.includes(searchVal) || 
+                             (c.email && c.email.toLowerCase().includes(searchVal));
+        const matchesStatus = statVal === 'all' || c.trangThai === statVal;
+        return matchesQuery && matchesStatus;
+    });
+
+    // 2. Sort rules
+    filteredCustomers.sort((a, b) => {
+        if (sortVal === 'az') return a.hoTen.localeCompare(b.hoTen, 'vi');
+        if (sortVal === 'za') return b.hoTen.localeCompare(a.hoTen, 'vi');
+
+        // Parse date format dd/mm/yyyy
+        const parseD = (str) => {
+            if (!str) return new Date(0);
+            const [d, m, y] = str.split('/');
+            return new Date(y, m - 1, d);
+        };
+
+        const dateA = parseD(a.ngayTao);
+        const dateB = parseD(b.ngayTao);
+
+        if (sortVal === 'oldest') return dateA - dateB;
+        return dateB - dateA; // default to 'newest'
+    });
+
+    updateKpiCards();
+    renderCustomersList();
+}
+
+/* ══════════════════════════════════════════
+   KPI DASHBOARD UPDATES
+   ══════════════════════════════════════════ */
+function updateKpiCards() {
+    const total = customersList.length;
+    const active = customersList.filter(c => c.trangThai === 'Hoạt động').length;
+    const locked = customersList.filter(c => c.trangThai === 'Đã khóa').length;
+
+    // Count customer accounts created in June 2026
+    const newThisMonth = customersList.filter(c => {
+        if (!c.ngayTao) return false;
+        const parts = c.ngayTao.split('/');
+        return parts[1] === '06' && parts[2] === '2026';
+    }).length;
+
+    setText('kpiTotalCustomers', total);
+    setText('kpiActiveAccounts', active);
+    setText('kpiLockedAccounts', locked);
+    setText('kpiNewCustomers', newThisMonth);
+}
+
+function setText(id, val) {
+    const el = document.getElementById(id);
+    if (el) el.textContent = val;
+}
+
+/* ══════════════════════════════════════════
+   RENDER DATA SYSTEM (TABLE + CARDS + PAGING)
+   ══════════════════════════════════════════ */
+function renderCustomersList() {
+    const tbody = document.getElementById('customersBody');
+    const mContainer = document.getElementById('customersMobileContainer');
+    if (!tbody || !mContainer) return;
+
+    const totalCount = filteredCustomers.length;
+    const startIdx = totalCount ? (currentPage - 1) * pageSize + 1 : 0;
+    const endIdx = Math.min(currentPage * pageSize, totalCount);
+
+    const metaCountText = document.getElementById('filteredCountText');
+    if (metaCountText) {
+        metaCountText.textContent = `Đang hiển thị ${startIdx}-${endIdx} trong tổng số ${totalCount} khách hàng.`;
+    }
+
+    const headerCountText = document.getElementById('customersCountText');
+    if (headerCountText) {
+        headerCountText.textContent = `Đang hiển thị ${totalCount} khách hàng`;
+    }
+
+    const start = (currentPage - 1) * pageSize;
+    const pageCustomers = filteredCustomers.slice(start, start + pageSize);
+
+    // Empty state
+    if (!pageCustomers.length) {
+        const emptyHtml = `
+            <div class="text-center py-5">
+                <div class="bg-danger-subtle text-danger d-inline-flex align-items-center justify-content-center mb-3" style="width: 56px; height: 56px; border-radius: 50%; font-size: 1.5rem;">
+                    <i class="fa-solid fa-users"></i>
+                </div>
+                <h6 class="fw-bold text-dark">Không tìm thấy khách hàng nào</h6>
+                <p class="text-muted small mb-0">Thay đổi bộ lọc hoặc từ khóa tìm kiếm để xem kết quả khác.</p>
+            </div>`;
+        tbody.innerHTML = `<tr><td colspan="9">${emptyHtml}</td></tr>`;
+        mContainer.innerHTML = emptyHtml;
+        renderPaginationControls(0);
+        return;
+    }
+
+    // Render Table Rows (Desktop)
+    tbody.innerHTML = pageCustomers.map((c, idx) => {
+        const rowNo = start + idx + 1;
+        const statClass = c.trangThai === 'Hoạt động' ? 'active' : 'locked';
+        const lockIcon = c.trangThai === 'Hoạt động' ? 'fa-lock' : 'fa-lock-open';
+        const lockAction = c.trangThai === 'Hoạt động' ? 'Khóa tài khoản' : 'Mở khóa tài khoản';
+        const lockBtnClass = c.trangThai === 'Hoạt động' ? 'lock' : 'unlock';
+
+        return `
+        <tr>
+            <td class="fw-bold" style="padding-left: 20px;">${rowNo}</td>
+            <td><span class="rep-customer-code">${escHtml(c.id)}</span></td>
+            <td class="fw-bold text-dark-emphasis">${escHtml(c.hoTen)}</td>
+            <td><span class="text-dark fw-medium">${escHtml(c.soDienThoai)}</span></td>
+            <td><span class="text-muted">${escHtml(c.email || '—')}</span></td>
+            <td><span class="font-monospace text-secondary" style="font-size:0.85rem;">${escHtml(c.tenDangNhap)}</span></td>
+            <td><span class="badge-status ${statClass}">${escHtml(c.trangThai)}</span></td>
+            <td><span class="text-muted font-monospace" style="font-size: 0.8rem;">${escHtml(c.ngayTao)}</span></td>
+            <td style="padding-right: 20px;">
+                <div class="d-flex gap-2 justify-content-center">
+                    <button class="btn-action-custom view" onclick="viewCustomerDetails('${escHtml(c.id)}')" data-bs-toggle="tooltip" data-bs-placement="top" title="Xem chi tiết">
+                        <i class="fa-solid fa-eye"></i>
+                    </button>
+                    <button class="btn-action-custom history" onclick="viewTicketHistory('${escHtml(c.id)}')" data-bs-toggle="tooltip" data-bs-placement="top" title="Lịch sử hỗ trợ">
+                        <i class="fa-solid fa-clock-rotate-left"></i>
+                    </button>
+                    <button class="btn-action-custom ${lockBtnClass}" onclick="toggleLockStatus('${escHtml(c.id)}')" data-bs-toggle="tooltip" data-bs-placement="top" title="${lockAction}">
+                        <i class="fa-solid ${lockIcon}"></i>
+                    </button>
+                    <button class="btn-action-custom delete" onclick="deleteCustomer('${escHtml(c.id)}')" data-bs-toggle="tooltip" data-bs-placement="top" title="Xóa tài khoản">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                </div>
+            </td>
+        </tr>`;
+    }).join('');
+
+    // Render Cards List (Mobile)
+    mContainer.innerHTML = pageCustomers.map((c) => {
+        const statClass = c.trangThai === 'Hoạt động' ? 'active' : 'locked';
+        const lockIcon = c.trangThai === 'Hoạt động' ? 'fa-lock' : 'fa-lock-open';
+        const lockAction = c.trangThai === 'Hoạt động' ? 'Khóa' : 'Mở khóa';
+        const lockBtnClass = c.trangThai === 'Hoạt động' ? 'lock' : 'unlock';
+
+        return `
+        <div class="rep-mobile-card">
+            <div class="rep-mobile-card-header">
+                <span class="rep-customer-code">${escHtml(c.id)}</span>
+                <span class="badge-status ${statClass}">${escHtml(c.trangThai)}</span>
+            </div>
+            <div class="rep-mobile-card-title">${escHtml(c.hoTen)}</div>
+            <div class="rep-mobile-card-body">
+                <div class="rep-mobile-card-row">
+                    <span>Số điện thoại:</span>
+                    <strong>${escHtml(c.soDienThoai)}</strong>
+                </div>
+                <div class="rep-mobile-card-row">
+                    <span>Email:</span>
+                    <span class="text-muted">${escHtml(c.email || '—')}</span>
+                </div>
+                <div class="rep-mobile-card-row">
+                    <span>Username:</span>
+                    <span class="font-monospace text-secondary">${escHtml(c.tenDangNhap)}</span>
+                </div>
+            </div>
+            <div class="rep-mobile-card-meta">
+                <span><i class="fa-regular fa-calendar-days me-1"></i> ${escHtml(c.ngayTao)}</span>
+                <div class="d-flex gap-2">
+                    <button class="btn-action-custom view" onclick="viewCustomerDetails('${escHtml(c.id)}')" title="Chi tiết">
+                        <i class="fa-solid fa-eye"></i>
+                    </button>
+                    <button class="btn-action-custom history" onclick="viewTicketHistory('${escHtml(c.id)}')" title="Lịch sử">
+                        <i class="fa-solid fa-clock-rotate-left"></i>
+                    </button>
+                    <button class="btn-action-custom ${lockBtnClass}" onclick="toggleLockStatus('${escHtml(c.id)}')" title="${lockAction}">
+                        <i class="fa-solid ${lockIcon}"></i>
+                    </button>
+                    <button class="btn-action-custom delete" onclick="deleteCustomer('${escHtml(c.id)}')" title="Xóa">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+        </div>`;
+    }).join('');
+
+    initializeTooltips();
+
+    const totalPages = Math.ceil(totalCount / pageSize);
+    renderPaginationControls(totalPages);
+}
+
+function initializeTooltips() {
+    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+}
+
+function renderPaginationControls(totalPages) {
+    const wrapper = document.getElementById('customersPagination');
+    if (!wrapper) return;
+
+    if (totalPages <= 1) {
+        wrapper.innerHTML = '';
+        return;
+    }
+
+    let html = `
+        <li class="page-item ${currentPage <= 1 ? 'disabled' : ''}">
+            <button class="page-link" onclick="goPage(${currentPage - 1})" aria-label="Trước">
+                <i class="fa-solid fa-chevron-left" style="font-size:0.7rem;"></i>
+            </button>
+        </li>`;
+
+    for (let i = 1; i <= totalPages; i++) {
+        html += `
+            <li class="page-item ${i === currentPage ? 'active' : ''}">
+                <button class="page-link" onclick="goPage(${i})">${i}</button>
+            </li>`;
+    }
+
+    html += `
+        <li class="page-item ${currentPage >= totalPages ? 'disabled' : ''}">
+            <button class="page-link" onclick="goPage(${currentPage + 1})" aria-label="Sau">
+                <i class="fa-solid fa-chevron-right" style="font-size:0.7rem;"></i>
+            </button>
+        </li>`;
+
+    wrapper.innerHTML = html;
+}
+
+window.goPage = function (p) {
+    const totalPages = Math.ceil(filteredCustomers.length / pageSize);
+    if (p < 1 || p > totalPages) return;
+    currentPage = p;
+    renderCustomersList();
 };
 
 /* ══════════════════════════════════════════
-   CLIENT-SIDE FORM VALIDATION
+   MODAL ACTIONS: VIEW CUSTOMER DETAILED DATA
    ══════════════════════════════════════════ */
-function validateCustomerForm() {
+window.viewCustomerDetails = function (customerId) {
+    const customer = customersList.find(c => c.id === customerId);
+    if (!customer) return;
+
+    // Retrieve stats
+    const totalTickets = ticketsList.filter(t => t.customerName === customer.hoTen || t.customerPhone === customer.soDienThoai).length;
+    const totalAppointments = appointmentsList.filter(a => a.customerName === customer.hoTen).length;
+
+    // Mock Rating
+    let ratingVal = 4.8;
+    if (customerId === 'KH005') ratingVal = 3.5;
+    if (customerId === 'KH009') ratingVal = 4.0;
+
+    const statusHtml = customer.trangThai === 'Hoạt động'
+        ? '<span class="badge-status active">Hoạt động</span>'
+        : '<span class="badge-status locked">Đã khóa</span>';
+
+    setText('viewCustomerId', customer.id);
+    setText('viewCustomerName', customer.hoTen);
+    setText('viewCustomerPhone', customer.soDienThoai);
+    setText('viewCustomerEmail', customer.email || '—');
+    setText('viewCustomerUsername', customer.tenDangNhap);
+    setText('viewCustomerDOB', customer.ngaySinh ? formatDateString(customer.ngaySinh) : '—');
+    setText('viewCustomerCreatedDate', customer.ngayTao);
+    setText('viewCustomerAddress', customer.diaChi || '—');
+
+    setText('viewCustomerTotalTickets', totalTickets);
+    setText('viewCustomerTotalAppointments', totalAppointments);
+    
+    const ratingSpan = document.getElementById('viewCustomerRating');
+    if (ratingSpan) {
+        ratingSpan.innerHTML = `${ratingVal.toFixed(1)} <i class="fa-solid fa-star small text-warning"></i>`;
+    }
+
+    const statusDiv = document.getElementById('viewCustomerStatus');
+    if (statusDiv) statusDiv.innerHTML = statusHtml;
+
+    if (viewCustomerModal) {
+        viewCustomerModal.show();
+    }
+};
+
+/* ══════════════════════════════════════════
+   LOCK / UNLOCK ACCOUNT STATE FLOW
+   ══════════════════════════════════════════ */
+window.toggleLockStatus = function (customerId) {
+    const customer = customersList.find(c => c.id === customerId);
+    if (!customer) return;
+
+    const actionText = customer.trangThai === 'Hoạt động' ? 'khóa' : 'mở khóa';
+    const newStatus = customer.trangThai === 'Hoạt động' ? 'Đã khóa' : 'Hoạt động';
+
+    Swal.fire({
+        title: `Xác nhận ${actionText}?`,
+        text: `Bạn có chắc chắn muốn thay đổi trạng thái tài khoản của khách hàng "${customer.hoTen}" không?`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#EE0033',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Đồng ý',
+        cancelButtonText: 'Hủy'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            customer.trangThai = newStatus;
+            localStorage.setItem(CUSTOMERS_STORAGE_KEY, JSON.stringify(customersList));
+            
+            applyFilters();
+
+            Swal.fire(
+                'Thành công!',
+                `Đã ${actionText} tài khoản khách hàng thành công.`,
+                'success'
+            );
+        }
+    });
+};
+
+/* ══════════════════════════════════════════
+   DELETE CUSTOMER STATE FLOW (CONSTRAINED)
+   ══════════════════════════════════════════ */
+window.deleteCustomer = function (customerId) {
+    const customer = customersList.find(c => c.id === customerId);
+    if (!customer) return;
+
+    // Check constraint: Has tickets?
+    const hasTickets = ticketsList.some(t => t.customerName === customer.hoTen || t.customerPhone === customer.soDienThoai);
+
+    if (hasTickets) {
+        Swal.fire({
+            title: 'Không thể xóa!',
+            text: 'Không thể xóa khách hàng đã phát sinh phiếu hỗ trợ kỹ thuật trên hệ thống.',
+            icon: 'error',
+            confirmButtonColor: '#2C3E50',
+            confirmButtonText: 'Đóng'
+        });
+        return;
+    }
+
+    // Confirm Delete
+    Swal.fire({
+        title: 'Xác nhận xóa?',
+        text: `Bạn có chắc chắn muốn xóa khách hàng "${customer.hoTen}" vĩnh viễn không? Hành động này không thể phục hồi.`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#EE0033',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Xóa vĩnh viễn',
+        cancelButtonText: 'Hủy'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            customersList = customersList.filter(c => c.id !== customerId);
+            localStorage.setItem(CUSTOMERS_STORAGE_KEY, JSON.stringify(customersList));
+
+            applyFilters();
+
+            Swal.fire(
+                'Đã xóa!',
+                'Khách hàng đã được loại bỏ khỏi hệ thống.',
+                'success'
+            );
+        }
+    });
+};
+
+/* ══════════════════════════════════════════
+   CREATE NEW CUSTOMER (ADD FORM VALIDATION)
+   ══════════════════════════════════════════ */
+function saveNewCustomer() {
     const nameInp = document.getElementById('addCustomerName');
     const phoneInp = document.getElementById('addCustomerPhone');
     const emailInp = document.getElementById('addCustomerEmail');
+    const dobInp = document.getElementById('addCustomerDOB');
+    const statusInp = document.getElementById('addCustomerStatus');
+    const addrInp = document.getElementById('addCustomerAddress');
     const userInp = document.getElementById('addCustomerUsername');
     const passInp = document.getElementById('addCustomerPassword');
 
-    if (!nameInp || !phoneInp || !userInp || !passInp) return false;
+    if (!nameInp || !phoneInp || !userInp || !passInp) return;
 
     let isValid = true;
 
@@ -188,7 +553,7 @@ function validateCustomerForm() {
         passInp.classList.remove('is-invalid');
     }
 
-    // Email (nếu nhập thì phải đúng định dạng)
+    // Email check (optional but formats properly)
     const emailVal = emailInp.value.trim();
     if (emailVal && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal)) {
         emailInp.classList.add('is-invalid');
@@ -199,313 +564,152 @@ function validateCustomerForm() {
 
     if (!isValid) {
         showToast('error', 'Vui lòng kiểm tra lại các thông tin bắt buộc (*)');
-        return false;
-    }
-
-    return true;
-}
-
-/* ══════════════════════════════════════════
-   AJAX CALLS: VIEW DETAILS FROM BACKEND
-   ══════════════════════════════════════════ */
-function viewCustomerDetails(id) {
-    const customerDetailContainer = document.getElementById("customerDetailContainer");
-    if (customerDetailContainer) {
-        customerDetailContainer.innerHTML = 'Loading...';
-    }
-
-    fetch(`/Staff/ChiTietKH?id=${id}`)
-        .then(response => {
-            if (!response.ok) throw new Error("Không thể tải thông tin khách hàng");
-            return response.text();
-        })
-        .then(html => {
-            if (customerDetailContainer) {
-                customerDetailContainer.innerHTML = html;
-            }
-            const modal = new bootstrap.Modal(document.getElementById("viewCustomerModal"));
-            modal.show();
-        })
-        .catch(err => {
-            console.error(err);
-            showToast('error', 'Lỗi khi tải thông tin chi tiết khách hàng.');
-        });
-}
-
-window.viewCustomerDetails = viewCustomerDetails;
-
-/* ══════════════════════════════════════════
-   AJAX CALLS: TICKET HISTORY LOGS (PARTIAL HTML)
-   ══════════════════════════════════════════ */
-window.viewTicketHistory = function (customerId) {
-    window.activeHistoryCustomerId = customerId;
-    fetchHistoryTickets(customerId);
-};
-
-function fetchHistoryTickets(customerId, keyword = '', status = 'all') {
-    const url = `/Staff/LichSuPhieuHoTro?customerId=${customerId}&keyword=${encodeURIComponent(keyword)}&status=${encodeURIComponent(status)}`;
-    fetch(url)
-        .then(response => {
-            if (!response.ok) throw new Error("Không thể tải lịch sử phiếu");
-            return response.text(); // Nhận về chuỗi HTML được render từ PartialView
-        })
-        .then(html => {
-            const tbody = document.getElementById('historyTicketsBody');
-            if (tbody) tbody.innerHTML = html;
-            if (ticketHistoryModal) ticketHistoryModal.show();
-        })
-        .catch(err => {
-            console.error(err);
-            showToast('error', 'Lỗi khi tải lịch sử phiếu hỗ trợ.');
-        });
-}
-
-window.applyHistoryFilters = function () {
-    const keyword = document.getElementById('historySearchCode')?.value || '';
-    const status = document.getElementById('historySearchStatus')?.value || 'all';
-    if (window.activeHistoryCustomerId) {
-        fetchHistoryTickets(window.activeHistoryCustomerId, keyword, status);
-    }
-};
-
-window.resetHistoryFilters = function () {
-    const codeInp = document.getElementById('historySearchCode');
-    const statSel = document.getElementById('historySearchStatus');
-    if (codeInp) codeInp.value = '';
-    if (statSel) statSel.value = 'all';
-    if (window.activeHistoryCustomerId) {
-        fetchHistoryTickets(window.activeHistoryCustomerId);
-    }
-};
-
-/* ══════════════════════════════════════════
-   AJAX CALLS: VIEW SPECIFIC TICKET DETAIL
-   ══════════════════════════════════════════ */
-window.viewTicketDetails = function (ticketCode) {
-    fetch(`/Staff/ChiTietPhieu?ticketCode=${encodeURIComponent(ticketCode)}`)
-        .then(response => {
-            if (!response.ok) throw new Error("Không thể tải chi tiết phiếu");
-            return response.json();
-        })
-        .then(ticket => {
-            if (!ticket) return;
-            setText('ticketDetTitle', ticket.title || '—');
-            setText('ticketDetCode', ticket.ticketCode || '—');
-            setText('ticketDetCustomer', ticket.customerName || '—');
-            setText('ticketDetReqType', ticket.requestType || '—');
-            setText('ticketDetDesc', ticket.description || 'Không có mô tả.');
-            setText('ticketDetCreatedDate', ticket.createdDate || '—');
-            setText('ticketDetUpdatedDate', ticket.updatedDate || '—');
-            setText('ticketDetStaff', ticket.staffName || '—');
-
-            const appDiv = document.getElementById('ticketDetAppointment');
-            if (appDiv) {
-                if (ticket.needAppointment && ticket.appointmentDate) {
-                    appDiv.innerHTML = `<span class="text-success fw-bold"><i class="fa-solid fa-calendar-check me-1"></i> Có lịch hẹn (${ticket.appointmentDate} lúc ${ticket.appointmentTime || ''})</span>`;
-                } else {
-                    appDiv.innerHTML = '<span class="text-muted">Không đặt lịch hẹn ghé nhà</span>';
-                }
-            }
-
-            const priorityDiv = document.getElementById('ticketDetPriority');
-            if (priorityDiv) {
-                priorityDiv.innerHTML = getPriorityBadgeHtml(ticket.priority);
-            }
-
-            const statusDiv = document.getElementById('ticketDetStatus');
-            if (statusDiv) {
-                statusDiv.innerHTML = getStatusBadgeHtml(ticket.status);
-            }
-
-            if (ticketDetailsModal) ticketDetailsModal.show();
-        })
-        .catch(err => {
-            console.error(err);
-            showToast('error', 'Lỗi khi tải chi tiết phiếu hỗ trợ.');
-        });
-};
-
-/* ══════════════════════════════════════════
-   CONFIRMATIONS: LOCK & DELETE ACTIONS
-   ══════════════════════════════════════════ */
-window.toggleLockStatus = function (customerId) {
-    // Tìm phần tử button và dòng tr tương ứng trong DOM
-    const btn = document.querySelector(`.btn-toggle-status[data-id="${customerId}"]`)
-                || document.querySelector(`button[onclick*="toggleLockStatus('${customerId}')"]`)
-                || document.querySelector(`button[onclick*="toggleLockStatus(&#x27;${customerId}&#x27;)"]`);
-    if (!btn) {
-        console.error("Không tìm thấy nút khóa/mở khóa cho khách hàng ID: ", customerId);
         return;
     }
 
-    const row = btn.closest('tr');
-    if (!row) return;
-
-    const badge = row.querySelector('.status-badge');
-
-    const currentStatus = badge ? badge.textContent.trim() : '';
-
-    let swalConfig = {};
-    if (currentStatus === 'Hoạt động') {
-        swalConfig = {
-            title: 'Khóa tài khoản khách hàng',
-            html: 'Bạn có chắc chắn muốn khóa tài khoản khách hàng này?<br/><br/><small class="text-muted">Sau khi khóa:<br/>• Khách hàng sẽ không thể đăng nhập<br/>• Trạng thái chuyển thành "Đã khóa"</small>',
-            icon: 'warning',
-            iconHtml: '<i class="fa-solid fa-lock text-warning" style="font-size: 2.5rem; display: block; margin: auto;"></i>',
-            showCancelButton: true,
-            confirmButtonColor: '#EE0033',
-            cancelButtonColor: '#6c757d',
-            confirmButtonText: 'Khóa tài khoản',
-            cancelButtonText: 'Hủy'
-        };
-    } else {
-        swalConfig = {
-            title: 'Mở khóa tài khoản',
-            html: 'Bạn có chắc muốn mở khóa tài khoản này?<br/><br/><small class="text-muted">Sau khi mở khóa:<br/>• Khách hàng có thể đăng nhập lại<br/>• Trạng thái chuyển thành "Hoạt động"</small>',
-            icon: 'success',
-            iconHtml: '<i class="fa-solid fa-lock-open text-success" style="font-size: 2.5rem; display: block; margin: auto;"></i>',
-            showCancelButton: true,
-            confirmButtonColor: '#EE0033',
-            cancelButtonColor: '#6c757d',
-            confirmButtonText: 'Mở khóa',
-            cancelButtonText: 'Hủy'
-        };
+    // Duplication username check
+    if (customersList.some(c => c.tenDangNhap.toLowerCase() === userVal.toLowerCase())) {
+        userInp.classList.add('is-invalid');
+        showToast('error', 'Tên đăng nhập đã tồn tại trong hệ thống!');
+        return;
     }
 
-    Swal.fire(swalConfig).then((result) => {
-        if (result.isConfirmed) {
-            // Lấy token anti-forgery từ giao diện
-            const tokenInput = document.querySelector('input[name="__RequestVerificationToken"]');
-            const token = tokenInput ? tokenInput.value : '';
+    // Generate ID
+    const nextId = generateNextCustomerId();
 
-            // Gửi yêu cầu AJAX POST về backend
-            const formData = new FormData();
-            formData.append('idKhachHang', customerId);
-            formData.append('id', customerId);
-            if (token) {
-                formData.append('__RequestVerificationToken', token);
-            }
+    // Date
+    const now = new Date();
+    const dd = String(now.getDate()).padStart(2, '0');
+    const mm = String(now.getMonth() + 1).padStart(2, '0');
+    const yyyy = now.getFullYear();
+    const createdDate = `${dd}/${mm}/${yyyy}`;
 
-            fetch('/Staff/KhoaKhachHang', {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
-            })
-            .then(async response => {
-                if (response.ok) {
-                    const data = await response.json();
-                    if (data.success) {
-                        const newStatus = data.newStatus;
-                        
-                        // Cập nhật giao diện (không cần F5)
-                        if (newStatus === 'Đã khóa') {
-                            // Cập nhật Badge
-                            if (badge) {
-                                badge.textContent = 'Đã khóa';
-                                badge.className = 'badge bg-danger status-badge';
-                            }
-                            // Cập nhật Button & Icon & Tooltip
-                            btn.className = 'btn-action-custom unlock btn-toggle-status';
-                            btn.title = 'Mở khóa tài khoản';
-                            btn.setAttribute('data-bs-original-title', 'Mở khóa tài khoản');
-                            const icon = btn.querySelector('i');
-                            if (icon) {
-                                icon.className = 'fa-solid fa-lock-open';
-                            }
-                        } else {
-                            // Cập nhật Badge
-                            if (badge) {
-                                badge.textContent = 'Hoạt động';
-                                badge.className = 'badge bg-success status-badge';
-                            }
-                            // Cập nhật Button & Icon & Tooltip
-                            btn.className = 'btn-action-custom lock btn-toggle-status';
-                            btn.title = 'Khóa tài khoản';
-                            btn.setAttribute('data-bs-original-title', 'Khóa tài khoản');
-                            const icon = btn.querySelector('i');
-                            if (icon) {
-                                icon.className = 'fa-solid fa-lock';
-                            }
-                        }
+    const newCustomer = {
+        id: nextId,
+        hoTen: nameInp.value.trim(),
+        soDienThoai: phoneVal,
+        email: emailVal || '',
+        diaChi: addrInp.value.trim() || '',
+        ngaySinh: dobInp.value || '',
+        tenDangNhap: userVal,
+        trangThai: statusInp.value,
+        ngayTao: createdDate
+    };
 
-                        // Hiển thị SweetAlert2 thành công
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Cập nhật trạng thái thành công',
-                            text: data.message || 'Trạng thái tài khoản khách hàng đã được cập nhật.',
-                            confirmButtonColor: '#EE0033',
-                            confirmButtonText: 'Đóng'
-                        });
-                    } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Thất bại',
-                            text: data.message || 'Không thể cập nhật trạng thái.',
-                            confirmButtonColor: '#EE0033',
-                            confirmButtonText: 'Đóng'
-                        });
-                    }
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Lỗi',
-                        text: 'Lỗi kết nối tới máy chủ. Vui lòng thử lại.',
-                        confirmButtonColor: '#EE0033',
-                        confirmButtonText: 'Đóng'
-                    });
-                }
-            })
-            .catch(error => {
-                console.error("AJAX Error: ", error);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Lỗi kết nối',
-                    text: 'Lỗi kết nối tới máy chủ. Vui lòng thử lại.',
-                    confirmButtonColor: '#EE0033',
-                    confirmButtonText: 'Đóng'
-                });
-            });
-        }
-    });
-};
+    customersList.push(newCustomer);
+    localStorage.setItem(CUSTOMERS_STORAGE_KEY, JSON.stringify(customersList));
 
-window.deleteCustomer = function (customerId) {
+    if (addCustomerModal) addCustomerModal.hide();
+    document.getElementById('addCustomerForm').reset();
+
+    applyFilters();
     Swal.fire({
-        title: 'Xác nhận xóa?',
-        text: 'Bạn có chắc chắn muốn xóa khách hàng vĩnh viễn không? Hành động này không thể phục hồi.',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#EE0033',
-        cancelButtonColor: '#6c757d',
-        confirmButtonText: 'Xóa vĩnh viễn',
-        cancelButtonText: 'Hủy'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            // Tạo form POST động và gửi yêu cầu xóa về server
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = `/Staff/XoaKhachHang/${customerId}`;
-
-            const tokenInput = document.querySelector('input[name="__RequestVerificationToken"]');
-            if (tokenInput) {
-                const clone = tokenInput.cloneNode(true);
-                form.appendChild(clone);
-            }
-
-            document.body.appendChild(form);
-            form.submit();
-        }
+        title: 'Tạo thành công!',
+        text: `Đã khởi tạo khách hàng "${newCustomer.hoTen}" với mã ${newCustomer.id}`,
+        icon: 'success',
+        confirmButtonColor: '#EE0033'
     });
-};
+}
+
+function generateNextCustomerId() {
+    if (!customersList.length) return 'KH001';
+    const nums = customersList.map(c => parseInt(c.id.replace('KH', ''), 10)).filter(n => !isNaN(n));
+    const max = nums.length ? Math.max(...nums) : 0;
+    return 'KH' + String(max + 1).padStart(3, '0');
+}
 
 /* ══════════════════════════════════════════
-   HELPER UTILITIES
+   CUSTOMER SUPPORT TICKETS HISTORY LOGS
    ══════════════════════════════════════════ */
-function setText(id, val) {
-    const el = document.getElementById(id);
-    if (el) el.textContent = val;
+window.viewTicketHistory = function (customerId) {
+    const customer = customersList.find(c => c.id === customerId);
+    if (!customer) return;
+
+    activeHistoryCustomerId = customerId;
+
+    // Set headers
+    setText('historyCustomerName', customer.hoTen);
+    setText('historyCustomerPhone', customer.soDienThoai);
+    setText('historyCustomerEmail', customer.email || 'Chưa cung cấp');
+
+    // Reset filters
+    const searchCode = document.getElementById('historySearchCode');
+    const searchStat = document.getElementById('historySearchStatus');
+    if (searchCode) searchCode.value = '';
+    if (searchStat) searchStat.value = 'all';
+
+    // Apply & render list
+    applyHistoryFilters();
+
+    if (ticketHistoryModal) {
+        ticketHistoryModal.show();
+    }
+};
+
+window.applyHistoryFilters = function () {
+    const customer = customersList.find(c => c.id === activeHistoryCustomerId);
+    if (!customer) return;
+
+    const keyword = document.getElementById('historySearchCode')?.value.toLowerCase().trim() || '';
+    const status = document.getElementById('historySearchStatus')?.value || 'all';
+
+    // Find linked tickets matching name or phone
+    const baseTickets = ticketsList.filter(t => t.customerName === customer.hoTen || t.customerPhone === customer.soDienThoai);
+
+    filteredHistoryTickets = baseTickets.filter(t => {
+        const matchesKeyword = !keyword || 
+                               t.ticketCode.toLowerCase().includes(keyword) || 
+                               t.title.toLowerCase().includes(keyword);
+        const matchesStatus = status === 'all' || t.status === status;
+        return matchesKeyword && matchesStatus;
+    });
+
+    renderHistoryTicketsList();
+};
+
+window.resetHistoryFilters = function () {
+    const searchCode = document.getElementById('historySearchCode');
+    const searchStat = document.getElementById('historySearchStatus');
+    if (searchCode) searchCode.value = '';
+    if (searchStat) searchStat.value = 'all';
+
+    applyHistoryFilters();
+};
+
+function renderHistoryTicketsList() {
+    const tbody = document.getElementById('historyTicketsBody');
+    if (!tbody) return;
+
+    if (!filteredHistoryTickets.length) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="7" class="text-center py-4 text-muted small">
+                    <i class="fa-solid fa-ticket mb-1 d-block" style="font-size:1.5rem;"></i>
+                    Không có phiếu hỗ trợ nào tương ứng bộ lọc.
+                </td>
+            </tr>`;
+        return;
+    }
+
+    tbody.innerHTML = filteredHistoryTickets.map(t => {
+        const priorityBadge = getPriorityBadgeHtml(t.priority);
+        const statusBadge = getStatusBadgeHtml(t.status);
+
+        return `
+        <tr>
+            <td style="padding-left:16px;"><span class="rep-ticket-code">${escHtml(t.ticketCode)}</span></td>
+            <td class="fw-semibold text-dark-emphasis">${escHtml(t.title)}</td>
+            <td><span class="text-muted" style="font-size:0.85rem;">${escHtml(t.requestType)}</span></td>
+            <td>${priorityBadge}</td>
+            <td>${statusBadge}</td>
+            <td><span class="text-muted font-monospace" style="font-size:0.8rem;">${t.createdDate ? t.createdDate.split(' ')[0] : '—'}</span></td>
+            <td style="text-align: center; padding-right:16px;">
+                <button class="btn-action-custom view" onclick="viewTicketDetails('${escHtml(t.ticketCode)}')" title="Xem chi tiết phiếu">
+                    <i class="fa-solid fa-circle-info"></i>
+                </button>
+            </td>
+        </tr>`;
+    }).join('');
 }
 
 function getPriorityBadgeHtml(priority) {
@@ -528,11 +732,65 @@ function getStatusBadgeHtml(status) {
     return '<span class="badge-status waiting">Chờ tiếp nhận</span>';
 }
 
-function initializeTooltips() {
-    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-    tooltipTriggerList.map(function (tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl);
-    });
+/* ══════════════════════════════════════════
+   VIEW SPECIFIC TICKET DETAIL
+   ══════════════════════════════════════════ */
+window.viewTicketDetails = function (ticketCode) {
+    const ticket = ticketsList.find(t => t.ticketCode === ticketCode);
+    if (!ticket) return;
+
+    // Fill elements
+    setText('ticketDetTitle', ticket.title);
+    setText('ticketDetCode', ticket.ticketCode);
+    setText('ticketDetCustomer', ticket.customerName);
+    setText('ticketDetReqType', ticket.requestType);
+    setText('ticketDetDesc', ticket.description || 'Không có nội dung mô tả lỗi.');
+    setText('ticketDetCreatedDate', ticket.createdDate || '—');
+    setText('ticketDetUpdatedDate', ticket.createdDate || '—'); // mock matches created date
+
+    const priorityDiv = document.getElementById('ticketDetPriority');
+    if (priorityDiv) {
+        priorityDiv.innerHTML = getPriorityBadgeHtml(ticket.priority);
+    }
+
+    const statusDiv = document.getElementById('ticketDetStatus');
+    if (statusDiv) {
+        statusDiv.innerHTML = getStatusBadgeHtml(ticket.status);
+    }
+
+    const appDiv = document.getElementById('ticketDetAppointment');
+    if (appDiv) {
+        if (ticket.needAppointment) {
+            appDiv.innerHTML = `<span class="text-success fw-bold"><i class="fa-solid fa-calendar-check me-1"></i> Có lịch hẹn (${ticket.appointmentDate} lúc ${ticket.appointmentTime})</span>`;
+        } else {
+            appDiv.innerHTML = '<span class="text-muted">Không đặt lịch hẹn ghé nhà</span>';
+        }
+    }
+
+    if (ticketDetailsModal) {
+        ticketDetailsModal.show();
+    }
+};
+
+/* ══════════════════════════════════════════
+   HELPER UTILITIES
+   ══════════════════════════════════════════ */
+function formatDateString(dateStr) {
+    if (!dateStr) return '';
+    if (dateStr.includes('-')) {
+        const [y, m, d] = dateStr.split('-');
+        return `${d}/${m}/${y}`;
+    }
+    return dateStr;
+}
+
+function escHtml(str) {
+    return String(str || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
 }
 
 /* ── Toast system ── */
@@ -562,3 +820,12 @@ function showToast(type, msg) {
     if (toastTimer) clearTimeout(toastTimer);
     toastTimer = setTimeout(() => toast.classList.remove('show'), 3500);
 }
+
+/* ══════════════════════════════════════════
+   INITIALIZATION
+   ══════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', function () {
+    loadCustomersData();
+    initCustomersDom();
+    applyFilters();
+});

@@ -132,7 +132,6 @@ window.clearFilters = function () {
     showToast('info', 'Đã đặt lại bộ lọc về mặc định.');
 };
 
-
 function applyFilters() {
     const searchVal = document.getElementById('searchCustomer')?.value.toLowerCase().trim() || '';
     const statVal = document.getElementById('filterStatus')?.value || 'all';

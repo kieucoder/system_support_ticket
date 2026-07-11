@@ -24,7 +24,6 @@
                     <th style="width: 180px;">Họ và tên</th>
                     <th style="width: 140px;">Số điện thoại</th>
                     <th>Email</th>
-                    <th style="width: 140px;">Tên đăng nhập</th>
                     <th style="width: 120px;">Trạng thái</th>
                     <th style="width: 110px;">Ngày tạo</th>
                     <th style="padding-right: 20px; width: 170px; min-width: 170px; text-align: center;">Thao tác</th>
@@ -59,7 +58,6 @@
                             <td>
                                 @(string.IsNullOrEmpty(item.Email) ? "-" : item.Email)
                             </td>
-                            <td>@item.TenDangNhap</td>
                             <td>
                                 @if (item.TrangThai == "Hoạt động")
                                 {
@@ -132,8 +130,7 @@
                         <h6 class="card-title fw-bold mb-1">@item.HoTen</h6>
                         <p class="card-text text-muted mb-2" style="font-size: 0.82rem;">
                             <strong>SĐT:</strong> @item.SoDienThoai <br/>
-                            <strong>Email:</strong> @(string.IsNullOrEmpty(item.Email) ? "-" : item.Email) <br/>
-                            <strong>Username:</strong> @item.TenDangNhap
+                            <strong>Email:</strong> @(string.IsNullOrEmpty(item.Email) ? "-" : item.Email)
                         </p>
                         <div class="d-flex justify-content-between align-items-center pt-2 border-top" style="font-size: 0.78rem;">
                             <div class="text-muted">

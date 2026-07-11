@@ -28,11 +28,6 @@ namespace SupportTicketSysterm.Models
         [Display(Name = "Ngày sinh")]
         public DateOnly? NgaySinh { get; set; }
 
-        [Required(ErrorMessage = "Tên đăng nhập không được để trống.")]
-        [StringLength(100, MinimumLength = 3, ErrorMessage = "Tên đăng nhập phải từ 3 đến 100 ký tự.")]
-        [RegularExpression(@"^[a-zA-Z0-9_]+$", ErrorMessage = "Tên đăng nhập chỉ được chứa chữ cái, chữ số và dấu gạch dưới.")]
-        [Display(Name = "Tên đăng nhập")]
-        public string TenDangNhap { get; set; } = null!;
 
         [Required(ErrorMessage = "Mật khẩu không được để trống.")]
         [StringLength(255, MinimumLength = 6, ErrorMessage = "Mật khẩu phải từ 6 ký tự trở lên.")]

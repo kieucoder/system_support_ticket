@@ -64,6 +64,7 @@
     <link rel="stylesheet" href="~/assets/css/sidebar.css?v=2.6.0">
     <link rel="stylesheet" href="~/assets/css/footer.css?v=2.6.0">
     <link rel="stylesheet" href="~/assets/css/chatbox.css?v=2.6.0">
+    @await RenderSectionAsync("Styles", required: false)
 </head>
 
 <body>
@@ -141,7 +142,7 @@
                     <div class="text-center py-2 text-white-50 small mb-1">
                         <i class="fa-solid fa-user me-1"></i> Xin chào, @hoTenMobile
                     </div>
-                    <a href="/KhachHang/ThongTinCaNhan" class="btn btn-login-custom btn-ripple rounded-pill px-4 justify-content-center">
+                    <a asp-controller="Customers" asp-action="ThongTinCaNhan" class="btn btn-login-custom btn-ripple rounded-pill px-4 justify-content-center">
                         Thông tin cá nhân
                     </a>
                     <a href="/KhachHang/PhieuHoTro" class="btn btn-login-custom btn-ripple rounded-pill px-4 justify-content-center">
@@ -1003,132 +1004,7 @@
     </section>
 
     <!-- 12. FOOTER -->
-    <footer class="custom-footer" id="footerSection">
-        <div class="container">
-            <div class="row g-4">
-                <!-- Column 1 -->
-                <div class="col-lg-3 col-md-6 col-12">
-                    <a class="footer-brand" href="#heroSection">
-                        <span>TechSupport</span>
-                    </a>
-                    <p class="footer-desc mt-3">
-                        Hệ thống tiếp nhận và xử lý yêu cầu kỹ thuật chuyên nghiệp, chuẩn hóa
-                        quy trình vận hành và cam kết chất lượng dịch vụ SLA Viettel.
-                    </p>
-                    <div class="footer-social-icons">
-                        <a href="#" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
-                        <a href="#" aria-label="YouTube"><i class="bi bi-youtube"></i></a>
-                        <a href="#" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
-                        <a href="#" aria-label="Twitter"><i class="bi bi-twitter"></i></a>
-                    </div>
-                </div>
-
-                <!-- Column 2 -->
-                <div class="col-lg-3 col-md-6 col-12">
-                    <h3 class="footer-title">Liên Kết Nhanh</h3>
-                    <ul class="footer-links">
-                        <li><a href="#heroSection"><i class="fa-solid fa-chevron-right"></i> Trang chủ hệ thống</a></li>
-                        <li>
-                            <a href="#quickActionSection">
-                                <i class="fa-solid fa-chevron-right"></i> Tra cứu trạng thái
-                                ticket
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#processSection">
-                                <i class="fa-solid fa-chevron-right"></i> Quy trình 4 bước tiếp
-                                nhận
-                            </a>
-                        </li>
-                        <li><a href="#newsSection"><i class="fa-solid fa-chevron-right"></i> Hướng dẫn kỹ thuật</a></li>
-                        <li>
-                            <a href="#aboutSection"><i class="fa-solid fa-chevron-right"></i> Báo cáo tổng hợp SLA</a>
-                        </li>
-                    </ul>
-                </div>
-
-                <!-- Column 3 -->
-                <div class="col-lg-3 col-md-6 col-12">
-                    <h3 class="footer-title">Dịch Vụ Hỗ Trợ</h3>
-                    <ul class="footer-links">
-                        <li>
-                            <a href="#serviceGridSection">
-                                <i class="fa-solid fa-chevron-right"></i> Khắc phục sự cố mạng
-                                Cáp
-                                quang
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#serviceGridSection">
-                                <i class="fa-solid fa-chevron-right"></i> Cài đặt & Sửa lỗi
-                                Home
-                                Camera
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#serviceGridSection">
-                                <i class="fa-solid fa-chevron-right"></i> Hỗ trợ kỹ thuật
-                                Server &
-                                Cloud VPS
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#serviceGridSection">
-                                <i class="fa-solid fa-chevron-right"></i> Khắc phục lỗi Phần
-                                mềm ứng
-                                dụng
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#serviceGridSection">
-                                <i class="fa-solid fa-chevron-right"></i> Tư vấn thiết kế Mạng
-                                nội
-                                bộ LAN
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-
-                <!-- Column 4 -->
-                <div class="col-lg-3 col-md-6 col-12">
-                    <h3 class="footer-title">Thông Tin Liên Hệ</h3>
-                    <ul class="footer-contact-list">
-                        <li>
-                            <i class="fa-solid fa-map-marker"></i>
-                            <span>Tòa nhà điều hành Viettel, số 1 Giang Văn Minh, Kim Mã, Ba Đình, Hà Nội</span>
-                        </li>
-                        <li>
-                            <i class="fa-solid fa-phone"></i>
-                            <span>Hotline hỗ trợ kỹ thuật: 1800 8119<br>(Hỗ trợ khẩn cấp 24/7)</span>
-                        </li>
-                        <li>
-                            <i class="fa-solid fa-envelope"></i>
-                            <span>Email cskh: support@viettel.com.vn</span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-
-            <!-- Bottom Footer -->
-            <div class="footer-bottom">
-                <div class="row align-items-center">
-                    <div class="col-md-6 col-12 text-center text-md-start mb-3 mb-md-0">
-                        <p class="m-0">
-                            &copy; 2026 TechSupport Viettel. Bản quyền thuộc Tập đoàn Công nghiệp - Viễn
-                            thông Quân đội.
-                        </p>
-                    </div>
-                    <div class="col-md-6 col-12 text-center text-md-end footer-bottom-links">
-                        <a href="#">Bản đồ mạng</a>
-                        <a href="#">Điều khoản SLA</a>
-                        <a href="#">Chính sách bảo mật</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-
+    <partial name="~/Views/Shared/_Footer.cshtml" />
     <!-- khung chat box tích hợp AI -->
     <!-- Scroll Top Button -->
     <button class="scroll-top-btn" aria-label="Cuộn về đầu trang">
@@ -1412,6 +1288,7 @@
     <script src="~/assets/js/footer.js?v=2.6.0"></script>
     <script src="~/assets/js/chatbox.js?v=2.6.0"></script>
     <script src="~/assets/js/main.js?v=2.6.0"></script>
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 
 </html>

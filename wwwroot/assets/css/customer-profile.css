@@ -21,7 +21,58 @@
 }
 
 /* --- Hero & Breadcrumb Styles (Premium Tech Theme) --- */
-/* Removed old hero-section layout styles to inherit from style.css */
+.hero-section {
+    position: relative;
+    background-color: #ffffff;
+    background-image: 
+        radial-gradient(at 0% 0%, rgba(238, 0, 51, 0.05) 0px, transparent 50%),
+        radial-gradient(at 100% 0%, rgba(15, 17, 21, 0.03) 0px, transparent 50%),
+        radial-gradient(at 50% 100%, rgba(238, 0, 51, 0.02) 0px, transparent 50%),
+        linear-gradient(rgba(15, 17, 21, 0.008) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(15, 17, 21, 0.008) 1px, transparent 1px);
+    background-size: 100% 100%, 100% 100%, 100% 100%, 40px 40px, 40px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    z-index: 5;
+    border-bottom: 1px solid rgba(15, 17, 21, 0.04);
+    overflow: hidden;
+    
+    min-height: 400px;
+    padding-top: 140px;
+    padding-bottom: 50px;
+    transition: var(--transition-smooth);
+}
+
+/* Ambient glow orb behind illustration */
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 10%;
+    right: 15%;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(238, 0, 51, 0.08) 0%, rgba(238, 0, 51, 0.01) 70%, transparent 100%);
+    filter: blur(50px);
+    z-index: 1;
+    pointer-events: none;
+    animation: pulseGlow 8s ease-in-out infinite alternate;
+}
+
+@keyframes pulseGlow {
+    0% { transform: scale(1) translate(0, 0); opacity: 0.8; }
+    100% { transform: scale(1.2) translate(-20px, 20px); opacity: 1; }
+}
+
+.hero-content {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+}
 
 /* Breadcrumb Glassmorphic Container */
 .hero-breadcrumb {
@@ -106,7 +157,26 @@
 }
 
 /* Title Styling with elegant red-black gradient */
-/* Title Styling and Description text removed to inherit from style.css */
+.hero-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: clamp(2.2rem, 3.8vw, 3rem);
+    font-weight: 850;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    background: linear-gradient(135deg, #0f1115 30%, #ee0033 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 16px !important;
+}
+
+/* Description text */
+.hero-desc {
+    font-size: 1.05rem;
+    color: #4b5563;
+    max-width: 540px;
+    line-height: 1.6;
+    margin-bottom: 28px !important;
+}
 
 /* Hero Buttons */
 .btn-hero-create {

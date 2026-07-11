@@ -71,8 +71,55 @@ body {
 /* =============================================================
    HERO SECTION - Custom page specific styling matching contact.css
    ============================================================= */
-/* HERO SECTION - Custom page specific styling matching contact.css */
-/* Removed old hero-section layout styles to inherit from style.css */
+.hero-section {
+    position: relative;
+    background-color: #ffffff;
+    background-image: 
+        radial-gradient(at 0% 0%, rgba(238, 0, 51, 0.05) 0px, transparent 50%),
+        radial-gradient(at 100% 0%, rgba(15, 17, 21, 0.03) 0px, transparent 50%),
+        radial-gradient(at 50% 100%, rgba(238, 0, 51, 0.02) 0px, transparent 50%),
+        linear-gradient(rgba(15, 17, 21, 0.008) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(15, 17, 21, 0.008) 1px, transparent 1px);
+    background-size: 100% 100%, 100% 100%, 100% 100%, 40px 40px, 40px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    z-index: 5;
+    border-bottom: 1px solid rgba(15, 17, 21, 0.04);
+    overflow: hidden;
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    /* Height requirements:
+     * Desktop: 320px - 380px
+     * Tablet: 280px - 320px
+     * Mobile: 240px - 280px
+     */
+    min-height: 320px;
+    max-height: 380px;
+    padding-top: 100px;
+    padding-bottom: 40px;
+}
+
+/* Ambient glow overlay */
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 10%;
+    right: 15%;
+    width: 280px;
+    height: 280px;
+    background: radial-gradient(circle, rgba(238, 0, 51, 0.08) 0%, rgba(238, 0, 51, 0.01) 70%, transparent 100%);
+    filter: blur(50px);
+    z-index: 1;
+    pointer-events: none;
+    animation: pulseGlow 8s ease-in-out infinite alternate;
+}
+
+@keyframes pulseGlow {
+    0% { transform: scale(1) translate(0, 0); opacity: 0.8; }
+    100% { transform: scale(1.15) translate(-20px, 20px); opacity: 1; }
+}
 
 .hero-content {
     position: relative;
@@ -143,7 +190,27 @@ body {
 }
 
 /* Title Styling with red color highlight */
-/* Title Styling and Description text removed to inherit from style.css */
+.hero-title {
+    font-size: clamp(1.8rem, 3.2vw, 2.5rem);
+    font-weight: 850;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    color: #0f1115;
+    margin-bottom: 12px !important;
+}
+
+.hero-title .highlight-red {
+    color: #ee0033;
+}
+
+/* Description text */
+.hero-desc {
+    font-size: 0.95rem;
+    color: #64748B;
+    max-width: 650px;
+    line-height: 1.6;
+    margin-bottom: 20px !important;
+}
 
 /* Stats Highlights / Info cards */
 .hero-stats-highlights {
@@ -1071,34 +1138,79 @@ body {
 }
 
 /* Responsive Heights & Layouts for ticket-review.html Hero Section */
-/* Removed conflicting hero-section dimension limits to support fullscreen height of landing page */
+/* Responsive Heights & Layouts for ticket-review.html Hero Section */
+@media (min-width: 992px) {
+    .hero-section {
+        height: 360px;
+        min-height: 320px;
+        max-height: 380px;
+        padding-top: 100px;
+        padding-bottom: 30px;
+    }
+}
+
 @media (min-width: 768px) and (max-width: 991.98px) {
+    .hero-section {
+        height: 300px;
+        min-height: 280px;
+        max-height: 320px;
+        padding-top: 85px;
+        padding-bottom: 25px;
+        text-align: center;
+    }
+    
     .hero-breadcrumb,
     .hero-stats-highlights {
         margin-left: auto;
         margin-right: auto;
         justify-content: center;
     }
-
+    
     .hero-desc {
         margin-left: auto;
         margin-right: auto;
+    }
+    
+    .hero-banner-wrapper {
+        display: none !important; /* Hide image on tablet to prioritize content space */
     }
 }
 
 @media (max-width: 767.98px) {
+    .hero-section {
+        height: 260px;
+        min-height: 240px;
+        max-height: 280px;
+        padding-top: 80px;
+        padding-bottom: 20px;
+        text-align: center;
+    }
+    
     .hero-breadcrumb,
     .hero-stats-highlights {
         margin-left: auto;
         margin-right: auto;
         justify-content: center;
     }
-
+    
     .hero-desc {
         margin-left: auto;
         margin-right: auto;
     }
-
+    
+    .hero-title {
+        font-size: 1.8rem;
+    }
+    
+    .hero-banner-wrapper {
+        display: none !important; /* Hide image on mobile */
+    }
+    
+    .stat-highlight-item {
+        font-size: 0.775rem;
+        padding: 6px 14px;
+    }
+}
 }
 
 @media (max-width: 991px) {

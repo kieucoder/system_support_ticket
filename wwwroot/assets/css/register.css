@@ -1,169 +1,192 @@
 /* ==============================================================
    FILE: assets/css/register.css
-   DESCRIPTION: Compact, modern & elegant registration page.
-                Redesigned to be smaller, refined and premium.
-                Inspired by Viettel, Fluent Design, Apple & Zendesk.
+   AUTHOR: Antigravity (Senior UI/UX Designer & Frontend Developer)
+   DESCRIPTION: Optimized CSS for TechSupport registration page.
+                Provides a 100% visual synchronization with login.css.
+                Independently replicates Bootstrap 5 elements (grids,
+                inputs, validation states) without loading framework resources.
    ============================================================== */
 
-/* ========== 1. DESIGN VARIABLES ========== */
+/* ========== 1. DESIGN SYSTEM & VARIABLES (Sync with login.css) ========== */
 :root {
-    --red: #E60012;
-    --red-dark: #D80000;
-    --red-glow: rgba(230, 0, 18, 0.12);
-    --red-shadow: rgba(230, 0, 18, 0.25);
-    --dark-bg: #F5F7FB;
-    --card-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
-    --radius-card: 22px;
-    --radius-input: 12px;
-    --text-primary: #1F2937;
-    --text-muted: #9CA3AF;
-    --border-color: #D1D5DB;
-    --ease: cubic-bezier(0.25, 0.8, 0.25, 1);
+    --viettel-red: #e11b1e;
+    --viettel-red-dark: #b91c1c;
+    --viettel-dark-blue: #001f3f;
+    --viettel-gray: #f8fafc;
+    --gradient-red: linear-gradient(95deg, #e11b1e, #b91c1c);
+    --gradient-dark: linear-gradient(135deg, #0f172a, #1e293b);
+    --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 20px 35px -10px rgba(0, 0, 0, 0.15);
+    --transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
 }
 
-/* ========== 2. RESET & BASE ========== */
-*, *::before, *::after {
+/* ========== 2. BASE RESETS & SCROLLBAR ========== */
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-html {
-    font-size: 15px;
-}
-
 body {
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    background-color: var(--dark-bg);
+    font-family: 'Inter', 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
     min-height: 100vh;
     overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+    width: 100%;
 }
 
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: #f1f5f9; }
-::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 8px; }
-::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+::-webkit-scrollbar {
+    width: 8px;
+}
 
-/* ========== 3. BACK BUTTON ========== */
+::-webkit-scrollbar-track {
+    background: #e2e8f0;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #e11b1e;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #b91c1c;
+}
+
+/* ========== 3. BACK TO HOME BUTTON (Sync with login.css) ========== */
 .btn-back-home {
     position: fixed;
-    top: 1.2rem;
-    left: 1.2rem;
-    width: 42px;
-    height: 42px;
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    color: #4b5563;
-    border: 1px solid rgba(0, 0, 0, 0.06);
+    top: 2rem;
+    left: 2rem;
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(95deg, #e11b1e, #b91c1c);
+    color: white;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     text-decoration: none;
-    font-size: 1.1rem;
-    transition: all 0.25s var(--ease);
+    box-shadow: 0 8px 20px rgba(225, 27, 30, 0.35);
+    transition: var(--transition);
     z-index: 100;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    font-size: 1.3rem;
 }
 
 .btn-back-home:hover {
-    background: var(--red);
+    transform: translateY(-4px) scale(1.1);
+    box-shadow: 0 12px 30px rgba(225, 27, 30, 0.55);
     color: white;
-    border-color: var(--red);
-    transform: translateY(-2px) scale(1.06);
-    box-shadow: 0 8px 20px rgba(230, 0, 18, 0.2);
 }
 
-/* ========== 4. WRAPPER & LAYOUT ========== */
+.btn-back-home:active {
+    transform: translateY(0) scale(1);
+}
+
+/* ========== 4. WRAPPER & CONTAINER LAYOUT ========== */
 .register-wrapper {
     position: relative;
     min-height: 100vh;
+    background: url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2070&auto=format') center/cover no-repeat fixed;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 3rem 1rem;
-    background-color: var(--dark-bg);
-    overflow: hidden;
-    z-index: 1;
-}
-
-/* Animated background blobs */
-.register-wrapper::before,
-.register-wrapper::after {
-    content: '';
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(100px);
-    pointer-events: none;
-    z-index: 0;
 }
 
 .register-wrapper::before {
-    width: 600px;
-    height: 600px;
-    background: radial-gradient(circle, rgba(230, 0, 18, 0.06), transparent 70%);
-    top: -150px;
-    right: -150px;
-}
-
-.register-wrapper::after {
-    width: 500px;
-    height: 500px;
-    background: radial-gradient(circle, rgba(99, 102, 241, 0.04), transparent 70%);
-    bottom: -100px;
-    left: -100px;
-}
-
-.register-container {
-    position: relative;
-    z-index: 1;
-    width: 100%;
-    max-width: 1040px; /* 5-10% wider than 980px */
-}
-
-/* ========== 5. CARD ========== */
-.login-card {
-    border-radius: var(--radius-card);
-    overflow: hidden;
-    background: #ffffff;
-    border: 1px solid #E5E7EB;
-    box-shadow: var(--card-shadow);
-    animation: fadeSlide 0.5s ease-out forwards;
-}
-
-/* ========== 6. LEFT PANEL ========== */
-.register-info {
-    background: linear-gradient(145deg, #0f1a2e 0%, #1a2a44 50%, #0f172a 100%);
-    color: white;
-    padding: 48px 40px !important;
-    position: relative;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-}
-
-/* Subtle grid texture */
-.register-info::before {
     content: '';
     position: absolute;
-    inset: 0;
-    background-image:
-        linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
-    background-size: 28px 28px;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.88), rgba(30, 41, 59, 0.92));
     z-index: 0;
 }
 
-/* Red accent glow circle */
+.register-wrapper > * {
+    position: relative;
+    z-index: 1;
+}
+
+.register-container {
+    width: 100%;
+    max-width: 1100px;
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+/* ========== 5. REGISTER CARD & ROW ========== */
+.login-card {
+    background: #ffffff;
+    border-radius: 36px;
+    overflow: hidden;
+    transition: var(--transition);
+    animation: fadeInUp 0.6s ease-out;
+    width: 100%;
+}
+
+.login-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 30px 50px rgba(0, 0, 0, 0.25) !important;
+}
+
+.row {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.row.g-0 {
+    margin-right: 0;
+    margin-left: 0;
+}
+
+.row.g-0 > [class*="col-"] {
+    padding-right: 0;
+    padding-left: 0;
+}
+
+.col-lg-6 {
+    flex: 0 0 auto;
+    width: 50%;
+}
+
+/* ========== 6. LEFT PANEL: INFO & BRANDING ========== */
+.register-info {
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    color: white;
+    position: relative;
+    overflow: hidden;
+    padding: 3rem !important;
+}
+
+.register-info::before {
+    content: '';
+    position: absolute;
+    top: -30%;
+    right: -20%;
+    width: 350px;
+    height: 350px;
+    background: rgba(225, 27, 30, 0.12);
+    border-radius: 50%;
+    z-index: 0;
+}
+
 .register-info::after {
     content: '';
     position: absolute;
-    top: -60px;
-    right: -60px;
-    width: 220px;
-    height: 220px;
-    background: radial-gradient(circle, rgba(230, 0, 18, 0.15), transparent 65%);
+    bottom: -20%;
+    left: -15%;
+    width: 280px;
+    height: 280px;
+    background: rgba(225, 27, 30, 0.08);
+    border-radius: 50%;
     z-index: 0;
 }
 
@@ -172,427 +195,487 @@ body {
     z-index: 1;
 }
 
-/* Brand logo */
 .register-info .brand {
-    display: flex;
-    align-items: center;
-    gap: 9px;
-    font-size: 1.4rem;
+    font-size: 1.8rem;
     font-weight: 800;
-    letter-spacing: -0.4px;
-    margin-bottom: 2rem;
 }
 
 .register-info .brand i {
-    font-size: 1.55rem;
-    color: var(--red);
+    font-size: 2rem;
+    color: #e11b1e;
+    margin-right: 8px;
 }
 
 .register-info h2 {
-    font-size: 1.6rem;
+    font-size: 1.9rem;
     font-weight: 700;
-    line-height: 1.3;
-    margin-bottom: 1rem;
 }
 
 .register-info p {
     font-size: 0.9rem;
-    line-height: 1.6;
-    color: rgba(255, 255, 255, 0.6);
-    margin-bottom: 2rem;
+    line-height: 1.5;
 }
 
-/* Illustration */
+/* Banner SVG illustration */
 .illustration-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    flex: 1;
-    padding: 2rem 0;
+    margin: 1.5rem 0;
 }
 
 .illustration-img {
     width: 100%;
-    max-width: 240px;
+    max-width: 220px;
     height: auto;
-    opacity: 0.95;
+    filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.2));
 }
 
 /* Feature list */
 .feature-list {
-    margin-top: auto;
-    padding-top: 1.5rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
+    margin-top: 1.5rem;
 }
 
 .feature-item {
     display: flex;
     align-items: center;
     gap: 12px;
-    font-size: 0.88rem;
-    color: #cbd5e1;
-    transition: all 0.25s var(--ease);
+    margin-bottom: 0.85rem;
+    font-size: 0.9rem;
+    color: #e2e8f0;
+    transition: var(--transition);
 }
 
 .feature-item:hover {
-    color: white;
-    transform: translateX(4px);
+    transform: translateX(5px);
 }
 
 .feature-item i {
-    color: var(--red);
-    background: rgba(230, 0, 18, 0.1);
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.8rem;
-    flex-shrink: 0;
-    transition: all 0.25s var(--ease);
+    color: #e11b1e;
+    font-size: 1.1rem;
 }
 
-.feature-item:hover i {
-    background: rgba(230, 0, 18, 0.2);
-    transform: scale(1.1);
-}
-
-/* ========== 7. RIGHT PANEL - FORM ========== */
+/* ========== 7. RIGHT PANEL: REGISTRATION FORM ========== */
 .register-form {
-    background: #ffffff;
-    padding: 48px 40px 40px 40px !important;
-    display: flex;
-    flex-direction: column;
-}
-
-.register-header {
-    margin-bottom: 28px !important;
+    background: white;
+    padding: 3rem !important;
 }
 
 .register-form h3 {
-    font-size: 1.55rem;
-    font-weight: 700;
-    color: var(--text-primary);
-    margin-bottom: 0.25rem;
+    font-size: 1.7rem;
 }
 
-.register-form .text-muted {
-    font-size: 0.88rem;
-    color: var(--text-muted) !important;
+/* Form styling structures */
+.mb-3 {
+    margin-bottom: 1rem !important;
 }
 
-/* ========== 8. FORM STYLING & INPUTS ========== */
+.mb-4 {
+    margin-bottom: 1.5rem !important;
+}
+
+.fw-bold {
+    font-weight: 700 !important;
+}
+
+.fw-semibold {
+    font-weight: 600 !important;
+}
+
+.text-dark {
+    color: #212529 !important;
+}
+
+.text-muted {
+    color: #6c757d !important;
+}
+
+.text-danger {
+    color: #e11b1e !important;
+}
+
+.text-white-50 {
+    color: rgba(255, 255, 255, 0.5) !important;
+}
+
+.small {
+    font-size: 0.875em !important;
+}
+
+.text-center {
+    text-align: center !important;
+}
+
+/* Form labels */
 .form-label {
-    display: block;
-    font-size: 15px;
-    font-weight: 600;
-    color: var(--text-primary);
-    margin-bottom: 8px;
-    letter-spacing: 0.01em;
+    display: inline-block;
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
 }
 
+/* Input group */
 .input-group {
     position: relative;
-    display: block; /* Custom block layout for absolute icon alignment */
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
     width: 100%;
 }
 
 .input-group-text {
-    position: absolute;
-    left: 18px;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 10;
-    background: transparent !important;
-    border: none !important;
-    padding: 0 !important;
-    color: var(--text-muted);
-    font-size: 16px;
-    transition: color 0.25s var(--ease);
-    pointer-events: none;
     display: flex;
     align-items: center;
-    justify-content: center;
-    width: auto;
-    min-width: 0;
-    height: auto;
-}
-
-.input-group:focus-within .input-group-text {
-    color: var(--red);
+    padding: 0.375rem 0.85rem;
+    font-size: 0.95rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #212529;
+    text-align: center;
+    white-space: nowrap;
+    background-color: #f8f9fa;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    border-right: none;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    transition: var(--transition);
 }
 
 .form-control {
-    width: 100%;
-    height: 54px;
-    padding-left: 50px !important;
-    padding-right: 18px !important;
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-input) !important;
-    background-color: #ffffff;
-    color: var(--text-primary);
-    font-size: 14px;
+    display: block;
+    width: 1%;
+    flex: 1 1 auto;
+    padding: 0.75rem 0.85rem;
+    font-size: 0.95rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #212529;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #e2e8f0;
+    border-left: none;
+    border-radius: 14px;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
     outline: none;
-    box-shadow: none;
-    transition: all 0.25s var(--ease);
+    transition: var(--transition);
 }
 
-.form-control::placeholder {
-    color: var(--text-muted);
-    font-size: 14px;
+/* Password eye button layout */
+.form-control.has-toggle {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-right: none;
 }
 
-.form-control:focus {
-    border-color: var(--red) !important;
-    box-shadow: 0 0 0 4px var(--red-glow) !important;
-    background-color: #ffffff;
-}
-
-/* Password Toggle Eye Button */
 .btn-outline-secondary {
-    position: absolute;
-    right: 18px;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 10;
-    background: transparent !important;
-    border: none !important;
-    padding: 0 !important;
-    color: var(--text-muted);
-    font-size: 16px;
+    background-color: #f8f9fa;
+    border: 1px solid #e2e8f0;
+    border-left: none;
+    color: #6c757d;
+    padding: 0.375rem 0.85rem;
+    border-top-right-radius: 14px;
+    border-bottom-right-radius: 14px;
     cursor: pointer;
-    transition: color 0.25s var(--ease);
+    transition: var(--transition);
     display: flex;
     align-items: center;
-    justify-content: center;
-    width: auto;
-    height: auto;
 }
 
 .btn-outline-secondary:hover {
-    color: var(--red);
+    background: #e9ecef;
+    color: #e11b1e;
 }
 
-.form-control.has-toggle {
-    padding-right: 50px !important;
+/* Input Focus Glow (Synchronized with login.css) */
+.form-control:focus {
+    box-shadow: 0 0 0 4px rgba(225, 27, 30, 0.12);
+    border-color: #e11b1e;
 }
 
-/* Spacing between inputs & layout */
-.mb-3 {
-    margin-bottom: 22px !important;
+.input-group:focus-within .input-group-text,
+.input-group:focus-within .btn-outline-secondary {
+    border-color: #e11b1e;
 }
 
-.register-form .row {
-    margin-left: -10px;
-    margin-right: -10px;
+/* ========== 8. ROW GRID LAYOUTS FOR FIELDS ========== */
+.row:not(.g-0) {
+    margin-right: -0.5rem;
+    margin-left: -0.5rem;
 }
 
-.register-form .row > [class*="col-"] {
-    padding-left: 10px;
-    padding-right: 10px;
+.row:not(.g-0) > [class*="col-"] {
+    padding-right: 0.5rem;
+    padding-left: 0.5rem;
 }
 
-/* ========== 9. CHECKBOX ========== */
+.col-md-6 {
+    flex: 0 0 auto;
+    width: 50%;
+}
+
+/* ========== 9. CHECKBOX FORM CHECK ========== */
 .form-check {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding-left: 0;
-    margin-top: 4px;
+    display: block;
+    min-height: 1.5rem;
+    padding-left: 1.5em;
+    margin-bottom: 0.125rem;
+    position: relative;
 }
 
 .form-check-input {
-    width: 18px;
-    height: 18px;
-    min-width: 18px;
-    margin-top: 0;
-    background: #ffffff;
-    border: 1.5px solid var(--border-color);
+    width: 1.125rem;
+    height: 1.125rem;
+    margin-top: 0.2rem;
+    margin-left: -1.5em;
+    vertical-align: top;
+    background-color: #fff;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    border: 1px solid rgba(0, 0, 0, 0.25);
     border-radius: 4px;
     appearance: none;
     -webkit-appearance: none;
     cursor: pointer;
-    transition: all 0.25s var(--ease);
-    flex-shrink: 0;
+    transition: var(--transition);
+    position: absolute;
 }
 
 .form-check-input:checked {
-    background: var(--red);
-    border-color: var(--red);
+    background-color: #e11b1e;
+    border-color: #e11b1e;
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='m6 10 3 3 6-6'/%3e%3c/svg%3e");
-    background-size: 70%;
-    background-repeat: no-repeat;
-    background-position: center;
 }
 
 .form-check-input:focus {
-    outline: none;
-    box-shadow: 0 0 0 4px var(--red-glow);
-    border-color: var(--red);
+    outline: 0;
+    box-shadow: 0 0 0 3px rgba(225, 27, 30, 0.2);
+    border-color: #e11b1e;
 }
 
 .form-check-label {
-    font-size: 14px;
-    color: #4B5563;
     cursor: pointer;
     user-select: none;
-    line-height: 1;
 }
 
-.mb-4 {
-    margin-bottom: 24px !important; /* Button and Checkbox spacing */
+.text-decoration-none {
+    text-decoration: none !important;
 }
 
-/* ========== 10. SUBMIT BUTTON ========== */
-.btn-login {
-    width: 100%;
-    height: 54px;
-    background: linear-gradient(135deg, #F02828 0%, #D80000 100%);
-    color: white;
-    border: none;
-    border-radius: var(--radius-input);
-    font-weight: 700;
-    font-size: 16px;
-    cursor: pointer;
-    transition: all 0.25s var(--ease);
-    box-shadow: var(--red-shadow);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    letter-spacing: 0.02em;
-}
-
-.btn-login:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 16px 32px rgba(230, 0, 18, 0.35);
-    color: white;
-}
-
-.btn-login:active {
-    transform: translateY(0);
-}
-
-.btn-login:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    transform: none;
-    box-shadow: none;
-}
-
-/* ========== 11. FOOTER LOGIN LINK ========== */
-.register-footer-text {
-    font-size: 14px;
-    color: var(--text-muted);
-    margin-top: 28px !important;
-    margin-bottom: 0;
-}
-
-.register-footer-text a {
-    color: var(--red);
-}
-
-.register-footer-text a:hover {
+.text-decoration-none:hover {
     text-decoration: underline !important;
 }
 
-/* ========== 12. VALIDATION STATE STYLING ========== */
-span[asp-validation-for] {
-    display: block;
-    color: #DC2626 !important;
-    font-size: 13px !important;
-    margin-top: 6px;
+/* ========== 10. SUBMIT BUTTON & LOADER (Sync with login.css) ========== */
+.btn-login {
+    background: linear-gradient(95deg, #e11b1e, #b91c1c);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    padding: 0.9rem 2.2rem;
+    transition: var(--transition);
+    box-shadow: 0 6px 20px rgba(225, 27, 30, 0.35);
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    display: inline-block;
+    text-align: center;
+    vertical-align: middle;
+    user-select: none;
+}
+
+.btn-login::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(95deg, #b91c1c, #991b1b);
+    transition: left 0.4s ease;
+    z-index: -1;
+}
+
+.btn-login:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 12px 30px rgba(225, 27, 30, 0.55);
+    color: white;
+}
+
+.btn-login:hover::before {
+    left: 0;
+}
+
+.btn-login:active {
+    transform: translateY(0) scale(1);
+    box-shadow: 0 4px 14px rgba(225, 27, 30, 0.35);
+}
+
+.btn-login:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.w-100 {
+    width: 100% !important;
+}
+
+.py-2 {
+    padding-top: 0.5rem !important;
+    padding-bottom: 0.5rem !important;
+}
+
+/* Spinner rotating animation */
+.fa-spin {
+    animation: fa-spin 1s infinite linear;
+}
+
+@keyframes fa-spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* ========== 11. VALIDATION STATES & ERRORS ========== */
+.is-invalid {
+    border-color: #dc3545 !important;
+}
+
+.input-group.is-invalid .input-group-text,
+.input-group.is-invalid .btn-outline-secondary {
+    border-color: #dc3545 !important;
+}
+
+.is-valid {
+    border-color: #198754 !important;
+}
+
+.input-group.is-valid .input-group-text,
+.input-group.is-valid .btn-outline-secondary {
+    border-color: #198754 !important;
+}
+
+.invalid-feedback {
+    display: none;
+    font-size: 0.75rem;
+    margin-top: 0.35rem;
+    color: #dc3545;
     font-weight: 500;
-    text-align: left;
 }
 
-.form-control.is-invalid {
-    border-color: #ef4444 !important;
+/* Checkbox validation state */
+.form-check-input.is-invalid {
+    border-color: #dc3545 !important;
+    box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.2) !important;
 }
 
-.form-control.is-invalid:focus {
-    box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.15) !important;
-}
-
-.form-control.is-valid {
-    border-color: #10b981 !important;
-}
-
-.form-control.is-valid:focus {
-    box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15) !important;
-}
-
-/* Target parent wrappers when child inputs are invalid/valid */
-.input-group:has(.is-invalid) .form-control {
-    border-color: #ef4444 !important;
-}
-.input-group:has(.is-valid) .form-control {
-    border-color: #10b981 !important;
-}
-
-/* ========== 13. RESPONSIVE ========== */
+/* ========== 12. RESPONSIVE DESIGN ========== */
 @media (max-width: 991px) {
-    .register-container {
-        max-width: 720px;
+    .login-card {
+        margin: 2rem 1rem;
+        border-radius: 28px;
+    }
+    
+    .row {
+        flex-direction: column;
+    }
+    
+    .col-lg-6 {
+        width: 100%;
+    }
+    
+    .register-info {
+        text-align: center;
+        padding: 2rem !important;
+    }
+    
+    .feature-list {
+        text-align: left;
+        display: inline-block;
+        margin-top: 1.5rem;
+    }
+    
+    .register-info .brand {
+        text-align: center;
+    }
+    
+    .register-info h2 {
+        font-size: 1.6rem;
+    }
+    
+    .register-info p {
+        font-size: 0.85rem;
+    }
+    
+    .illustration-container {
+        display: none;
     }
 }
 
 @media (max-width: 768px) {
-    .register-wrapper {
-        padding: 1.5rem 0.6rem;
-    }
-
-    .login-card {
-        border-radius: 16px;
-    }
-
     .register-form {
-        padding: 32px 24px 28px 24px !important;
+        padding: 1.8rem !important;
     }
-
-    .register-container {
-        max-width: 100%;
-    }
-
-    /* Stack left panel columns */
+    
     .register-info {
-        padding: 32px 24px !important;
-        text-align: center;
+        padding: 1.8rem !important;
     }
-
-    .register-info .brand {
-        justify-content: center;
+    
+    .register-form h3 {
+        font-size: 1.5rem;
     }
-
-    .illustration-container {
-        display: none; /* Hide banner on mobile to keep form focused */
+    
+    .feature-item {
+        font-size: 0.8rem;
     }
-
-    .feature-list {
-        display: inline-flex;
-        flex-direction: column;
-        text-align: left;
-        align-self: center;
+    
+    .col-md-6 {
+        width: 100%;
     }
-
-    /* Stack inputs on mobile */
-    .register-form .row [class*="col-"]:not(:last-child) {
-        margin-bottom: 22px;
+    
+    .mb-3-mobile {
+        margin-bottom: 1rem !important;
     }
 }
 
-/* ========== 14. ANIMATIONS ========== */
-@keyframes fadeSlide {
+@media (max-width: 576px) {
+    .register-form {
+        padding: 1.5rem !important;
+    }
+    
+    .register-info {
+        padding: 1.5rem !important;
+    }
+    
+    .btn-login {
+        font-size: 0.9rem;
+        padding: 0.6rem;
+    }
+    
+    .login-card {
+        border-radius: 24px;
+    }
+}
+
+/* ========== 13. ANIMATIONS ========== */
+@keyframes fadeInUp {
     from {
         opacity: 0;
-        transform: translateY(20px);
+        transform: translateY(40px);
     }
     to {
         opacity: 1;
         transform: translateY(0);
     }
+}
+
+.btn-login:active {
+    transform: translateY(1px);
 }

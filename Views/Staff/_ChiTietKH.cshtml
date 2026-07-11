@@ -63,10 +63,7 @@
                     <div class="col-4 text-muted fw-bold" style="font-size: 0.85rem;">Email:</div>
                     <div class="col-8 text-dark">@(string.IsNullOrEmpty(Model.Email) ? "—" : Model.Email)</div>
                 </div>
-                <div class="detail-modal-row row align-items-center">
-                    <div class="col-4 text-muted fw-bold" style="font-size: 0.85rem;">Tên đăng nhập:</div>
-                    <div class="col-8 text-dark font-monospace">@Model.TenDangNhap</div>
-                </div>
+
                 <div class="detail-modal-row row align-items-center">
                     <div class="col-4 text-muted fw-bold" style="font-size: 0.85rem;">Ngày sinh:</div>
                     <div class="col-8 text-dark">@(Model.NgaySinh?.ToString("dd/MM/yyyy") ?? "—")</div>

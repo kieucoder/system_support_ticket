@@ -11,10 +11,12 @@ namespace SupportTicketSysterm.Controllers
     public class AuthController : Controller
     {
         private readonly TechSupportContext _context;
+        private readonly ILogger<AuthController> _logger;
 
-        public AuthController(TechSupportContext context)
+        public AuthController(TechSupportContext context, ILogger<AuthController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         // ===================== ĐĂNG KÝ =====================
@@ -48,10 +50,10 @@ namespace SupportTicketSysterm.Controllers
             }
 
             // --- Bước 2: Kiểm tra trùng lặp ---
-            bool usernameExists = await _context.KhachHangs
-                .AnyAsync(x => x.TenDangNhap == model.TenDangNhap.Trim());
-            if (usernameExists)
-                ModelState.AddModelError("TenDangNhap", "Tên đăng nhập đã tồn tại trong hệ thống.");
+            //bool usernameExists = await _context.KhachHangs
+            //    .AnyAsync(x => x.TenDangNhap == model.TenDangNhap.Trim());
+            //if (usernameExists)
+            //    ModelState.AddModelError("TenDangNhap", "Tên đăng nhập đã tồn tại trong hệ thống.");
 
             bool phoneExists = await _context.KhachHangs
                 .AnyAsync(x => x.SoDienThoai == model.SoDienThoai.Trim());
@@ -91,7 +93,7 @@ namespace SupportTicketSysterm.Controllers
                 Email       = string.IsNullOrWhiteSpace(model.Email) ? null : model.Email.Trim(),
                 DiaChi      = string.IsNullOrWhiteSpace(model.DiaChi) ? null : model.DiaChi.Trim(),
                 NgaySinh    = model.NgaySinh,
-                TenDangNhap = model.TenDangNhap.Trim(),
+                //TenDangNhap = model.TenDangNhap.Trim(),
                 MatKhau     = model.MatKhau,
                 TrangThai   = "Hoạt động",
                 NgayTao     = DateOnly.FromDateTime(DateTime.Now)
@@ -151,7 +153,7 @@ namespace SupportTicketSysterm.Controllers
                 }
                 else if (role == "KhachHang")
                 {
-                    return RedirectToAction("TrangChu", "KhachHang");
+                    return RedirectToAction("TrangChu", "Customers");
                 }
             }
             ViewBag.ReturnUrl = returnUrl;
@@ -168,50 +170,80 @@ namespace SupportTicketSysterm.Controllers
                 return View(model);
             }
 
-            var username = model.TenDangNhap?.Trim();
-            var password = model.MatKhau;
+            string taiKhoan = model.TenDangNhap?.Trim() ?? "";
+            string matKhau = model.MatKhau;
 
-            // 1. Kiểm tra trong bảng Nhân viên
+            _logger.LogInformation("Bắt đầu xử lý đăng nhập. Tài khoản nhập: {TaiKhoan}", taiKhoan);
+
+            // ==========================================
+            // 1. KIỂM TRA NHÂN VIÊN (Email hoặc Tên đăng nhập)
+            // ==========================================
             var nhanVien = await _context.NhanViens
-                .FirstOrDefaultAsync(x => x.TenDangNhap == username && x.MatKhau == password);
+                .FirstOrDefaultAsync(x => x.Email == taiKhoan || x.TenDangNhap == taiKhoan);
 
             if (nhanVien != null)
             {
-                var trangThai = nhanVien.TrangThai?.Trim();
-                var hoTenTrimmed = nhanVien.HoTen?.Trim() ?? "";
-                var vaiTroTrimmed = nhanVien.VaiTro?.Trim() ?? "";
+                _logger.LogInformation("Tìm thấy nhân viên. ID: {Id}, Vai trò: {VaiTro}, Trạng thái: {TrangThai}", 
+                    nhanVien.IdNhanVien, nhanVien.VaiTro, nhanVien.TrangThai);
 
-                // Kiểm tra trạng thái hoạt động
-                if (trangThai == "Khóa" || trangThai == "Ngừng hoạt động" || trangThai == "Tạm khóa" || trangThai == "Đã khóa")
+                bool dungMatKhau = false;
+                try
                 {
+                    string dbHash = nhanVien.MatKhau?.Trim() ?? "";
+                    if (dbHash.StartsWith("$2a$") || dbHash.StartsWith("$2b$") || dbHash.StartsWith("$2y$"))
+                    {
+                        dungMatKhau = BCrypt.Net.BCrypt.Verify(matKhau, dbHash);
+                    }
+                    else
+                    {
+                        dungMatKhau = dbHash == matKhau;
+                    }
+                    _logger.LogInformation("Kết quả xác thực mật khẩu nhân viên: {DungMatKhau}", dungMatKhau);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Lỗi khi xác thực mật khẩu nhân viên. Sử dụng so sánh trực tiếp làm fallback.");
+                    dungMatKhau = nhanVien.MatKhau == matKhau;
+                }
+
+                if (!dungMatKhau)
+                {
+                    _logger.LogWarning("Mật khẩu nhân viên không chính xác.");
+                    ModelState.AddModelError(string.Empty, "Email/Số điện thoại hoặc mật khẩu không đúng.");
+                    return View(model);
+                }
+
+                var trangThai = nhanVien.TrangThai?.Trim() ?? "";
+                if (trangThai == "Khóa" || trangThai == "Đã khóa" || trangThai == "Tạm khóa" || trangThai == "Ngừng hoạt động")
+                {
+                    _logger.LogWarning("Tài khoản nhân viên bị khóa. Trạng thái: {TrangThai}", trangThai);
                     ModelState.AddModelError(string.Empty, "Tài khoản của bạn đã bị khóa.");
                     return View(model);
                 }
 
-                // Thiết lập Claims cho Cookie Authentication
+                // Đăng nhập thành công -> Tạo Claims
                 var claims = new List<Claim>
                 {
                     new Claim(ClaimTypes.NameIdentifier, nhanVien.IdNhanVien.ToString()),
-                    new Claim(ClaimTypes.Name, hoTenTrimmed),
-                    new Claim(ClaimTypes.Role, vaiTroTrimmed),
+                    new Claim(ClaimTypes.Name, nhanVien.HoTen?.Trim() ?? ""),
+                    new Claim(ClaimTypes.Role, nhanVien.VaiTro?.Trim() ?? ""),
                     new Claim("UserId", nhanVien.IdNhanVien.ToString()),
-                    new Claim("HoTen", hoTenTrimmed),
-                    new Claim("VaiTro", vaiTroTrimmed)
+                    new Claim("HoTen", nhanVien.HoTen?.Trim() ?? ""),
+                    new Claim("VaiTro", nhanVien.VaiTro?.Trim() ?? "")
                 };
 
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                var authProperties = new AuthenticationProperties
-                {
-                    IsPersistent = model.RememberMe
-                };
+                var authProperties = new AuthenticationProperties { IsPersistent = model.RememberMe };
 
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
 
-                // Lưu thông tin vào Session để hiển thị
+                // Lưu Session
                 HttpContext.Session.SetInt32("UserId", nhanVien.IdNhanVien);
-                HttpContext.Session.SetString("HoTen", hoTenTrimmed);
-                HttpContext.Session.SetString("Role", vaiTroTrimmed);
-                HttpContext.Session.SetString("VaiTro", vaiTroTrimmed);
+                HttpContext.Session.SetString("HoTen", nhanVien.HoTen?.Trim() ?? "");
+                HttpContext.Session.SetString("VaiTro", nhanVien.VaiTro?.Trim() ?? "");
+                HttpContext.Session.SetString("Role", nhanVien.VaiTro?.Trim() ?? "");
+
+                _logger.LogInformation("Nhân viên đăng nhập thành công. Điều hướng về Dashboard.");
 
                 if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
                 {
@@ -220,58 +252,92 @@ namespace SupportTicketSysterm.Controllers
                 return RedirectToAction("Dashboard", "Staff");
             }
 
-            // 2. Kiểm tra trong bảng Khách hàng
+            // ==========================================
+            // 2. KIỂM TRA KHÁCH HÀNG (Email hoặc Số điện thoại)
+            // ==========================================
             var khachHang = await _context.KhachHangs
-                .FirstOrDefaultAsync(x => x.TenDangNhap == username && x.MatKhau == password);
+                .FirstOrDefaultAsync(x => x.Email == taiKhoan || x.SoDienThoai == taiKhoan);
 
             if (khachHang != null)
             {
-                var trangThai = khachHang.TrangThai?.Trim();
-                var hoTenTrimmed = khachHang.HoTen?.Trim() ?? "";
+                _logger.LogInformation("Tìm thấy khách hàng. ID: {Id}, Trạng thái: {TrangThai}", 
+                    khachHang.IdKhachHang, khachHang.TrangThai);
 
-                // Kiểm tra trạng thái hoạt động
-                if (trangThai == "Khóa" || trangThai == "Ngừng hoạt động" || trangThai == "Tạm khóa" || trangThai == "Đã khóa")
+                bool dungMatKhau = false;
+                try
                 {
+                    string dbHash = khachHang.MatKhau?.Trim() ?? "";
+                    if (dbHash.StartsWith("$2a$") || dbHash.StartsWith("$2b$") || dbHash.StartsWith("$2y$"))
+                    {
+                        dungMatKhau = BCrypt.Net.BCrypt.Verify(matKhau, dbHash);
+                    }
+                    else
+                    {
+                        dungMatKhau = dbHash == matKhau;
+                    }
+                    _logger.LogInformation("Kết quả xác thực mật khẩu khách hàng: {DungMatKhau}", dungMatKhau);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Lỗi khi xác thực mật khẩu khách hàng. Sử dụng so sánh trực tiếp làm fallback.");
+                    dungMatKhau = khachHang.MatKhau == matKhau;
+                }
+
+                if (!dungMatKhau)
+                {
+                    _logger.LogWarning("Mật khẩu khách hàng không chính xác.");
+                    ModelState.AddModelError(string.Empty, "Email/Số điện thoại hoặc mật khẩu không đúng.");
+                    return View(model);
+                }
+
+                var trangThai = khachHang.TrangThai?.Trim() ?? "";
+                if (trangThai == "Khóa" || trangThai == "Đã khóa" || trangThai == "Tạm khóa" || trangThai == "Ngừng hoạt động")
+                {
+                    _logger.LogWarning("Tài khoản khách hàng bị khóa. Trạng thái: {TrangThai}", trangThai);
                     ModelState.AddModelError(string.Empty, "Tài khoản của bạn đã bị khóa.");
                     return View(model);
                 }
 
-                // Thiết lập Claims cho Cookie Authentication
+                // Đăng nhập thành công -> Tạo Claims
                 var claims = new List<Claim>
                 {
                     new Claim(ClaimTypes.NameIdentifier, khachHang.IdKhachHang.ToString()),
-                    new Claim(ClaimTypes.Name, hoTenTrimmed),
+                    new Claim(ClaimTypes.Name, khachHang.HoTen?.Trim() ?? ""),
                     new Claim(ClaimTypes.Role, "KhachHang"),
                     new Claim("UserId", khachHang.IdKhachHang.ToString()),
-                    new Claim("HoTen", hoTenTrimmed),
+                    new Claim("HoTen", khachHang.HoTen?.Trim() ?? ""),
                     new Claim("VaiTro", "KhachHang")
                 };
 
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                var authProperties = new AuthenticationProperties
-                {
-                    IsPersistent = model.RememberMe
-                };
+                var authProperties = new AuthenticationProperties { IsPersistent = model.RememberMe };
 
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
 
-                // Lưu thông tin vào Session để hiển thị
+                // Lưu Session
                 HttpContext.Session.SetInt32("UserId", khachHang.IdKhachHang);
-                HttpContext.Session.SetString("HoTen", hoTenTrimmed);
+                HttpContext.Session.SetString("HoTen", khachHang.HoTen?.Trim() ?? "");
+                HttpContext.Session.SetString("Role", "KhachHang");
                 HttpContext.Session.SetString("Role", "KhachHang");
                 HttpContext.Session.SetString("VaiTro", "KhachHang");
+
+                _logger.LogInformation("Khách hàng đăng nhập thành công. Điều hướng về Trang chủ khách hàng.");
 
                 if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
                 {
                     return Redirect(returnUrl);
                 }
-                return RedirectToAction("TrangChu", "KhachHang");
+                return RedirectToAction("TrangChu", "Customers");
             }
 
+            _logger.LogWarning("Không tìm thấy tài khoản khớp với thông tin nhập: {TaiKhoan}", taiKhoan);
+
             // 3. Sai tài khoản / mật khẩu
-            ModelState.AddModelError(string.Empty, "Tên đăng nhập hoặc mật khẩu không chính xác.");
+            ModelState.AddModelError(string.Empty, "Email/Số điện thoại hoặc mật khẩu không đúng.");
             return View(model);
         }
+
+
 
         // ===================== ĐĂNG XUẤT =====================
 

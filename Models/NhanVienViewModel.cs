@@ -1,4 +1,4 @@
-﻿using SupportTicketSysterm.Data;
+using SupportTicketSysterm.Data;
 using System.ComponentModel.DataAnnotations;
 
 namespace SupportTicketSysterm.Models
@@ -33,6 +33,14 @@ namespace SupportTicketSysterm.Models
         public string TrangThai { get; set; } = null!;
 
         public DateOnly? NgayTao { get; set; }
+
+        public string? Avatar { get; set; }
+
+        [MinLength(6, ErrorMessage = "Mật khẩu tối thiểu 6 ký tự.")]
+        public string? MatKhauMoi { get; set; }
+
+        [Compare("MatKhauMoi", ErrorMessage = "Xác nhận mật khẩu phải giống mật khẩu mới.")]
+        public string? XacNhanMatKhau { get; set; }
 
         public virtual ICollection<LichHen> LichHens { get; set; } = new List<LichHen>();
 

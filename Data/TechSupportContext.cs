@@ -41,7 +41,7 @@ public partial class TechSupportContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Data Source=LAPTOP-EUOBO6JQ;Initial Catalog=TechSupport;Integrated Security=True;Trust Server Certificate=True");
+        => optionsBuilder.UseSqlServer("Data Source=LAPTOP-EUOBO6JQ;Initial Catalog=TechSupport;Integrated Security=True;Encrypt=True;TrustServerCertificate=True");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -122,9 +122,9 @@ public partial class TechSupportContext : DbContext
 
             entity.ToTable("KhachHang");
 
-            entity.HasIndex(e => e.TenDangNhap, "UQ__KhachHan__55F68FC085DCDDA7").IsUnique();
-
-            entity.HasIndex(e => e.Email, "UQ__KhachHan__A9D10534C8FE3D65").IsUnique();
+            entity.HasIndex(e => e.Email, "UQ__KhachHan__A9D10534C8FE3D65")
+                .IsUnique()
+                .HasFilter("([Email] IS NOT NULL)");
 
             entity.Property(e => e.DiaChi).HasMaxLength(255);
             entity.Property(e => e.Email).HasMaxLength(100);
@@ -135,11 +135,7 @@ public partial class TechSupportContext : DbContext
             entity.Property(e => e.MatKhau)
                 .HasMaxLength(255)
                 .IsUnicode(false);
-            entity.Property(e => e.NgayTao).HasDefaultValueSql("(getdate())");
             entity.Property(e => e.SoDienThoai).HasMaxLength(15);
-            entity.Property(e => e.TenDangNhap)
-                .HasMaxLength(100)
-                .IsUnicode(false);
             entity.Property(e => e.TrangThai).HasMaxLength(100);
         });
 

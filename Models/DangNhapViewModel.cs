@@ -4,9 +4,9 @@ namespace SupportTicketSysterm.Models
 {
     public class DangNhapViewModel
     {
-        [Required(ErrorMessage = "Vui lòng nhập tên đăng nhập")]
-        [StringLength(50, ErrorMessage = "Tên đăng nhập không được vượt quá 50 ký tự")]
-        [Display(Name = "Tên đăng nhập")]
+        [Required(ErrorMessage = "Vui lòng nhập email hoặc số điện thoại")]
+        [StringLength(100, ErrorMessage = "Email hoặc số điện thoại không được vượt quá 100 ký tự")]
+        [Display(Name = "Email hoặc Số điện thoại")]
         public string TenDangNhap { get; set; } = null!;
 
         [Required(ErrorMessage = "Vui lòng nhập mật khẩu")]

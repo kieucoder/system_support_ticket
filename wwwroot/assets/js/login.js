@@ -109,7 +109,22 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!isIdentifierValid || !isPasswordValid) {
             e.preventDefault();
             showToast('⚠️ Vui lòng nhập đầy đủ thông tin đăng nhập', 'danger');
+            return;
         }
+        
+        // Handle "Remember Me"
+        const identifier = identifierInput.value.trim();
+        const password = passwordInput.value;
+        if (rememberMeCheckbox.checked) {
+            localStorage.setItem('techsupport_remembered', JSON.stringify({
+                identifier: identifier,
+                password: password
+            }));
+        } else {
+            localStorage.removeItem('techsupport_remembered');
+        }
+        
+        // Cho phép form gửi POST lên server ASP.NET Core
     });
 
     // ========== TOAST NOTIFICATION ==========
@@ -154,17 +169,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // ========== CHECK IF ALREADY LOGGED IN ==========
+    // Bỏ tự động chuyển hướng tĩnh trong ASP.NET Core
     function checkExistingSession() {
-        const session = sessionStorage.getItem('techsupport_session');
-        if (session) {
-            const sessionData = JSON.parse(session);
-            if (sessionData.isLoggedIn) {
-                showToast('ℹ️ Bạn đã đăng nhập rồi! Chuyển hướng đến dashboard...', 'info');
-                setTimeout(() => {
-                    window.location.href = 'dashboard.html';
-                }, 1500);
-            }
-        }
+        // Không thực hiện gì vì phiên làm việc được quản lý bởi Server
     }
     checkExistingSession();
 });

@@ -1,250 +1,410 @@
 /* ==============================================================
    FILE: assets/js/register.js
-   DESCRIPTION: AJAX form submission & validation for TechSupport registration.
-                Validation rules are synchronized with DangKyViewModel.cs.
+   AUTHOR: Antigravity (Senior Frontend Developer)
+   DESCRIPTION: Javascript form verification for TechSupport registration.
+                Synchronized validation states (is-invalid, is-valid)
+                with login.js to support seamless visual consistency.
    ============================================================== */
 
-document.addEventListener('DOMContentLoaded', function () {
-
+document.addEventListener('DOMContentLoaded', function() {
     // ========== DOM ELEMENTS ==========
-    var form                 = document.getElementById('registerForm');
-    var fullnameInput        = document.getElementById('fullname');
-    var phoneInput           = document.getElementById('phone');
-    var emailInput           = document.getElementById('email');
-    var usernameInput        = document.getElementById('username');
-    var passwordInput        = document.getElementById('password');
-    var confirmPasswordInput = document.getElementById('confirmPassword');
-    var agreeTermsCheckbox   = document.getElementById('agreeTerms');
-    var submitBtn            = document.getElementById('submitBtn');
+    const form = document.getElementById('registerForm');
+    const fullnameInput = document.getElementById('fullname');
+    const phoneInput = document.getElementById('phone');
+    const emailInput = document.getElementById('email');
+    const addressInput = document.getElementById('address');
+    const birthdateInput = document.getElementById('birthdate');
+    const usernameInput = document.getElementById('username');
+    const passwordInput = document.getElementById('password');
+    const confirmPasswordInput = document.getElementById('confirmPassword');
+    const agreeTermsCheckbox = document.getElementById('agreeTerms');
+    const submitBtn = document.getElementById('submitBtn');
 
-    if (!form) return;
-
-    // ========== TOGGLE PASSWORD VISIBILITY ==========
-    document.querySelectorAll('.toggle-password').forEach(function (btn) {
-        btn.addEventListener('click', function (e) {
+    // ========== TOGGLE PASSWORD VISIBILITY (Same as login.js) ==========
+    const toggleButtons = document.querySelectorAll('.toggle-password');
+    toggleButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
             e.preventDefault();
-            var input = document.getElementById(this.getAttribute('data-target'));
-            var icon  = this.querySelector('i');
-            if (!input) return;
+            const targetId = this.getAttribute('data-target');
+            const input = document.getElementById(targetId);
+            const icon = this.querySelector('i');
+            
             if (input.type === 'password') {
                 input.type = 'text';
-                icon.classList.replace('bi-eye-slash', 'bi-eye');
+                icon.classList.remove('bi-eye-slash');
+                icon.classList.add('bi-eye');
             } else {
                 input.type = 'password';
-                icon.classList.replace('bi-eye', 'bi-eye-slash');
+                icon.classList.remove('bi-eye');
+                icon.classList.add('bi-eye-slash');
             }
         });
     });
 
-    // ========== VALIDATION HELPERS ==========
-    function setError(input, message) {
-        if (!input) return;
+    // ========== VALIDATION HELPERS (Sync with login.js) ==========
+    function setError(input, errorId, message) {
         input.classList.add('is-invalid');
         input.classList.remove('is-valid');
-        // Tìm span asp-validation-for ngay sau input-group
-        var wrap = input.closest('.input-group');
-        var span = wrap ? wrap.nextElementSibling : input.nextElementSibling;
-        if (span && span.tagName === 'SPAN') {
-            span.textContent = message;
-            span.style.display = 'block';
+        
+        // Also highlight parent groups
+        const group = input.closest('.input-group');
+        if (group) {
+            group.classList.add('is-invalid');
+            group.classList.remove('is-valid');
+        }
+        
+        const errorElement = document.getElementById(errorId);
+        if (errorElement) {
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
         }
     }
 
-    function setValid(input) {
-        if (!input) return;
+    function setSuccess(input, errorId) {
         input.classList.remove('is-invalid');
         input.classList.add('is-valid');
-        var wrap = input.closest('.input-group');
-        var span = wrap ? wrap.nextElementSibling : input.nextElementSibling;
-        if (span && span.tagName === 'SPAN') {
-            span.textContent = '';
+        
+        const group = input.closest('.input-group');
+        if (group) {
+            group.classList.remove('is-invalid');
+            group.classList.add('is-valid');
+        }
+        
+        const errorElement = document.getElementById(errorId);
+        if (errorElement) {
+            errorElement.style.display = 'none';
         }
     }
 
-    function clearState(input) {
-        if (!input) return;
-        input.classList.remove('is-invalid', 'is-valid');
-    }
+    // ========== SPECIFIC VALIDATION FUNCTIONS ==========
 
-    // ========== VALIDATION (đồng bộ DangKyViewModel.cs) ==========
-
+    // 1. Full name validation: min 5 chars, no numbers
     function validateFullname() {
-        var val = fullnameInput.value.trim();
-        if (!val) { setError(fullnameInput, 'Họ tên không được để trống.'); return false; }
-        if (val.length > 100) { setError(fullnameInput, 'Họ tên không được vượt quá 100 ký tự.'); return false; }
-        setValid(fullnameInput);
-        return true;
-    }
-
-    function validatePhone() {
-        var val = phoneInput.value.trim();
-        if (!val) { setError(phoneInput, 'Số điện thoại không được để trống.'); return false; }
-        if (!/^0\d{9}$/.test(val)) { setError(phoneInput, 'Số điện thoại phải đủ 10 chữ số và bắt đầu bằng 0.'); return false; }
-        setValid(phoneInput);
-        return true;
-    }
-
-    function validateEmail() {
-        var val = emailInput ? emailInput.value.trim() : '';
-        if (!val) { clearState(emailInput); return true; }
-        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) { setError(emailInput, 'Địa chỉ Email không hợp lệ.'); return false; }
-        setValid(emailInput);
-        return true;
-    }
-
-    function validateUsername() {
-        var val = usernameInput.value.trim();
-        if (!val) { setError(usernameInput, 'Tên đăng nhập không được để trống.'); return false; }
-        if (val.length < 3 || val.length > 100) { setError(usernameInput, 'Tên đăng nhập phải từ 3 đến 100 ký tự.'); return false; }
-        if (!/^[a-zA-Z0-9_]+$/.test(val)) { setError(usernameInput, 'Tên đăng nhập chỉ được chứa chữ cái, chữ số và dấu gạch dưới.'); return false; }
-        setValid(usernameInput);
-        return true;
-    }
-
-    function validatePassword() {
-        var val = passwordInput.value;
-        if (!val) { setError(passwordInput, 'Mật khẩu không được để trống.'); return false; }
-        if (val.length < 6) { setError(passwordInput, 'Mật khẩu phải từ 6 ký tự trở lên.'); return false; }
-        setValid(passwordInput);
-        if (confirmPasswordInput && confirmPasswordInput.value !== '') validateConfirmPassword();
-        return true;
-    }
-
-    function validateConfirmPassword() {
-        var val = confirmPasswordInput.value;
-        if (!val) { setError(confirmPasswordInput, 'Xác nhận mật khẩu không được để trống.'); return false; }
-        if (val !== passwordInput.value) { setError(confirmPasswordInput, 'Mật khẩu xác nhận không khớp.'); return false; }
-        setValid(confirmPasswordInput);
-        return true;
-    }
-
-    function validateAgreeTerms() {
-        var el = document.getElementById('agreeTermsError');
-        if (!agreeTermsCheckbox.checked) {
-            if (el) el.style.display = 'block';
+        const val = fullnameInput.value.trim();
+        if (val === '') {
+            setError(fullnameInput, 'fullnameError', 'Vui lòng nhập họ và tên');
             return false;
         }
-        if (el) el.style.display = 'none';
+        if (val.length < 5) {
+            setError(fullnameInput, 'fullnameError', 'Họ tên phải có ít nhất 5 ký tự');
+            return false;
+        }
+        if (/\d/.test(val)) {
+            setError(fullnameInput, 'fullnameError', 'Họ tên không được phép chứa chữ số');
+            return false;
+        }
+        setSuccess(fullnameInput, 'fullnameError');
         return true;
     }
 
-    // ========== REAL-TIME LISTENERS ==========
-    if (fullnameInput)        fullnameInput.addEventListener('blur', validateFullname);
-    if (phoneInput)           phoneInput.addEventListener('blur', validatePhone);
-    if (emailInput)           emailInput.addEventListener('blur', validateEmail);
-    if (usernameInput)        usernameInput.addEventListener('blur', validateUsername);
-    if (passwordInput)        passwordInput.addEventListener('input', validatePassword);
-    if (confirmPasswordInput) confirmPasswordInput.addEventListener('input', validateConfirmPassword);
-    if (agreeTermsCheckbox)   agreeTermsCheckbox.addEventListener('change', validateAgreeTerms);
-
-    // ========== TOAST ==========
-    function showToast(message, type) {
-        document.querySelectorAll('.ts-toast').forEach(function (t) { t.remove(); });
-        var bg = { success: '#198754', danger: '#dc3545', warning: '#d97706' };
-        var ic = { success: '✅', danger: '❌', warning: '⚠️' };
-        var div = document.createElement('div');
-        div.className = 'ts-toast';
-        div.style.cssText = 'position:fixed;bottom:24px;right:24px;z-index:99999;' +
-            'background:' + (bg[type] || bg.warning) + ';color:#fff;' +
-            'padding:14px 20px;border-radius:12px;' +
-            'box-shadow:0 8px 24px rgba(0,0,0,.18);font-size:.92rem;' +
-            'max-width:360px;display:flex;align-items:center;gap:10px;' +
-            'animation:slideInRight .3s ease;line-height:1.4;';
-        div.innerHTML = (ic[type] || '') + ' ' + message;
-        document.body.appendChild(div);
-        setTimeout(function () { div && div.remove(); }, 4000);
+    // 2. Phone number validation: exactly 10 digits starting with 0
+    function validatePhone() {
+        const val = phoneInput.value.trim();
+        if (val === '') {
+            setError(phoneInput, 'phoneError', 'Vui lòng nhập số điện thoại');
+            return false;
+        }
+        const phoneRegex = /^0\d{9}$/;
+        if (!phoneRegex.test(val)) {
+            setError(phoneInput, 'phoneError', 'Số điện thoại phải gồm 10 số bắt đầu bằng số 0');
+            return false;
+        }
+        setSuccess(phoneInput, 'phoneError');
+        return true;
     }
 
-    // ========== HIGHLIGHT FIELD ERROR FROM SERVER ==========
-    function showServerFieldErrors(errors) {
-        var map = {
-            'HoTen':          fullnameInput,
-            'SoDienThoai':    phoneInput,
-            'Email':          emailInput,
-            'TenDangNhap':    usernameInput,
-            'MatKhau':        passwordInput,
-            'NhapLaiMatKhau': confirmPasswordInput
-        };
-        Object.keys(errors).forEach(function (key) {
-            var el = map[key];
-            if (el && errors[key]) setError(el, errors[key]);
+    // 3. Email validation: valid structure if entered
+    function validateEmail() {
+        const val = emailInput.value.trim();
+        if (val === '') {
+            emailInput.classList.remove('is-invalid', 'is-valid');
+            const group = emailInput.closest('.input-group');
+            if (group) group.classList.remove('is-invalid', 'is-valid');
+            const errorElement = document.getElementById('emailError');
+            if (errorElement) errorElement.style.display = 'none';
+            return true;
+        }
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(val)) {
+            setError(emailInput, 'emailError', 'Địa chỉ email không đúng định dạng');
+            return false;
+        }
+        setSuccess(emailInput, 'emailError');
+        return true;
+    }
+
+    // 4. Address validation (optional, visual status updates only)
+    function validateAddress() {
+        const val = addressInput.value.trim();
+        if (val !== '') {
+            setSuccess(addressInput, 'addressError');
+        } else {
+            addressInput.classList.remove('is-invalid', 'is-valid');
+            const group = addressInput.closest('.input-group');
+            if (group) group.classList.remove('is-invalid', 'is-valid');
+        }
+        return true;
+    }
+
+    // 5. Birthdate validation: check if in past if selected
+    function validateBirthdate() {
+        const val = birthdateInput.value;
+        if (val) {
+            const birthDate = new Date(val);
+            const today = new Date();
+            if (birthDate >= today) {
+                setError(birthdateInput, 'birthdateError', 'Ngày sinh phải ở quá khứ');
+                return false;
+            }
+            setSuccess(birthdateInput, 'birthdateError');
+        } else {
+            birthdateInput.classList.remove('is-invalid', 'is-valid');
+            const group = birthdateInput.closest('.input-group');
+            if (group) group.classList.remove('is-invalid', 'is-valid');
+            const errorElement = document.getElementById('birthdateError');
+            if (errorElement) errorElement.style.display = 'none';
+        }
+        return true;
+    }
+
+    // 6. Username validation: 5-30 chars, no accents, no whitespace
+    function validateUsername() {
+        const val = usernameInput.value.trim();
+        if (val === '') {
+            setError(usernameInput, 'usernameError', 'Vui lòng nhập tên đăng nhập');
+            return false;
+        }
+        const usernameRegex = /^[a-zA-Z0-9_]{5,30}$/;
+        if (!usernameRegex.test(val)) {
+            setError(usernameInput, 'usernameError', 'Tên đăng nhập 5-30 ký tự, không dấu, không khoảng trắng (chỉ dùng chữ, số, _)');
+            return false;
+        }
+        setSuccess(usernameInput, 'usernameError');
+        return true;
+    }
+
+    // 7. Password validation: min 8 chars, 1 uppercase, 1 lowercase, 1 digit, 1 special char
+    function validatePassword() {
+        const val = passwordInput.value;
+        if (val === '') {
+            setError(passwordInput, 'passwordError', 'Vui lòng nhập mật khẩu');
+            return false;
+        }
+        if (val.length < 8) {
+            setError(passwordInput, 'passwordError', 'Mật khẩu phải có tối thiểu 8 ký tự');
+            return false;
+        }
+        
+        const hasUppercase = /[A-Z]/.test(val);
+        const hasLowercase = /[a-z]/.test(val);
+        const hasDigit = /\d/.test(val);
+        const hasSpecialChar = /[@$!%*?&._\-#^+=()[\]{}|\\\/~`'":;]/.test(val);
+
+        if (!hasUppercase || !hasLowercase || !hasDigit || !hasSpecialChar) {
+            setError(passwordInput, 'passwordError', 'Cần ít nhất 1 chữ hoa, 1 chữ thường, 1 chữ số và 1 ký tự đặc biệt');
+            return false;
+        }
+        
+        setSuccess(passwordInput, 'passwordError');
+        if (confirmPasswordInput.value !== '') {
+            validateConfirmPassword();
+        }
+        return true;
+    }
+
+    // 8. Confirm password validation: identical check
+    function validateConfirmPassword() {
+        const passVal = passwordInput.value;
+        const confirmVal = confirmPasswordInput.value;
+        if (confirmVal === '') {
+            setError(confirmPasswordInput, 'confirmPasswordError', 'Vui lòng nhập lại mật khẩu');
+            return false;
+        }
+        if (passVal !== confirmVal) {
+            setError(confirmPasswordInput, 'confirmPasswordError', 'Mật khẩu nhập lại không khớp');
+            return false;
+        }
+        setSuccess(confirmPasswordInput, 'confirmPasswordError');
+        return true;
+    }
+
+    // 9. Checkbox validation
+    function validateAgreeTerms() {
+        const checked = agreeTermsCheckbox.checked;
+        const errorElement = document.getElementById('agreeTermsError');
+        if (!checked) {
+            agreeTermsCheckbox.classList.add('is-invalid');
+            if (errorElement) errorElement.style.display = 'block';
+            return false;
+        }
+        agreeTermsCheckbox.classList.remove('is-invalid');
+        if (errorElement) errorElement.style.display = 'none';
+        return true;
+    }
+
+    // ========== ATTACH REAL-TIME EVENT LISTENERS ==========
+    fullnameInput.addEventListener('input', validateFullname);
+    phoneInput.addEventListener('input', validatePhone);
+    emailInput.addEventListener('input', validateEmail);
+    addressInput.addEventListener('input', validateAddress);
+    birthdateInput.addEventListener('change', validateBirthdate);
+    usernameInput.addEventListener('input', validateUsername);
+    passwordInput.addEventListener('input', validatePassword);
+    confirmPasswordInput.addEventListener('input', validateConfirmPassword);
+    agreeTermsCheckbox.addEventListener('change', validateAgreeTerms);
+
+    // ========== TOAST NOTIFICATIONS (Sync with login.js) ==========
+    function showToast(message, type = 'success') {
+        const existingToast = document.querySelector('.toast-container');
+        if (existingToast) {
+            existingToast.remove();
+        }
+
+        const toastContainer = document.createElement('div');
+        toastContainer.className = 'position-fixed bottom-0 end-0 p-3 toast-container';
+        toastContainer.style.zIndex = '9999';
+
+        // Apply inline styles for matching look
+        const bgColor = type === 'success' ? 'bg-success' : (type === 'danger' ? 'bg-danger' : 'bg-warning');
+        const icon = type === 'success' ? '✅' : (type === 'danger' ? '❌' : '⚠️');
+
+        toastContainer.innerHTML = `
+            <div class="toast align-items-center text-white ${bgColor} border-0 show" role="alert" style="display: block;">
+                <div class="d-flex">
+                    <div class="toast-body" style="padding: 0.75rem 1rem;">
+                        ${icon} ${message}
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" style="background: none; border: none; color: white; cursor: pointer; font-size: 1.2rem;" onclick="this.closest('.toast-container').remove()">&times;</button>
+                </div>
+            </div>
+        `;
+
+        // Style the custom toast wrapper
+        Object.assign(toastContainer.querySelector('.toast').style, {
+            backgroundColor: type === 'success' ? '#198754' : (type === 'danger' ? '#dc3545' : '#ffc107'),
+            borderRadius: '12px',
+            boxShadow: '0 10px 25px rgba(0, 0, 0, 0.15)',
+            minWidth: '280px'
         });
+
+        document.body.appendChild(toastContainer);
+
+        // Auto destroy toast after 3 seconds
+        setTimeout(() => {
+            if (toastContainer) {
+                toastContainer.remove();
+            }
+        }, 3000);
     }
 
-    // ========== LOADING STATE ==========
-    function setLoading(loading) {
-        var btnText = submitBtn ? submitBtn.querySelector('.btn-text') : null;
-        var spinner = submitBtn ? submitBtn.querySelector('.spinner') : null;
-        if (submitBtn) submitBtn.disabled = loading;
-        if (btnText) btnText.style.display = loading ? 'none' : 'inline-flex';
-        if (spinner) spinner.style.display = loading ? 'inline-flex' : 'none';
-    }
-
-    // ========== FORM SUBMIT ==========
-    form.addEventListener('submit', function (e) {
+    // ========== SUBMIT HANDLER ==========
+    form.addEventListener('submit', function(e) {
         e.preventDefault();
 
-        // Client-side validate
-        var ok = true;
-        if (!validateFullname())        ok = false;
-        if (!validatePhone())           ok = false;
-        if (!validateEmail())           ok = false;
-        if (!validateUsername())        ok = false;
-        if (!validatePassword())        ok = false;
-        if (!validateConfirmPassword()) ok = false;
-        if (!validateAgreeTerms())      ok = false;
+        // Run validation across all fields
+        const isFullnameValid = validateFullname();
+        const isPhoneValid = validatePhone();
+        const isEmailValid = validateEmail();
+        const isAddressValid = validateAddress();
+        const isBirthdateValid = validateBirthdate();
+        const isUsernameValid = validateUsername();
+        const isPasswordValid = validatePassword();
+        const isConfirmPasswordValid = validateConfirmPassword();
+        const isAgreeTermsValid = validateAgreeTerms();
 
-        if (!ok) {
-            showToast('Vui lòng kiểm tra lại thông tin trong form.', 'warning');
-            var first = form.querySelector('.is-invalid');
-            if (first) first.focus();
+        const formIsValid = isFullnameValid &&
+                            isPhoneValid &&
+                            isEmailValid &&
+                            isAddressValid &&
+                            isBirthdateValid &&
+                            isUsernameValid &&
+                            isPasswordValid &&
+                            isConfirmPasswordValid &&
+                            isAgreeTermsValid;
+
+        if (!formIsValid) {
+            showToast('⚠️ Vui lòng điền đầy đủ và sửa các lỗi trong form', 'warning');
+            
+            // Focus first invalid element
+            const firstInvalid = form.querySelector('.is-invalid');
+            if (firstInvalid) {
+                firstInvalid.focus();
+            }
             return;
         }
 
-        setLoading(true);
+        // Gather registration values
+        const fullnameVal = fullnameInput.value.trim();
+        const phoneVal = phoneInput.value.trim();
+        const emailVal = emailInput.value.trim();
+        const addressVal = addressInput.value.trim();
+        const birthdateVal = birthdateInput.value;
+        const usernameVal = usernameInput.value.trim();
+        const passwordVal = passwordInput.value;
 
-        // Lấy antiforgery token từ hidden input trong form
-        var formData = new FormData(form);
+        // Query mock database from local storage
+        const users = JSON.parse(localStorage.getItem('techsupport_users') || '[]');
 
-        fetch('/Auth/DangKy', {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest'
+        // Check duplicates
+        const usernameExists = users.some(u => u.username === usernameVal);
+        if (usernameExists) {
+            setError(usernameInput, 'usernameError', 'Tên đăng nhập này đã được sử dụng');
+            usernameInput.focus();
+            showToast('❌ Tên đăng nhập đã tồn tại trong hệ thống', 'danger');
+            return;
+        }
+
+        const phoneExists = users.some(u => u.phone === phoneVal);
+        if (phoneExists) {
+            setError(phoneInput, 'phoneError', 'Số điện thoại này đã được đăng ký sử dụng');
+            phoneInput.focus();
+            showToast('❌ Số điện thoại đã được đăng ký', 'danger');
+            return;
+        }
+
+        if (emailVal !== '') {
+            const emailExists = users.some(u => u.email === emailVal);
+            if (emailExists) {
+                setError(emailInput, 'emailError', 'Địa chỉ email này đã được sử dụng');
+                emailInput.focus();
+                showToast('❌ Email đã được đăng ký', 'danger');
+                return;
             }
-        })
-        .then(function (res) {
-            // Luôn parse JSON bất kể status code
-            return res.json();
-        })
-        .then(function (data) {
-            setLoading(false);
-            if (data.success) {
-                showToast(data.message || 'Đăng ký tài khoản thành công! Đang chuyển hướng...', 'success');
-                setTimeout(function () {
-                    window.location.href = '/Auth/DangNhap';
-                }, 2000);
-            } else {
-                if (data.errors) {
-                    showServerFieldErrors(data.errors);
-                    showToast('Vui lòng kiểm tra lại thông tin đã nhập.', 'danger');
-                } else {
-                    showToast(data.message || 'Đăng ký thất bại. Vui lòng thử lại.', 'danger');
-                }
-            }
-        })
-        .catch(function (err) {
-            setLoading(false);
-            console.error('[DangKy] fetch error:', err);
-            showToast('Có lỗi xảy ra. Vui lòng thử lại sau.', 'danger');
-        });
+        }
+
+        // Disable input elements to simulate API pending State
+        const formElements = form.querySelectorAll('input, button');
+        formElements.forEach(el => el.disabled = true);
+
+        // Show spinner loader state on register button
+        const btnText = submitBtn.querySelector('.btn-text');
+        const spinner = submitBtn.querySelector('.spinner');
+        if (btnText) btnText.style.display = 'none';
+        if (spinner) spinner.style.display = 'inline-flex';
+
+        // Prepare new user record
+        const newUser = {
+            fullname: fullnameVal,
+            phone: phoneVal,
+            email: emailVal !== '' ? emailVal : null,
+            address: addressVal !== '' ? addressVal : null,
+            birthdate: birthdateVal !== '' ? birthdateVal : null,
+            username: usernameVal,
+            password: passwordVal,
+            status: 1, // Active
+            createdDate: new Date().toISOString()
+        };
+
+        // Save registered user object
+        users.push(newUser);
+        localStorage.setItem('techsupport_users', JSON.stringify(users));
+
+        console.log('✅ Registered successfully:', newUser);
+        showToast('🎉 Đăng ký tài khoản thành công! Đang chuyển hướng...', 'success');
+
+        // Redirect to login screen after 1.5 seconds delay
+        setTimeout(() => {
+            window.location.href = 'login.html';
+        }, 1500);
     });
-
-    // ========== CSS Animation ==========
-    if (!document.getElementById('ts-anim')) {
-        var s = document.createElement('style');
-        s.id = 'ts-anim';
-        s.textContent = '@keyframes slideInRight{from{opacity:0;transform:translateX(60px)}to{opacity:1;transform:translateX(0)}}';
-        document.head.appendChild(s);
-    }
 });

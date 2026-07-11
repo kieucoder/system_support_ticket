@@ -28,8 +28,8 @@
         '        </div>' +
         '        <button type="button" class="btn-close btn-close-white text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>' +
         '    </div>' +
-        '        '    <!-- Sidebar Brand Logo (Desktop only) -->' +
-        '    <a href="/Staff/Dashboard" class="sidebar-brand d-none d-lg-flex">' +
+        '    <!-- Sidebar Brand Logo (Desktop only) -->' +
+        '    <a href="dashboard.html" class="sidebar-brand d-none d-lg-flex">' +
         '        <i class="fa-solid fa-headset"></i>' +
         '        <span>TechSupport <small style="display:block;font-size:0.65rem;font-weight:400;letter-spacing:1px;color:rgba(255,255,255,0.5);">VIETTEL ADMIN</small></span>' +
         '    </a>' +
@@ -37,8 +37,8 @@
         '    <nav aria-label="Primary navigation" class="flex-grow-1 overflow-y-auto">' +
         '        <ul class="sidebar-menu">' +
         '            <li class="sidebar-section-label">TỔNG QUAN</li>' +
-        '            <li class="sidebar-item" data-page="Dashboard">' +
-        '                <a href="/Staff/Dashboard" class="sidebar-link">' +
+        '            <li class="sidebar-item" data-page="dashboard.html">' +
+        '                <a href="dashboard.html" class="sidebar-link">' +
         '                    <i class="fa-solid fa-gauge-high"></i>' +
         '                    <span>Dashboard</span>' +
         '                </a>' +
@@ -62,20 +62,20 @@
         '                    <span>Lịch Hẹn Kỹ Thuật</span>' +
         '                </a>' +
         '            </li>' +
-        '            <li class="sidebar-item" data-page="QuanLyDanhMuc">' +
-        '                <a href="/Staff/QuanLyDanhMuc" class="sidebar-link">' +
+        '            <li class="sidebar-item" data-page="admin-categories.html">' +
+        '                <a href="admin-categories.html" class="sidebar-link">' +
         '                    <i class="fa-solid fa-layer-group"></i>' +
         '                    <span>Danh Mục Sự Cố</span>' +
         '                </a>' +
         '            </li>' +
-        '            <li class="sidebar-item" data-page="QuanLyDichVu">' +
-        '                <a href="/Staff/QuanLyDichVu" class="sidebar-link">' +
+        '            <li class="sidebar-item" data-page="admin-services.html">' +
+        '                <a href="admin-services.html" class="sidebar-link">' +
         '                    <i class="fa-solid fa-network-wired"></i>' +
         '                    <span>Dịch Vụ Kỹ Thuật</span>' +
         '                </a>' +
         '            </li>' +
-        '            <li class="sidebar-item" data-page="QuanLyKH">' +
-        '                <a href="/Staff/QuanLyKH" class="sidebar-link">' +
+        '            <li class="sidebar-item" data-page="admin-customers.html">' +
+        '                <a href="admin-customers.html" class="sidebar-link">' +
         '                    <i class="fa-solid fa-users"></i>' +
         '                    <span>Khách Hàng</span>' +
         '                </a>' +

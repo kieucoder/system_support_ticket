@@ -1,123 +1,292 @@
 /**
  * admin-categories.js — TechSupport Viettel Admin Redesign
- * Modern CRUD management for Danh Mục Sự Cố via AJAX/Fetch API
+ * Modern CRUD management for Danh Mục Sự Cố
  */
 'use strict';
 
 /* ══════════════════════════════════════════
-   STATE
+   CONFIG
    ══════════════════════════════════════════ */
-let currentPage = 1;
-let viewingCatId = null;
+const CAT_STORAGE_KEY  = 'viettel_categories';
+const CAT_PAGE_SIZE    = 10;
 
 /* ══════════════════════════════════════════
-   TABLE & STATISTICS LOADING
+   STATE
    ══════════════════════════════════════════ */
-function loadTable(page = null) {
-    if (page !== null) {
-        currentPage = page;
+let catList       = [];      // full dataset
+let catFiltered   = [];      // after search/filter/sort
+let catCurrentPage = 1;
+let editingCatId  = null;    // null = add mode
+let deletingCatId = null;
+
+/* ══════════════════════════════════════════
+   SEED DATA (shown when storage is empty)
+   ══════════════════════════════════════════ */
+const CAT_SEED = [
+    { id: 'DM001', name: 'Internet Cáp Quang', desc: 'Hỗ trợ sự cố mạng Internet cáp quang FTTH tại nhà và văn phòng.', status: 'Hoạt động', createdAt: '2026-01-10' },
+    { id: 'DM002', name: 'Camera Giám Sát',    desc: 'Hỗ trợ lắp đặt, sửa chữa camera IP và camera analog.', status: 'Hoạt động', createdAt: '2026-01-12' },
+    { id: 'DM003', name: 'Truyền Hình MyTV',   desc: 'Hỗ trợ dịch vụ truyền hình số mặt đất và internet.', status: 'Tạm khóa', createdAt: '2026-01-15' },
+    { id: 'DM004', name: 'Wi-Fi & Router',      desc: 'Cấu hình, khắc phục sự cố thiết bị router và Access Point.', status: 'Hoạt động', createdAt: '2026-01-20' },
+    { id: 'DM005', name: 'Điện Thoại Cố Định', desc: 'Hỗ trợ lắp đặt và sửa chữa đường dây điện thoại cố định.', status: 'Hoạt động', createdAt: '2026-02-01' },
+    { id: 'DM006', name: 'An Ninh Mạng',       desc: 'Tư vấn và hỗ trợ bảo mật hệ thống mạng doanh nghiệp.', status: 'Hoạt động', createdAt: '2026-02-05' },
+    { id: 'DM007', name: 'Cloud & Server',      desc: 'Hỗ trợ triển khai, vận hành dịch vụ máy chủ và điện toán đám mây.', status: 'Hoạt động', createdAt: '2026-02-08' },
+    { id: 'DM008', name: 'Di Động / SIM',       desc: 'Hỗ trợ sự cố thuê bao di động, SIM và chuyển đổi gói cước.', status: 'Tạm khóa', createdAt: '2026-02-10' },
+];
+
+/* ══════════════════════════════════════════
+   STORAGE
+   ══════════════════════════════════════════ */
+function loadCategories() {
+    try {
+        const raw = localStorage.getItem(CAT_STORAGE_KEY);
+        catList = raw ? JSON.parse(raw) : [...CAT_SEED];
+        // Also seed if stored array is empty
+        if (!catList.length) {
+            catList = [...CAT_SEED];
+            saveCategories();
+        } else if (!raw) {
+            saveCategories();
+        }
+    } catch {
+        catList = [...CAT_SEED];
     }
-    
-    const keyword = document.getElementById('catSearchInput')?.value || '';
+}
+
+
+function saveCategories() {
+    localStorage.setItem(CAT_STORAGE_KEY, JSON.stringify(catList));
+}
+
+/* ── Generate next ID ── */
+function nextCatId() {
+    if (!catList.length) return 'DM001';
+    const nums = catList
+        .map(c => parseInt(c.id.replace(/\D/g, ''), 10))
+        .filter(n => !isNaN(n));
+    const max = nums.length ? Math.max(...nums) : 0;
+    return 'DM' + String(max + 1).padStart(3, '0');
+}
+
+/* ══════════════════════════════════════════
+   FILTER + SEARCH + SORT
+   ══════════════════════════════════════════ */
+function applyFilter() {
+    const q      = (document.getElementById('catSearchInput')?.value || '').trim().toLowerCase();
     const status = document.getElementById('catStatusFilter')?.value || '';
-    const sort = document.getElementById('catSortFilter')?.value || 'newest';
+    const sortVal = document.getElementById('catSortFilter')?.value || 'newest';
 
-    const url = `/Staff/DanhSachDanhMuc?keyword=${encodeURIComponent(keyword)}&status=${encodeURIComponent(status)}&sort=${encodeURIComponent(sort)}&page=${currentPage}`;
+    catFiltered = catList.filter(c => {
+        const matchQ = !q ||
+            c.name.toLowerCase().includes(q) ||
+            c.id.toLowerCase().includes(q) ||
+            (c.desc || '').toLowerCase().includes(q);
+        const matchS = !status || c.status === status;
+        return matchQ && matchS;
+    });
 
-    const container = document.getElementById('tableCardContainer');
-    if (container) {
-        container.style.opacity = '0.5';
+    // Sorting
+    if (sortVal === 'newest') {
+        catFiltered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    } else if (sortVal === 'oldest') {
+        catFiltered.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+    } else if (sortVal === 'az') {
+        catFiltered.sort((a, b) => a.name.localeCompare(b.name, 'vi'));
+    } else if (sortVal === 'za') {
+        catFiltered.sort((a, b) => b.name.localeCompare(a.name, 'vi'));
     }
 
-    fetch(url)
-        .then(response => {
-            if (!response.ok) throw new Error('Không thể tải dữ liệu bảng.');
-            return response.text();
-        })
-        .then(html => {
-            if (container) {
-                container.style.opacity = '0';
-                container.innerHTML = html;
-                // Force reflow
-                container.offsetHeight;
-                container.style.opacity = '1';
-                container.style.transition = 'opacity 0.2s ease-in-out';
-            }
-        })
-        .catch(err => {
-            console.error(err);
-            showToast('error', 'Có lỗi xảy ra khi tải danh sách danh mục.');
-            if (container) {
-                container.style.opacity = '1';
-            }
-        });
+    catCurrentPage = 1;
+    renderTable();
+    renderPagination();
+    updateStats();
 }
 
-function loadStats() {
-    const totalEl = document.getElementById('statTotal');
-    const activeEl = document.getElementById('statActive');
-    const inactiveEl = document.getElementById('statInactive');
-    const newEl = document.getElementById('statNewThisMonth');
+/* ══════════════════════════════════════════
+   STATS
+   ══════════════════════════════════════════ */
+function updateStats() {
+    const total    = catList.length;
+    const active   = catList.filter(c => c.status === 'Hoạt động').length;
+    const inactive = catList.filter(c => c.status === 'Tạm khóa').length;
+    
+    // Count categories created in the current month (June 2026)
+    const currentYM = new Date().toISOString().slice(0, 7); // "2026-06"
+    const newThisMonth = catList.filter(c => c.createdAt && c.createdAt.startsWith(currentYM)).length;
 
-    const oldTotal = parseInt(totalEl?.textContent) || 0;
-    const oldActive = parseInt(activeEl?.textContent) || 0;
-    const oldInactive = parseInt(inactiveEl?.textContent) || 0;
-    const oldNewThisMonth = parseInt(newEl?.textContent) || 0;
+    setText('statTotal',    total);
+    setText('statActive',   active);
+    setText('statInactive', inactive);
+    setText('statNewThisMonth', newThisMonth);
+    setText('catCount',     total);
 
-    fetch('/Staff/ThongKeDanhMuc')
-        .then(response => {
-            if (!response.ok) throw new Error('Không thể tải thống kê.');
-            return response.text();
-        })
-        .then(html => {
-            const container = document.getElementById('statsContainer');
-            if (container) {
-                container.innerHTML = html;
-
-                const newTotal = parseInt(document.getElementById('statTotal')?.textContent) || 0;
-                const newActive = parseInt(document.getElementById('statActive')?.textContent) || 0;
-                const newInactive = parseInt(document.getElementById('statInactive')?.textContent) || 0;
-                const newNewThisMonth = parseInt(document.getElementById('statNewThisMonth')?.textContent) || 0;
-
-                runAnimateCounter('statTotal', oldTotal, newTotal);
-                runAnimateCounter('statActive', oldActive, newActive);
-                runAnimateCounter('statInactive', oldInactive, newInactive);
-                runAnimateCounter('statNewThisMonth', oldNewThisMonth, newNewThisMonth);
-            }
-        })
-        .catch(err => {
-            console.error(err);
-        });
+    // Table meta info
+    const start = catFiltered.length ? (catCurrentPage - 1) * CAT_PAGE_SIZE + 1 : 0;
+    const end   = Math.min(catCurrentPage * CAT_PAGE_SIZE, catFiltered.length);
+    setText('catTableMeta', `Đang hiển thị ${start}–${end} trên ${catFiltered.length} danh mục`);
 }
 
-function runAnimateCounter(id, start, end) {
+function setText(id, val) {
     const el = document.getElementById(id);
-    if (!el) return;
-    if (start === end) {
-        el.textContent = end;
+    if (el) el.textContent = val;
+}
+
+/* ══════════════════════════════════════════
+   RENDER TABLE (Desktop & Mobile)
+   ══════════════════════════════════════════ */
+function renderTable() {
+    const tbody = document.getElementById('categoriesBody');
+    const mContainer = document.getElementById('categoriesMobileContainer');
+    if (!tbody || !mContainer) return;
+
+    const start = (catCurrentPage - 1) * CAT_PAGE_SIZE;
+    const page  = catFiltered.slice(start, start + CAT_PAGE_SIZE);
+
+    if (!page.length) {
+        const emptyHtml = `
+            <div style="text-align: center; padding: 48px 20px;">
+                <div style="width: 64px; height: 64px; border-radius: 50%; background-color: var(--vt-red-glow); color: var(--vt-red); display: inline-flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 12px;">
+                    <i class="fa-solid fa-folder-open"></i>
+                </div>
+                <h6 style="font-weight: 700; margin-bottom: 4px; color: var(--text-main);">Không tìm thấy danh mục</h6>
+                <p style="font-size: 0.82rem; color: var(--text-muted); margin: 0;">Thử thay đổi từ khóa tìm kiếm hoặc bộ lọc trạng thái.</p>
+            </div>`;
+        tbody.innerHTML = `<tr><td colspan="7">${emptyHtml}</td></tr>`;
+        mContainer.innerHTML = emptyHtml;
         return;
     }
-    const duration = 400; // ms
-    const startTime = performance.now();
 
-    function update(now) {
-        const elapsed = now - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-        const easeProgress = progress * (2 - progress); // easeOutQuad
-        const current = Math.floor(start + (end - start) * easeProgress);
-        el.textContent = current;
+    // Render Desktop Rows
+    const rows = page.map((c, i) => {
+        const rowNum = start + i + 1;
+        const isActive = c.status === 'Hoạt động';
+        return `
+        <tr>
+            <td style="color: var(--text-muted); font-weight: 600; font-size: 0.8rem;">${rowNum}</td>
+            <td><span class="vt-id-tag">${escHtml(c.id)}</span></td>
+            <td>
+                <div class="vt-cat-name-group">
+                    <div class="vt-cat-avatar"><i class="fa-solid fa-layer-group"></i></div>
+                    <span class="vt-cat-name">${escHtml(c.name)}</span>
+                </div>
+            </td>
+            <td>
+                <div class="vt-cat-desc" title="${escHtml(c.desc || '')}">${escHtml(c.desc || '—')}</div>
+            </td>
+            <td>
+                <span class="vt-badge ${isActive ? 'active' : 'locked'}">
+                    <i class="fa-solid ${isActive ? 'fa-circle-check' : 'fa-circle-pause'}"></i>
+                    ${escHtml(c.status)}
+                </span>
+            </td>
+            <td>
+                <span style="font-size: 0.82rem; color: var(--text-muted);"><i class="fa-regular fa-calendar me-1"></i>${escHtml(c.createdAt || '—')}</span>
+            </td>
+            <td>
+                <div class="vt-action-wrap" style="justify-content: center;">
+                    <button class="vt-btn-action view" data-tooltip="Chi tiết" onclick="openViewModal('${escHtml(c.id)}')">
+                        <i class="fa-solid fa-eye"></i>
+                    </button>
+                    <button class="vt-btn-action edit" data-tooltip="Chỉnh sửa" onclick="openEditModal('${escHtml(c.id)}')">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                    </button>
+                    <button class="vt-btn-action delete" data-tooltip="Xóa" onclick="openDeleteModal('${escHtml(c.id)}')">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                </div>
+            </td>
+        </tr>`;
+    }).join('');
 
-        if (progress < 1) {
-            requestAnimationFrame(update);
+    tbody.innerHTML = rows;
+
+    // Render Mobile Cards List
+    const mobileCardsHtml = page.map(c => {
+        const isActive = c.status === 'Hoạt động';
+        return `
+        <div class="vt-mobile-card">
+            <div class="vt-mobile-card-header">
+                <span class="vt-id-tag">${escHtml(c.id)}</span>
+                <span class="vt-badge ${isActive ? 'active' : 'locked'}">
+                    <i class="fa-solid ${isActive ? 'fa-circle-check' : 'fa-circle-pause'}"></i>
+                    ${escHtml(c.status)}
+                </span>
+            </div>
+            <div class="vt-mobile-card-title">${escHtml(c.name)}</div>
+            <div class="vt-mobile-card-body">${escHtml(c.desc || '—')}</div>
+            <div class="vt-mobile-card-meta">
+                <span><i class="fa-regular fa-calendar-days me-1"></i> ${escHtml(c.createdAt || '—')}</span>
+                <div class="vt-action-wrap">
+                    <button class="vt-btn-action view" data-tooltip="Chi tiết" onclick="openViewModal('${escHtml(c.id)}')">
+                        <i class="fa-solid fa-eye"></i>
+                    </button>
+                    <button class="vt-btn-action edit" data-tooltip="Sửa" onclick="openEditModal('${escHtml(c.id)}')">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                    </button>
+                    <button class="vt-btn-action delete" data-tooltip="Xóa" onclick="openDeleteModal('${escHtml(c.id)}')">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                </div>
+            </div>
+        </div>`;
+    }).join('');
+
+    mContainer.innerHTML = mobileCardsHtml;
+}
+
+/* ══════════════════════════════════════════
+   RENDER PAGINATION
+   ══════════════════════════════════════════ */
+function renderPagination() {
+    const totalPages = Math.max(1, Math.ceil(catFiltered.length / CAT_PAGE_SIZE));
+    const wrap = document.getElementById('catPagination');
+    if (!wrap) return;
+
+    let html = `
+        <button class="vt-page-btn" onclick="goPage(${catCurrentPage - 1})"
+            ${catCurrentPage <= 1 ? 'disabled' : ''} title="Trang trước">
+            <i class="fa-solid fa-chevron-left" style="font-size:0.7rem;"></i>
+        </button>`;
+
+    // Show at most 5 page numbers
+    const range = pageRange(catCurrentPage, totalPages, 5);
+    range.forEach(p => {
+        if (p === '…') {
+            html += `<button class="vt-page-btn" disabled>…</button>`;
         } else {
-            el.textContent = end;
+            html += `<button class="vt-page-btn ${p === catCurrentPage ? 'active' : ''}"
+                onclick="goPage(${p})">${p}</button>`;
         }
-    }
-    requestAnimationFrame(update);
+    });
+
+    html += `
+        <button class="vt-page-btn" onclick="goPage(${catCurrentPage + 1})"
+            ${catCurrentPage >= totalPages ? 'disabled' : ''} title="Trang sau">
+            <i class="fa-solid fa-chevron-right" style="font-size:0.7rem;"></i>
+        </button>`;
+
+    wrap.innerHTML = html;
+    updateStats();
+}
+
+function pageRange(current, total, maxVisible) {
+    if (total <= maxVisible) return Array.from({ length: total }, (_, i) => i + 1);
+    const half = Math.floor(maxVisible / 2);
+    let start = Math.max(1, current - half);
+    let end   = Math.min(total, start + maxVisible - 1);
+    if (end - start < maxVisible - 1) start = Math.max(1, end - maxVisible + 1);
+    const pages = [];
+    if (start > 1)   { pages.push(1); if (start > 2) pages.push('…'); }
+    for (let p = start; p <= end; p++) pages.push(p);
+    if (end < total) { if (end < total - 1) pages.push('…'); pages.push(total); }
+    return pages;
 }
 
 window.goPage = function (p) {
-    loadTable(p);
+    const totalPages = Math.ceil(catFiltered.length / CAT_PAGE_SIZE);
+    if (p < 1 || p > totalPages) return;
+    catCurrentPage = p;
+    renderTable();
+    renderPagination();
 };
 
 /* ══════════════════════════════════════════
@@ -129,7 +298,6 @@ function openModal(id) {
     overlay.classList.add('show');
     document.body.style.overflow = 'hidden';
 }
-
 function closeModal(id) {
     const overlay = document.getElementById(id);
     if (!overlay) return;
@@ -155,173 +323,121 @@ document.addEventListener('keydown', function (e) {
     }
 });
 
-function setText(id, val) {
-    const el = document.getElementById(id);
-    if (el) el.textContent = val;
-}
-
 /* ══════════════════════════════════════════
    ADD MODAL
    ══════════════════════════════════════════ */
 window.openAddModal = function () {
+    editingCatId = null;
     clearFormErrors('addModal');
-    const form = document.getElementById('addCatForm');
-    if (form) form.reset();
+    document.getElementById('addCatId').value   = nextCatId();
+    document.getElementById('addCatName').value  = '';
+    document.getElementById('addCatDesc').value  = '';
+    document.getElementById('addCatStatus').value = 'Hoạt động';
     openModal('addModal');
-    setTimeout(() => {
-        const nameEl = document.getElementById('addCatName');
-        if (nameEl) nameEl.focus();
-    }, 300);
+    setTimeout(() => document.getElementById('addCatName').focus(), 300);
 };
 
 window.closeAddModal = function () { closeModal('addModal'); };
 
+document.addEventListener('DOMContentLoaded', function () {
+    const addForm = document.getElementById('addCatForm');
+    if (addForm) {
+        addForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            if (!validateForm('addModal', ['addCatName', 'addCatDesc'])) return;
+
+            const newCat = {
+                id:        document.getElementById('addCatId').value.trim(),
+                name:      document.getElementById('addCatName').value.trim(),
+                desc:      document.getElementById('addCatDesc').value.trim(),
+                status:    document.getElementById('addCatStatus').value,
+                createdAt: new Date().toISOString().split('T')[0]
+            };
+
+            catList.unshift(newCat);
+            saveCategories();
+            applyFilter();
+            closeModal('addModal');
+            showToast('success', `Đã thêm danh mục <strong>${newCat.name}</strong> thành công!`);
+        });
+    }
+});
+
 /* ══════════════════════════════════════════
    EDIT MODAL
    ══════════════════════════════════════════ */
-window.openEditModalServer = function (id) {
-    clearFormErrors('editModal');
-    
-    fetch(`/Staff/SuaDanhMuc?id=${id}`)
-        .then(response => {
-            if (!response.ok) throw new Error('Không thể kết nối đến server.');
-            return response.json();
-        })
-        .then(data => {
-            const idEl = document.getElementById('editId');
-            const idVal = data.idDanhMuc !== undefined ? data.idDanhMuc : data.IdDanhMuc;
-            if (idEl) idEl.value = idVal;
-            
-            const nameEl = document.getElementById('editCatName');
-            if (nameEl) nameEl.value = data.tenDanhMuc !== undefined ? data.tenDanhMuc : data.TenDanhMuc;
-            
-            const descEl = document.getElementById('editCatDesc');
-            if (descEl) descEl.value = data.moTa !== undefined ? data.moTa : data.MoTa;
-            
-            const statusEl = document.getElementById('editCatStatus');
-            if (statusEl) statusEl.value = data.trangThai !== undefined ? data.trangThai : data.TrangThai;
-            
-            const titleIdEl = document.getElementById('editCatId');
-            if (titleIdEl) titleIdEl.textContent = idVal;
+window.openEditModal = function (catId) {
+    const cat = catList.find(c => c.id === catId);
+    if (!cat) return;
+    editingCatId = catId;
 
-            openModal('editModal');
-            setTimeout(() => {
-                if (nameEl) nameEl.focus();
-            }, 300);
-        })
-        .catch(error => {
-            console.error('Error fetching category data:', error);
-            showToast('error', 'Không thể tải thông tin danh mục!');
-        });
+    clearFormErrors('editModal');
+    document.getElementById('editCatId').textContent = cat.id;
+    document.getElementById('editCatIdField').value = cat.id;
+    document.getElementById('editCatName').value     = cat.name;
+    document.getElementById('editCatDesc').value     = cat.desc || '';
+    document.getElementById('editCatStatus').value   = cat.status;
+    openModal('editModal');
+    setTimeout(() => document.getElementById('editCatName').focus(), 300);
 };
 
 window.closeEditModal = function () { closeModal('editModal'); };
 
+document.addEventListener('DOMContentLoaded', function () {
+    const editForm = document.getElementById('editCatForm');
+    if (editForm) {
+        editForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            if (!validateForm('editModal', ['editCatName', 'editCatDesc'])) return;
+            if (!editingCatId) return;
+
+            const idx = catList.findIndex(c => c.id === editingCatId);
+            if (idx === -1) return;
+
+            catList[idx] = {
+                ...catList[idx],
+                name:   document.getElementById('editCatName').value.trim(),
+                desc:   document.getElementById('editCatDesc').value.trim(),
+                status: document.getElementById('editCatStatus').value,
+            };
+
+            saveCategories();
+            applyFilter();
+            closeModal('editModal');
+            showToast('success', `Đã cập nhật danh mục <strong>${catList[idx].name}</strong>!`);
+            editingCatId = null;
+        });
+    }
+});
+
 /* ══════════════════════════════════════════
    DELETE MODAL
    ══════════════════════════════════════════ */
-window.openDeleteModalServer = function (id, name) {
+window.openDeleteModal = function (catId) {
+    const cat = catList.find(c => c.id === catId);
+    if (!cat) return;
+    deletingCatId = catId;
+
     const nameEl = document.getElementById('deleteCatName');
-    if (nameEl) nameEl.textContent = name;
-    
-    const inputEl = document.getElementById('IdDanhMucXoa');
-    if (inputEl) inputEl.value = id;
-    
+    if (nameEl) nameEl.textContent = cat.name;
     openModal('deleteModal');
 };
 
 window.closeDeleteModal = function () {
     closeModal('deleteModal');
+    deletingCatId = null;
 };
 
-/* ══════════════════════════════════════════
-   LOCK / UNLOCK TOGGLE
-   ══════════════════════════════════════════ */
-window.toggleLockServer = function (id) {
-    const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
-    const formData = new FormData();
-    formData.append('id', id);
-    if (token) {
-        formData.append('__RequestVerificationToken', token);
-    }
-
-    fetch('/Staff/KhoaDanhMuc', {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => {
-        if (!response.ok) throw new Error('Không thể kết nối đến server.');
-        return response.json();
-    })
-    .then(res => {
-        if (res.success) {
-            showToast('success', res.message);
-            loadTable();
-            loadStats();
-        } else {
-            showToast('error', res.message || 'Không thể cập nhật trạng thái');
-        }
-    })
-    .catch(err => {
-        console.error(err);
-        showToast('error', 'Có lỗi xảy ra khi cập nhật trạng thái.');
-    });
-};
-
-/* ══════════════════════════════════════════
-   VIEW DETAIL MODAL
-   ══════════════════════════════════════════ */
-window.openViewModalServer = function (id) {
-    fetch(`/Staff/SuaDanhMuc?id=${id}`)
-        .then(response => {
-            if (!response.ok) throw new Error('Không thể tải thông tin.');
-            return response.json();
-        })
-        .then(data => {
-            const idVal = data.idDanhMuc !== undefined ? data.idDanhMuc : data.IdDanhMuc;
-            const nameVal = data.tenDanhMuc !== undefined ? data.tenDanhMuc : data.TenDanhMuc;
-            const descVal = data.moTa !== undefined ? data.moTa : data.MoTa;
-            const statusVal = data.trangThai !== undefined ? data.trangThai : data.TrangThai;
-            const dateVal = data.ngayTao !== undefined ? data.ngayTao : data.NgayTao;
-
-            viewingCatId = idVal;
-
-            setText('viewCatName',  nameVal);
-            setText('viewCatIdTag', 'DM' + String(idVal).padStart(3, '0'));
-
-            setText('viewCatId',   idVal);
-            setText('viewCatDate', dateVal || 'Chưa rõ');
-            setText('viewCatDesc', descVal || '—');
-
-            const isActive = statusVal === 'Hoạt động' || statusVal === 'Hoạt Động';
-            const statusEl = document.getElementById('viewCatStatus');
-            if (statusEl) {
-                statusEl.innerHTML = `
-                    <span class="vt-badge ${isActive ? 'active' : 'locked'}">
-                        <i class="fa-solid ${isActive ? 'fa-circle-check' : 'fa-circle-pause'}"></i>
-                        ${escHtml(statusVal)}
-                    </span>`;
-            }
-
-            openModal('viewModal');
-        })
-        .catch(error => {
-            console.error('Error fetching category data:', error);
-            showToast('error', 'Không thể tải thông tin chi tiết danh mục!');
-        });
-};
-
-window.closeViewModal = function () {
-    closeModal('viewModal');
-    viewingCatId = null;
-};
-
-window.openEditFromView = function () {
-    const id = viewingCatId;
-    closeModal('viewModal');
-    if (id) {
-        setTimeout(() => openEditModalServer(id), 300);
-    }
+window.confirmDelete = function () {
+    if (!deletingCatId) return;
+    const cat = catList.find(c => c.id === deletingCatId);
+    const name = cat ? cat.name : '';
+    catList = catList.filter(c => c.id !== deletingCatId);
+    saveCategories();
+    applyFilter();
+    closeModal('deleteModal');
+    showToast('error', `Đã xóa danh mục <strong>${name}</strong>.`);
+    deletingCatId = null;
 };
 
 /* ══════════════════════════════════════════
@@ -356,6 +472,7 @@ function clearFormErrors(modalId) {
     });
 }
 
+/* ── Clear error on input ── */
 document.addEventListener('input', function (e) {
     if (e.target.classList.contains('vt-form-input') || e.target.classList.contains('vt-form-textarea')) {
         e.target.classList.remove('is-invalid');
@@ -363,6 +480,19 @@ document.addEventListener('input', function (e) {
         if (errEl) errEl.style.display = 'none';
     }
 });
+
+/* ══════════════════════════════════════════
+   FILTER CONTROLS
+   ══════════════════════════════════════════ */
+window.resetFilter = function () {
+    const searchEl = document.getElementById('catSearchInput');
+    const statusEl = document.getElementById('catStatusFilter');
+    const sortEl   = document.getElementById('catSortFilter');
+    if (searchEl) searchEl.value = '';
+    if (statusEl) statusEl.value = '';
+    if (sortEl)   sortEl.value = 'newest';
+    applyFilter();
+};
 
 /* ══════════════════════════════════════════
    TOAST NOTIFICATION
@@ -389,11 +519,59 @@ function showToast(type, msg) {
         <div class="vt-toast-icon">${icons[type] || icons.info}</div>
         <div class="vt-toast-message">${msg}</div>`;
 
-    toast.offsetHeight; // force reflow
+    // force reflow
+    toast.offsetHeight;
     toast.classList.add('show');
     if (toastTimer) clearTimeout(toastTimer);
     toastTimer = setTimeout(() => toast.classList.remove('show'), 3500);
 }
+
+/* ══════════════════════════════════════════
+   VIEW DETAIL MODAL
+   ══════════════════════════════════════════ */
+let viewingCatId = null;
+
+window.openViewModal = function (catId) {
+    const cat = catList.find(c => c.id === catId);
+    if (!cat) return;
+    viewingCatId = catId;
+
+    // Banner
+    setText('viewCatName',  cat.name);
+    setText('viewCatIdTag', cat.id);
+
+    // Detail rows
+    setText('viewCatId',   cat.id);
+    setText('viewCatDate', cat.createdAt || 'Chưa rõ');
+    setText('viewCatDesc', cat.desc || '—');
+
+    // Status badge
+    const isActive = cat.status === 'Hoạt động';
+    const statusEl = document.getElementById('viewCatStatus');
+    if (statusEl) {
+        statusEl.innerHTML = `
+            <span class="vt-badge ${isActive ? 'active' : 'locked'}">
+                <i class="fa-solid ${isActive ? 'fa-circle-check' : 'fa-circle-pause'}"></i>
+                ${escHtml(cat.status)}
+            </span>`;
+    }
+
+    openModal('viewModal');
+};
+
+window.closeViewModal = function () {
+    closeModal('viewModal');
+    viewingCatId = null;
+};
+
+/** Close view modal then open edit modal directly */
+window.openEditFromView = function () {
+    const id = viewingCatId;
+    closeModal('viewModal');
+    if (id) {
+        setTimeout(() => openEditModal(id), 300);
+    }
+};
 
 /* ══════════════════════════════════════════
    ESCAPE HTML
@@ -408,154 +586,27 @@ function escHtml(str) {
 }
 
 /* ══════════════════════════════════════════
-   INIT & EVENT LISTENERS
+   INIT
    ══════════════════════════════════════════ */
 document.addEventListener('DOMContentLoaded', function () {
-    // 1. Intercept search/filter elements
-    const filterForm = document.getElementById('filterForm');
-    if (filterForm) {
-        filterForm.addEventListener('submit', function (e) {
-            e.preventDefault();
-            currentPage = 1;
-            loadTable();
-        });
-    }
+    loadCategories();
+    applyFilter();
 
-    let searchTimeout = null;
+    // Live search
     const searchInput = document.getElementById('catSearchInput');
     if (searchInput) {
-        searchInput.addEventListener('input', function () {
-            clearTimeout(searchTimeout);
-            searchTimeout = setTimeout(() => {
-                currentPage = 1;
-                loadTable();
-            }, 300);
-        });
+        searchInput.addEventListener('input', applyFilter);
     }
 
+    // Status filter
     const statusFilter = document.getElementById('catStatusFilter');
     if (statusFilter) {
-        statusFilter.addEventListener('change', function () {
-            currentPage = 1;
-            loadTable();
-        });
+        statusFilter.addEventListener('change', applyFilter);
     }
 
+    // Sort filter
     const sortFilter = document.getElementById('catSortFilter');
     if (sortFilter) {
-        sortFilter.addEventListener('change', function () {
-            currentPage = 1;
-            loadTable();
-        });
-    }
-
-    const btnResetFilter = document.getElementById('btnResetFilter');
-    if (btnResetFilter) {
-        btnResetFilter.addEventListener('click', function () {
-            if (searchInput) searchInput.value = '';
-            if (statusFilter) statusFilter.value = '';
-            if (sortFilter) sortFilter.value = 'newest';
-            currentPage = 1;
-            loadTable();
-        });
-    }
-
-    // 2. Intercept Form Submissions (Add, Edit, Delete)
-    const addForm = document.getElementById('addCatForm');
-    if (addForm) {
-        addForm.addEventListener('submit', function (e) {
-            e.preventDefault();
-            if (!validateForm('addModal', ['addCatName', 'addCatDesc'])) {
-                return;
-            }
-
-            const formData = new FormData(addForm);
-            fetch('/Staff/ThemDanhMuc', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => {
-                if (!response.ok) throw new Error('Không thể kết nối đến server.');
-                return response.json();
-            })
-            .then(res => {
-                if (res.success) {
-                    closeAddModal();
-                    showToast('success', res.message);
-                    loadTable();
-                    loadStats();
-                } else {
-                    showToast('error', res.message || 'Không thể thêm danh mục');
-                }
-            })
-            .catch(err => {
-                console.error(err);
-                showToast('error', 'Có lỗi xảy ra trong quá trình lưu danh mục.');
-            });
-        });
-    }
-
-    const editForm = document.getElementById('editCatForm');
-    if (editForm) {
-        editForm.addEventListener('submit', function (e) {
-            e.preventDefault();
-            if (!validateForm('editModal', ['editCatName', 'editCatDesc'])) {
-                return;
-            }
-
-            const formData = new FormData(editForm);
-            fetch('/Staff/SuaDanhMuc', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => {
-                if (!response.ok) throw new Error('Không thể kết nối đến server.');
-                return response.json();
-            })
-            .then(res => {
-                if (res.success) {
-                    closeEditModal();
-                    showToast('success', res.message);
-                    loadTable();
-                    loadStats();
-                } else {
-                    showToast('error', res.message || 'Không thể cập nhật danh mục');
-                }
-            })
-            .catch(err => {
-                console.error(err);
-                showToast('error', 'Có lỗi xảy ra khi lưu thay đổi.');
-            });
-        });
-    }
-
-    const deleteForm = document.getElementById('deleteCatForm');
-    if (deleteForm) {
-        deleteForm.addEventListener('submit', function (e) {
-            e.preventDefault();
-            const formData = new FormData(deleteForm);
-            fetch('/Staff/XoaDanhMuc', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => {
-                if (!response.ok) throw new Error('Không thể kết nối đến server.');
-                return response.json();
-            })
-            .then(res => {
-                closeDeleteModal();
-                if (res.success) {
-                    showToast('success', res.message);
-                    loadTable();
-                    loadStats();
-                } else {
-                    showToast('error', res.message || 'Không thể xóa danh mục');
-                }
-            })
-            .catch(err => {
-                console.error(err);
-                showToast('error', 'Có lỗi xảy ra khi thực hiện xóa.');
-            });
-        });
+        sortFilter.addEventListener('change', applyFilter);
     }
 });

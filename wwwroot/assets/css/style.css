@@ -1101,7 +1101,6 @@ section {
 @keyframes spin {
     100% { transform: rotate(360deg); }
 }
-}
 
 /* Offline/CORS Fallback for Top Bar and Main Navigation Icons */
 .fa-fallback-active .fa-phone::before {
@@ -1127,38 +1126,38 @@ section {
     font-family: "bootstrap-icons" !important;
 }
 
-/* ==================== HERO BREADCRUMB & DARK BACKGROUND LEGIBILITY ==================== */
+/* ==================== HERO BREADCRUMB & LIGHT BACKGROUND LEGIBILITY ==================== */
 .hero-breadcrumb {
     display: inline-flex;
-    background: rgba(255, 255, 255, 0.08) !important;
-    backdrop-filter: blur(20px) !important;
-    -webkit-backdrop-filter: blur(20px) !important;
-    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    background: rgba(255, 255, 255, 0.7) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    border: 1px solid rgba(15, 17, 21, 0.08) !important;
     padding: 6px 18px !important;
     border-radius: 50px !important;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15) !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02) !important;
     transition: var(--transition-smooth) !important;
     margin-bottom: 20px !important;
     width: fit-content;
 }
 
 .hero-breadcrumb:hover {
-    background: rgba(255, 255, 255, 0.15) !important;
-    border-color: rgba(238, 0, 51, 0.5) !important;
-    box-shadow: 0 8px 30px rgba(238, 0, 51, 0.25) !important;
-    transform: translateY(-2px) !important;
+    background: rgba(255, 255, 255, 0.9) !important;
+    border-color: rgba(238, 0, 51, 0.25) !important;
+    box-shadow: 0 6px 20px rgba(238, 0, 51, 0.06) !important;
+    transform: translateY(-1px) !important;
 }
 
 .hero-breadcrumb .breadcrumb-item {
     font-size: 0.8rem !important;
     font-weight: 500 !important;
-    color: rgba(255, 255, 255, 0.75) !important;
+    color: #4b5563 !important;
     display: flex !important;
     align-items: center !important;
 }
 
 .hero-breadcrumb .breadcrumb-item a {
-    color: rgba(255, 255, 255, 0.75) !important;
+    color: #4b5563 !important;
     text-decoration: none !important;
     transition: var(--transition-fast) !important;
     display: inline-flex !important;
@@ -1173,59 +1172,19 @@ section {
 
 .hero-breadcrumb .breadcrumb-item a:hover,
 .hero-breadcrumb .breadcrumb-item a:hover i {
-    color: #ffffff !important;
+    color: var(--viettel-red) !important;
 }
 
 .hero-breadcrumb .breadcrumb-item.active {
-    color: #ffffff !important;
+    color: #1f2937 !important;
     font-weight: 600 !important;
 }
 
 .hero-breadcrumb .breadcrumb-item + .breadcrumb-item::before {
     content: "/" !important;
     font-family: inherit !important;
-    color: rgba(255, 255, 255, 0.35) !important;
+    color: rgba(15, 17, 21, 0.2) !important;
     padding: 0 10px !important;
-}
-
-/* Legibility overrides for other hero components on dark cover background */
-.hero-carousel-content .hero-title {
-    color: #ffffff !important;
-    background: none !important;
-    -webkit-text-fill-color: initial !important;
-    -webkit-background-clip: initial !important;
-}
-
-.hero-carousel-content .hero-desc {
-    color: rgba(255, 255, 255, 0.85) !important;
-}
-
-/* Ensure stats highlights are readable on dark backgrounds */
-.hero-carousel-content .hero-stats-highlights .stat-highlight-item {
-    background: rgba(255, 255, 255, 0.08) !important;
-    border: 1px solid rgba(255, 255, 255, 0.12) !important;
-    color: #ffffff !important;
-    padding: 8px 16px !important;
-    border-radius: 50px !important;
-    font-size: 0.85rem !important;
-    font-weight: 500 !important;
-    display: inline-flex !important;
-    align-items: center !important;
-    gap: 6px !important;
-    backdrop-filter: blur(10px) !important;
-    -webkit-backdrop-filter: blur(10px) !important;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
-    transition: var(--transition-smooth) !important;
-}
-
-.hero-carousel-content .hero-stats-highlights .stat-highlight-item:hover {
-    background: rgba(255, 255, 255, 0.15) !important;
-    border-color: rgba(238, 0, 51, 0.4) !important;
-    transform: translateY(-2px) !important;
-}
-
-.hero-carousel-content .hero-stats-highlights .stat-highlight-item i {
-    color: var(--viettel-red) !important;
 }
 
 /* Quick Info Legibility overrides for detail/success page */

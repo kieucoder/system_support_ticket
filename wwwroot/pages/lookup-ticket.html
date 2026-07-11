@@ -75,137 +75,59 @@
     <!-- ==================== MAIN CONTENT ==================== -->
     <main class="lk-main">
 
-    
-    <!-- ===== HERO SECTION (synced with create-ticket & index) ===== -->
-    <section class="hero-section p-0" id="heroSection">
-        <div class="hero-carousel">
-            <div class="carousel-inner">
-                <div class="carousel-item active" style="background-image: url('../assets/images/hero_telecom_service.png');">
-                    <div class="hero-carousel-overlay"></div>
-                    <div class="hero-carousel-content">
-                        <div class="container">
-                            <div class="row">
-                                <div class="col-lg-8 col-md-10 col-12 text-start">
-                                    <!-- Glassmorphic Breadcrumb -->
-                                    <nav aria-label="breadcrumb" class="hero-breadcrumb">
-                                        <ol class="breadcrumb m-0" itemscope itemtype="https://schema.org/BreadcrumbList">
-                                            <li class="breadcrumb-item" itemprop="itemListElement" itemscope
-                                                itemtype="https://schema.org/ListItem">
-                                                <a href="../index.html" itemprop="item"
-                                                    class="text-decoration-none d-inline-flex align-items-center">
-                                                    <i class="bi bi-house me-1"></i>
-                                                    <span itemprop="name">Trang chủ</span>
-                                                </a>
-                                                <meta itemprop="position" content="1" />
-                                            </li>
-                                            <li class="breadcrumb-item active" itemprop="itemListElement" itemscope
-                                                itemtype="https://schema.org/ListItem" aria-current="page">
-                                                <span itemprop="name">Tra cứu phiếu hỗ trợ</span>
-                                                <meta itemprop="position" content="2" />
-                                            </li>
-                                        </ol>
-                                    </nav>
-
-                                    <!-- Badge -->
-                                    <span class="hero-badge animate-fade-up">
-                                        <i class="bi bi-search me-1"></i> Hệ thống tra cứu phiếu hỗ trợ
-                                    </span>
-
-                                    <!-- Title -->
-                                    <h1 class="hero-title animate-fade-up delay-1">Tra Cứu Phiếu Hỗ Trợ</h1>
-
-                                    <!-- Description -->
-                                    <p class="hero-desc animate-fade-up delay-2">
-                                        Nhập mã phiếu hoặc thông tin liên lạc để theo dõi tiến độ xử lý yêu cầu hỗ trợ kỹ thuật của bạn theo thời gian thực.
-                                    </p>
-
-                                    <!-- CTA Buttons -->
-                                    <div class="hero-buttons animate-fade-up delay-3">
-                                        <a href="#lkSearchSection" class="btn btn-create-ticket-custom btn-ripple">
-                                            <i class="bi bi-search me-1"></i> Tra cứu ngay
-                                        </a>
-                                        <a href="create-ticket.html" class="btn btn-outline-light-custom btn-ripple">
-                                            <i class="bi bi-plus-circle me-1"></i> Tạo Phiếu mới
-                                        </a>
-                                    </div>
-
-                                    <!-- Quick Stats Row (compact, inline) -->
-                                    <div class="lk-hero-stats d-flex flex-wrap gap-3 mt-4 animate-fade-up delay-3" style="border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 20px;">
-                                        <div class="lk-hero-stat-item">
-                                            <span class="lk-hero-stat-num text-danger" data-target="2348">0</span>
-                                            <span class="lk-hero-stat-label text-white-50">Tổng phiếu</span>
-                                        </div>
-                                        <div class="lk-hero-stat-sep" style="background-color: rgba(255,255,255,0.15);"></div>
-                                        <div class="lk-hero-stat-item">
-                                            <span class="lk-hero-stat-num" style="color:#60A5FA" data-target="12">0</span>
-                                            <span class="lk-hero-stat-label text-white-50">Đang xử lý</span>
-                                        </div>
-                                        <div class="lk-hero-stat-sep" style="background-color: rgba(255,255,255,0.15);"></div>
-                                        <div class="lk-hero-stat-item">
-                                            <span class="lk-hero-stat-num" style="color:#34D399" data-target="2315">0</span>
-                                            <span class="lk-hero-stat-label text-white-50">Đã hoàn thành</span>
-                                        </div>
-                                        <div class="lk-hero-stat-sep" style="background-color: rgba(255,255,255,0.15);"></div>
-                                        <div class="lk-hero-stat-item">
-                                            <span class="lk-hero-stat-num" style="color:#FBBF24" data-target="8">0</span>
-                                            <span class="lk-hero-stat-label text-white-50">Lịch hẹn hôm nay</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-=======
     <section class="hero-section">
         <div class="container hero-content">
             <div class="row align-items-center g-5">
-
-                <!-- LEFT: Text Column -->
                 <div class="col-lg-7 col-12 text-start hero-text-col animate-fade-up">
-
-                    <!-- Glassmorphic Breadcrumb -->
-                    <nav aria-label="breadcrumb" class="hero-breadcrumb" itemscope
-                        itemtype="https://schema.org/BreadcrumbList">
-                        <ol class="breadcrumb m-0">
+                    <!-- Breadcrumb Navigation -->
+                    <nav aria-label="breadcrumb" class="hero-breadcrumb">
+                        <ol class="breadcrumb m-0" itemscope itemtype="https://schema.org/BreadcrumbList">
                             <li class="breadcrumb-item" itemprop="itemListElement" itemscope
                                 itemtype="https://schema.org/ListItem">
                                 <a href="../index.html" itemprop="item"
                                     class="text-decoration-none d-inline-flex align-items-center">
-                                    <i class="bi bi-house me-1"></i>
+                                    <i class="fa-solid fa-house-door-fill me-1"></i>
                                     <span itemprop="name">Trang chủ</span>
                                 </a>
                                 <meta itemprop="position" content="1" />
                             </li>
+                            <li class="breadcrumb-item" itemprop="itemListElement" itemscope
+                                itemtype="https://schema.org/ListItem">
+                                <a href="../index.html#serviceGridSection" itemprop="item"
+                                    class="text-decoration-none d-inline-flex align-items-center">
+                                    <span itemprop="name">Hỗ trợ kỹ thuật</span>
+                                </a>
+                                <meta itemprop="position" content="2" />
+                            </li>
                             <li class="breadcrumb-item active" itemprop="itemListElement" itemscope
                                 itemtype="https://schema.org/ListItem" aria-current="page">
                                 <span itemprop="name">Tra cứu phiếu hỗ trợ</span>
-                                <meta itemprop="position" content="2" />
+                                <meta itemprop="position" content="3" />
                             </li>
                         </ol>
                     </nav>
 
                     <!-- Badge -->
                     <span class="hero-badge">
-                        <i class="bi bi-search me-1"></i> Hệ thống tra cứu phiếu hỗ trợ
+                        <i class="bi bi-search me-1"></i> Tra cứu trạng thái xử lý 24/7
                     </span>
 
                     <!-- Title -->
-                    <h1 class="hero-title">Tra Cứu Phiếu Hỗ Trợ</h1>
+                    <h1 class="hero-title text-uppercase">Tra Cứu Phiếu Hỗ Trợ</h1>
 
                     <!-- Description -->
                     <p class="hero-desc">
-                        Nhập mã phiếu hoặc thông tin liên lạc để theo dõi tiến độ xử lý
-                        yêu cầu hỗ trợ kỹ thuật của bạn theo thời gian thực.
+                        Theo dõi tiến trình xử lý sự cố dịch vụ của bạn theo thời gian thực. Nhập mã phiếu hỗ trợ hoặc số
+                        điện thoại đăng ký để kiểm tra.
                     </p>
 
                     <!-- CTA Buttons -->
-                    <div class="hero-cta-buttons d-flex flex-wrap gap-3">
+                    <div class="hero-cta-buttons d-flex flex-wrap gap-3 mt-4">
                         <a href="#lkSearchSection" class="btn btn-hero-create px-4 py-2">
-                            <i class="bi bi-search me-1"></i> Tra cứu ngay
+                            <i class="bi bi-search me-1"></i> Tra Cứu Ngay
                         </a>
                         <a href="create-ticket.html" class="btn btn-hero-contact px-4 py-2">
-                            <i class="bi bi-plus-circle me-1"></i> Tạo Phiếu mới
+                            <i class="bi bi-plus-circle me-1"></i> Tạo Phiếu Mới
                         </a>
                     </div>
 
@@ -312,8 +234,6 @@
                         </g>
                     </svg>
                 </div>
-
->>>>>>> 59a5e6f64da6c8eb44454bf22a5574b208c2f2b3
             </div>
         </div>
     </section>

@@ -1,0 +1,97 @@
+@model SupportTicketSysterm.Models.NhanVienViewModel
+
+<!-- MODAL: RESET MẬT KHẨU NHÂN VIÊN -->
+<div id="resetPasswordModal" class="vt-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="resetPasswordModalTitle">
+    <div class="vt-modal" style="max-width: 500px;">
+        <div class="vt-modal-header">
+            <div class="vt-modal-header-title">
+                <div class="vt-modal-header-icon" style="background-color: rgba(245, 158, 11, 0.1); color: #F59E0B;">
+                    <i class="fa-solid fa-key"></i>
+                </div>
+                <div class="vt-modal-header-text">
+                    <h3 id="resetPasswordModalTitle">Reset mật khẩu nhân viên</h3>
+                    <p>Thiết lập mật khẩu mới cho tài khoản nhân viên.</p>
+                </div>
+            </div>
+            <button class="vt-modal-close" onclick="closeResetPasswordModal()" aria-label="Đóng">
+                <i class="fa-solid fa-times"></i>
+            </button>
+        </div>
+        <div class="vt-modal-body">
+            <form asp-controller="Staff" asp-action="ResetMatKhauNhanVien" method="post" id="resetPasswordForm" novalidate>
+                @Html.AntiForgeryToken()
+                <input type="hidden" id="resetStaffId" name="IdNhanVien" />
+                
+                <div class="row g-3">
+                    <!-- Họ tên -->
+                    <div class="col-12">
+                        <label class="vt-form-label"><i class="fa-solid fa-user me-1 text-muted"></i> Họ và tên</label>
+                        <input type="text" id="resetStaffName" class="form-input-staff w-100" style="background-color: #f8fafc; cursor: not-allowed;" readonly>
+                    </div>
+                    
+                    <!-- Tên đăng nhập -->
+                    <div class="col-12">
+                        <label class="vt-form-label"><i class="fa-solid fa-user-gear me-1 text-muted"></i> Tên đăng nhập</label>
+                        <input type="text" id="resetUsername" class="form-input-staff w-100" style="background-color: #f8fafc; cursor: not-allowed;" readonly>
+                    </div>
+                    
+                    <!-- Mật khẩu mới -->
+                    <div class="col-12">
+                        <label asp-for="MatKhauMoi" class="vt-form-label">Mật khẩu mới <span>*</span></label>
+                        <div class="position-relative">
+                            <input asp-for="MatKhauMoi" type="password" id="resetPasswordNew" name="MatKhauMoi" class="form-input-staff w-100 pe-5" placeholder="••••••••" required minlength="6" autocomplete="off">
+                            <button type="button" class="btn-toggle-password" onclick="togglePasswordVisibility('resetPasswordNew', this)" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); border: none; background: none; color: var(--text-muted); cursor: pointer; padding: 0; z-index: 10;">
+                                <i class="fa-regular fa-eye"></i>
+                            </button>
+                        </div>
+                        <div class="vt-error-msg" id="resetPasswordNewError" style="display: none;">
+                            <i class="fa-solid fa-circle-exclamation"></i> Mật khẩu mới tối thiểu 6 ký tự!
+                        </div>
+                    </div>
+                    
+                    <!-- Xác nhận mật khẩu -->
+                    <div class="col-12">
+                        <label asp-for="XacNhanMatKhau" class="vt-form-label">Xác nhận mật khẩu <span>*</span></label>
+                        <div class="position-relative">
+                            <input asp-for="XacNhanMatKhau" type="password" id="resetPasswordConfirm" name="XacNhanMatKhau" class="form-input-staff w-100 pe-5" placeholder="••••••••" required autocomplete="off">
+                            <button type="button" class="btn-toggle-password" onclick="togglePasswordVisibility('resetPasswordConfirm', this)" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); border: none; background: none; color: var(--text-muted); cursor: pointer; padding: 0; z-index: 10;">
+                                <i class="fa-regular fa-eye"></i>
+                            </button>
+                        </div>
+                        <div class="vt-error-msg" id="resetPasswordConfirmError" style="display: none;">
+                            <i class="fa-solid fa-circle-exclamation"></i> Xác nhận mật khẩu phải giống mật khẩu mới và không được trống!
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="vt-modal-footer">
+            <button type="button" class="vt-btn cancel" onclick="closeResetPasswordModal()">
+                <i class="fa-solid fa-times me-1"></i> Hủy
+            </button>
+            <button type="submit" form="resetPasswordForm" class="vt-btn save" style="background-color: var(--staff-warning); border-color: var(--staff-warning); color: white;">
+                <i class="fa-solid fa-key me-1"></i> Reset mật khẩu
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    if (typeof togglePasswordVisibility !== 'function') {
+        function togglePasswordVisibility(inputId, btn) {
+            const input = document.getElementById(inputId);
+            if (input) {
+                const icon = btn.querySelector('i');
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    icon.classList.remove('fa-eye');
+                    icon.classList.add('fa-eye-slash');
+                } else {
+                    input.type = 'password';
+                    icon.classList.remove('fa-eye-slash');
+                    icon.classList.add('fa-eye');
+                }
+            }
+        }
+    }
+</script>

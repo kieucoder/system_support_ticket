@@ -29,6 +29,9 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.Cookie.SameSite = SameSiteMode.Lax;
     });
 
+// Đăng ký Authorization
+builder.Services.AddAuthorization();
+
 // Đăng ký Session
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>

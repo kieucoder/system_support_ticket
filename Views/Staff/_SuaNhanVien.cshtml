@@ -1,0 +1,86 @@
+@model SupportTicketSysterm.Models.NhanVienViewModel
+
+<div id="editStaffModal" class="vt-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="editStaffModalLabel">
+    <div class="vt-modal">
+        <div class="vt-modal-header">
+            <div class="vt-modal-header-title">
+                <div class="vt-modal-header-icon edit" style="background-color: rgba(245, 158, 11, 0.1); color: #F59E0B;">
+                    <i class="fa-solid fa-user-gear"></i>
+                </div>
+                <div class="vt-modal-header-text">
+                    <h3 id="editStaffModalLabel">Chỉnh Sửa Thông Tin Nhân Viên</h3>
+                    <p>Cập nhật thông tin chi tiết nhân sự hỗ trợ kỹ thuật</p>
+                </div>
+            </div>
+            <button class="vt-modal-close" onclick="closeEditStaffModal()" aria-label="Đóng">
+                <i class="fa-solid fa-times"></i>
+            </button>
+        </div>
+        <div class="vt-modal-body">
+            <form asp-controller="Staff" asp-action="CapNhatNhanVien" method="post" id="editStaffForm" novalidate>
+                @Html.AntiForgeryToken()
+                <input type="hidden" id="editStaffId" name="IdNhanVien" />
+                <div class="row g-3">
+                    <!-- Name -->
+                    <div class="col-12">
+                        <label for="editStaffName" class="vt-form-label">Họ và tên <span>*</span></label>
+                        <input asp-for="HoTen" type="text" id="editStaffName" name="HoTen" class="form-input-staff w-100" placeholder="Nhập họ và tên..." required autocomplete="off">
+                        <div class="vt-error-msg" id="editStaffNameError" style="display: none;">
+                            <i class="fa-solid fa-circle-exclamation"></i> Họ tên bắt buộc nhập!
+                        </div>
+                    </div>
+                    <!-- Email -->
+                    <div class="col-md-6">
+                        <label for="editStaffEmail" class="vt-form-label">Email <span>*</span></label>
+                        <input asp-for="Email" type="email" id="editStaffEmail" name="Email" class="form-input-staff w-100" placeholder="example@viettel.com.vn" required autocomplete="off">
+                        <div class="vt-error-msg" id="editStaffEmailError" style="display: none;">
+                            <i class="fa-solid fa-circle-exclamation"></i> Email không đúng định dạng!
+                        </div>
+                    </div>
+                    <!-- Phone -->
+                    <div class="col-md-6">
+                        <label for="editStaffPhone" class="vt-form-label">Số điện thoại <span>*</span></label>
+                        <input asp-for="SoDienThoai" type="text" id="editStaffPhone" name="SoDienThoai" class="form-input-staff w-100" placeholder="Nhập số điện thoại..." required pattern="^(0[3|5|7|8|9])+([0-9]{8})$" autocomplete="off">
+                        <div class="vt-error-msg" id="editStaffPhoneError" style="display: none;">
+                            <i class="fa-solid fa-circle-exclamation"></i> Số điện thoại 10 số (Việt Nam)!
+                        </div>
+                    </div>
+                    <!-- Address -->
+                    <div class="col-12">
+                        <label for="editStaffAddress" class="vt-form-label">Địa chỉ làm việc</label>
+                        <input asp-for="DiaChi" type="text" id="editStaffAddress" name="DiaChi" class="form-input-staff w-100" placeholder="Địa chỉ cơ quan chi nhánh..." autocomplete="off">
+                    </div>
+                    <!-- Username (Disabled in edit) -->
+                    <div class="col-md-6">
+                        <label for="editStaffUsername" class="vt-form-label">Tên đăng nhập</label>
+                        <input asp-for="TenDangNhap" type="text" id="editStaffUsername" name="TenDangNhap" class="form-input-staff w-100" readonly style="opacity: 0.7; cursor: not-allowed; background-color: var(--border-color);">
+                    </div>
+                    <!-- Role -->
+                    <div class="col-md-6">
+                        <label for="editStaffRole" class="vt-form-label">Vai trò <span>*</span></label>
+                        <select asp-for="VaiTro" id="editStaffRole" name="VaiTro" class="form-input-staff w-100" required>
+                            <option value="Nhân viên">Nhân viên hỗ trợ</option>
+                            <option value="Admin">Quản trị viên (Admin)</option>
+                        </select>
+                    </div>
+                    <!-- Status -->
+                    <div class="col-12">
+                        <label for="editStaffStatus" class="vt-form-label">Trạng thái <span>*</span></label>
+                        <select asp-for="TrangThai" id="editStaffStatus" name="TrangThai" class="form-input-staff w-100" required>
+                            <option value="Hoạt động">Đang hoạt động</option>
+                            <option value="Tạm khóa">Tạm khóa</option>
+                        </select>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="vt-modal-footer">
+            <button type="button" class="vt-btn cancel" onclick="closeEditStaffModal()">
+                <i class="fa-solid fa-times me-1"></i> Hủy bỏ
+            </button>
+            <button type="submit" form="editStaffForm" class="vt-btn save" style="background-color: var(--staff-warning); border-color: var(--staff-warning); color: white;">
+                <i class="bi bi-floppy-disk me-1"></i> Lưu thay đổi
+            </button>
+        </div>
+    </div>
+</div>

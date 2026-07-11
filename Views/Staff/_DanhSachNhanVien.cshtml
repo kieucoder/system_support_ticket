@@ -98,24 +98,24 @@
                         </td>
                         <td>
                             <div class="vt-action-wrap" style="justify-content: center;">
-                                <button class="vt-btn-action view btn-detail" data-tooltip="Chi tiết" data-id="@staffIdStr">
+                                <button onclick="openDetailStaffModal(@item.IdNhanVien)" class="vt-btn-action view" data-tooltip="Chi tiết">
                                     <i class="fa-solid fa-eye"></i>
                                 </button>
-                                <button class="vt-btn-action edit btn-edit" data-tooltip="Chỉnh sửa" data-id="@staffIdStr">
+                                <button type="button" onclick="openEditStaffModal(@item.IdNhanVien)" class="vt-btn-action edit" data-tooltip="Chỉnh sửa">
                                     <i class="fa-solid fa-pen-to-square"></i>
                                 </button>
-                                <button class="vt-btn-action reset btn-reset-pw text-info" data-tooltip="Reset mật khẩu" data-id="@staffIdStr">
+                                <button type="button" onclick="openResetPasswordModal(@item.IdNhanVien)" class="vt-btn-action reset text-info" data-tooltip="Reset mật khẩu">
                                     <i class="fa-solid fa-key"></i>
                                 </button>
                                 @if (isActive)
                                 {
-                                    <button class="vt-btn-action lock btn-lock text-warning" data-tooltip="Khóa tài khoản" data-id="@staffIdStr">
-                                        <i class="fa-solid fa-lock"></i>
+                                    <button type="button" onclick="openLockStaffModal(@item.IdNhanVien)" class="vt-btn-action lock text-warning" data-tooltip="Khóa tài khoản">
+                                        <i class="fa-solid fa-user-lock"></i>
                                     </button>
                                 }
                                 else
                                 {
-                                    <button class="vt-btn-action unlock btn-lock text-success" data-tooltip="Mở khóa" data-id="@staffIdStr">
+                                    <button type="button" onclick="openLockStaffModal(@item.IdNhanVien)" class="vt-btn-action unlock text-success" data-tooltip="Mở khóa tài khoản">
                                         <i class="fa-solid fa-lock-open"></i>
                                     </button>
                                 }
@@ -185,24 +185,24 @@
                     <span><i class="fa-regular fa-calendar-days me-1"></i> @(item.NgayTao?.ToString("yyyy-MM-dd") ?? "—")</span>
                     
                     <div class="vt-action-wrap">
-                        <button class="vt-btn-action view btn-detail" data-tooltip="Chi tiết" data-id="@staffIdStr">
+                        <button onclick="openDetailStaffModal(@item.IdNhanVien)" class="vt-btn-action view" data-tooltip="Chi tiết">
                             <i class="fa-solid fa-eye"></i>
                         </button>
-                        <button class="vt-btn-action edit btn-edit" data-tooltip="Sửa" data-id="@staffIdStr">
+                        <button type="button" onclick="openEditStaffModal(@item.IdNhanVien)" class="vt-btn-action edit" data-tooltip="Sửa">
                             <i class="fa-solid fa-pen-to-square"></i>
                         </button>
-                        <button class="vt-btn-action reset btn-reset-pw text-info" data-tooltip="Reset mật khẩu" data-id="@staffIdStr">
+                        <button type="button" onclick="openResetPasswordModal(@item.IdNhanVien)" class="vt-btn-action reset text-info" data-tooltip="Reset mật khẩu">
                             <i class="fa-solid fa-key"></i>
                         </button>
                         @if (isActive)
                         {
-                            <button class="vt-btn-action lock btn-lock text-warning" data-tooltip="Khóa tài khoản" data-id="@staffIdStr">
-                                <i class="fa-solid fa-lock"></i>
+                            <button type="button" onclick="openLockStaffModal(@item.IdNhanVien)" class="vt-btn-action lock text-warning" data-tooltip="Khóa tài khoản">
+                                <i class="fa-solid fa-user-lock"></i>
                             </button>
                         }
                         else
                         {
-                            <button class="vt-btn-action unlock btn-lock text-success" data-tooltip="Mở khóa" data-id="@staffIdStr">
+                            <button type="button" onclick="openLockStaffModal(@item.IdNhanVien)" class="vt-btn-action unlock text-success" data-tooltip="Mở khóa tài khoản">
                                 <i class="fa-solid fa-lock-open"></i>
                             </button>
                         }
