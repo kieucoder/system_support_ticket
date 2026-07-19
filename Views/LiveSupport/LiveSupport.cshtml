@@ -1,0 +1,209 @@
+@model SupportTicketSysterm.ViewModels.LiveSupportViewModel
+@{
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+    ViewData["Title"] = "Trò Chuyện Trực Tuyến - TechSupport Viettel";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/assets/css/issue-category.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/assets/css/phieu-cuatoi.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/assets/css/live-support.css" asp-append-version="true" />
+}
+
+<!-- ==================== HERO SECTION ==================== -->
+<section class="hero-section">
+    <div class="container hero-content">
+        <div class="row align-items-center g-4">
+            <!-- LEFT: Text & Metadata -->
+            <div class="col-lg-7 col-12 text-start hero-text-col animate-fade-up">
+                <!-- Breadcrumb Navigation -->
+                <nav aria-label="breadcrumb" class="hero-breadcrumb">
+                    <ol class="breadcrumb m-0" itemscope itemtype="https://schema.org/BreadcrumbList">
+                        <li class="breadcrumb-item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                            <a href="/" itemprop="item" class="text-decoration-none d-inline-flex align-items-center">
+                                <i class="fa-solid fa-house-door-fill me-1"></i>
+                                <span itemprop="name">Trang chủ</span>
+                            </a>
+                            <meta itemprop="position" content="1" />
+                        </li>
+                        <li class="breadcrumb-item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                            <a asp-controller="Customers" asp-action="PhieuCuaToi" itemprop="item" class="text-decoration-none">
+                                <span itemprop="name">Hỗ trợ kỹ thuật</span>
+                            </a>
+                            <meta itemprop="position" content="2" />
+                        </li>
+                        <li class="breadcrumb-item active" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem" aria-current="page">
+                            <span itemprop="name">Trò chuyện trực tuyến</span>
+                            <meta itemprop="position" content="3" />
+                        </li>
+                    </ol>
+                </nav>
+
+                <!-- Hero Badge -->
+                <span class="hero-badge">
+                    <i class="bi bi-headset me-1"></i> Live Support Online 24/7/365
+                </span>
+
+                <!-- Title -->
+                <h1 class="hero-title text-uppercase">
+                    Trò Chuyện Trực Tuyến <span class="text-primary">Với Kỹ Thuật Viên</span>
+                </h1>
+                
+                <!-- Description -->
+                <p class="hero-desc">
+                    Kết nối trực tiếp với kỹ thuật viên Viettel để xử lý sự cố kỹ thuật theo thời gian thực và trao đổi trực tiếp trên phiếu @(Model?.Ticket != null ? Model.Ticket.MaPhieu : "").
+                </p>
+
+                <!-- CTA Buttons -->
+                <div class="hero-cta-buttons d-flex flex-wrap align-items-center gap-3 mt-4">
+                    <a href="#staffSidebar" class="btn btn-hero-create px-4 py-2">
+                        <i class="bi bi-chat-dots-fill me-1"></i> Bắt đầu trò chuyện
+                    </a>
+                    <a asp-controller="Customers" asp-action="LienHe" class="btn btn-hero-contact px-4 py-2">
+                        <i class="bi bi-headset me-1"></i> Liên hệ tổng đài
+                    </a>
+                </div>
+
+                <!-- Quick Stats -->
+                <div class="lk-hero-stats d-flex flex-wrap gap-3 mt-5">
+                    <div class="lk-hero-stat-item">
+                        <span class="lk-hero-stat-num" style="color:#D71920">24/7</span>
+                        <span class="lk-hero-stat-label">Hỗ trợ kỹ thuật</span>
+                    </div>
+                    <div class="lk-hero-stat-sep"></div>
+                    <div class="lk-hero-stat-item">
+                        <span class="lk-hero-stat-num" style="color:#3B82F6">&lt; 1p</span>
+                        <span class="lk-hero-stat-label">Thời gian kết nối</span>
+                    </div>
+                    <div class="lk-hero-stat-sep"></div>
+                    <div class="lk-hero-stat-item">
+                        <span class="lk-hero-stat-num" style="color:#10B981">100%</span>
+                        <span class="lk-hero-stat-label">Bảo mật SLA</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT: SVG Illustration Banner -->
+            <div class="col-lg-5 col-12 hero-banner-wrapper animate-fade-up delay-1 d-none d-lg-block">
+                <svg class="hero-banner-svg" viewBox="0 0 500 420" xmlns="http://www.w3.org/2000/svg" aria-label="Trò chuyện trực tuyến">
+                    <defs>
+                        <linearGradient id="lsGradRed" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#D71920" />
+                            <stop offset="100%" stop-color="#ff4d6d" />
+                        </linearGradient>
+                        <linearGradient id="lsGradDark" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#1f2937" />
+                            <stop offset="100%" stop-color="#111827" />
+                        </linearGradient>
+                        <linearGradient id="lsGradBlue" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#3B82F6" />
+                            <stop offset="100%" stop-color="#2563EB" />
+                        </linearGradient>
+                        <linearGradient id="lsGradGreen" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#10B981" />
+                            <stop offset="100%" stop-color="#059669" />
+                        </linearGradient>
+                    </defs>
+
+                    <!-- Background decorative circles -->
+                    <circle cx="250" cy="210" r="175" fill="url(#lsGradRed)" opacity="0.04" />
+                    <circle cx="400" cy="80" r="65" fill="url(#lsGradRed)" opacity="0.06" />
+
+                    <!-- Main card window -->
+                    <rect x="40" y="50" width="380" height="310" rx="24" fill="#ffffff" stroke="rgba(15,17,21,0.05)" stroke-width="2" filter="drop-shadow(0 20px 40px rgba(0,0,0,0.07))" />
+
+                    <!-- Header bar -->
+                    <path d="M40 74 C40 60.85 50.85 50 64 50 L396 50 C409.15 50 420 60.85 420 74 L420 95 L40 95 Z" fill="url(#lsGradDark)" />
+                    <!-- Traffic lights -->
+                    <circle cx="65" cy="72" r="5" fill="#D71920" />
+                    <circle cx="81" cy="72" r="5" fill="#eab308" />
+                    <circle cx="97" cy="72" r="5" fill="#10b981" />
+
+                    <!-- Chat Header Bar on graphic -->
+                    <rect x="60" y="115" width="340" height="42" rx="10" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1" />
+                    <circle cx="82" cy="136" r="12" fill="url(#lsGradRed)" />
+                    <text x="82" y="140" font-size="10" font-weight="bold" fill="#fff" text-anchor="middle">VT</text>
+                    <rect x="105" y="128" width="120" height="8" rx="3" fill="#1E293B" />
+                    <rect x="105" y="139" width="65" height="6" rx="2" fill="#10B981" />
+
+                    <!-- Chat Bubble Left (Agent) -->
+                    <rect x="60" y="175" width="220" height="42" rx="14" fill="#F1F5F9" />
+                    <rect x="75" y="187" width="160" height="7" rx="3" fill="#334155" />
+                    <rect x="75" y="198" width="110" height="6" rx="2" fill="#94A3B8" />
+
+                    <!-- Chat Bubble Right (Customer) -->
+                    <rect x="180" y="230" width="220" height="42" rx="14" fill="url(#lsGradRed)" />
+                    <rect x="195" y="242" width="150" height="7" rx="3" fill="#ffffff" />
+                    <rect x="195" y="253" width="90" height="6" rx="2" fill="rgba(255,255,255,0.7)" />
+
+                    <!-- Message Input Bar -->
+                    <rect x="60" y="295" width="340" height="36" rx="18" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1.5" />
+                    <rect x="80" y="309" width="120" height="8" rx="4" fill="#94A3B8" />
+                    <circle cx="380" cy="313" r="11" fill="url(#lsGradRed)" />
+                    <path d="M376 313 L383 310 L380 317" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+
+                    <!-- Floating Badge -->
+                    <g transform="translate(320, 275)">
+                        <rect x="0" y="0" width="115" height="55" rx="14" fill="url(#lsGradRed)" filter="drop-shadow(0 8px 16px rgba(215,25,32,0.25))" />
+                        <circle cx="28" cy="28" r="14" fill="rgba(255,255,255,0.2)" />
+                        <path d="M22 28 L26 32 L34 24" stroke="#ffffff" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+                        <rect x="50" y="20" width="52" height="6" rx="3" fill="#ffffff" />
+                        <rect x="50" y="31" width="38" height="5" rx="2.5" fill="rgba(255,255,255,0.7)" />
+                    </g>
+                </svg>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ==================== MAIN WORKSPACE AREA ==================== -->
+<section class="live-chat-workspace">
+    <div class="container">
+        <div class="live-chat-container shadow-lg">
+            <div class="row g-0 w-100 h-100 position-relative">
+                <!-- LEFT COLUMN: SIDEBAR / INFO (30%) -->
+                <div class="col-lg-4 col-12 chat-sidebar-pane order-lg-1 order-2" id="staffSidebar">
+                    @await Html.PartialAsync("_InfoPanel", Model)
+                </div>
+
+                <!-- RIGHT COLUMN: CHAT WINDOW (70%) -->
+                <div class="col-lg-8 col-12 chat-main-pane d-flex flex-column order-lg-2 order-1">
+                    @await Html.PartialAsync("_Header", Model)
+                    @await Html.PartialAsync("_MessageList", Model)
+                    @await Html.PartialAsync("_Footer", Model)
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ==================== MODALS ==================== -->
+@await Html.PartialAsync("_ModalTicket", Model)
+@await Html.PartialAsync("_ModalAppointment", Model)
+
+<!-- Lightbox Zoom Image Modal -->
+<div class="chat-lightbox" id="chatLightboxModal">
+    <button class="lightbox-close" id="lightboxClose" aria-label="Đóng">&times;</button>
+    <img src="" alt="Zoomed view" class="lightbox-content" id="lightboxImg" />
+</div>
+
+<script>
+    window.chatConfig = {
+        maPhieu: '@Model.Ticket.MaPhieu',
+        role: '@Model.CurrentUserRole',
+        canChat: @(Model.CanChat ? "true" : "false"),
+        ticketStatus: '@Model.Ticket.TrangThai',
+        staffId: '@(Model.Staff?.IdNhanVien)',
+        staffName: '@(Model.Staff?.HoTen ?? "Kỹ thuật viên Viettel")',
+        staffRole: '@(Model.Staff?.VaiTro ?? "Kỹ sư Băng rộng")',
+        staffPhone: '@(Model.Staff?.SoDienThoai ?? "1800 8119")',
+        staffEmail: '@(Model.Staff?.Email ?? "support@viettel.com.vn")',
+        staffAddress: '@(Model.Staff?.DiaChi ?? "Hà Nội")',
+        staffStatus: '@(Model.Staff?.TrangThai ?? "Hoạt động")'
+    };
+</script>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.7/signalr.min.js"></script>
+    <script src="~/js/live-support.js" asp-append-version="true"></script>
+}

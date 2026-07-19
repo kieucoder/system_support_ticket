@@ -213,6 +213,9 @@ function initGlobalSearch() {
    4. BUSINESS LOGIC ROUTING BY PAGE
    ============================================================= */
 function initPageLogic() {
+    if (window.isServerDashboard) {
+        return; // Bypass mock DB and let server-side scripts render real data
+    }
     const path = window.location.pathname;
     const href = window.location.href;
     

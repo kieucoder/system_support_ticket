@@ -1,414 +1,777 @@
 /**
  * chatbox.js - AI Customer Support Chatbox Controller
- * Powers the launcher, screen transitions, dialogue trees, past histories, and typing animations.
+ * Interacts with ChatController endpoints for Gemini AI responses, guest flow, and file uploads.
  */
 document.addEventListener('DOMContentLoaded', function() {
     'use strict';
 
-    // ==========================================================================
-    // 1. SELECTORS & STATE
-    // ==========================================================================
+    // Global Widget Namespace
+    window.TechSupportChat = {
+        openConversation: openConversation,
+        backToConversations: backToConversations
+    };
+
+    // Configuration flags
+    const config = window.TechSupportChatConfig || { isLoggedIn: false, autoOpen: false };
+    let currentLienHeId = null;
+    let isProcessing = false;
+    let selectedRoomFile = null;
+    let selectedAiFile = null;
+
+    // ==========================================
+    // 1. SELECTORS
+    // ==========================================
     const launcher = document.getElementById('chatLauncher');
     const windowEl = document.getElementById('chatWindow');
     const minimizeBtn = document.getElementById('chatMinimize');
     const maximizeBtn = document.getElementById('chatMaximize');
+    const refreshBtn = document.getElementById('chatRefresh');
+    const homeBtn = document.getElementById('chatHomeBtn');
     const closeBtn = document.getElementById('chatClose');
-    
-    const screenWelcome = document.getElementById('screenWelcome');
-    const screenStream = document.getElementById('screenStream');
-    const backBtn = document.getElementById('btnBackToWelcome');
-    
-    const convoContainer = document.getElementById('convoListContainer');
-    const convoSearch = document.getElementById('convoSearchInput');
-    const convoFilter = document.getElementById('convoFilterSelect');
-    
-    const messagesContainer = document.getElementById('chatMessagesContainer');
-    const typingIndicator = document.getElementById('aiTypingIndicator');
-    const chatInput = document.getElementById('chatInputField');
-    const sendBtn = document.getElementById('btnSendChat');
-    const charCounter = document.getElementById('chatCharCounter');
 
-    let currentAction = '';
-    let currentTicketId = '';
+    // Screens
+    const screenHome = document.getElementById('screenHome');
+    const screenConversations = document.getElementById('screenConversations');
+    const screenChatRoom = document.getElementById('screenChatRoom');
+    const screenAiChat = document.getElementById('screenAiChat');
+    const screenTrackTickets = document.getElementById('screenTrackTickets');
 
-    const mockConversations = [
-        { id: 'PS00125', title: 'Mất kết nối Internet', lastMsg: 'Đã hoàn thành đo suy hao cáp quang thuê bao', time: '14:30', status: 'processing', statusText: 'Đang xử lý' },
-        { id: 'PS00126', title: 'Camera không hoạt động', lastMsg: 'Đèn hồng ngoại tắt hoàn toàn, đã reset modem', time: 'Hôm qua', status: 'completed', statusText: 'Hoàn thành' }
-    ];
+    // Home buttons
+    const btnGoChatAi = document.getElementById('btnGoChatAi');
+    const btnGoConversations = document.getElementById('btnGoConversations');
+    const btnGoTrackTickets = document.getElementById('btnGoTrackTickets');
+    const btnGoCreateTicket = document.getElementById('btnGoCreateTicket');
 
-    let conversations = [...mockConversations];
+    // Conversations screen buttons
+    const convoListContainer = document.getElementById('convoListContainer');
+    const btnCreateNewConvo = document.getElementById('btnCreateNewConvo');
 
-    // ==========================================================================
-    // 2. TOGGLE CONTROLS (OPEN / CLOSE / MAXIMIZE)
-    // ==========================================================================
-    const toggleChat = () => {
+    // Active Chat Room selectors
+    const chatRoomHeaderContainer = document.getElementById('chatRoomHeaderContainer');
+    const chatMessagesContainer = document.getElementById('chatMessagesContainer');
+    const roomFileInput = document.getElementById('roomFileInput');
+    const chatFilePreviewBar = document.getElementById('chatFilePreviewBar');
+    const chatFilePreviewName = document.getElementById('chatFilePreviewName');
+    const btnCancelChatFile = document.getElementById('btnCancelChatFile');
+    const roomInputField = document.getElementById('roomInputField');
+    const btnRoomSend = document.getElementById('btnRoomSend');
+    const roomCharCounter = document.getElementById('roomCharCounter');
+
+    // AI Chat Room selectors
+    const chatAiMessagesContainer = document.getElementById('chatAiMessagesContainer');
+    const aiFileInput = document.getElementById('aiFileInput');
+    const aiFilePreviewBar = document.getElementById('aiFilePreviewBar');
+    const aiFilePreviewName = document.getElementById('aiFilePreviewName');
+    const btnCancelAiFile = document.getElementById('btnCancelAiFile');
+    const aiInputField = document.getElementById('aiInputField');
+    const btnAiSend = document.getElementById('btnAiSend');
+    const aiCharCounter = document.getElementById('aiCharCounter');
+    const aiTypingIndicator = document.getElementById('aiTypingIndicator');
+
+    // Tickets screen selectors
+    const trackTicketsContainer = document.getElementById('trackTicketsContainer');
+
+    // Guest prompt modal
+    const loginModal = document.getElementById('chatLoginModal');
+    const btnContinueGuestChat = document.getElementById('btnContinueGuestChat');
+
+    // ==========================================
+    // 2. TOGGLE WIDGET & NAVIGATION
+    // ==========================================
+    const toggleWidget = () => {
         const isOpen = windowEl.classList.toggle('open');
         launcher.classList.toggle('open');
         
-        // Hide badge when opened
         const badge = document.getElementById('launcherBadge');
-        if (isOpen && badge) {
-            badge.style.display = 'none';
+        if (isOpen && badge) badge.style.display = 'none';
+
+        if (isOpen) {
+            switchScreen(screenHome);
         }
     };
 
-    if (launcher) launcher.addEventListener('click', toggleChat);
-    if (minimizeBtn) minimizeBtn.addEventListener('click', () => { windowEl.classList.remove('open'); launcher.classList.remove('open'); });
-    if (closeBtn) closeBtn.addEventListener('click', () => { windowEl.classList.remove('open'); launcher.classList.remove('open'); });
+    if (launcher) launcher.addEventListener('click', toggleWidget);
 
-    // Maximize split-view toggle
+    const closeWidget = () => {
+        windowEl.classList.remove('open');
+        launcher.classList.remove('open');
+    };
+
+    if (minimizeBtn) minimizeBtn.addEventListener('click', closeWidget);
+    if (closeBtn) closeBtn.addEventListener('click', closeWidget);
+
     if (maximizeBtn) {
         maximizeBtn.addEventListener('click', () => {
-            const isMaximized = windowEl.classList.toggle('chat-maximized');
-            const icon = maximizeBtn.querySelector('i');
-            
-            if (isMaximized) {
-                icon.className = 'bi bi-fullscreen-exit';
-                maximizeBtn.setAttribute('title', 'Thu nhỏ cửa sổ');
-                
-                // In maximized mode, ensure screenStream is visible on large screens
-                if (window.innerWidth >= 992) {
-                    if (!currentAction && !currentTicketId) {
-                        // Pre-load default chat if none is open
-                        loadQuickActionChat('agent');
-                    }
+            const isMax = windowEl.classList.toggle('chat-maximized');
+            maximizeBtn.querySelector('i').className = isMax ? 'bi bi-fullscreen-exit' : 'bi bi-arrows-fullscreen';
+        });
+    }
+
+    if (refreshBtn) {
+        refreshBtn.addEventListener('click', () => {
+            // Add rotation animation
+            const icon = refreshBtn.querySelector('i');
+            icon.style.transition = 'transform 0.5s ease';
+            icon.style.transform = 'rotate(360deg)';
+            setTimeout(() => {
+                icon.style.transform = 'rotate(0deg)';
+            }, 500);
+
+            // Reload current screen content
+            if (!screenAiChat.classList.contains('d-none')) {
+                loadAiHistory();
+            } else if (!screenChatRoom.classList.contains('d-none')) {
+                if (currentLienHeId) {
+                    openConversation(currentLienHeId);
                 }
-            } else {
-                icon.className = 'bi bi-arrows-fullscreen';
-                maximizeBtn.setAttribute('title', 'Phóng to cửa sổ');
+            } else if (!screenConversations.classList.contains('d-none')) {
+                loadConversationsList();
+            } else if (!screenTrackTickets.classList.contains('d-none')) {
+                loadTicketsList();
             }
         });
     }
 
-    // Screen navigation: back button
-    if (backBtn) {
-        backBtn.addEventListener('click', () => {
-            windowEl.classList.remove('chat-active-stream');
-            currentAction = '';
-            currentTicketId = '';
-            
-            // Remove active highlighting from convo cards
-            document.querySelectorAll('.convo-row').forEach(row => row.classList.remove('active'));
+    // Suggestion pills click delegation
+    document.addEventListener('click', (e) => {
+        const pill = e.target.closest('.suggestion-pill');
+        if (pill) {
+            const text = pill.getAttribute('data-text');
+            if (!text) return;
+            if (!screenAiChat.classList.contains('d-none')) {
+                const aiInputField = document.getElementById('aiInputField');
+                const btnAiSend = document.getElementById('btnAiSend');
+                if (aiInputField && btnAiSend) {
+                    aiInputField.value = text;
+                    btnAiSend.click();
+                }
+            } else if (!screenChatRoom.classList.contains('d-none')) {
+                const roomInputField = document.getElementById('roomInputField');
+                const btnRoomSend = document.getElementById('btnRoomSend');
+                if (roomInputField && btnRoomSend) {
+                    roomInputField.value = text;
+                    btnRoomSend.click();
+                }
+            }
+        }
+    });
+
+    if (homeBtn) {
+        homeBtn.addEventListener('click', () => {
+            switchScreen(screenHome);
         });
     }
 
-    // ==========================================================================
-    // 3. CONVERSATION HISTORY (RENDER & FILTER)
-    // ==========================================================================
-    const renderConversations = () => {
-        if (!convoContainer) return;
-        convoContainer.innerHTML = '';
-
-        if (conversations.length === 0) {
-            convoContainer.innerHTML = `<div class="text-center py-3 text-muted" style="font-size: 0.8rem;">Không tìm thấy lịch sử nào.</div>`;
-            return;
-        }
-
-        conversations.forEach(c => {
-            const row = document.createElement('div');
-            row.className = `convo-row ${currentTicketId === c.id ? 'active' : ''}`;
-            row.setAttribute('data-id', c.id);
-            row.innerHTML = `
-                <div class="convo-row-header">
-                    <span class="convo-code">${c.id}</span>
-                    <span class="convo-time">${c.time}</span>
-                </div>
-                <div class="convo-title">${c.title}</div>
-                <div class="convo-last-msg">${c.lastMsg}</div>
-                <div class="convo-row-footer">
-                    <span class="convo-status ${c.status}">
-                        <i class="bi bi-circle-fill" style="font-size: 0.4rem;"></i> ${c.statusText}
-                    </span>
-                    <span class="small text-muted" style="font-size: 0.7rem;">Nhấp để xem</span>
-                </div>
-            `;
-            
-            row.addEventListener('click', function() {
-                loadTicketChat(c.id);
-                
-                // Highlight row in split pane
-                document.querySelectorAll('.convo-row').forEach(r => r.classList.remove('active'));
-                row.classList.add('active');
-            });
-
-            convoContainer.appendChild(row);
-        });
-    };
-
-    // Filter and search convo list
-    const filterConvos = () => {
-        const query = convoSearch ? convoSearch.value.toLowerCase().trim() : '';
-        const filterVal = convoFilter ? convoFilter.value : 'all';
-
-        conversations = mockConversations.filter(c => {
-            const matchesQuery = c.id.toLowerCase().includes(query) || c.title.toLowerCase().includes(query);
-            const matchesFilter = filterVal === 'all' || c.status === filterVal;
-            return matchesQuery && matchesFilter;
-        });
-
-        renderConversations();
-    };
-
-    if (convoSearch) convoSearch.addEventListener('input', filterConvos);
-    if (convoFilter) convoFilter.addEventListener('change', filterConvos);
-
-    // Initial render
-    renderConversations();
-
-    // ==========================================================================
-    // 4. DIALOGUE SYSTEM & CHAT MESSAGES
-    // ==========================================================================
-    const appendMessage = (sender, text, isAi = false) => {
-        const row = document.createElement('div');
-        row.className = `msg-row ${isAi ? 'received' : 'sent'}`;
-
-        const now = new Date();
-        const timeStr = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
-
-        let avatarHtml = '';
-        if (isAi) {
-            avatarHtml = `<div class="msg-avatar"><i class="bi bi-robot"></i></div>`;
-        }
-
-        const readIcon = !isAi ? `<i class="bi bi-check-all msg-status-icon read ms-1"></i>` : '';
-
-        row.innerHTML = `
-            ${avatarHtml}
-            <div class="msg-bubble-wrapper">
-                <div class="msg-bubble">${text}</div>
-                <span class="msg-metadata">
-                    <span>${timeStr}</span>
-                    ${readIcon}
-                </span>
-            </div>
-        `;
-
-        messagesContainer.appendChild(row);
-        scrollChatToBottom();
-    };
-
-    const scrollChatToBottom = () => {
-        setTimeout(() => {
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        }, 50);
-    };
-
-    const showTypingIndicator = (show = true) => {
-        if (typingIndicator) {
-            typingIndicator.style.display = show ? 'flex' : 'none';
-        }
-        scrollChatToBottom();
-    };
-
-    const simulateAiResponse = (promptText, responseText, delay = 1000) => {
-        showTypingIndicator(true);
-        setTimeout(() => {
-            showTypingIndicator(false);
-            appendMessage('AI', responseText, true);
-        }, delay);
-    };
-
-    // ==========================================================================
-    // 5. QUICK ACTIONS CHAT FLOWS
-    // ==========================================================================
-    const loadQuickActionChat = (action) => {
-        currentAction = action;
-        currentTicketId = '';
-        windowEl.classList.add('chat-active-stream');
-
-        // Reset scroll position and clear old logs
-        messagesContainer.innerHTML = '';
-
-        const titleEl = document.getElementById('streamTicketTitle');
-        const statusEl = document.getElementById('streamTicketStatus');
-        const descEl = document.getElementById('streamTicketDesc');
-
-        statusEl.className = 'stream-header-status-badge processing';
-        statusEl.textContent = 'Hỗ trợ AI';
-
-        switch(action) {
-            case 'create-ticket':
-                titleEl.textContent = 'Tạo phiếu hỗ trợ';
-                descEl.textContent = 'Trợ lý ảo hướng dẫn tạo phiếu sự cố';
-                appendMessage('AI', 'Chào anh/chị, tôi sẽ hỗ trợ tạo phiếu báo hỏng kỹ thuật. Anh/chị vui lòng nhập **Số điện thoại** đăng ký đường truyền hoặc **Mã hợp đồng** (ví dụ: T012_FTTH_...) để tiếp tục.', true);
-                break;
-            case 'lookup-ticket':
-                titleEl.textContent = 'Tra cứu trạng thái';
-                descEl.textContent = 'Tra cứu tự động dữ liệu sự cố';
-                appendMessage('AI', 'Anh/chị vui lòng nhập **Mã phiếu hỗ trợ** cần tra cứu (ví dụ: PS00125) hoặc số điện thoại liên kết.', true);
-                break;
-            case 'troubleshoot':
-                titleEl.textContent = 'Khắc phục sự cố';
-                descEl.textContent = 'Tự hướng dẫn xử lý lỗi tại chỗ';
-                appendMessage('AI', 'Chào bạn! Để giúp khắc phục nhanh lỗi mạng Wi-Fi/Truyền hình, bạn vui lòng chọn lỗi đang gặp:\n\n1️⃣ Đèn modem nhấp nháy đỏ (LOS)\n2️⃣ Mạng Wi-Fi kết nối được nhưng không truy cập được web\n3️⃣ Đầu thu truyền hình không lên tín hiệu\n\nBạn hãy gõ số tương ứng để xem quy trình hướng dẫn xử lý.', true);
-                break;
-            case 'scheduler':
-                titleEl.textContent = 'Đặt lịch kỹ thuật';
-                descEl.textContent = 'Đặt lịch hẹn kiểm tra tại nhà';
-                appendMessage('AI', 'Để đặt lịch hẹn kỹ thuật viên trạm đến nhà kiểm tra thiết bị, bạn hãy cung cấp thông tin **Thời gian rảnh mong muốn** và **Số điện thoại liên lạc**.', true);
-                break;
-            case 'agent':
-                titleEl.textContent = 'Nhân viên hỗ trợ';
-                descEl.textContent = 'Kết nối trực tiếp tổng đài viên';
-                appendMessage('AI', 'Tôi đang kết nối bạn với nhân viên kỹ thuật trực tuyến khu vực. Vui lòng chờ trong giây lát (khoảng 30 giây).', true);
-                showTypingIndicator(true);
-                setTimeout(() => {
-                    showTypingIndicator(false);
-                    statusEl.className = 'stream-header-status-badge completed';
-                    statusEl.textContent = 'Kỹ thuật viên';
-                    descEl.textContent = 'Trực tuyến với Trần Thanh Sơn';
-                    appendMessage('Trần Thanh Sơn', 'Chào anh/chị, tôi là Sơn - Kỹ thuật viên trực ban. Tôi có thể hỗ trợ gì cho anh/chị hôm nay?', true);
-                }, 2000);
-                break;
-            case 'rate':
-                titleEl.textContent = 'Đánh giá dịch vụ';
-                descEl.textContent = 'Gửi ý kiến phản hồi chất lượng';
-                appendMessage('AI', 'Đánh giá của bạn rất quan trọng để chúng tôi nâng cao chất lượng phục vụ. Hãy chọn mức độ hài lòng:\n\n⭐⭐⭐⭐⭐ Rất tốt\n⭐⭐⭐⭐ Tốt\n⭐⭐⭐ Bình thường\n⭐⭐ Tệ\n⭐ Rất tệ\n\nVui lòng gõ số sao bạn muốn đánh giá.', true);
-                break;
-        }
-    };
-
-    // Attach listeners on Quick Actions cards
-    document.querySelectorAll('.quick-action-card').forEach(card => {
-        card.addEventListener('click', function() {
-            const action = this.getAttribute('data-action');
-            loadQuickActionChat(action);
+    document.querySelectorAll('.btn-back-home').forEach(btn => {
+        btn.addEventListener('click', () => {
+            switchScreen(screenHome);
         });
     });
 
-    // ==========================================================================
-    // 6. PAST CONVERSATION CHAT LOAD
-    // ==========================================================================
-    const loadTicketChat = (ticketId) => {
-        currentTicketId = ticketId;
-        currentAction = '';
-        windowEl.classList.add('chat-active-stream');
-        
-        messagesContainer.innerHTML = '';
-
-        const titleEl = document.getElementById('streamTicketTitle');
-        const statusEl = document.getElementById('streamTicketStatus');
-        const descEl = document.getElementById('streamTicketDesc');
-
-        const convo = mockConversations.find(c => c.id === ticketId);
-        if (!convo) return;
-
-        titleEl.textContent = convo.id;
-        descEl.textContent = convo.title;
-        
-        // Status class mapping
-        statusEl.className = `stream-header-status-badge ${convo.status}`;
-        statusEl.textContent = convo.statusText;
-
-        // Load historical dialog
-        if (convo.id === 'PS00125') {
-            appendMessage('AI', 'Chào anh/chị, phiếu sự cố **PS00125 (Mất kết nối Internet)** của anh/chị đã được ghi nhận vào hệ thống vào lúc 10:15.', true);
-            appendMessage('Khách hàng', 'Kiểm tra giúp mạng nhà tôi bị mất từ sáng.', false);
-            appendMessage('Kỹ thuật viên', 'Chào anh, tôi đã đo suy hao cổng cáp quang trạm OLT phát hiện đứt cáp nhánh. Nhân viên kỹ thuật khu vực Cầu Giấy đã được cử đi hàn nối cáp và sẽ hoàn tất trước 16:30.', true);
-        } else {
-            appendMessage('AI', 'Chào anh/chị, phiếu sự cố **PS00126 (Camera không hoạt động)** đã hoàn thành xử lý lúc 09:00 hôm qua.', true);
-            appendMessage('Khách hàng', 'Cảm ơn, kỹ thuật viên đã qua hỗ trợ reset modem và cấu hình lại đầu ghi.', false);
-        }
-        
-        scrollChatToBottom();
-    };
-
-    // ==========================================================================
-    // 7. INPUT / CHAT TRIGGER HANDLERS
-    // ==========================================================================
-    const handleUserSendMessage = () => {
-        if (!chatInput || !chatInput.value.trim()) return;
-
-        const text = chatInput.value.trim();
-        chatInput.value = '';
-        if (charCounter) charCounter.textContent = '0/500';
-        chatInput.style.height = '38px'; // Reset height
-
-        // Append user bubble
-        appendMessage('Khách hàng', text, false);
-
-        // Generate response based on current context
-        let reply = 'Cảm ơn bạn đã phản hồi. Trợ lý AI đang chuyển thông tin cho điều phối viên để giải quyết sớm nhất.';
-
-        if (currentAction === 'create-ticket') {
-            if (/^\d+$/.test(text)) {
-                reply = 'Căn cứ vào Số điện thoại bạn nhập, hệ thống phát hiện Hợp đồng: **FTTH-VIETTEL-9921**. Tôi đã tạo phiếu **PS00127** yêu cầu kiểm tra suy hao quang. Nhân viên kỹ thuật sẽ liên hệ hỗ trợ bạn.';
-                currentAction = ''; // clear action context
-            } else {
-                reply = 'Tôi nhận được thông tin. Hệ thống đang xác thực Mã hợp đồng này. Vui lòng giữ kết nối trực tuyến.';
-            }
-        } else if (currentAction === 'lookup-ticket') {
-            if (text.toUpperCase().includes('PS00125')) {
-                reply = 'Phiếu **PS00125** đang ở trạng thái **Đang xử lý**. Nhân viên kỹ thuật đang đo kiểm đầu trạm. Ước tính hoàn thành khắc phục lỗi lúc 16:30.';
-            } else if (text.toUpperCase().includes('PS00126')) {
-                reply = 'Phiếu **PS00126** đã ở trạng thái **Hoàn thành** vào hôm qua.';
-            } else {
-                reply = 'Hệ thống không tìm thấy phiếu nào tương ứng với thông tin bạn cung cấp. Vui lòng kiểm tra lại mã phiếu (ví dụ: PS00125).';
-            }
-        } else if (currentAction === 'troubleshoot') {
-            if (text === '1') {
-                reply = '🔴 **Lỗi đèn modem LOS nhấp nháy đỏ:**\n\nĐây là lỗi đứt cáp quang hoặc mất tín hiệu quang từ trạm OLT. Bạn vui lòng:\n1. Kiểm tra đầu cắm cáp quang màu xanh lá cắm vào modem xem có bị lỏng không.\n2. Rút nguồn điện modem, chờ 1 phút rồi cắm lại.\n\nNếu vẫn báo đỏ, bạn hãy chọn nút **Tạo phiếu hỗ trợ** để cử nhân viên kỹ thuật qua hàn cáp đứt.';
-            } else if (text === '2') {
-                reply = '🟡 **Lỗi kết nối Wi-Fi nhưng không truy cập được mạng:**\n\nBạn vui lòng:\n1. Tắt kết nối Wi-Fi trên máy điện thoại và bật lại.\n2. Kiểm tra đèn internet trên modem có sáng xanh không. Nếu nháy đỏ hoặc tắt, vui lòng reset cấu hình modem.';
-            } else {
-                reply = 'Yêu cầu chưa khớp. Bạn vui lòng gõ phím **1**, **2** hoặc **3** tương ứng với các sự cố gợi ý phía trên.';
-            }
-        } else if (currentAction === 'rate') {
-            if (text.includes('5') || text.includes('4')) {
-                reply = 'Cảm ơn phản hồi tích cực của bạn! Chúng tôi sẽ tiếp tục cải thiện hệ thống để phục vụ tốt hơn.';
-                currentAction = '';
-            } else if (parseInt(text, 10) <= 3) {
-                reply = 'Chúng tôi rất tiếc vì trải nghiệm không tốt của bạn. Ý kiến đóng góp của bạn đã được chuyển đến bộ phận Giám sát dịch vụ.';
-                currentAction = '';
-            }
-        } else if (currentTicketId === 'PS00125') {
-            reply = 'Nhân viên kỹ thuật Trần Thanh Sơn đã nhận được tin nhắn của bạn và sẽ trả lời bạn sớm nhất.';
-        }
-
-        // Trigger simulated response
-        simulateAiResponse(text, reply, 1200);
-    };
-
-    if (sendBtn) {
-        sendBtn.addEventListener('click', handleUserSendMessage);
+    if (btnContinueGuestChat) {
+        btnContinueGuestChat.addEventListener('click', () => {
+            if (loginModal) loginModal.style.display = 'none';
+        });
     }
 
-    if (chatInput) {
-        // Track character limits
-        chatInput.addEventListener('input', function() {
-            const len = this.value.length;
-            if (charCounter) charCounter.textContent = `${len}/500`;
-            
-            // Auto grow input height to maximum 120px
-            this.style.height = 'auto';
-            const scHeight = Math.min(this.scrollHeight, 120);
-            this.style.height = `${scHeight}px`;
-        });
+    if (config.autoOpen) {
+        setTimeout(() => {
+            if (windowEl && !windowEl.classList.contains('open')) {
+                windowEl.classList.add('open');
+                if (launcher) launcher.classList.add('open');
+                switchScreen(screenHome);
+            }
+        }, 800);
+    }
 
-        // Key bindings
-        chatInput.addEventListener('keydown', function(e) {
+    function switchScreen(targetScreen) {
+        [screenHome, screenConversations, screenChatRoom, screenAiChat, screenTrackTickets].forEach(screen => {
+            if (screen) screen.classList.add('d-none');
+        });
+        if (targetScreen) targetScreen.classList.remove('d-none');
+        
+        if (homeBtn) {
+            if (targetScreen === screenHome) {
+                homeBtn.style.display = 'none';
+            } else {
+                homeBtn.style.display = 'inline-flex';
+            }
+        }
+    }
+
+    // ==========================================
+    // 3. HOME DASHBOARD ACTIONS
+    // ==========================================
+    if (btnGoChatAi) {
+        btnGoChatAi.addEventListener('click', () => {
+            switchScreen(screenAiChat);
+            loadAiHistory();
+        });
+    }
+
+    if (btnGoConversations) {
+        btnGoConversations.addEventListener('click', () => {
+            if (!config.isLoggedIn) {
+                if (loginModal) loginModal.style.display = 'flex';
+                return;
+            }
+            switchScreen(screenConversations);
+            loadConversationsList();
+        });
+    }
+
+    if (btnGoTrackTickets) {
+        btnGoTrackTickets.addEventListener('click', () => {
+            if (!config.isLoggedIn) {
+                if (loginModal) loginModal.style.display = 'flex';
+                return;
+            }
+            switchScreen(screenTrackTickets);
+            loadTicketsList();
+        });
+    }
+
+    if (btnGoCreateTicket) {
+        btnGoCreateTicket.addEventListener('click', () => {
+            if (!config.isLoggedIn) {
+                if (loginModal) loginModal.style.display = 'flex';
+                return;
+            }
+            switchScreen(screenAiChat);
+            loadAiHistory();
+            setTimeout(() => {
+                sendAiMessage("Tôi muốn tạo một phiếu hỗ trợ kỹ thuật mới.");
+            }, 500);
+        });
+    }
+
+    // ==========================================
+    // 4. CONVERSATIONS SCREEN ACTIONS
+    // ==========================================
+    function loadConversationsList() {
+        if (!convoListContainer) return;
+        convoListContainer.innerHTML = '<div class="text-center py-5 text-muted"><div class="spinner-border spinner-border-sm me-2" role="status"></div> Tải hội thoại...</div>';
+        
+        fetch('/Chat/DanhSachConversation')
+            .then(res => res.text())
+            .then(html => {
+                convoListContainer.innerHTML = html;
+            })
+            .catch(err => {
+                console.error(err);
+                convoListContainer.innerHTML = '<div class="text-center py-5 text-danger"><i class="bi bi-exclamation-triangle"></i> Gặp lỗi khi tải hội thoại.</div>';
+            });
+    }
+
+    if (btnCreateNewConvo) {
+        btnCreateNewConvo.addEventListener('click', () => {
+            const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value || '';
+            const formData = new FormData();
+            formData.append('tieuDe', 'Yêu cầu hỗ trợ kỹ thuật từ khách hàng');
+            formData.append('__RequestVerificationToken', token);
+
+            btnCreateNewConvo.disabled = true;
+            btnCreateNewConvo.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Đang tạo...';
+
+            fetch('/Chat/TaoLienHeChatBox', {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                btnCreateNewConvo.disabled = false;
+                btnCreateNewConvo.innerHTML = '<i class="bi bi-plus-circle me-1"></i> Tạo cuộc trò chuyện mới';
+                if (data.success && data.idLienHe) {
+                    openConversation(data.idLienHe);
+                } else {
+                    alert("Không thể khởi tạo cuộc hội thoại mới.");
+                }
+            })
+            .catch(err => {
+                btnCreateNewConvo.disabled = false;
+                btnCreateNewConvo.innerHTML = '<i class="bi bi-plus-circle me-1"></i> Tạo cuộc trò chuyện mới';
+                console.error(err);
+                alert("Lỗi kết nối khi khởi tạo hội thoại.");
+            });
+        });
+    }
+
+    // ==========================================
+    // 5. ACTIVE CHAT ROOM SCREEN (Khách - Nhân viên)
+    // ==========================================
+    function openConversation(idLienHe) {
+        currentLienHeId = idLienHe;
+        switchScreen(screenChatRoom);
+
+        if (chatRoomHeaderContainer) {
+            chatRoomHeaderContainer.innerHTML = '<div class="stream-header-bar p-3"><div class="spinner-border spinner-border-sm" role="status"></div></div>';
+        }
+        if (chatMessagesContainer) {
+            chatMessagesContainer.innerHTML = '<div class="text-center py-5 text-muted"><div class="spinner-border spinner-border-sm me-2"></div> Đang tải tin nhắn...</div>';
+        }
+
+        fetch(`/Chat/ChiTietConversation?idLienHe=${idLienHe}`)
+            .then(res => res.text())
+            .then(html => {
+                chatRoomHeaderContainer.innerHTML = html;
+            })
+            .catch(err => console.error(err));
+
+        fetch(`/Chat/LayTinNhan?idLienHe=${idLienHe}`)
+            .then(res => res.text())
+            .then(html => {
+                chatMessagesContainer.innerHTML = html;
+                scrollContainerToBottom(chatMessagesContainer);
+            })
+            .catch(err => {
+                chatMessagesContainer.innerHTML = '<div class="text-center py-5 text-danger">Không thể tải tin nhắn.</div>';
+            });
+    }
+
+    function backToConversations() {
+        switchScreen(screenConversations);
+        loadConversationsList();
+    }
+
+    function escapeHtml(text) {
+        if (!text) return '';
+        return text
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+    function getCurrentTime() {
+        const now = new Date();
+        const hrs = String(now.getHours()).padStart(2, '0');
+        const mins = String(now.getMinutes()).padStart(2, '0');
+        return `${hrs}:${mins}`;
+    }
+
+    function scrollContainerToBottom(container) {
+        if (container) {
+            setTimeout(() => {
+                container.scrollTo({
+                    top: container.scrollHeight,
+                    behavior: 'smooth'
+                });
+            }, 50);
+        }
+    }
+
+    if (roomInputField) {
+        roomInputField.addEventListener('keydown', function(e) {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
-                handleUserSendMessage();
+                sendRoomMessage();
+            }
+        });
+        roomInputField.addEventListener('input', function() {
+            if (roomCharCounter) roomCharCounter.textContent = `${this.value.length}/500`;
+            this.style.height = 'auto';
+            this.style.height = `${Math.min(this.scrollHeight, 120)}px`;
+        });
+    }
+
+    if (btnRoomSend) {
+        btnRoomSend.addEventListener('click', sendRoomMessage);
+    }
+
+    if (roomFileInput) {
+        roomFileInput.addEventListener('change', function() {
+            if (this.files && this.files.length > 0) {
+                selectedRoomFile = this.files[0];
+                if (chatFilePreviewName) chatFilePreviewName.textContent = selectedRoomFile.name;
+                if (chatFilePreviewBar) chatFilePreviewBar.classList.remove('d-none');
+                if (roomInputField) roomInputField.focus();
             }
         });
     }
 
-    // ==========================================================================
-    // 8. FILE UPLOAD & TOOLBAR ACTIONS
-    // ==========================================================================
-    const mockToolbarAction = (btnId, successMsg) => {
-        const btn = document.getElementById(btnId);
-        if (btn) {
-            btn.addEventListener('click', function(e) {
+    if (btnCancelChatFile) {
+        btnCancelChatFile.addEventListener('click', () => {
+            selectedRoomFile = null;
+            if (roomFileInput) roomFileInput.value = '';
+            if (chatFilePreviewBar) chatFilePreviewBar.classList.add('d-none');
+        });
+    }
+
+    function sendRoomMessage() {
+        if (isProcessing) return;
+        const text = roomInputField ? roomInputField.value.trim() : '';
+        if (!text && !selectedRoomFile) return;
+
+        isProcessing = true;
+        if (btnRoomSend) btnRoomSend.disabled = true;
+
+        // Optimistic UI update
+        if (text) {
+            const timeStr = getCurrentTime();
+            const userMsgHtml = `
+                <div class="chat-message-row client d-flex justify-content-end mb-2 temporary-client-msg" style="width:100%; display:flex !important; justify-content:flex-end !important;">
+                    <div style="width:fit-content !important; max-width:75% !important; align-self:flex-end !important; display:flex !important; flex-direction:column !important; align-items:flex-end !important; margin-left:auto !important;">
+                        <div style="background:linear-gradient(135deg,#D71920 0%,#E53935 100%) !important; color:#FFFFFF !important; border-radius:20px 20px 4px 20px !important; padding:10px 16px !important; font-size:0.92rem !important; line-height:1.45 !important; display:inline-block !important; width:fit-content !important; height:auto !important; max-width:100% !important; word-break:break-word !important; white-space:pre-wrap !important; overflow-wrap:anywhere !important; box-shadow:0 4px 14px rgba(215,25,32,0.18) !important; box-sizing:border-box !important;">${escapeHtml(text)}</div>
+                        <div style="font-size:11.5px; color:#94A3B8; margin-top:4px; display:flex; align-items:center; gap:4px; align-self:flex-end;">
+                            ${timeStr} <span style="color:#8A8A8A; font-size:11px;"><i class="bi bi-clock"></i> Đang gửi...</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            chatMessagesContainer.innerHTML += userMsgHtml;
+            scrollContainerToBottom(chatMessagesContainer);
+        }
+
+        const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value || '';
+        const formData = new FormData();
+        formData.append('idLienHe', currentLienHeId);
+        formData.append('__RequestVerificationToken', token);
+
+        let url = '/Chat/GuiTinNhanChatBox';
+        if (selectedRoomFile) {
+            url = '/Chat/UploadFileChatBox';
+            formData.append('file', selectedRoomFile);
+        } else {
+            formData.append('messageText', text);
+        }
+
+        if (roomInputField) {
+            roomInputField.value = '';
+            roomInputField.style.height = '24px';
+        }
+        if (roomCharCounter) roomCharCounter.textContent = '0/500';
+        
+        selectedRoomFile = null;
+        if (roomFileInput) roomFileInput.value = '';
+        if (chatFilePreviewBar) chatFilePreviewBar.classList.add('d-none');
+
+        fetch(url, {
+            method: 'POST',
+            body: formData
+        })
+        .then(res => {
+            if (res.ok) return res.text();
+            throw new Error("Lỗi gửi tin nhắn");
+        })
+        .then(html => {
+            isProcessing = false;
+            if (btnRoomSend) btnRoomSend.disabled = false;
+            
+            // Remove optimistic UI temp bubbles before applying html
+            document.querySelectorAll('.temporary-client-msg').forEach(el => el.remove());
+
+            chatMessagesContainer.innerHTML = html;
+            scrollContainerToBottom(chatMessagesContainer);
+
+            if (url === '/Chat/UploadFileChatBox' && text) {
+                roomInputField.value = text;
+                sendRoomMessage();
+            }
+        })
+        .catch(err => {
+            isProcessing = false;
+            if (btnRoomSend) btnRoomSend.disabled = false;
+            document.querySelectorAll('.temporary-client-msg').forEach(el => el.remove());
+            console.error(err);
+            alert("Lỗi khi gửi tin nhắn hỗ trợ.");
+        });
+    }
+
+    // ==========================================
+    // 6. AI CHAT ROOM SCREEN (Khách - Gemini)
+    // ==========================================
+    function loadAiHistory() {
+        if (!chatAiMessagesContainer) return;
+        chatAiMessagesContainer.innerHTML = '<div class="text-center py-5 text-muted"><div class="spinner-border spinner-border-sm me-2"></div> Nối máy AI...</div>';
+
+        fetch('/Chat/LayLichSuChatAI')
+            .then(res => res.text())
+            .then(html => {
+                chatAiMessagesContainer.innerHTML = html;
+                scrollContainerToBottom(chatAiMessagesContainer);
+            })
+            .catch(err => console.error(err));
+    }
+
+    if (aiInputField) {
+        aiInputField.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
-                alert(successMsg);
+                sendAiMessage(this.value);
+            }
+        });
+        aiInputField.addEventListener('input', function() {
+            if (aiCharCounter) aiCharCounter.textContent = `${this.value.length}/500`;
+            this.style.height = 'auto';
+            this.style.height = `${Math.min(this.scrollHeight, 120)}px`;
+        });
+    }
+
+    if (btnAiSend) {
+        btnAiSend.addEventListener('click', () => {
+            if (aiInputField) sendAiMessage(aiInputField.value);
+        });
+    }
+
+    if (aiFileInput) {
+        aiFileInput.addEventListener('change', function() {
+            if (this.files && this.files.length > 0) {
+                selectedAiFile = this.files[0];
+                if (aiFilePreviewName) aiFilePreviewName.textContent = selectedAiFile.name;
+                if (aiFilePreviewBar) aiFilePreviewBar.classList.remove('d-none');
+                if (aiInputField) aiInputField.focus();
+            }
+        });
+    }
+
+    if (btnCancelAiFile) {
+        btnCancelAiFile.addEventListener('click', () => {
+            selectedAiFile = null;
+            if (aiFileInput) aiFileInput.value = '';
+            if (aiFilePreviewBar) aiFilePreviewBar.classList.add('d-none');
+        });
+    }
+
+    function sendAiMessage(text) {
+        if (isProcessing) return;
+        if (!text && !selectedAiFile) return;
+
+        const trimmedText = typeof text === 'string' ? text.trim() : '';
+        if (!trimmedText && !selectedAiFile) return;
+
+        isProcessing = true;
+        if (btnAiSend) btnAiSend.disabled = true;
+
+        // ============================================
+        // PHASE 0: Render user bubble IMMEDIATELY (<5ms)
+        // ============================================
+        if (trimmedText) {
+            const timeStr = getCurrentTime();
+            const userBubble = document.createElement('div');
+            userBubble.className = 'optimistic-enter';
+            userBubble.innerHTML = `
+                <div class="chat-message-row client d-flex justify-content-end mb-2" style="width:100%; display:flex !important; justify-content:flex-end !important;">
+                    <div style="width:fit-content !important; max-width:75% !important; align-self:flex-end !important; display:flex !important; flex-direction:column !important; align-items:flex-end !important; margin-left:auto !important;">
+                        <div style="background:linear-gradient(135deg,#D71920 0%,#E53935 100%) !important; color:#FFFFFF !important; border-radius:20px 20px 4px 20px !important; padding:10px 16px !important; font-size:0.92rem !important; line-height:1.45 !important; display:inline-block !important; width:fit-content !important; height:auto !important; max-width:100% !important; word-break:break-word !important; white-space:pre-wrap !important; overflow-wrap:anywhere !important; box-shadow:0 4px 14px rgba(215,25,32,0.18) !important; box-sizing:border-box !important;">${escapeHtml(trimmedText)}</div>
+                        <div style="font-size:11.5px; color:#94A3B8; margin-top:4px; align-self:flex-end;">${timeStr} <span style="color:#22C55E; font-weight:bold;">✓✓</span></div>
+                    </div>
+                </div>
+            `;
+            chatAiMessagesContainer.appendChild(userBubble);
+        }
+
+        // ============================================
+        // PHASE 0b: Clear input IMMEDIATELY
+        // ============================================
+        if (aiInputField) {
+            aiInputField.value = '';
+            aiInputField.style.height = '24px';
+            aiInputField.focus();
+        }
+        if (aiCharCounter) aiCharCounter.textContent = '0/500';
+
+        // ============================================
+        // PHASE 0c: Scroll down + Show typing indicator
+        // ============================================
+        scrollContainerToBottom(chatAiMessagesContainer);
+
+        if (aiTypingIndicator) {
+            aiTypingIndicator.style.display = 'flex';
+            const typingTextEl = aiTypingIndicator.querySelector('.ai-typing-text');
+            if (typingTextEl) {
+                typingTextEl.textContent = "TechSupport AI đang trả lời";
+            }
+            if (window.aiTypingTimeout) {
+                clearTimeout(window.aiTypingTimeout);
+            }
+            window.aiTypingTimeout = setTimeout(() => {
+                if (aiTypingIndicator && aiTypingIndicator.style.display === 'flex') {
+                    if (typingTextEl) {
+                        typingTextEl.textContent = "TechSupport AI đang phân tích...";
+                    }
+                }
+            }, 3000);
+        }
+        scrollContainerToBottom(chatAiMessagesContainer);
+
+        // ============================================
+        // Prepare form data
+        // ============================================
+        const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value || '';
+
+        const capturedFile = selectedAiFile;
+        selectedAiFile = null;
+        if (aiFileInput) aiFileInput.value = '';
+        if (aiFilePreviewBar) aiFilePreviewBar.classList.add('d-none');
+
+        // ============================================
+        // PHASE 1: Save user message (fire-and-forget, fast ~100ms)
+        // For file uploads, use the old endpoint (single request)
+        // ============================================
+        if (capturedFile) {
+            // File upload: use old single-request flow
+            const formData = new FormData();
+            formData.append('__RequestVerificationToken', token);
+            formData.append('file', capturedFile);
+
+            fetch('/Chat/UploadFileAI', {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => {
+                if (res.ok) return res.text();
+                throw new Error("Lỗi phản hồi từ AI");
+            })
+            .then(html => {
+                hideTypingIndicator();
+                chatAiMessagesContainer.innerHTML = html;
+                scrollContainerToBottom(chatAiMessagesContainer);
+                finishProcessing();
+
+                // If there was also text, send it as a follow-up
+                if (trimmedText) {
+                    sendAiMessage(trimmedText);
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                hideTypingIndicator();
+                appendErrorBubble();
+                finishProcessing();
             });
+            return;
+        }
+
+        // Text-only message: use two-phase optimistic flow
+        const saveFormData = new FormData();
+        saveFormData.append('__RequestVerificationToken', token);
+        saveFormData.append('messageText', trimmedText);
+
+        // Phase 1: Save (fire-and-forget — we don't need to await this)
+        fetch('/Chat/ChatAI_SaveUserMessage', {
+            method: 'POST',
+            body: saveFormData
+        }).catch(err => {
+            console.warn('Failed to save user message:', err);
+        });
+
+        // ============================================
+        // PHASE 2: Get AI response (slow, 3-10s)
+        // ============================================
+        const aiFormData = new FormData();
+        aiFormData.append('__RequestVerificationToken', token);
+        aiFormData.append('messageText', trimmedText);
+
+        fetch('/Chat/ChatAI_GetAiResponse', {
+            method: 'POST',
+            body: aiFormData
+        })
+        .then(res => {
+            if (res.ok) return res.text();
+            throw new Error("Lỗi phản hồi từ AI");
+        })
+        .then(aiBubbleHtml => {
+            // Hide typing indicator
+            hideTypingIndicator();
+
+            // Append ONLY the new AI bubble (no innerHTML replacement)
+            const tempContainer = document.createElement('div');
+            tempContainer.innerHTML = aiBubbleHtml.trim();
+
+            while (tempContainer.firstChild) {
+                const node = tempContainer.firstChild;
+                if (node.nodeType === Node.ELEMENT_NODE) {
+                    node.classList.add('optimistic-enter');
+                }
+                chatAiMessagesContainer.appendChild(node);
+            }
+
+            scrollContainerToBottom(chatAiMessagesContainer);
+            finishProcessing();
+        })
+        .catch(err => {
+            console.error(err);
+            hideTypingIndicator();
+            appendErrorBubble();
+            finishProcessing();
+        });
+    }
+
+    // ==========================================
+    // HELPER: Hide typing indicator
+    // ==========================================
+    function hideTypingIndicator() {
+        if (aiTypingIndicator) {
+            aiTypingIndicator.style.display = 'none';
+            if (window.aiTypingTimeout) {
+                clearTimeout(window.aiTypingTimeout);
+                window.aiTypingTimeout = null;
+            }
+        }
+    }
+
+    // ==========================================
+    // HELPER: Finish processing state
+    // ==========================================
+    function finishProcessing() {
+        isProcessing = false;
+        if (btnAiSend) btnAiSend.disabled = false;
+        if (aiInputField) aiInputField.focus();
+    }
+
+    // ==========================================
+    // HELPER: Append error bubble (not alert)
+    // ==========================================
+    function appendErrorBubble() {
+        const errorBubble = document.createElement('div');
+        errorBubble.className = 'optimistic-enter';
+        errorBubble.innerHTML = `
+            <div class="chat-message-row staff d-flex justify-content-start align-items-end gap-2 mb-2" style="width:100%;">
+                <div style="background:#F59E0B; width:34px; height:34px; border-radius:50%; display:grid; place-items:center; font-size:0.78rem; color:#fff; flex-shrink:0;">
+                    <i class="bi bi-robot fs-6"></i>
+                </div>
+                <div style="width:fit-content !important; max-width:75% !important; display:flex !important; flex-direction:column !important; align-items:flex-start !important;">
+                    <div style="background-color:#FFF6E8 !important; color:#1E293B !important; border:1px solid #FDE68A !important; border-radius:20px 20px 20px 4px !important; padding:10px 16px !important; font-size:0.92rem !important; line-height:1.45 !important; display:inline-block !important; width:fit-content !important; height:auto !important; max-width:100% !important; word-break:break-word !important; white-space:pre-wrap !important; overflow-wrap:anywhere !important; box-sizing:border-box !important;">
+                        <i class="bi bi-exclamation-triangle-fill me-1"></i>
+                        Xin lỗi, hệ thống đang bận. Vui lòng thử lại sau.
+                    </div>
+                    <div style="font-size:12px; color:#94A3B8; margin-top:4px;">${getCurrentTime()}</div>
+                </div>
+            </div>
+        `;
+        chatAiMessagesContainer.appendChild(errorBubble);
+        scrollContainerToBottom(chatAiMessagesContainer);
+    }
+
+    // ==========================================
+    // 7. TRACK TICKETS LIST SCREEN
+    // ==========================================
+    function loadTicketsList() {
+        if (!trackTicketsContainer) return;
+        trackTicketsContainer.innerHTML = '<div class="text-center py-5 text-muted"><div class="spinner-border spinner-border-sm me-2"></div> Đang tải danh sách phiếu...</div>';
+
+        fetch('/Chat/TraCuuPhieuChatBox')
+            .then(res => res.text())
+            .then(html => {
+                trackTicketsContainer.innerHTML = html;
+            })
+            .catch(err => {
+                console.error(err);
+                trackTicketsContainer.innerHTML = '<div class="text-center py-5 text-danger">Không thể tải danh sách phiếu.</div>';
+            });
+    }
+
+    // FAQ Quick Suggestion Helper
+    window.sendFaqQuery = function (text) {
+        const input = document.getElementById('aiInputField');
+        if (input) {
+            input.value = text;
+            input.dispatchEvent(new Event('input'));
+            const sendBtn = document.getElementById('btnAiSend');
+            if (sendBtn) {
+                sendBtn.click();
+            }
         }
     };
-
-    mockToolbarAction('chatEmojiBtn', 'Tính năng chọn Emoji đang được kích hoạt.');
-    mockToolbarAction('chatUploadFileBtn', 'Đang kết nối cổng tải lên tài liệu đính kèm...');
-    mockToolbarAction('chatUploadImageBtn', 'Đang mở thư viện ảnh hoặc Camera...');
-
 });

@@ -1,0 +1,50 @@
+@model SupportTicketSysterm.ViewModels.LiveSupportViewModel
+
+<div class="modal fade" id="appointmentModal" tabindex="-1" aria-labelledby="appointmentModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 16px;">
+            <div class="modal-header bg-danger text-white" style="border-top-left-radius: 16px; border-top-right-radius: 16px;">
+                <h5 class="modal-title fw-bold" id="appointmentModalLabel"><i class="bi bi-calendar-plus me-2"></i> Lên lịch hẹn hỗ trợ</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form id="appointmentForm">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="maPhieu" value="@Model.Ticket.MaPhieu" />
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-dark">Ngày hẹn <span class="text-danger">*</span></label>
+                        <input type="date" class="form-control" name="date" required id="aptDate" />
+                    </div>
+
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <label class="form-label fw-bold text-dark">Giờ bắt đầu <span class="text-danger">*</span></label>
+                            <input type="time" class="form-control" name="timeStart" required id="aptTimeStart" />
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label class="form-label fw-bold text-dark">Giờ kết thúc <span class="text-danger">*</span></label>
+                            <input type="time" class="form-control" name="timeEnd" required id="aptTimeEnd" />
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-dark">Địa chỉ hỗ trợ <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" name="address" required value="@Model.Customer?.DiaChi" id="aptAddress" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-dark">Ghi chú</label>
+                        <textarea class="form-control" name="note" rows="3" placeholder="Nhập ghi chú chi tiết công việc..." id="aptNote"></textarea>
+                    </div>
+
+                    <div class="alert alert-danger d-none" id="appointmentError"></div>
+
+                    <button type="button" class="btn btn-danger w-100 py-2 fw-bold" id="btnSubmitAppointment" style="border-radius: 8px;">
+                        Tạo lịch hẹn
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,390 @@
+@model SupportTicketSysterm.ViewModels.PhanHoiDanhGiaViewModel
+
+@{
+    ViewData["Title"] = "Phản Hồi Đánh Giá";
+    ViewData["HeaderTitle"] = "Phản Hồi Đánh Giá";
+    ViewData["HeaderSubtitle"] = "Phản hồi ý kiến đóng góp từ khách hàng";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/assets/css/staff/staff-review-detail.css" asp-append-version="true" />
+    <style>
+        .star-rating-read {
+            color: var(--color-warning);
+            font-size: 1.1rem;
+            letter-spacing: 2px;
+        }
+        .attachment-card {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px;
+            background-color: var(--bg-body);
+            transition: var(--vt-transition);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: var(--text-main);
+        }
+        .attachment-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--vt-shadow-soft);
+            border-color: rgba(13, 110, 253, 0.2);
+            color: #0d6efd;
+        }
+        .attachment-icon {
+            font-size: 2.2rem;
+            flex-shrink: 0;
+        }
+        .attachment-info {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .attachment-name {
+            font-weight: 600;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .attachment-type {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+    </style>
+}
+
+<!-- Breadcrumb -->
+<nav aria-label="breadcrumb" class="hero-breadcrumb-nav mb-4">
+    <ol class="breadcrumb" style="font-size: 0.82rem; margin: 0; padding: 0;">
+        <li class="breadcrumb-item">
+            <a href="/Staff/Dashboard" class="text-danger text-decoration-none">
+                <i class="fa-solid fa-gauge-high me-1"></i>Dashboard
+            </a>
+        </li>
+        <li class="breadcrumb-item">
+            <a href="/Staff/DanhSachDanhGia" class="text-danger text-decoration-none">Đánh Giá Khách Hàng</a>
+        </li>
+        <li class="breadcrumb-item active fw-semibold" style="color: var(--text-main);">Phản Hồi Đánh Giá</li>
+    </ol>
+</nav>
+
+<!-- Hero Section -->
+<div class="review-hero-section">
+    <h1 class="hero-title-main">Phản hồi ý kiến khách hàng</h1>
+    <p class="hero-desc-main">Mã phiếu: <strong class="text-primary">@Model.ReviewDetails?.MaPhieu</strong> | Khách hàng: <strong>@Model.ReviewDetails?.HoTenKhachHang</strong></p>
+</div>
+
+<div class="row">
+    <!-- Left Column: Ticket Info & Review details -->
+    <div class="col-lg-8">
+        
+        <!-- CARD 1: THÔNG TIN PHIẾU -->
+        <div class="review-detail-card">
+            <h5 class="card-title-header">
+                <i class="fa-solid fa-ticket"></i> Thông tin phiếu hỗ trợ
+            </h5>
+            
+            <div class="info-grid-row">
+                <div class="info-item-box">
+                    <span class="info-item-label">Mã phiếu hỗ trợ</span>
+                    <span class="info-item-value text-primary">@Model.ReviewDetails?.MaPhieu</span>
+                </div>
+                <div class="info-item-box">
+                    <span class="info-item-label">Tiêu đề yêu cầu</span>
+                    <span class="info-item-value text-dark">@Model.ReviewDetails?.TieuDePhieu</span>
+                </div>
+                <div class="info-item-box">
+                    <span class="info-item-label">Danh mục sự cố</span>
+                    <span class="info-item-value">@Model.ReviewDetails?.TenDanhMuc</span>
+                </div>
+                <div class="info-item-box">
+                    <span class="info-item-label">Dịch vụ chi tiết</span>
+                    <span class="info-item-value">@Model.ReviewDetails?.TenDichVu</span>
+                </div>
+                <div class="info-item-box">
+                    <span class="info-item-label">Khách hàng yêu cầu</span>
+                    <span class="info-item-value"><i class="fa-solid fa-user me-1 text-secondary"></i> @Model.ReviewDetails?.HoTenKhachHang</span>
+                </div>
+                <div class="info-item-box">
+                    <span class="info-item-label">Nhân viên phụ trách xử lý</span>
+                    <span class="info-item-value"><i class="fa-solid fa-user-gear me-1 text-secondary"></i> @Model.ReviewDetails?.HoTenNhanVien</span>
+                </div>
+                <div class="info-item-box">
+                    <span class="info-item-label">Ngày hoàn thành xử lý</span>
+                    <span class="info-item-value">
+                        @if (Model.ReviewDetails?.NgayPhanHoi != null)
+                        {
+                            <i class="fa-regular fa-calendar-check me-1 text-success"></i> @Model.ReviewDetails.NgayDanhGia.ToString("dd/MM/yyyy")
+                        }
+                        else
+                        {
+                            <i class="fa-regular fa-calendar me-1"></i> @Model.ReviewDetails?.NgayDanhGia.ToString("dd/MM/yyyy")
+                        }
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 2: THÔNG TIN ĐÁNH GIÁ (READONLY) -->
+        <div class="review-detail-card">
+            <h5 class="card-title-header">
+                <i class="fa-solid fa-star"></i> Chi tiết đánh giá mức độ hài lòng
+            </h5>
+
+            <!-- Ratings Criteria Grid -->
+            <div class="rating-stats-grid">
+                <div class="rating-stat-mini-card">
+                    <span class="stat-mini-label">Chất lượng dịch vụ</span>
+                    <div class="stat-mini-stars">
+                        @for (int i = 1; i <= 5; i++)
+                        {
+                            <i class="@(i <= Model.ReviewDetails?.ChatLuongDichVu ? "fa-solid" : "fa-regular") fa-star"></i>
+                        }
+                    </div>
+                    <h4 class="stat-mini-val">@Model.ReviewDetails?.ChatLuongDichVu <small>/ 5</small></h4>
+                </div>
+
+                <div class="rating-stat-mini-card">
+                    <span class="stat-mini-label">Thái độ nhân viên</span>
+                    <div class="stat-mini-stars">
+                        @for (int i = 1; i <= 5; i++)
+                        {
+                            <i class="@(i <= Model.ReviewDetails?.ThaiDoNhanVien ? "fa-solid" : "fa-regular") fa-star"></i>
+                        }
+                    </div>
+                    <h4 class="stat-mini-val">@Model.ReviewDetails?.ThaiDoNhanVien <small>/ 5</small></h4>
+                </div>
+
+                <div class="rating-stat-mini-card">
+                    <span class="stat-mini-label">Tốc độ xử lý</span>
+                    <div class="stat-mini-stars">
+                        @for (int i = 1; i <= 5; i++)
+                        {
+                            <i class="@(i <= Model.ReviewDetails?.TocDoXuLy ? "fa-solid" : "fa-regular") fa-star"></i>
+                        }
+                    </div>
+                    <h4 class="stat-mini-val">@Model.ReviewDetails?.TocDoXuLy <small>/ 5</small></h4>
+                </div>
+
+                <div class="rating-stat-mini-card">
+                    <span class="stat-mini-label">Điểm trung bình</span>
+                    <div class="stat-mini-stars text-warning fs-5">
+                        <i class="fa-solid fa-star-half-stroke"></i>
+                    </div>
+                    <h4 class="stat-mini-val text-warning">@Model.ReviewDetails?.DiemTrungBinh <small>★</small></h4>
+                </div>
+            </div>
+
+            <!-- Customer Comment Section -->
+            <div class="mt-4">
+                <span class="info-item-label mb-2 d-block"><i class="fa-solid fa-comment-dots me-1 text-primary"></i>Nhận xét từ khách hàng</span>
+                <div class="customer-quote-box">
+                    <p class="customer-quote-content">
+                        "@(string.IsNullOrEmpty(Model.ReviewDetails?.NhanXet) ? "Khách hàng không để lại nhận xét." : Model.ReviewDetails.NhanXet)"
+                    </p>
+                </div>
+            </div>
+
+            <!-- Attachments Gallery & Lists -->
+            @if (Model.ReviewDetails?.FileDinhKems != null && Model.ReviewDetails.FileDinhKems.Any())
+            {
+                <div class="mt-4 pt-3 border-top">
+                    <span class="info-item-label mb-3 d-block"><i class="fa-solid fa-paperclip me-1 text-primary"></i>Tài liệu / Ảnh đính kèm (@Model.ReviewDetails.FileDinhKems.Count)</span>
+                    
+                    @{
+                        var imageFiles = Model.ReviewDetails.FileDinhKems.Where(f => 
+                            f.LoaiFile != null && f.LoaiFile.Contains("image") || 
+                            f.DuongDan.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase) || 
+                            f.DuongDan.EndsWith(".jpeg", StringComparison.OrdinalIgnoreCase) || 
+                            f.DuongDan.EndsWith(".png", StringComparison.OrdinalIgnoreCase) || 
+                            f.DuongDan.EndsWith(".gif", StringComparison.OrdinalIgnoreCase) || 
+                            f.DuongDan.EndsWith(".webp", StringComparison.OrdinalIgnoreCase)
+                        ).ToList();
+
+                        var otherFiles = Model.ReviewDetails.FileDinhKems.Except(imageFiles).ToList();
+                    }
+
+                    <!-- Image Gallery Grid -->
+                    @if (imageFiles.Any())
+                    {
+                        <div class="review-gallery-grid mb-3">
+                            @foreach (var file in imageFiles)
+                            {
+                                <div class="gallery-image-wrapper" onclick="openLightbox('@file.DuongDan', '@file.TenFile')">
+                                    <img src="@file.DuongDan" alt="@file.TenFile" />
+                                    <div class="gallery-image-overlay">
+                                        <i class="fa-solid fa-magnifying-glass-plus"></i>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+
+                    <!-- Non-Image Attachment Cards -->
+                    @if (otherFiles.Any())
+                    {
+                        <div class="row g-3">
+                            @foreach (var file in otherFiles)
+                            {
+                                bool isPdf = file.LoaiFile != null && file.LoaiFile.Contains("pdf") || file.DuongDan.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase);
+                                bool isWord = file.LoaiFile != null && (file.LoaiFile.Contains("word") || file.LoaiFile.Contains("officedocument.wordprocessingml")) || file.DuongDan.EndsWith(".doc", StringComparison.OrdinalIgnoreCase) || file.DuongDan.EndsWith(".docx", StringComparison.OrdinalIgnoreCase);
+                                bool isExcel = file.LoaiFile != null && (file.LoaiFile.Contains("excel") || file.LoaiFile.Contains("officedocument.spreadsheetml")) || file.DuongDan.EndsWith(".xls", StringComparison.OrdinalIgnoreCase) || file.DuongDan.EndsWith(".xlsx", StringComparison.OrdinalIgnoreCase);
+
+                                <div class="col-sm-6">
+                                    <a href="@file.DuongDan" target="_blank" class="attachment-card">
+                                        <div class="attachment-icon">
+                                            @if (isPdf)
+                                            {
+                                                <i class="fa-solid fa-file-pdf text-danger" title="Tập tin PDF"></i>
+                                            }
+                                            else if (isWord)
+                                            {
+                                                <i class="fa-solid fa-file-word text-primary" title="Tập tin Word"></i>
+                                            }
+                                            else if (isExcel)
+                                            {
+                                                <i class="fa-solid fa-file-excel text-success" title="Tập tin Excel"></i>
+                                            }
+                                            else
+                                            {
+                                                <i class="fa-solid fa-file-lines text-secondary" title="Tập tin đính kèm"></i>
+                                            }
+                                        </div>
+                                        <div class="attachment-info">
+                                            <span class="attachment-name">@file.TenFile</span>
+                                            <span class="attachment-type">
+                                                @if (isPdf) { <text>PDF Document</text> }
+                                                else if (isWord) { <text>Word Document</text> }
+                                                else if (isExcel) { <text>Excel Spreadsheet</text> }
+                                                else { <text>Attachment File</text> }
+                                            </span>
+                                        </div>
+                                    </a>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Right Column: Response Form -->
+    <div class="col-lg-4">
+        <div class="review-detail-card" style="position: sticky; top: 20px;">
+            <h5 class="card-title-header">
+                <i class="fa-solid fa-reply-all"></i> Soạn thảo phản hồi
+            </h5>
+            
+            <form method="post" asp-controller="Staff" asp-action="PhanHoiDanhGia">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="IdDanhGia" />
+
+                <!-- Textarea and dynamic character counter -->
+                <div class="mb-3">
+                    <label asp-for="PhanHoiNhanVien" class="filter-label-text">Phản hồi của nhân viên *</label>
+                    <div class="reply-textarea-wrapper">
+                        <textarea asp-for="PhanHoiNhanVien" 
+                                  id="replyTextarea"
+                                  class="reply-textarea-control"
+                                  placeholder="Nhập nội dung phản hồi chính thức gửi đến khách hàng..."
+                                  maxlength="1000"
+                                  required></textarea>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mt-1">
+                        <span asp-validation-for="PhanHoiNhanVien" class="text-danger small"></span>
+                        <div class="char-counter-display" id="charCounter">0 / 1000 ký tự</div>
+                    </div>
+                </div>
+
+                <!-- Previous Response Metadata -->
+                @if (Model.ReviewDetails?.IsResponded == true)
+                {
+                    <div class="alert alert-info py-2 px-3 small mb-3 border-0" style="background-color: rgba(13, 110, 253, 0.05); border-radius: 8px;">
+                        <div class="fw-bold text-dark"><i class="fa-solid fa-clock-rotate-left me-1 text-primary"></i>Phản hồi trước đó:</div>
+                        <div class="text-muted mt-1" style="font-size:0.78rem;">
+                            Bởi: <strong>@Model.ReviewDetails.HoTenNhanVienPhanHoi</strong><br />
+                            Lúc: <strong>@Model.ReviewDetails.NgayPhanHoi?.ToString("dd/MM/yyyy HH:mm")</strong>
+                        </div>
+                    </div>
+                }
+
+                <!-- Action Button group -->
+                <div class="actions-footer-bar mt-4">
+                    <a href="/Staff/DanhSachDanhGia" class="btn-crm-action btn-crm-secondary text-decoration-none">
+                        <i class="fa-solid fa-arrow-left"></i> Quay lại
+                    </a>
+                    
+                    @if (Model.ReviewDetails?.IsResponded == true)
+                    {
+                        <button type="submit" class="btn-crm-action btn-crm-success">
+                            <i class="fa-solid fa-floppy-disk"></i> Lưu cập nhật
+                        </button>
+                    }
+                    else
+                    {
+                        <button type="submit" class="btn-crm-action btn-crm-primary">
+                            <i class="fa-solid fa-paper-plane"></i> Gửi phản hồi
+                        </button>
+                    }
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Gallery Lightbox Modal -->
+<div class="lightbox-modal" id="galleryLightbox" onclick="closeLightbox()">
+    <div class="lightbox-content-box" onclick="event.stopPropagation()">
+        <button class="lightbox-close-btn" onclick="closeLightbox()">&times;</button>
+        <img src="" class="lightbox-image" id="lightboxActiveImg" alt="Bản phóng to ảnh đính kèm" />
+        <div class="lightbox-caption" id="lightboxCaption"></div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const textarea = document.getElementById("replyTextarea");
+            const counter = document.getElementById("charCounter");
+            
+            function updateCounter() {
+                const len = textarea.value.length;
+                counter.textContent = len + " / 1000 ký tự";
+                if (len >= 900) {
+                    counter.classList.add("text-danger");
+                } else {
+                    counter.classList.remove("text-danger");
+                }
+            }
+
+            textarea.addEventListener("input", updateCounter);
+            updateCounter(); // Initialize
+        });
+
+        function openLightbox(src, caption) {
+            const lightbox = document.getElementById("galleryLightbox");
+            const img = document.getElementById("lightboxActiveImg");
+            const cap = document.getElementById("lightboxCaption");
+            
+            img.src = src;
+            cap.textContent = caption;
+            
+            lightbox.style.display = "flex";
+            setTimeout(() => {
+                lightbox.classList.add("show");
+            }, 10);
+        }
+
+        function closeLightbox() {
+            const lightbox = document.getElementById("galleryLightbox");
+            lightbox.classList.remove("show");
+            setTimeout(() => {
+                lightbox.style.display = "none";
+            }, 300);
+        }
+    </script>
+}

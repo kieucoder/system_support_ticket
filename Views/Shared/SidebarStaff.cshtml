@@ -1,6 +1,12 @@
+@using Microsoft.AspNetCore.Http
+@using System.Security.Claims
 @{
     var currentController = ViewContext.RouteData.Values["Controller"]?.ToString();
     var currentAction = ViewContext.RouteData.Values["Action"]?.ToString();
+
+    var hoTen = Context.Session?.GetString("HoTen") ?? User.FindFirstValue("HoTen") ?? User.Identity?.Name ?? "Nhân viên";
+    var vaiTro = Context.Session?.GetString("Role") ?? User.FindFirstValue(ClaimTypes.Role) ?? "NhanVien";
+    var vaiTroVn = vaiTro == "Admin" ? "Quản trị viên" : "Nhân viên hỗ trợ";
 }
 
 <!-- ============================================================
@@ -13,8 +19,8 @@
         <div class="d-flex align-items-center">
             <i class="fa-solid fa-headset me-2 fs-4" style="color: #EE0033;"></i>
             <div>
-                <span class="fw-bold fs-6" style="color: #FFFFFF;" id="adminSidebarLabel">TechSupport</span>
-                <small class="d-block" style="font-size: 0.65rem; font-weight: 500; letter-spacing: 0.5px; color: rgba(255,255,255,0.5);">TechSupport Staff</small>
+                <span class="fw-bold fs-6" style="color: #FFFFFF;" id="adminSidebarLabel">@hoTen</span>
+                <small class="d-block" style="font-size: 0.65rem; font-weight: 500; letter-spacing: 0.5px; color: rgba(255,255,255,0.5);">@vaiTroVn</small>
             </div>
         </div>
         <button type="button" class="btn-close btn-close-white text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
@@ -44,20 +50,20 @@
             </li>
 
             <li class="sidebar-section-label">QUẢN LÝ</li>
-            <li class="sidebar-item" data-page="staff-ticket-management.html">
-                <a href="/staff/staff-ticket-management.html" class="sidebar-link">
+            <li class="sidebar-item @(currentController == "Staff" && currentAction == "QuanLyPhieuHoTro" ? "active" : "")" data-page="staff-ticket-management.html">
+                <a asp-controller="Staff" asp-action="QuanLyPhieuHoTro" class="sidebar-link">
                     <i class="fa-solid fa-ticket"></i>
                     <span>Phiếu Hỗ Trợ</span>
                 </a>
             </li>
-            <li class="sidebar-item" data-page="staff-chat.html">
-                <a href="/staff/staff-chat.html" class="sidebar-link">
+            <li class="sidebar-item @(currentController == "Chat" && currentAction == "Index" ? "active" : "")" data-page="staff-chat.html">
+                <a asp-controller="Chat" asp-action="Index" class="sidebar-link">
                     <i class="fa-solid fa-comments"></i>
                     <span>Chat Hỗ Trợ</span>
                 </a>
             </li>
-            <li class="sidebar-item" data-page="admin-appointments.html">
-                <a href="/staff/admin-appointments.html" class="sidebar-link">
+            <li class="sidebar-item @(currentController == "Staff" && currentAction == "QuanLyLichHen" ? "active" : "")" data-page="admin-appointments.html">
+                <a asp-controller="Staff" asp-action="QuanLyLichHen" class="sidebar-link">
                     <i class="fa-solid fa-calendar-days"></i>
                     <span>Lịch Hẹn Kỹ Thuật</span>
                 </a>
@@ -86,8 +92,8 @@
                     <span>Nhân Viên</span>
                 </a>
             </li>
-            <li class="sidebar-item" data-page="staff-review-list.html">
-                <a href="/staff/staff-review-list.html" class="sidebar-link">
+            <li class="sidebar-item @(currentController == "Staff" && (currentAction == "DanhSachDanhGia" || currentAction == "PhanHoiDanhGia") ? "active" : "")" data-page="staff-review-list.html">
+                <a asp-controller="Staff" asp-action="DanhSachDanhGia" class="sidebar-link">
                     <i class="fa-solid fa-star"></i>
                     <span>Đánh Giá Khách Hàng</span>
                 </a>
@@ -101,9 +107,20 @@
                 </a>
             </li>
 
+            @if (vaiTro == "Admin")
+            {
+                <li class="sidebar-section-label">HỆ THỐNG</li>
+                <li class="sidebar-item @(currentController == "Admin" && currentAction == "GeminiDiagnostic" ? "active" : "")">
+                    <a asp-controller="Admin" asp-action="GeminiDiagnostic" class="sidebar-link">
+                        <i class="fa-solid fa-robot"></i>
+                        <span>Chẩn Đoán Gemini AI</span>
+                    </a>
+                </li>
+            }
+
             <li class="sidebar-section-label">TÀI KHOẢN</li>
-            <li class="sidebar-item" data-page="admin-profile.html">
-                <a href="/staff/admin-profile.html" class="sidebar-link">
+            <li class="sidebar-item @(currentController == "Staff" && (currentAction == "TaiKhoanNhanVien" || currentAction == "ThongTinCaNhan") ? "active" : "")" data-page="admin-profile.html">
+                <a asp-controller="Staff" asp-action="TaiKhoanNhanVien" class="sidebar-link">
                     <i class="fa-solid fa-circle-user"></i>
                     <span>Thông Tin Cá Nhân</span>
                 </a>

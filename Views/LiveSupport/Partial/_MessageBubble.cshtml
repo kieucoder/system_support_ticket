@@ -1,0 +1,164 @@
+@model SupportTicketSysterm.Models.MessageViewModel
+@{
+    string currentUserRole = (string)(ViewData["CurrentUserRole"] ?? "Customer");
+    bool isOutgoing = (currentUserRole == "Customer" && Model.LoaiNguoiGui == "KhachHang") ||
+                      (currentUserRole == "Staff" && Model.LoaiNguoiGui == "NhanVien");
+    bool isAi = Model.LoaiNguoiGui == "AI";
+}
+
+@if (isOutgoing)
+{
+    <!-- Outgoing Customer Message (Right side - Zalo Viettel Red Gradient) -->
+    <div class="chat-message-row client d-flex justify-content-end mb-2.5" data-id="@Model.IdTinNhan" style="display: inline-block !important;
+width: fit-content !important;
+height: auto !important;
+max-width: 100% !important;
+align-self: flex-end !important;
+margin-left: auto !important;
+line-height: 1.45 !important;
+border-radius: 20px 20px 4px 20px !important;
+padding: 10px 16px !important;
+word-break: break-word !important;
+white-space: pre-wrap !important;
+overflow-wrap: anywhere !important;
+box-sizing: border-box !important;
+    ">
+        <div class="chat-message-wrapper" style="width: fit-content !important; max-width: 55% !important; align-self: flex-end !important; display: flex !important; flex-direction: column !important; align-items: flex-end !important; margin-left: auto !important;">
+            <div class="chat-message-item text-white shadow-sm" 
+                 style="background: linear-gradient(135deg, #D71920 0%, #E53935 100%) !important; color: #FFFFFF !important; border-radius: 20px 20px 4px 20px !important; padding: 10px 16px !important; font-size: 0.92rem !important; line-height: 1.45 !important; display: inline-block !important; width: fit-content !important; height: auto !important; max-width: 100% !important; align-self: flex-end !important; word-break: break-word !important; white-space: pre-wrap !important; overflow-wrap: anywhere !important; box-shadow: 0 4px 14px rgba(215, 25, 32, 0.18) !important; margin: 0 !important; box-sizing: border-box !important;">
+                @if (Model.Files != null && Model.Files.Any())
+                {
+                    @foreach (var file in Model.Files)
+                    {
+                        bool isImg = file.LoaiFile.StartsWith("image/") || 
+                                     file.TenFile.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase) || 
+                                     file.TenFile.EndsWith(".png", StringComparison.OrdinalIgnoreCase) || 
+                                     file.TenFile.EndsWith(".jpeg", StringComparison.OrdinalIgnoreCase);
+                        
+                        if (isImg)
+                        {
+                            <div class="chat-message-image mb-2">
+                                <img src="@file.DuongDan" alt="@file.TenFile" class="clickable-chat-image rounded-3 border" style="max-width:260px;" />
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="chat-message-file-card border-0 rounded-3 p-2.5 bg-white bg-opacity-25 text-white mb-2 d-flex align-items-center gap-2" style="min-width:200px;">
+                                <div class="file-card-icon fs-3">
+                                    <i class="bi bi-file-earmark-arrow-down-fill"></i>
+                                </div>
+                                <div class="file-card-details text-truncate flex-grow-1">
+                                    <span class="file-card-name fw-semibold small d-block text-truncate">@file.TenFile</span>
+                                    <span class="file-card-size text-white-50" style="font-size:0.7rem;">Tệp đính kèm</span>
+                                </div>
+                                <a href="@file.DuongDan" class="file-card-download-btn text-white text-decoration-underline ms-2" title="Tải xuống" download="@file.TenFile" style="font-size:0.75rem;">
+                                    Tải về <i class="bi bi-download ms-1"></i>
+                                </a>
+                            </div>
+                        }
+                    }
+                }
+                @if (!string.IsNullOrEmpty(Model.NoiDung) && !Model.NoiDung.StartsWith("[Đính kèm tệp:"))
+                {
+                    @Html.Raw(Html.Encode(Model.NoiDung).Replace("\n", "<br/>"))
+                }
+            </div>
+            
+            <!-- Timestamp & Read Status below bubble -->
+            <div class="chat-message-meta text-end mt-1 d-flex align-items-center justify-content-end gap-1.5" style="font-size: 11.5px; color: #94A3B8; align-self: flex-end !important;">
+                <span>@Model.ThoiGian.ToString("HH:mm")</span>
+                <span class="seen-indicator fw-bold" style="color:#22C55E;">
+                    @if (Model.TrangThai == "Đã xem")
+                    {
+                        <span>✓✓ Đã xem</span>
+                    }
+                    else
+                    {
+                        <span>✓✓ Đã nhận</span>
+                    }
+                </span>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <!-- Incoming Staff / AI Message (Left side - Zalo Crisp White Card) -->
+    <div class="chat-message-row staff d-flex justify-content-start align-items-end gap-2 mb-2.5" data-id="@Model.IdTinNhan" style="width:100%;">
+        <!-- Staff Initial Avatar -->
+        <div class="chat-avatar flex-shrink-0 text-white fw-bold shadow-xs mb-4" 
+             style="background: @(isAi ? "#F59E0B" : "linear-gradient(135deg, #D71920 0%, #C8102E 100%)"); width:34px; height:34px; border-radius:50%; display:grid; place-items:center; font-size:0.78rem; border:1px solid #FFFFFF;">
+            @if (isAi)
+            {
+                <i class="bi bi-robot fs-6"></i>
+            }
+            else
+            {
+                <i class="bi bi-person-fill fs-6"></i>
+            }
+        </div>
+
+        <div class="chat-message-wrapper" style="display: inline-block !important;
+width: fit-content !important;
+height: auto !important;
+max-width: 100% !important;
+align-self: flex-end !important;
+margin-left: auto !important;
+line-height: 1.45 !important;
+border-radius: 20px 20px 4px 20px !important;
+padding: 10px 16px !important;
+word-break: break-word !important;
+white-space: pre-wrap !important;
+overflow-wrap: anywhere !important;
+box-sizing: border-box !important;">
+            <div class="chat-message-sender-name fw-bold mb-1 text-secondary" style="font-size:0.75rem;">
+                @(isAi ? "Trợ lý Kỹ Thuật AI" : "Kỹ thuật viên Viettel")
+            </div>
+            
+            <div class="chat-message-item shadow-sm" 
+                 style="background-color: @(isAi ? "#FFF6E8" : "#FFFFFF") !important; color: #1E293B !important; border: 1px solid @(isAi ? "#FDE68A" : "#E2E8F0") !important; border-radius: 22px 22px 22px 4px !important; padding: 10px 16px !important; font-size: 0.92rem !important; line-height: 1.5 !important; display: inline-block !important; width: fit-content !important; max-width: 100% !important; align-self: flex-start !important; word-break: break-word !important; white-space: pre-wrap !important; overflow-wrap: anywhere !important; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03) !important;">
+                @if (Model.Files != null && Model.Files.Any())
+                {
+                    @foreach (var file in Model.Files)
+                    {
+                        bool isImg = file.LoaiFile.StartsWith("image/") || 
+                                     file.TenFile.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase) || 
+                                     file.TenFile.EndsWith(".png", StringComparison.OrdinalIgnoreCase) || 
+                                     file.TenFile.EndsWith(".jpeg", StringComparison.OrdinalIgnoreCase);
+                        
+                        if (isImg)
+                        {
+                            <div class="chat-message-image mb-2">
+                                <img src="@file.DuongDan" alt="@file.TenFile" class="clickable-chat-image rounded-3 border" style="max-width:260px;" />
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="chat-message-file-card border rounded-3 p-2.5 bg-light text-dark mb-2 d-flex align-items-center gap-2" style="min-width:200px;">
+                                <div class="file-card-icon fs-3 text-danger">
+                                    <i class="bi bi-file-earmark-zip-fill"></i>
+                                </div>
+                                <div class="file-card-details text-truncate flex-grow-1">
+                                    <span class="file-card-name fw-semibold small d-block text-truncate">@file.TenFile</span>
+                                    <span class="file-card-size text-muted" style="font-size:0.7rem;">Tệp đính kèm</span>
+                                </div>
+                                <a href="@file.DuongDan" class="file-card-download-btn text-danger text-decoration-none fw-bold ms-2" title="Tải xuống" download="@file.TenFile" style="font-size:0.75rem;">
+                                    Tải về <i class="bi bi-download ms-1"></i>
+                                </a>
+                            </div>
+                        }
+                    }
+                }
+                @if (!string.IsNullOrEmpty(Model.NoiDung) && !Model.NoiDung.StartsWith("[Đính kèm tệp:"))
+                {
+                    <span>@Html.Raw(Html.Encode(Model.NoiDung).Replace("\n", "<br/>"))</span>
+                }
+            </div>
+
+            <!-- Timestamp below bubble -->
+            <div class="chat-message-meta text-start mt-1" style="font-size: 12px; color: #94A3B8;">
+                <span>@Model.ThoiGian.ToString("HH:mm")</span>
+            </div>
+        </div>
+    </div>
+}

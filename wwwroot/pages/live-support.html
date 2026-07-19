@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Trò Chuyện Trực Tuyến - TechSupport Viettel</title>
+
+    <!-- SEO Optimization -->
+    <meta name="description" content="Trang trò chuyện trực tuyến giữa Khách hàng và Nhân viên kỹ thuật Viettel Telecom. Hỗ trợ giải quyết sự cố cáp quang, Wifi và thiết bị gia đình nhanh chóng.">
+    <meta name="keywords" content="live chat, ho tro ky thuat, chat voi ky thuat vien, viettel support, techsupport">
+    <meta name="author" content="Viettel Telecom TechSupport">
+    <meta name="robots" content="noindex, nofollow">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="https://viettel.com.vn/favicon.ico">
+
+    <!-- Bootstrap 5.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <!-- Font Awesome 6.6.0 CDN (Enterprise) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+    <!-- Google Fonts Inter & Be Vietnam Pro -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Core Stylesheets -->
+    <link rel="stylesheet" href="../../assets/css/style.css?v=99999">
+    <link rel="stylesheet" href="../../assets/css/responsive.css">
+    <link rel="stylesheet" href="../../assets/css/header.css">
+    <link rel="stylesheet" href="../../assets/css/footer.css">
+
+    <!-- Custom Chat Page CSS -->
+    <link rel="stylesheet" href="../../assets/css/live-support.css?v=1">
+</head>
+
+<body>
+
+    <!-- ==================== HEADER CONTAINER ==================== -->
+    <div id="header-container">
+        <!-- 1. TOPBAR HEADER -->
+        <header class="top-header">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-8 col-12 top-header-info d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+                        <span class="me-4"><i class="fa-solid fa-phone"></i> Hotline kỹ thuật: <a href="tel:18008119">1800 8119</a> (Miễn phí)</span>
+                        <span class="me-4"><i class="fa-solid fa-envelope"></i> Email: <a href="mailto:support@viettel.com.vn">support@viettel.com.vn</a></span>
+                        <span><i class="fa-solid fa-clock"></i> Hỗ trợ kỹ thuật 24/7/365</span>
+                    </div>
+                    <div class="col-lg-4 col-12 top-header-social d-flex align-items-center justify-content-center justify-content-lg-end mt-2 mt-lg-0">
+                        <span class="me-2 d-none d-sm-inline">Kết nối:</span>
+                        <a href="https://facebook.com" target="_blank" class="me-2" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+                        <a href="https://youtube.com" target="_blank" class="me-2" aria-label="Youtube"><i class="bi bi-youtube"></i></a>
+                        <a href="https://linkedin.com" target="_blank" class="me-2" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
+                        <a href="https://instagram.com" target="_blank" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- 2. NAVBAR STICKY -->
+        <header class="custom-header fixed-top" id="mainNavbar">
+            <div class="container container-header-wrapper">
+                <a class="navbar-brand" href="../../index.html" id="navBrand">
+                    <i class="fa-solid fa-cpu-fill" style="color: #EE0033; margin-right: 6px;"></i>
+                    <span style="font-weight: 800; font-size: 1.3rem; letter-spacing: -0.5px;">TechSupport</span>
+                </a>
+                <nav class="desktop-menu d-none d-xl-flex align-items-center justify-content-between flex-grow-1 ms-5">
+                    <ul class="navbar-nav header-nav-list flex-row align-items-center gap-2">
+                        <li class="nav-item"><a class="nav-link" href="../../index.html" id="linkHome">Trang chủ</a></li>
+                        <li class="nav-item"><a class="nav-link" href="../lookup-ticket.html" id="linkSearch">Tra cứu phiếu</a></li>
+                        <li class="nav-item"><a class="nav-link" href="../huong-dan.html" id="linkGuides">Hướng dẫn</a></li>
+                        <li class="nav-item"><a class="nav-link" href="../contact.html" id="linkContact">Liên hệ</a></li>
+                    </ul>
+                    <div class="header-buttons-group d-flex align-items-center gap-2">
+                        <div id="userDropdownWrapper" class="user-profile-dropdown d-flex align-items-center gap-3">
+                            <a href="#" class="btn-logout-header-custom btn-ripple" id="btnHeaderLogout">🚪 Đăng xuất</a>
+                            <div class="position-relative">
+                                <button class="btn-user-dropdown" type="button">
+                                    <i class="fa-solid fa-user"></i>
+                                    <span class="greeting-text">Xin chào, </span><span id="userDisplayName">Nguyễn Hoàng Nam</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        </header>
+    </div>
+
+    <!-- ==================== HERO SECTION ==================== -->
+    <section class="live-support-hero">
+        <div class="container">
+            <div class="row align-items-center g-5">
+                <!-- Left: text content & search -->
+                <div class="col-lg-7 col-12 hero-text-pane animate-fade-up">
+                    <nav aria-label="breadcrumb" class="hero-breadcrumb-nav">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="../../index.html"><i class="fa-solid fa-house-door-fill"></i> Trang chủ</a></li>
+                            <li class="breadcrumb-item"><a href="../lookup-ticket.html">Hỗ trợ kỹ thuật</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Live Support</li>
+                        </ol>
+                    </nav>
+
+                    <div class="hero-status-pill mt-3">
+                        <span class="status-indicator-dot"></span>
+                        <span>Trực tuyến 24/7/365</span>
+                    </div>
+
+                    <h1 class="hero-title mt-3">TRÒ CHUYỆN TRỰC TUYẾN<br>VỚI NHÂN VIÊN HỖ TRỢ</h1>
+                    
+                    <p class="hero-desc mt-3">
+                        Kết nối ngay với kỹ thuật viên Viettel để được hỗ trợ xử lý sự cố theo thời gian thực, trao đổi trực tiếp và theo dõi tiến độ xử lý yêu cầu.
+                    </p>
+
+                    <div class="hero-search-box mt-4">
+                        <div class="search-input-group">
+                            <i class="bi bi-search search-icon"></i>
+                            <input type="text" id="heroSearchInput" placeholder="Nhập mã phiếu hoặc nội dung...">
+                            <button type="button" class="btn-search-connect" id="btnSearchConnect">
+                                Kết nối ngay <i class="fa-solid fa-arrow-right ms-1"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="hero-tags mt-4 d-flex flex-wrap gap-2">
+                        <span class="hero-tag"><i class="bi bi-clock-fill"></i> 24/7</span>
+                        <span class="hero-tag"><i class="bi bi-patch-check-fill text-success"></i> Online</span>
+                        <span class="hero-tag"><i class="bi bi-lightning-charge-fill"></i> Nhanh chóng</span>
+                        <span class="hero-tag"><i class="bi bi-people-fill"></i> Kỹ thuật viên chuyên nghiệp</span>
+                    </div>
+                </div>
+
+                <!-- Right: Illustration visual -->
+                <div class="col-lg-5 col-12 hero-visual-pane text-center animate-fade-up delay-1">
+                    <div class="visual-container">
+                        <div class="circle-glow-bg"></div>
+                        <div class="glass-illustration-card">
+                            <div class="card-inner">
+                                <div class="floating-bubble bubble-left">
+                                    <span class="bubble-icon"><i class="fa-solid fa-robot"></i></span>
+                                    <span>Hỗ trợ 24/7</span>
+                                </div>
+                                <div class="floating-bubble bubble-right">
+                                    <span class="bubble-icon"><i class="fa-solid fa-shield-halved"></i></span>
+                                    <span>Bảo mật SLA</span>
+                                </div>
+                                <div class="main-device-mockup">
+                                    <div class="screen-header">
+                                        <span class="window-dot red"></span>
+                                        <span class="window-dot yellow"></span>
+                                        <span class="window-dot green"></span>
+                                    </div>
+                                    <div class="screen-body">
+                                        <div class="mock-avatar">
+                                            <i class="fa-solid fa-user-tie"></i>
+                                        </div>
+                                        <div class="mock-line title"></div>
+                                        <div class="mock-line subtitle"></div>
+                                        <div class="mock-chat-bubble mock-left"></div>
+                                        <div class="mock-chat-bubble mock-right"></div>
+                                    </div>
+                                    <div class="base-keyboard"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== MAIN WORKSPACE AREA (CHAT BOX) ==================== -->
+    <section class="live-chat-workspace">
+        <div class="container">
+            <div class="live-chat-container">
+                <!-- Dim Overlay for mobile sidebar -->
+                <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+                <div class="row g-0 w-100 h-100">
+                    <!-- LEFT COLUMN: CHAT WINDOW (70%) -->
+                    <div class="col-lg-8 col-12 chat-main-pane d-flex flex-column">
+                        
+                        <!-- Header -->
+                        <div class="chat-pane-header">
+                            <div class="chat-header-title-area">
+                                <div class="avatar-indicator-wrap">
+                                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=120" alt="Nguyễn Văn Hùng" id="headerStaffAvatar" class="header-avatar" />
+                                    <span class="status-dot online" id="headerStaffDot"></span>
+                                </div>
+                                <div class="chat-header-details">
+                                    <h2 id="headerStaffName">Nguyễn Văn Hùng</h2>
+                                    <div class="chat-header-ticket-meta">
+                                        <span>Mã phiếu: <strong id="ticketCodeSpan">PHT001</strong></span>
+                                        <span class="badge bg-warning text-dark chat-header-status-badge">Đang xử lý</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="chat-header-actions">
+                                <button type="button" class="staff-status-indicator" id="toggleStatusBtn">
+                                    🟢 Nhân viên đang online
+                                </button>
+                                <button type="button" class="mobile-sidebar-toggle" id="btnMobileSidebarToggle" aria-label="Xem thông tin nhân viên">
+                                    <i class="bi bi-info-circle-fill text-danger fs-4"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Offline Alert -->
+                        <div class="offline-warning-banner" id="offlineWarningBanner" style="display: none;">
+                            <i class="bi bi-exclamation-triangle-fill"></i>
+                            <span>Nhân viên hiện không trực tuyến. Bạn vẫn có thể gửi tin nhắn, kỹ thuật viên sẽ trả lời ngay khi online.</span>
+                        </div>
+
+                        <!-- Message List Window -->
+                        <div class="chat-messages-pane" id="chatMessagesPane">
+                            <div class="chat-empty-state">
+                                <div class="spinner-border text-danger mb-3" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                <p class="text-muted">Đang kết nối luồng bảo mật...</p>
+                            </div>
+                        </div>
+
+                        <!-- Footer: Pills, Inputs, Previews -->
+                        <div class="chat-footer-pane">
+                            <!-- Pre-upload File Preview -->
+                            <div class="chat-file-preview-bar" id="filePreviewBar"></div>
+
+                            <!-- Quick Action pills above inputs -->
+                            <div class="chat-quick-actions-outer">
+                                <div class="chat-quick-actions" id="quickActionsBar">
+                                    <button type="button" class="quick-action-btn" onclick="handleQuickAction('view_ticket')">
+                                        📄 Xem phiếu
+                                    </button>
+                                    <button type="button" class="quick-action-btn" onclick="handleQuickAction('view_schedule')">
+                                        📅 Xem lịch
+                                    </button>
+                                    <button type="button" class="quick-action-btn" onclick="handleQuickAction('review')">
+                                        ⭐ Đánh giá
+                                    </button>
+                                    <button type="button" class="quick-action-btn" onclick="handleQuickAction('ask_ai')">
+                                        🤖 Hỏi AI
+                                    </button>
+                                    <button type="button" class="quick-action-btn" id="qaUploadFile" onclick="document.getElementById('hiddenFileUpload').click();">
+                                        📎 Gửi File
+                                    </button>
+                                    <button type="button" class="quick-action-btn" onclick="handleQuickAction('video_call')">
+                                        🎥 Video Call
+                                    </button>
+                                    <button type="button" class="quick-action-btn" onclick="handleQuickAction('call_staff')">
+                                        📞 Gọi nhân viên
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Input capsule wrapper -->
+                            <div class="chat-input-capsule">
+                                <div class="emoji-picker-popup d-none" id="emojiPickerPopup">
+                                    <span class="emoji-picker-item">😊</span>
+                                    <span class="emoji-picker-item">👍</span>
+                                    <span class="emoji-picker-item">🙏</span>
+                                    <span class="emoji-picker-item">❤️</span>
+                                    <span class="emoji-picker-item">👌</span>
+                                    <span class="emoji-picker-item">🖨️</span>
+                                    <span class="emoji-picker-item">🌐</span>
+                                    <span class="emoji-picker-item">💻</span>
+                                    <span class="emoji-picker-item">⚙️</span>
+                                    <span class="emoji-picker-item">❌</span>
+                                </div>
+
+                                <input type="file" id="hiddenFileUpload" style="display:none;" />
+                                <input type="file" id="hiddenImageUpload" style="display:none;" accept="image/*" />
+
+                                <button type="button" class="input-tool-btn" id="emojiPickerBtn" title="Chèn biểu tượng cảm xúc">
+                                    <i class="bi bi-emoji-smile"></i>
+                                </button>
+                                <button type="button" class="input-tool-btn" id="fileUploadBtn" title="Đính kèm tài liệu">
+                                    <i class="bi bi-paperclip"></i>
+                                </button>
+                                <button type="button" class="input-tool-btn" id="imageUploadBtn" title="Đính kèm hình ảnh">
+                                    <i class="bi bi-image"></i>
+                                </button>
+                                <button type="button" class="input-tool-btn" id="voiceMsgBtn" title="Gửi tin nhắn thoại">
+                                    <i class="bi bi-mic"></i>
+                                </button>
+                                <button type="button" class="input-tool-btn" id="cameraBtn" title="Chụp ảnh thiết bị">
+                                    <i class="bi bi-camera"></i>
+                                </button>
+                                
+                                <textarea class="chat-textarea" id="chatInputField" placeholder="Nhập nội dung cần hỗ trợ..." rows="1" maxlength="500"></textarea>
+                                
+                                <button type="button" class="chat-send-btn animate-send" id="chatSendBtn" aria-label="Gửi">
+                                    <i class="bi bi-send-fill"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- RIGHT COLUMN: STAFF INFO CARD (30%) -->
+                    <div class="col-lg-4 col-12 chat-sidebar-pane" id="staffSidebar">
+                        <!-- Loaded dynamically via JavaScript in live-support.js -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== SECTION: BENEFITS / FEATURES ==================== -->
+    <section class="benefits-section py-5">
+        <div class="container">
+            <h2 class="section-title text-center mb-5 fw-bold text-dark">Tại sao nên sử dụng Live Support?</h2>
+            <div class="row g-4 mt-2">
+                <div class="col-lg-3 col-md-6 col-12">
+                    <div class="benefit-card h-100">
+                        <div class="benefit-icon-wrapper">
+                            <i class="fa-solid fa-headset"></i>
+                        </div>
+                        <h3 class="benefit-card-title mt-3">Hỗ trợ 24/7</h3>
+                        <p class="benefit-card-desc mt-2">Luôn sẵn sàng tiếp nhận sự cố kỹ thuật của bạn bất kể ngày đêm hay ngày lễ.</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 col-12">
+                    <div class="benefit-card h-100">
+                        <div class="benefit-icon-wrapper">
+                            <i class="fa-solid fa-comments"></i>
+                        </div>
+                        <h3 class="benefit-card-title mt-3">Chat thời gian thực</h3>
+                        <p class="benefit-card-desc mt-2">Trao đổi trực tiếp, gửi kèm hình ảnh lỗi và nhận câu trả lời không độ trễ.</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 col-12">
+                    <div class="benefit-card h-100">
+                        <div class="benefit-icon-wrapper">
+                            <i class="fa-solid fa-user-gear"></i>
+                        </div>
+                        <h3 class="benefit-card-title mt-3">Kết nối kỹ thuật viên</h3>
+                        <p class="benefit-card-desc mt-2">Được hỗ trợ bởi đúng kỹ sư chuyên trách và giàu kinh nghiệm xử lý mạng cố định.</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 col-12">
+                    <div class="benefit-card h-100">
+                        <div class="benefit-icon-wrapper">
+                            <i class="fa-solid fa-chart-line"></i>
+                        </div>
+                        <h3 class="benefit-card-title mt-3">Theo dõi tiến độ</h3>
+                        <p class="benefit-card-desc mt-2">Biết chính xác trạng thái, KPI xử lý và kết quả cấu hình cổng trạm.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== SECTION: TIMELINE PROCESS ==================== -->
+    <section class="process-timeline-section py-5">
+        <div class="container">
+            <h2 class="section-title text-center mb-5 fw-bold text-dark">Quy trình Hỗ trợ trực tuyến</h2>
+            <div class="timeline-row mt-4">
+                <div class="timeline-step">
+                    <div class="step-num">1</div>
+                    <h4 class="step-title mt-3">Khởi tạo yêu cầu</h4>
+                    <p class="step-desc text-muted">Nhập mã sự cố hoặc mô tả tình trạng mạng gia đình/doanh nghiệp.</p>
+                </div>
+                <div class="timeline-arrow"><i class="fa-solid fa-circle-chevron-right"></i></div>
+                <div class="timeline-step">
+                    <div class="step-num">2</div>
+                    <h4 class="step-title mt-3">Kết nối kỹ thuật viên</h4>
+                    <p class="step-desc text-muted">Hệ thống phân công ngay kỹ sư chuyên trách quản lý khu vực.</p>
+                </div>
+                <div class="timeline-arrow"><i class="fa-solid fa-circle-chevron-right"></i></div>
+                <div class="timeline-step">
+                    <div class="step-num">3</div>
+                    <h4 class="step-title mt-3">Trao đổi trực tuyến</h4>
+                    <p class="step-desc text-muted">Trò chuyện trực tiếp, gửi tệp tin đính kèm và kiểm thử cấu hình trạm.</p>
+                </div>
+                <div class="timeline-arrow"><i class="fa-solid fa-circle-chevron-right"></i></div>
+                <div class="timeline-step">
+                    <div class="step-num">4</div>
+                    <h4 class="step-title mt-3">Hoàn tất hỗ trợ</h4>
+                    <p class="step-desc text-muted">Xác nhận sự cố đã khắc phục và gửi đánh giá chất lượng dịch vụ.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== SECTION: STATS (DARK VARIANT) ==================== -->
+    <section class="stats-dark-section">
+        <div class="container">
+            <div class="row g-4 text-center">
+                <div class="col-lg-3 col-md-6 col-12">
+                    <div class="stat-card">
+                        <span class="stat-number">10.000+</span>
+                        <span class="stat-label mt-2">Phiên hỗ trợ</span>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 col-12">
+                    <div class="stat-card">
+                        <span class="stat-number">98%</span>
+                        <span class="stat-label mt-2">Hài lòng</span>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 col-12">
+                    <div class="stat-card">
+                        <span class="stat-number">24/7</span>
+                        <span class="stat-label mt-2">Online</span>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 col-12">
+                    <div class="stat-card">
+                        <span class="stat-number">500+</span>
+                        <span class="stat-label mt-2">Kỹ thuật viên</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== SECTION: CTA (RED BG) ==================== -->
+    <section class="cta-red-section">
+        <div class="container text-center text-white">
+            <h2 class="cta-title fw-bold">Cần hỗ trợ ngay?</h2>
+            <p class="cta-subtitle mt-2">Tạo một phiếu kỹ thuật mới để hệ thống đặt lịch hẹn khảo sát tận nơi cho bạn.</p>
+            <div class="cta-buttons-row mt-4">
+                <a href="../create-ticket.html" class="btn btn-cta btn-white"><i class="bi bi-file-earmark-plus-fill"></i> Tạo Phiếu</a>
+                <a href="tel:18008119" class="btn btn-cta btn-outline-white"><i class="bi bi-telephone-fill"></i> Liên hệ Hotline</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== IMAGE LIGHTBOX MODAL ==================== -->
+    <div class="chat-lightbox" id="chatLightboxModal">
+        <button class="lightbox-close" id="lightboxClose" aria-label="Đóng">&times;</button>
+        <img src="" alt="Zoomed view" class="lightbox-content" id="lightboxImg" />
+    </div>
+
+    <!-- ==================== FOOTER SECTION ==================== -->
+    <footer class="custom-footer" id="footerSection">
+        <div class="container">
+            <div class="row g-4">
+                <!-- Column 1 -->
+                <div class="col-lg-3 col-md-6 col-12">
+                    <a class="footer-brand" href="#headerSection">
+                        <span>TechSupport</span>
+                    </a>
+                    <p class="footer-desc mt-3">
+                        Hệ thống tiếp nhận và xử lý yêu cầu kỹ thuật chuyên nghiệp, chuẩn hóa quy trình vận hành và cam kết chất lượng dịch vụ SLA Viettel.
+                    </p>
+                    <div class="footer-social-icons">
+                        <a href="#" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+                        <a href="#" aria-label="YouTube"><i class="bi bi-youtube"></i></a>
+                        <a href="#" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
+                        <a href="#" aria-label="Twitter"><i class="bi bi-twitter"></i></a>
+                    </div>
+                </div>
+
+                <!-- Column 2 -->
+                <div class="col-lg-3 col-md-6 col-12">
+                    <h3 class="footer-title">Liên Kết Nhanh</h3>
+                    <ul class="footer-links">
+                        <li><a href="../../index.html"><i class="fa-solid fa-chevron-right"></i> Trang chủ hệ thống</a></li>
+                        <li><a href="../lookup-ticket.html"><i class="fa-solid fa-chevron-right"></i> Tra cứu trạng thái ticket</a></li>
+                        <li><a href="../huong-dan.html"><i class="fa-solid fa-chevron-right"></i> Hướng dẫn kỹ thuật</a></li>
+                    </ul>
+                </div>
+
+                <!-- Column 3 -->
+                <div class="col-lg-3 col-md-6 col-12">
+                    <h3 class="footer-title">Dịch Vụ Hỗ Trợ</h3>
+                    <ul class="footer-links">
+                        <li><a href="#"><i class="fa-solid fa-chevron-right"></i> Khắc phục sự cố mạng Cáp quang</a></li>
+                        <li><a href="#"><i class="fa-solid fa-chevron-right"></i> Cài đặt & Sửa lỗi Home Camera</a></li>
+                        <li><a href="#"><i class="fa-solid fa-chevron-right"></i> Hỗ trợ kỹ thuật Server & Cloud VPS</a></li>
+                        <li><a href="#"><i class="fa-solid fa-chevron-right"></i> Khắc phục lỗi Phần mềm ứng dụng</a></li>
+                    </ul>
+                </div>
+
+                <!-- Column 4 -->
+                <div class="col-lg-3 col-md-6 col-12">
+                    <h3 class="footer-title">Thông Tin Liên Hệ</h3>
+                    <ul class="footer-contact-list">
+                        <li>
+                            <i class="fa-solid fa-map-marker"></i>
+                            <span>Tòa nhà điều hành Viettel, số 1 Giang Văn Minh, Kim Mã, Ba Đình, Hà Nội</span>
+                        </li>
+                        <li>
+                            <i class="fa-solid fa-phone"></i>
+                            <span>Hotline hỗ trợ kỹ thuật: 1800 8119<br>(Hỗ trợ khẩn cấp 24/7)</span>
+                        </li>
+                        <li>
+                            <i class="fa-solid fa-envelope"></i>
+                            <span>Email cskh: support@viettel.com.vn</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Bottom Footer -->
+            <div class="footer-bottom mt-5">
+                <div class="row align-items-center">
+                    <div class="col-md-6 col-12 text-center text-md-start mb-3 mb-md-0">
+                        <p class="m-0">
+                            &copy; 2026 TechSupport Viettel. Bản quyền thuộc Tập đoàn Công nghiệp - Viễn thông Quân đội.
+                        </p>
+                    </div>
+                    <div class="col-md-6 col-12 text-center text-md-end footer-bottom-links">
+                        <a href="#">Bản đồ mạng</a>
+                        <a href="#">Điều khoản SLA</a>
+                        <a href="#">Chính sách bảo mật</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5.3 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+    <!-- Custom Chat Page Scripts -->
+    <script src="../../assets/js/live-support.js?v=1"></script>
+</body>
+
+</html>

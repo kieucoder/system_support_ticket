@@ -1,6 +1,6 @@
 @{
     var controller = ViewContext.RouteData.Values["controller"]?.ToString();
-    if (controller == "Staff")
+    if (controller == "Staff" || controller == "Admin")
     {
         Layout = "~/Views/Shared/_LayoutStaff.cshtml";
     }

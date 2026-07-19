@@ -1,0 +1,1626 @@
+/* ==========================================================================
+   FILE: wwwroot/css/chat/chat.css
+   AUTHOR: Antigravity
+   DESCRIPTION: Combined Zendesk/Messenger-style chat interface styling.
+                Responsive layouts for customers, staff, and the floating AI chatbox.
+   ========================================================================== */
+
+:root {
+    --chat-primary: #D71920;
+    --chat-primary-hover: #B5121B;
+    --chat-bg-bubble-incoming: #F1F5F9;
+    --chat-bg-bubble-outgoing: #D71920;
+    --chat-text-incoming: #1F2937;
+    --chat-text-outgoing: #FFFFFF;
+    --chat-sidebar-width: 320px;
+    --chat-border-color: #E2E8F0;
+    --chat-shadow: 0 4px 20px rgba(0,0,0,0.05);
+
+    /* Brand Colors for AI Chatbox */
+    --viettel-red: #e60028;
+    --viettel-red-light: #ff3d5c;
+    --viettel-red-hover: #c5000f;
+    --viettel-red-subtle: #fff5f7;
+    
+    /* Layout Colors */
+    --cb-bg: #F8FAFC;
+    --cb-card: #FFFFFF;
+    --cb-text: #1E293B;
+    --cb-text-muted: #64748B;
+    --cb-border: #E2E8F0;
+    
+    /* Semantic Colors */
+    --cb-success: #10B981;
+    --cb-success-bg: #e6f7ed;
+    --cb-warning: #F59E0B;
+    --cb-danger: #EF4444;
+}
+
+/* ==================== 1. CUSTOMER LAYOUT WRAPPER ==================== */
+.customer-chat-body {
+    background-color: #F8FAFC !important;
+}
+
+.customer-chat-container {
+    min-height: calc(100vh - 100px);
+}
+
+.chat-layout-row {
+    height: 720px;
+}
+
+@media (max-width: 768px) {
+    .chat-layout-row {
+        height: 600px;
+    }
+}
+
+/* ==================== 2. STAFF LAYOUT WRAPPER ==================== */
+.admin-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.admin-content .chat-layout-row {
+    height: 100%;
+}
+
+/* ==================== 3. CONVERSATIONS SIDEBAR ==================== */
+.chat-sidebar-col {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background-color: #FFFFFF;
+}
+
+.chat-conversations-list {
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+.conversation-item-link {
+    display: block;
+    border-left: 4px solid transparent;
+    transition: all 0.2s ease-in-out;
+}
+
+.conversation-item-link:hover {
+    background-color: #F8FAFC;
+}
+
+.conversation-item-link.active {
+    background-color: #FFF5F5;
+    border-left-color: var(--chat-primary);
+}
+
+.avatar-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.95rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    flex-shrink: 0;
+}
+
+.avatar-circle.bg-danger-subtle {
+    background-color: #FEE2E2;
+    color: #D71920;
+}
+
+/* ==================== 4. MESSAGES CONTAINER ==================== */
+.chat-messages-col {
+    height: 100%;
+    overflow: hidden;
+}
+
+.chat-message-list-area {
+    overflow-y: auto;
+    background-color: #F8FAFC;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* Scrollbar styles for messages area */
+.chat-message-list-area::-webkit-scrollbar,
+.chat-conversations-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.chat-message-list-area::-webkit-scrollbar-thumb,
+.chat-conversations-list::-webkit-scrollbar-thumb {
+    background-color: #CBD5E1;
+    border-radius: 10px;
+}
+
+/* Individual Message Layouts */
+.chat-message-item {
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+    max-width: 80%;
+    animation: messageFadeUp 0.3s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+@keyframes messageFadeUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.chat-message-item.incoming {
+    align-self: flex-start;
+}
+
+.chat-message-item.outgoing {
+    align-self: flex-end;
+    flex-direction: row-reverse;
+}
+
+.message-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.message-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.message-content-wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-message-item.incoming .message-content-wrapper {
+    align-items: flex-start;
+}
+
+.chat-message-item.outgoing .message-content-wrapper {
+    align-items: flex-end;
+}
+
+/* Message Bubble */
+.message-bubble {
+    padding: 12px 18px;
+    border-radius: 20px;
+    font-size: 0.92rem;
+    line-height: 1.5;
+    word-break: break-word;
+    font-weight: 500;
+}
+
+.chat-message-item.incoming .message-bubble {
+    background-color: var(--chat-bg-bubble-incoming);
+    color: var(--chat-text-incoming);
+    border-bottom-left-radius: 4px;
+}
+
+.chat-message-item.outgoing .message-bubble {
+    background-color: var(--chat-bg-bubble-outgoing);
+    color: var(--chat-text-outgoing);
+    border-bottom-right-radius: 4px;
+}
+
+/* Message Meta (Time & Status) */
+.message-meta-info {
+    margin-top: 4px;
+    font-size: 0.72rem;
+    color: #94A3B8;
+}
+
+.message-time {
+    font-weight: 500;
+}
+
+/* File attachments card grid inside bubble */
+.message-files-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 200px;
+}
+
+.message-file-card {
+    transition: all 0.2s ease-in-out;
+}
+
+.message-file-card:hover {
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.file-icon-wrap {
+    width: 38px;
+    height: 38px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.file-icon-wrap.image {
+    background-color: #FEE2E2;
+}
+
+.file-icon-wrap.document {
+    background-color: #E0F2FE;
+}
+
+/* ==================== 5. CHAT FOOTER & FILE UPLOADS ==================== */
+.file-preview-bar {
+    animation: slideDown 0.25s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+@keyframes slideDown {
+    from { transform: translateY(-10px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.chat-pane-footer {
+    box-shadow: 0 -4px 15px rgba(0,0,0,0.02);
+}
+
+#chatTextarea {
+    font-size: 0.92rem;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+#chatTextarea:focus {
+    border-color: var(--chat-primary);
+    box-shadow: 0 0 0 3px var(--mc-primary-glow);
+}
+
+/* ==================== 6. OTHER UTILITIES ==================== */
+.chat-pane-header {
+    box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+    z-index: 10;
+}
+
+.form-select, .form-control {
+    font-weight: 500;
+    font-size: 0.92rem;
+}
+.form-select:focus, .form-control:focus {
+    border-color: var(--chat-primary);
+    box-shadow: 0 0 0 3px var(--mc-primary-glow);
+}
+
+
+/* ==========================================================================
+   7. FLOATING LAUNCHER BUTTON (AI Chatbox)
+   ========================================================================== */
+.chat-launcher {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--viettel-red) 0%, var(--viettel-red-light) 100%);
+    color: #FFFFFF;
+    border: none;
+    box-shadow: 0 10px 25px rgba(230, 0, 40, 0.3);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1050;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.chat-launcher:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 14px 30px rgba(230, 0, 40, 0.45);
+}
+
+.chat-launcher.open {
+    opacity: 0;
+    pointer-events: none;
+    transform: scale(0.8);
+}
+
+.chat-launcher-badge {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    background-color: var(--cb-danger);
+    color: #FFFFFF;
+    font-size: 0.72rem;
+    font-weight: 700;
+    min-width: 20px;
+    height: 20px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid var(--cb-card);
+    padding: 0 4px;
+    animation: launcherBadgePulse 2s infinite;
+}
+
+@keyframes launcherBadgePulse {
+    0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+    70% { box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+}
+
+.chat-launcher-online-dot {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    width: 12px;
+    height: 12px;
+    background-color: var(--cb-success);
+    border: 2px solid var(--cb-card);
+    border-radius: 50%;
+}
+
+.chat-launcher i {
+    position: absolute;
+    transition: transform 0.3s ease, opacity 0.2s ease;
+}
+
+.chat-launcher .chat-icon-close {
+    opacity: 0;
+    transform: rotate(-90deg) scale(0.5);
+}
+
+.chat-launcher.open .chat-icon-open {
+    opacity: 0;
+    transform: rotate(90deg) scale(0.5);
+}
+
+.chat-launcher.open .chat-icon-close {
+    opacity: 1;
+    transform: rotate(0) scale(1);
+}
+
+/* ==========================================================================
+   8. MAIN CHAT WINDOW CONTAINER (AI Chatbox)
+   ========================================================================== */
+.chat-window {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 390px;
+    height: 680px;
+    max-height: calc(100vh - 180px);
+    background-color: var(--cb-bg);
+    border-radius: 24px;
+    box-shadow: 0 18px 60px rgba(0, 0, 0, 0.18);
+    border: 1px solid var(--cb-border);
+    z-index: 1040;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+    pointer-events: none;
+    transition: opacity 250ms cubic-bezier(0.34, 1.56, 0.64, 1), transform 250ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.chat-window.open {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+}
+
+/* ==========================================================================
+   9. HEADER (AI Chatbox)
+   ========================================================================== */
+.chat-header {
+    background: linear-gradient(135deg, var(--viettel-red) 0%, var(--viettel-red-light) 100%);
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: #FFFFFF;
+    border-radius: 24px 24px 0 0;
+    height: 70px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    z-index: 10;
+    flex-shrink: 0;
+}
+
+.chat-header-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.chat-header-avatar {
+    position: relative;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: #FFFFFF;
+    color: var(--viettel-red);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    border: 3px solid #FFFFFF;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    flex-shrink: 0;
+}
+
+.chat-header-online-status {
+    position: absolute;
+    bottom: -1px;
+    right: -1px;
+    width: 11px;
+    height: 11px;
+    background-color: var(--cb-success);
+    border: 2px solid #FFFFFF;
+    border-radius: 50%;
+}
+
+.chat-header-text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.chat-header-title {
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.chat-header-status-badge-top {
+    font-size: 11px;
+    font-weight: 600;
+    background-color: var(--cb-success-bg);
+    color: var(--cb-success);
+    padding: 2px 10px;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 2px;
+}
+
+.chat-header-status-badge-top .status-dot {
+    width: 6px;
+    height: 6px;
+    background-color: var(--cb-success);
+    border-radius: 50%;
+}
+
+.chat-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.chat-header-btn {
+    background: none;
+    border: none;
+    color: #FFFFFF;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1rem;
+    opacity: 0.85;
+    transition: all 0.2s ease;
+}
+
+.chat-header-btn:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+    opacity: 1;
+    transform: scale(1.08);
+}
+
+/* ==========================================================================
+   10. CHAT SCREENS SLIDER (AI Chatbox)
+   ========================================================================== */
+.chat-body-container {
+    flex-grow: 1;
+    position: relative;
+    overflow: hidden;
+}
+
+.chat-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--cb-bg);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#screenWelcome {
+    transform: translateX(0);
+    z-index: 10;
+}
+
+#screenStream {
+    transform: translateX(100%);
+    z-index: 20;
+}
+
+.chat-window.chat-active-stream #screenWelcome {
+    transform: translateX(-100%);
+}
+
+.chat-window.chat-active-stream #screenStream {
+    transform: translateX(0);
+}
+
+/* ==========================================================================
+   11. WELCOME SCREEN (AI Chatbox)
+   ========================================================================== */
+.welcome-scrollable {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 24px;
+}
+
+.welcome-greeting-box {
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.welcome-avatar-robot-container {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 16px auto;
+}
+
+.welcome-avatar-robot {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, var(--viettel-red) 0%, var(--viettel-red-light) 100%);
+    color: #FFFFFF;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    box-shadow: 0 8px 20px rgba(230, 0, 40, 0.25);
+}
+
+.welcome-greeting-title {
+    font-size: 28px !important;
+    font-weight: 700 !important;
+    color: var(--cb-text);
+    margin-bottom: 12px;
+    line-height: 1.1;
+    letter-spacing: -0.5px;
+}
+
+.welcome-greeting-desc {
+    font-size: 13.5px !important;
+    line-height: 1.5;
+    color: var(--cb-text-muted);
+    text-align: center;
+    max-width: 320px;
+    margin: 0 auto;
+}
+
+/* Capabilities list checklist */
+.welcome-checklist {
+    background-color: var(--cb-card);
+    border: 1px solid #eeeeee;
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 24px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+}
+
+.welcome-checklist-title {
+    font-size: 14.5px;
+    font-weight: 700;
+    color: var(--cb-text);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+}
+
+.welcome-checklist-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 13.5px;
+    color: #475569;
+    padding: 8px 0;
+    border-bottom: 1px dashed #f1f5f9;
+}
+
+.welcome-checklist-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.welcome-checklist-item .checklist-icon {
+    font-size: 1.1rem;
+    color: var(--viettel-red);
+    display: flex;
+    align-items: center;
+}
+
+/* Quick Actions Cards List */
+.quick-actions-section {
+    margin-bottom: 24px;
+}
+
+.welcome-section-title {
+    font-size: 14.5px;
+    font-weight: 700;
+    color: var(--cb-text);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+}
+
+.quick-actions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.quick-action-card {
+    display: flex;
+    align-items: center;
+    border: 1px solid #eeeeee;
+    border-radius: 20px;
+    padding: 16px;
+    background-color: var(--cb-card);
+    gap: 16px;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.01);
+    transition: all 0.3s ease;
+}
+
+.quick-action-card:hover {
+    background-color: var(--viettel-red-subtle);
+    transform: translateX(5px);
+    border-color: rgba(230, 0, 40, 0.2);
+}
+
+.quick-action-icon-wrapper {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background-color: var(--viettel-red-subtle);
+    color: var(--viettel-red);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
+}
+
+.quick-action-card:hover .quick-action-icon-wrapper {
+    transform: scale(1.1);
+}
+
+.quick-action-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.quick-action-card-title {
+    font-size: 14.5px;
+    font-weight: 700;
+    color: var(--cb-text);
+}
+
+.quick-action-card-desc {
+    font-size: 11.5px;
+    color: var(--cb-text-muted);
+    margin-top: 2px;
+    line-height: 1.3;
+}
+
+/* ==========================================================================
+   12. ACTIVE CHAT STREAM SCREEN (AI Chatbox)
+   ========================================================================== */
+.stream-header-bar {
+    background-color: var(--cb-card);
+    border-bottom: 1px solid var(--cb-border);
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.stream-back-btn {
+    background: none;
+    border: none;
+    font-size: 1rem;
+    color: var(--cb-text);
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.stream-back-btn:hover {
+    background-color: #f1f5f9;
+}
+
+.stream-header-info {
+    flex-grow: 1;
+}
+
+.stream-header-title-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.stream-header-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--cb-text);
+}
+
+.stream-header-status-badge {
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 20px;
+}
+
+.stream-header-status-badge.waiting { background-color: rgba(245, 158, 11, 0.1); color: #D97706; }
+.stream-header-status-badge.processing { background-color: var(--viettel-red-subtle); color: var(--viettel-red); }
+.stream-header-status-badge.completed { background-color: var(--cb-success-bg); color: var(--cb-success); }
+
+.stream-header-desc {
+    font-size: 11.5px;
+    color: var(--cb-text-muted);
+}
+
+.messages-scrollable {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 24px;
+    background-color: var(--cb-bg);
+}
+
+/* Chat bubble structures for AI Chatbox */
+.msg-row {
+    display: flex;
+    margin-bottom: 20px;
+    gap: 10px;
+    animation: bubbleAppear 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes bubbleAppear {
+    0% { opacity: 0; transform: translateY(8px) scale(0.98); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.msg-row.received {
+    justify-content: flex-start;
+}
+
+.msg-row.sent {
+    justify-content: flex-end;
+}
+
+.msg-row .msg-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: var(--viettel-red-subtle);
+    color: var(--viettel-red);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.95rem;
+    border: 1px solid rgba(230, 0, 40, 0.15);
+    flex-shrink: 0;
+}
+
+.msg-row .msg-bubble-wrapper {
+    max-width: 80%;
+    display: flex;
+    flex-direction: column;
+}
+
+.msg-row .msg-bubble {
+    padding: 12px 16px;
+    border-radius: 18px;
+    font-size: 13.5px !important;
+    line-height: 1.5;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.01);
+}
+
+.msg-row.received .msg-bubble {
+    background-color: var(--cb-card);
+    color: var(--cb-text);
+    border: 1px solid #eeeeee;
+    border-top-left-radius: 4px;
+}
+
+.msg-row.sent .msg-bubble {
+    background: linear-gradient(135deg, var(--viettel-red) 0%, var(--viettel-red-light) 100%);
+    color: #FFFFFF;
+    border-top-right-radius: 4px;
+    box-shadow: 0 4px 12px rgba(230, 0, 40, 0.15);
+}
+
+.msg-row .msg-metadata {
+    font-size: 10px;
+    color: #94a3b8;
+    margin-top: 4px;
+    padding: 0 4px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.msg-row.sent .msg-metadata {
+    justify-content: flex-end;
+}
+
+/* Typing indicator */
+.ai-typing-row {
+    display: none;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.ai-typing-bubble {
+    background-color: var(--cb-card);
+    border: 1px solid #eeeeee;
+    padding: 12px 16px;
+    border-radius: 18px;
+    border-top-left-radius: 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.01);
+}
+
+.ai-typing-text {
+    font-size: 0.8rem;
+    color: var(--cb-text-muted);
+}
+
+.ai-typing-dots {
+    display: flex;
+    gap: 4px;
+}
+
+.ai-typing-dots span {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: var(--viettel-red);
+    animation: typingDots 1.4s infinite ease-in-out both;
+}
+
+.ai-typing-dots span:nth-child(1) { animation-delay: -0.32s; }
+.ai-typing-dots span:nth-child(2) { animation-delay: -0.16s; }
+
+@keyframes typingDots {
+    0%, 80%, 100% { transform: scale(0); }
+    40% { transform: scale(1); }
+}
+
+/* ==========================================================================
+   13. FOOTER INPUT PANE (AI Chatbox)
+   ========================================================================== */
+.stream-footer {
+    background-color: #FFFFFF;
+    border-top: 1px solid var(--cb-border);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.chatgpt-input-capsule {
+    display: flex;
+    align-items: center;
+    background-color: #F8FAFC;
+    border: 1px solid var(--cb-border);
+    border-radius: 30px;
+    height: 54px;
+    padding: 4px 5px 4px 20px;
+    gap: 6px;
+    transition: all 0.25s ease;
+}
+
+.chatgpt-input-capsule:focus-within {
+    background-color: #FFFFFF;
+    border-color: var(--viettel-red);
+    box-shadow: 0 4px 15px rgba(230, 0, 40, 0.08);
+}
+
+.capsule-icon-btn {
+    background: none;
+    border: none;
+    color: var(--cb-text-muted);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1.1rem;
+    transition: all 0.2s ease;
+}
+
+.capsule-icon-btn:hover {
+    color: var(--viettel-red);
+    background-color: var(--viettel-red-subtle);
+}
+
+.stream-textarea {
+    flex-grow: 1;
+    height: 24px;
+    max-height: 24px;
+    border: none !important;
+    background: transparent !important;
+    padding: 3px 0 !important;
+    resize: none;
+    font-size: 13.5px !important;
+    outline: none !important;
+    color: var(--cb-text);
+    line-height: 1.4;
+    font-family: 'Be Vietnam Pro', 'Inter', sans-serif;
+    box-shadow: none !important;
+}
+
+.stream-send-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: none;
+    background: linear-gradient(135deg, var(--viettel-red) 0%, var(--viettel-red-light) 100%);
+    color: #FFFFFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1rem;
+    box-shadow: 0 4px 10px rgba(230, 0, 40, 0.2);
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.stream-send-btn:hover {
+    transform: scale(1.08);
+    box-shadow: 0 6px 15px rgba(230, 0, 40, 0.3);
+}
+
+/* ==========================================================================
+   14. CUSTOM SCROLLBARS (AI Chatbox)
+   ========================================================================== */
+.welcome-scrollable::-webkit-scrollbar,
+.messages-scrollable::-webkit-scrollbar,
+.history-section::-webkit-scrollbar {
+    width: 6px;
+}
+
+.welcome-scrollable::-webkit-scrollbar-track,
+.messages-scrollable::-webkit-scrollbar-track,
+.history-section::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.welcome-scrollable::-webkit-scrollbar-thumb,
+.messages-scrollable::-webkit-scrollbar-thumb,
+.history-section::-webkit-scrollbar-thumb {
+    background: #d6d6d6;
+    border-radius: 3px;
+}
+
+.welcome-scrollable::-webkit-scrollbar-thumb:hover,
+.messages-scrollable::-webkit-scrollbar-thumb:hover,
+.history-section::-webkit-scrollbar-thumb:hover {
+    background: #bfbfbf;
+}
+
+
+/* ==========================================================================
+   15. GUEST LOGIN POPUP MODAL
+   ========================================================================== */
+.chat-modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(15, 23, 42, 0.65);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1100;
+    padding: 20px;
+    animation: modalOverlayFade 0.2s ease-out;
+}
+
+@keyframes modalOverlayFade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.chat-modal-card {
+    background-color: #FFFFFF;
+    border-radius: 20px;
+    padding: 24px;
+    width: 100%;
+    max-width: 320px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    text-align: center;
+    animation: modalScaleUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes modalScaleUp {
+    from { transform: scale(0.9) translateY(10px); opacity: 0; }
+    to { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+.chat-modal-header {
+    margin-bottom: 12px;
+}
+
+.chat-modal-body {
+    font-size: 13.5px;
+    color: var(--cb-text-muted);
+    line-height: 1.5;
+    margin-bottom: 20px;
+}
+
+.chat-modal-footer .btn {
+    padding: 10px;
+    font-size: 13.5px;
+}
+
+
+/* ==========================================================================
+   16. RESPONSIVE BREAKPOINTS (AI Chatbox)
+   ========================================================================== */
+@media (max-width: 1199.98px) {
+    .chat-window {
+        width: 380px;
+        height: 660px;
+        bottom: 20px;
+        right: 20px;
+    }
+    
+    .chat-launcher {
+        bottom: 20px;
+        right: 20px;
+        width: 60px;
+        height: 60px;
+    }
+}
+
+@media (max-width: 991.98px) {
+    .chat-window {
+        width: 360px;
+        height: 620px;
+        max-height: calc(100vh - 40px);
+        bottom: 20px;
+        right: 20px;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .chat-window {
+        width: 100vw !important;
+        height: 100vh !important;
+        max-height: 100vh !important;
+        bottom: 0 !important;
+        right: 0 !important;
+        border-radius: 0 !important;
+        border: none !important;
+        z-index: 1060;
+    }
+    
+    .chat-header {
+        border-radius: 0 !important;
+        height: 70px;
+        padding: 0 16px;
+    }
+    
+    .chat-launcher.open {
+        display: none !important;
+    }
+    
+    #chatMaximize {
+        display: none !important;
+    }
+    
+    .welcome-scrollable,
+    .messages-scrollable {
+        padding: 16px;
+    }
+    
+    .stream-footer {
+        padding: 16px;
+    }
+}
+
+/* ==================== 17. VIETTEL + ZENDESK + JIRA SERVICE MANAGEMENT CHATBOX STYLE ==================== */
+@keyframes sendMessage {
+    from {
+        transform: translateY(12px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.chat-message-list-area {
+    gap: 0 !important;
+}
+
+.chat-message-item {
+    margin: 0 !important;
+}
+
+.chat-message-item + .chat-message-item {
+    margin-top: 12px;
+}
+
+/* Spacing between consecutive user messages: 14px */
+.user-message + .user-message {
+    margin-top: 14px !important;
+}
+
+/* Spacing between consecutive AI/Staff messages: 18px */
+.chat-message-item.incoming + .chat-message-item.incoming {
+    margin-top: 18px !important;
+}
+
+/* Spacing between AI/Staff and User message: 18px */
+.chat-message-item.incoming + .user-message,
+.user-message + .chat-message-item.incoming {
+    margin-top: 18px !important;
+}
+
+/* Outer layout containers */
+.user-message {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: flex-end !important;
+    align-items: flex-end !important;
+    width: 100% !important;
+    max-width: none !important;
+    align-self: stretch !important;
+    margin: 14px 0 !important;
+    padding: 0 18px !important;
+    animation: sendMessage 0.25s ease forwards;
+}
+
+.ai-message, .partner-message {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: flex-start !important;
+    align-items: flex-end !important;
+    width: 100% !important;
+    max-width: none !important;
+    align-self: stretch !important;
+    margin: 18px 0 !important;
+    padding: 0 18px !important;
+    animation: sendMessage 0.25s ease forwards;
+}
+
+/* Inner content wrappers (resets flex-grow to prevent full-width stretching) */
+.user-message .message-content {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-end !important;
+    flex-grow: 0 !important;
+    flex-shrink: 1 !important;
+    flex-basis: auto !important;
+    max-width: 68% !important;
+}
+
+.ai-message .message-content,
+.partner-message .message-content {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    flex-grow: 0 !important;
+    flex-shrink: 1 !important;
+    flex-basis: auto !important;
+    max-width: 72% !important;
+}
+
+/* Responsive adjustments */
+@media (min-width: 992px) {
+    .user-message .message-content {
+        max-width: 68% !important;
+    }
+    .ai-message .message-content,
+    .partner-message .message-content {
+        max-width: 72% !important;
+    }
+}
+
+@media (min-width: 576px) and (max-width: 991.98px) {
+    .user-message .message-content {
+        max-width: 78% !important;
+    }
+    .ai-message .message-content,
+    .partner-message .message-content {
+        max-width: 78% !important;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .user-message .message-content {
+        max-width: 85% !important;
+    }
+    .ai-message .message-content,
+    .partner-message .message-content {
+        max-width: 85% !important;
+    }
+}
+
+/* Bubbles text core styles */
+.viettel-bubble {
+    display: inline-block !important;
+    width: auto !important;
+    max-width: 100% !important;
+    padding: 12px 16px !important;
+    font-size: 15px !important;
+    line-height: 1.7 !important;
+    word-break: break-word !important;
+    white-space: pre-wrap !important;
+    text-align: left !important;
+    transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+.user-message .viettel-bubble {
+    background: linear-gradient(135deg, #E60012, #C40017) !important;
+    color: #FFFFFF !important;
+    border-radius: 18px 18px 6px 18px !important;
+    box-shadow: 0 8px 20px rgba(230, 0, 18, 0.18) !important;
+    align-self: flex-end !important;
+}
+
+.ai-message .viettel-bubble,
+.partner-message .viettel-bubble {
+    background: #FFFFFF !important;
+    border: 1px solid #E6E8EC !important;
+    border-radius: 18px 18px 18px 6px !important;
+    box-shadow: 0 8px 24px rgba(0,0,0,.05) !important;
+    color: #222222 !important;
+    align-self: flex-start !important;
+}
+
+/* Hover effects */
+.user-message .viettel-bubble:hover,
+.ai-message .viettel-bubble:hover,
+.partner-message .viettel-bubble:hover {
+    transform: translateY(-2px) !important;
+}
+
+.user-message .viettel-bubble:hover {
+    box-shadow: 0 10px 25px rgba(230, 0, 18, 0.25) !important;
+}
+
+.ai-message .viettel-bubble:hover,
+.partner-message .viettel-bubble:hover {
+    box-shadow: 0 10px 28px rgba(0,0,0,.08) !important;
+}
+
+/* Metainfo / time alignment */
+.user-message .time {
+    font-size: 12px !important;
+    color: #999999 !important;
+    margin-top: 4px !important;
+    text-align: right !important;
+    padding-right: 4px !important;
+}
+
+.ai-message .time,
+.partner-message .time {
+    font-size: 12px !important;
+    color: #999999 !important;
+    margin-top: 4px !important;
+    text-align: left !important;
+    padding-left: 4px !important;
+}
+
+/* Avatars styling */
+.user-message .avatar {
+    width: 34px !important;
+    height: 34px !important;
+    border-radius: 50% !important;
+    background: #E60012 !important;
+    color: #FFFFFF !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    font-weight: 700 !important;
+    margin-left: 10px !important;
+    flex-shrink: 0 !important;
+}
+
+.ai-message .robot-avatar,
+.partner-message .partner-avatar {
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 50% !important;
+    background: #FFFFFF !important;
+    border: 2px solid #E60012 !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    margin-right: 10px !important;
+    flex-shrink: 0 !important;
+}
+
+.ai-message .robot-avatar i {
+    color: #E60012 !important;
+    font-size: 1.15rem !important;
+}
+
+.partner-message .partner-avatar {
+    color: #E60012 !important;
+    font-weight: 700 !important;
+    font-size: 1.1rem !important;
+}
+
+/* Scrollbar customizations */
+.chat-message-list-area::-webkit-scrollbar,
+.messages-scrollable::-webkit-scrollbar,
+.chat-conversations-list::-webkit-scrollbar {
+    width: 6px !important;
+}
+
+.chat-message-list-area::-webkit-scrollbar-track,
+.messages-scrollable::-webkit-scrollbar-track,
+.chat-conversations-list::-webkit-scrollbar-track {
+    background: transparent !important;
+}
+
+.chat-message-list-area::-webkit-scrollbar-thumb,
+.messages-scrollable::-webkit-scrollbar-thumb,
+.chat-conversations-list::-webkit-scrollbar-thumb {
+    background: #D6D6D6 !important;
+    border-radius: 3px !important;
+}
+
+.chat-message-list-area::-webkit-scrollbar-thumb:hover,
+.messages-scrollable::-webkit-scrollbar-thumb:hover,
+.chat-conversations-list::-webkit-scrollbar-thumb:hover {
+    background: #B9B9B9 !important;
+}
+
+/* Input Capsule Layout & Styles */
+.chatgpt-input-capsule {
+    display: flex !important;
+    align-items: center !important;
+    background-color: #FFF !important;
+    border: 1px solid #E2E5EA !important;
+    border-radius: 30px !important;
+    height: 60px !important;
+    padding: 6px 6px 6px 16px !important;
+    gap: 8px !important;
+    box-shadow: 0 5px 20px rgba(0,0,0,.05) !important;
+    transition: all 0.25s ease !important;
+}
+
+.chatgpt-input-capsule:focus-within {
+    border-color: #E60012 !important;
+    box-shadow: 0 5px 25px rgba(230, 0, 18, 0.1) !important;
+}
+
+.capsule-icon-btn {
+    background: none !important;
+    border: none !important;
+    color: #8892A0 !important;
+    width: 36px !important;
+    height: 36px !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    font-size: 1.15rem !important;
+    transition: all 0.2s ease !important;
+}
+
+.capsule-icon-btn:hover {
+    color: #E60012 !important;
+    background-color: rgba(230, 0, 18, 0.05) !important;
+}
+
+.stream-textarea {
+    flex-grow: 1 !important;
+    border: none !important;
+    background: transparent !important;
+    padding: 8px 0 !important;
+    resize: none !important;
+    font-size: 15px !important;
+    outline: none !important;
+    color: #222 !important;
+    line-height: 1.4 !important;
+    font-family: 'Inter', 'Segoe UI', 'Roboto', sans-serif !important;
+    box-shadow: none !important;
+    height: auto !important;
+    max-height: 40px !important;
+}
+
+.stream-send-btn {
+    width: 48px !important;
+    height: 48px !important;
+    border-radius: 50% !important;
+    border: none !important;
+    background: linear-gradient(135deg, #E60012 0%, #C7001E 100%) !important;
+    color: #FFFFFF !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    font-size: 1.1rem !important;
+    box-shadow: 0 4px 10px rgba(230, 0, 18, 0.2) !important;
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease !important;
+    flex-shrink: 0 !important;
+}
+
+.stream-send-btn:hover {
+    transform: scale(1.08) !important;
+    box-shadow: 0 6px 15px rgba(230, 0, 18, 0.3) !important;
+}
+
+/* ==========================================================================
+   OPTIMIZED CHAT BUBBLES - BY ANTIGRAVITY (SENIOR FRONTEND DEVELOPER)
+   ========================================================================== */
+
+/* Outgoing messages (User / Sent) */
+.user-message {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: flex-end !important;
+    align-items: flex-start !important;
+    gap: 10px !important;
+    margin-bottom: 16px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
+.user-message .message-content {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-end !important;
+    max-width: 75% !important;
+    width: auto !important;
+    flex: 0 1 auto !important;
+}
+
+.user-message .viettel-bubble,
+.user-message .msg-bubble {
+    display: inline-block !important;
+    width: auto !important;
+    height: auto !important;
+    min-width: 40px !important;
+    max-width: 100% !important;
+    background: linear-gradient(135deg, #e11b1e, #b91c1c) !important; /* Viettel Red Gradient */
+    color: #FFFFFF !important;
+    padding: 10px 16px !important;
+    border-radius: 18px 18px 4px 18px !important;
+    box-shadow: 0 4px 15px rgba(225, 27, 30, 0.2) !important;
+    font-size: 14px !important;
+    line-height: 1.5 !important;
+    word-break: break-word !important;
+    white-space: pre-wrap !important;
+    border: none !important;
+    transition: all 0.2s ease !important;
+}
+
+.user-message .viettel-bubble:hover,
+.user-message .msg-bubble:hover {
+    transform: translateY(-1px) !important;
+    box-shadow: 0 6px 18px rgba(225, 27, 30, 0.3) !important;
+}
+
+/* Incoming messages (AI / Partner / Received) */
+.ai-message,
+.partner-message {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: flex-start !important;
+    align-items: flex-start !important;
+    gap: 10px !important;
+    margin-bottom: 16px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
+.ai-message .message-content,
+.partner-message .message-content {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    max-width: 75% !important;
+    width: auto !important;
+    flex: 0 1 auto !important;
+}
+
+.ai-message .viettel-bubble,
+.ai-message .msg-bubble,
+.partner-message .viettel-bubble,
+.partner-message .msg-bubble {
+    display: inline-block !important;
+    width: auto !important;
+    height: auto !important;
+    min-width: 40px !important;
+    max-width: 100% !important;
+    background-color: #FFFFFF !important;
+    color: #1F2937 !important;
+    padding: 10px 16px !important;
+    border-radius: 18px 18px 18px 4px !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
+    border: 1px solid #ECECEC !important;
+    font-size: 14px !important;
+    line-height: 1.5 !important;
+    word-break: break-word !important;
+    white-space: pre-wrap !important;
+    transition: all 0.2s ease !important;
+}
+
+/* Metadata & Timestamp styling */
+.time {
+    font-size: 11px !important;
+    color: #9CA3AF !important;
+    margin-top: 4px !important;
+    display: block !important;
+    width: 100% !important;
+}
+
+.user-message .time {
+    text-align: right !important;
+}
+
+.ai-message .time,
+.partner-message .time {
+    text-align: left !important;
+}
+
+/* Avatar styling */
+.avatar {
+    width: 32px !important;
+    height: 32px !important;
+    min-width: 32px !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 14px !important;
+    background-color: #F1F5F9 !important;
+    color: #475569 !important;
+    border: 1px solid #CBD5E1 !important;
+    flex-shrink: 0 !important;
+}
+

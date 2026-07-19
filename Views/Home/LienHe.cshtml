@@ -1,0 +1,245 @@
+@{
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+    ViewData["Title"] = "Liên hệ hỗ trợ - TechSupport Viettel";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/assets/css/contact.css" />
+}
+
+<!-- Main Content -->
+<main class="py-5" style="background-color: var(--light-gray);">
+    <div class="container">
+        <!-- Bootstrap 2 Cột Layout -->
+        <div class="row g-4 align-items-stretch">
+
+            <!-- 2. CONTACT INFORMATION SECTION (Left Column) -->
+            <div class="col-lg-5 col-12">
+                <div class="contact-main-card">
+                    <h2 class="contact-card-title">Thông Tin Liên Hệ</h2>
+
+                    <ul class="contact-info-list">
+
+                        <!-- Address -->
+                        <li class="contact-info-item">
+                            <div class="contact-info-icon">
+                                <i class="fa-solid fa-map-marker"></i>
+                            </div>
+                            <div class="contact-info-details">
+                                <span class="contact-info-label">Địa chỉ</span>
+                                <span class="contact-info-value">
+                                    210 Đường Trần Phú, Cái Khế, Ninh Kiều, Cần Thơ
+                                </span>
+                            </div>
+                        </li>
+
+                        <!-- Hotline -->
+                        <li class="contact-info-item">
+                            <div class="contact-info-icon">
+                                <i class="fa-solid fa-phone-volume"></i>
+                            </div>
+                            <div class="contact-info-details">
+                                <span class="contact-info-label"> Hotline</span>
+                                <span class="contact-info-value">
+                                    <a href="tel:18008119">1800 8119</a>
+                                </span>
+                            </div>
+                        </li>
+
+                        <!-- Email -->
+                        <li class="contact-info-item">
+                            <div class="contact-info-icon">
+                                <i class="fa-solid fa-envelope"></i>
+                            </div>
+                            <div class="contact-info-details">
+                                <span class="contact-info-label"> Email</span>
+                                <span class="contact-info-value">
+                                    <a href="mailto:support@viettel.com.vn">support@viettel.com.vn</a>
+                                </span>
+                            </div>
+                        </li>
+
+                        <!-- Work Hours -->
+                        <li class="contact-info-item">
+                            <div class="contact-info-icon">
+                                <i class="fa-solid fa-clock"></i>
+                            </div>
+                            <div class="contact-info-details">
+                                <span class="contact-info-label"> Giờ làm việc</span>
+                                <span class="contact-info-value">
+                                    07:30 - 17:30<br>
+                                    Thứ 2 - Chủ Nhật
+                                </span>
+                            </div>
+                        </li>
+
+                        <!-- Website -->
+                        <li class="contact-info-item">
+                            <div class="contact-info-icon">
+                                <i class="bi bi-globe"></i>
+                            </div>
+                            <div class="contact-info-details">
+                                <span class="contact-info-label"> Website</span>
+                                <span class="contact-info-value">
+                                    <a href="https://www.viettel.com.vn"
+                                        target="_blank">www.techsupport-viettel.vn</a>
+                                </span>
+                            </div>
+                        </li>
+
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 3. CONTACT FORM SECTION (Right Column) -->
+            <div class="col-lg-7 col-12">
+                <div class="contact-main-card">
+                    <h2 class="contact-card-title">Gửi Tin Nhắn Cho Chúng Tôi</h2>
+
+                    <form id="contactForm" class="needs-validation" novalidate>
+                        <div class="row g-3">
+
+                            <!-- Name -->
+                            <div class="col-md-6 col-12">
+                                <label for="contactName" class="form-label form-label-custom">Họ và tên *</label>
+                                <input type="text" class="form-control form-control-custom"
+                                    id="contactName" placeholder="Nhập họ và tên..." required>
+                                <div class="invalid-feedback">Vui lòng nhập họ và tên của bạn.</div>
+                            </div>
+
+                            <!-- Phone -->
+                            <div class="col-md-6 col-12">
+                                <label for="contactPhone" class="form-label form-label-custom">Số điện thoại *</label>
+                                <input type="tel" class="form-control form-control-custom"
+                                    id="contactPhone" placeholder="Nhập số điện thoại..." required>
+                                <div class="invalid-feedback">Vui lòng nhập số điện thoại để chúng tôi liên hệ.</div>
+                            </div>
+
+                            <!-- Email -->
+                            <div class="col-12">
+                                <label for="contactEmail" class="form-label form-label-custom">Email</label>
+                                <input type="email" class="form-control form-control-custom"
+                                    id="contactEmail" placeholder="Nhập địa chỉ email (không bắt buộc)...">
+                                <div class="invalid-feedback">Vui lòng nhập đúng định dạng email.</div>
+                            </div>
+
+                            <!-- Subject -->
+                            <div class="col-12">
+                                <label for="contactSubject" class="form-label form-label-custom">Chủ đề</label>
+                                <input type="text" class="form-control form-control-custom"
+                                    id="contactSubject" placeholder="Nhập chủ đề cần liên hệ...">
+                            </div>
+
+                            <!-- Message -->
+                            <div class="col-12">
+                                <label for="contactMessage" class="form-label form-label-custom">Nội dung liên hệ *</label>
+                                <textarea class="form-control form-control-custom" id="contactMessage"
+                                    placeholder="Nhập nội dung chi tiết yêu cầu hỗ trợ của bạn..." required></textarea>
+                                <div class="invalid-feedback">Vui lòng nhập nội dung liên hệ.</div>
+                            </div>
+
+                            <!-- Submit Button -->
+                            <div class="col-12 mt-4">
+                                <button type="submit" class="btn btn-form-submit">
+                                    <i class="fa-solid fa-paper-plane"></i> Gửi Liên Hệ
+                                </button>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- 4. GOOGLE MAP SECTION -->
+        <section class="map-section">
+            <div class="text-center mb-4">
+                <h2 class="fw-bold text-dark" style="font-size: 1.8rem; letter-spacing: -0.5px;">Vị Trí Văn Phòng</h2>
+                <p class="text-muted">Tìm đường đến trung tâm hỗ trợ TechSupport Viettel.</p>
+            </div>
+
+            <div class="map-wrapper">
+                <iframe class="map-iframe"
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3928.6038576030796!2d105.78344477479433!3d10.04951099005845!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31a062abc4ee703d%3A0x1fa7659f181fc58d!2zMjEwIMSQLiBUcuG6p24gUGjDuiwgQ8OhaSBLaOG6vywgQ-G6p24gVGjGoSA5MDAwMDAsIFZp4buHdCBOYW0!5e0!3m2!1svi!2s!4v1780919470460!5m2!1svi!2s"
+                    allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+                </iframe>
+            </div>
+        </section>
+
+        <!-- 6. CTA SECTION -->
+        <section class="contact-cta-section">
+            <h2 class="contact-cta-title">Bạn Cần Hỗ Trợ Kỹ Thuật Ngay?</h2>
+            <p class="contact-cta-desc">
+                Tạo phiếu hỗ trợ hoặc liên hệ kỹ thuật viên của chúng tôi ngay hôm nay.
+            </p>
+
+            <div class="contact-cta-buttons">
+                <a asp-controller="Ticket" asp-action="TaoPhieu" class="btn-cta-white">
+                    <i class="fa-solid fa-plus-circle me-1"></i> Tạo Phiếu Hỗ Trợ
+                </a>
+                <a href="tel:18008119" class="btn-cta-outline">
+                    <i class="fa-solid fa-phone me-1"></i> Liên Hệ Ngay
+                </a>
+            </div>
+        </section>
+
+    </div>
+</main>
+
+<!-- 5. SUPPORT FEATURES SECTION -->
+<section class="features-section">
+    <div class="container">
+        <div class="row g-4">
+
+            <!-- Card 1 -->
+            <div class="col-lg-3 col-md-6 col-12">
+                <div class="feature-item-card">
+                    <div class="feature-item-icon">
+                        <i class="fa-solid fa-headset"></i>
+                    </div>
+                    <h4>Hỗ trợ 24/7</h4>
+                    <p>Luôn trực tuyến tiếp nhận sự cố mọi lúc, mọi nơi, kể cả ngày Lễ Tết.</p>
+                </div>
+            </div>
+
+            <!-- Card 2 -->
+            <div class="col-lg-3 col-md-6 col-12">
+                <div class="feature-item-card">
+                    <div class="feature-item-icon">
+                        <i class="fa-solid fa-user-shield"></i>
+                    </div>
+                    <h4>Kỹ thuật chuyên nghiệp</h4>
+                    <p>Đội ngũ kỹ thuật tay nghề cao, được đào tạo bài bản và chuyên sâu.</p>
+                </div>
+            </div>
+
+            <!-- Card 3 -->
+            <div class="col-lg-3 col-md-6 col-12">
+                <div class="feature-item-card">
+                    <div class="feature-item-icon">
+                        <i class="bi bi-bolt"></i>
+                    </div>
+                    <h4>Tiếp nhận nhanh chóng</h4>
+                    <p>Cam kết chỉ số phản hồi SLA ngắn nhất để khắc phục sự cố tức thời.</p>
+                </div>
+            </div>
+
+            <!-- Card 4 -->
+            <div class="col-lg-3 col-md-6 col-12">
+                <div class="feature-item-card">
+                    <div class="feature-item-icon">
+                        <i class="bi bi-heart-circle-check"></i>
+                    </div>
+                    <h4>Cam kết hài lòng</h4>
+                    <p>Quy trình rõ ràng, minh bạch, đảm bảo khách hàng hoàn toàn hài lòng.</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script src="~/assets/js/contact.js"></script>
+}

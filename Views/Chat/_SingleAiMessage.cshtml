@@ -1,0 +1,213 @@
+@model SupportTicketSysterm.Models.MessageViewModel
+@*
+    _SingleAiMessage.cshtml
+    Renders a single AI response bubble for optimistic UI append.
+    Used by ChatAI_GetAiResponse endpoint to return only the new AI message
+    instead of the entire chat history.
+*@
+
+<div class="chat-message-item msg-row incoming received ai-message">
+    <div class="message-avatar msg-avatar robot-avatar">
+        <i class="bi bi-robot"></i>
+    </div>
+    <div class="message-content msg-bubble-wrapper">
+        <div class="viettel-bubble msg-bubble">
+            @if (!string.IsNullOrEmpty(Model.NoiDung))
+            {
+                <div class="message-text">@FormatMessageContent(Model.NoiDung)</div>
+            }
+
+            @if (Model.Files != null && Model.Files.Any())
+            {
+                <div class="message-files-grid mt-2" style="display: grid; gap: 8px;">
+                    @foreach (var file in Model.Files)
+                    {
+                        var isImg = file.LoaiFile.StartsWith("image/") || file.TenFile.EndsWith(".jpg") || file.TenFile.EndsWith(".png") || file.TenFile.EndsWith(".jpeg");
+                        <div class="message-file-card border rounded p-2 bg-white d-flex align-items-center gap-2">
+                            <div class="file-icon-wrap @(isImg ? "image" : "document")">
+                                @if (isImg)
+                                {
+                                    <i class="bi bi-file-image-fill text-danger fs-4"></i>
+                                }
+                                else
+                                {
+                                    <i class="bi bi-file-earmark-zip-fill text-primary fs-4"></i>
+                                }
+                            </div>
+                            <div class="file-info text-truncate">
+                                <div class="file-name text-truncate fw-semibold text-dark" title="@file.TenFile" style="font-size:0.82rem;">@file.TenFile</div>
+                                <a href="@file.DuongDan" class="file-dl-link text-decoration-none" download="@file.TenFile" style="font-size:0.75rem; font-weight:700;">
+                                    Tải về <i class="bi bi-download"></i>
+                                </a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+        <div class="time">
+            @Model.ThoiGian.ToString("HH:mm")
+        </div>
+    </div>
+</div>
+
+@functions {
+    public Microsoft.AspNetCore.Html.IHtmlContent FormatMessageContent(string? content)
+    {
+        if (string.IsNullOrEmpty(content))
+        {
+            return Microsoft.AspNetCore.Html.HtmlString.Empty;
+        }
+
+        // 1. HTML encode first to prevent XSS
+        var encoded = System.Net.WebUtility.HtmlEncode(content);
+
+        // 2. Parse custom action ticket card tag: [XEM_CHI_TIET_PHIEU|IdPhieu=X|MaPhieu=Y]
+        var ticketMarker = "[XEM_CHI_TIET_PHIEU|";
+        if (encoded.Contains(ticketMarker))
+        {
+            int tIndex = encoded.IndexOf(ticketMarker);
+            int eIndex = encoded.IndexOf("]", tIndex);
+            if (eIndex > tIndex)
+            {
+                var fullTag = encoded.Substring(tIndex, eIndex - tIndex + 1);
+                var inner = fullTag.Replace("[XEM_CHI_TIET_PHIEU|", "").Replace("]", "");
+                var tokens = inner.Split('|');
+                
+                string idPhieu = "";
+                string maPhieu = "";
+                foreach (var token in tokens)
+                {
+                    var kv = token.Split('=');
+                    if (kv.Length == 2)
+                    {
+                        if (kv[0].Trim() == "IdPhieu") idPhieu = kv[1].Trim();
+                        else if (kv[0].Trim() == "MaPhieu") maPhieu = kv[1].Trim();
+                    }
+                }
+
+                var cardHtml = $@"
+<div class='ticket-success-card border rounded-3 p-3 mt-3 bg-white shadow-sm' style='border-left: 4px solid #D71920 !important;'>
+    <div class='d-flex align-items-center mb-2'>
+        <i class='bi bi-patch-check-fill text-success fs-4 me-2'></i>
+        <h6 class='m-0 fw-bold text-dark' style='font-size:0.9rem;'>Tạo Phiếu Thành Công</h6>
+    </div>
+    <p class='small text-muted mb-2' style='font-size:0.75rem;'>Hệ thống đã tự động tạo phiếu hỗ trợ kỹ thuật và phân công kỹ sư xử lý.</p>
+    <div class='mb-2 small bg-light p-2 rounded' style='font-size:0.78rem;'>
+        <div class='d-flex justify-content-between mb-1'>
+            <span class='text-secondary'>Mã Phiếu:</span>
+            <strong class='text-dark'>{maPhieu}</strong>
+        </div>
+        <div class='d-flex justify-content-between'>
+            <span class='text-secondary'>Trạng thái:</span>
+            <span class='badge bg-warning-subtle text-warning fw-bold'>Chờ tiếp nhận</span>
+        </div>
+    </div>
+    <a href='/Ticket/ChiTietPhieu/{idPhieu}' class='btn btn-danger btn-sm rounded-pill w-100 fw-bold text-white text-decoration-none d-block text-center py-2' style='background-color:#D71920; border-color:#D71920; font-size:0.8rem;' target='_blank'>
+        <i class='bi bi-file-earmark-text-fill me-1'></i> Xem Chi Tiết Phiếu
+    </a>
+</div>";
+                encoded = encoded.Replace(fullTag, cardHtml);
+            }
+        }
+
+        // 2.5 Parse redirect to create ticket tag
+        var redirectMarker = "[REDIRECT:CREATE_TICKET|";
+        if (encoded.Contains(redirectMarker))
+        {
+            int rIndex = encoded.IndexOf(redirectMarker);
+            int erIndex = encoded.IndexOf("]", rIndex);
+            if (erIndex > rIndex)
+            {
+                var fullTag = encoded.Substring(rIndex, erIndex - rIndex + 1);
+                var inner = fullTag.Replace("[REDIRECT:CREATE_TICKET|", "").Replace("]", "");
+                var tokens = inner.Split('|');
+                
+                string title = "";
+                string contentText = "";
+                string categoryId = "";
+                string serviceId = "";
+                string priority = "";
+                foreach (var token in tokens)
+                {
+                    var kv = token.Split('=');
+                    if (kv.Length >= 2)
+                    {
+                        var key = kv[0].Trim();
+                        var val = string.Join("=", kv.Skip(1)).Trim();
+                        if (key == "Title") title = val;
+                        else if (key == "Content") contentText = val;
+                        else if (key == "CategoryId") categoryId = val;
+                        else if (key == "ServiceId") serviceId = val;
+                        else if (key == "Priority") priority = val;
+                    }
+                }
+
+                string displayTitle = System.Net.WebUtility.HtmlDecode(title);
+                string displayContent = System.Net.WebUtility.HtmlDecode(contentText);
+                string urlEncodedTitle = Uri.EscapeDataString(displayTitle);
+                string urlEncodedContent = Uri.EscapeDataString(displayContent);
+
+                bool isUserLoggedIn = (ViewData["CurrentUserId"] != null && Convert.ToInt32(ViewData["CurrentUserId"]) > 0);
+
+                string cardHtml = "";
+                if (isUserLoggedIn)
+                {
+                    cardHtml = $@"
+<div class='ticket-creation-card d-block w-100 border rounded-3 p-3 mt-3 bg-white shadow-sm' style='border-left: 4px solid #D71920 !important; box-sizing: border-box; clear: both;'>
+    <div class='d-flex align-items-center mb-2'>
+        <i class='bi bi-info-circle-fill text-danger fs-4 me-2'></i>
+        <h6 class='m-0 fw-bold text-dark' style='font-size:0.9rem;'>Gợi Ý Tạo Phiếu Hỗ Trợ</h6>
+    </div>
+    <p class='small text-muted mb-2' style='font-size:0.75rem;'>Dựa trên sự cố của bạn, tôi đề xuất tạo phiếu hỗ trợ kỹ thuật qua nhà sau đây:</p>
+    <div class='mb-3 small bg-light p-2 rounded' style='font-size:0.78rem;'>
+        <div class='mb-1'>
+            <span class='text-secondary'>Tiêu đề:</span> <strong class='text-dark'>{displayTitle}</strong>
+        </div>
+        <div>
+            <span class='text-secondary'>Mô tả:</span> <span class='text-dark'>{displayContent}</span>
+        </div>
+    </div>
+    <a href='/Ticket/TaoPhieu?title={urlEncodedTitle}&content={urlEncodedContent}&categoryId={categoryId}&serviceId={serviceId}&priority={priority}' class='btn btn-danger btn-sm rounded-pill w-100 fw-bold text-white text-decoration-none d-block text-center py-2' style='background-color:#D71920; border-color:#D71920; font-size:0.8rem;'>
+        <i class='bi bi-file-earmark-plus-fill me-1'></i> Tạo Phiếu Hỗ Trợ
+    </a>
+</div>";
+                }
+                else
+                {
+                    cardHtml = $@"
+<div class='ticket-creation-card d-block w-100 border rounded-3 p-3 mt-3 bg-white shadow-sm' style='border-left: 4px solid #D71920 !important; box-sizing: border-box; clear: both;'>
+    <div class='d-flex align-items-center mb-2'>
+        <i class='bi bi-info-circle-fill text-danger fs-4 me-2'></i>
+        <h6 class='m-0 fw-bold text-dark' style='font-size:0.9rem;'>Gợi Ý Tạo Phiếu Hỗ Trợ</h6>
+    </div>
+    <p class='small text-muted mb-2' style='font-size:0.75rem;'>Dựa trên sự cố của bạn, tôi đề xuất tạo phiếu hỗ trợ kỹ thuật. Vui lòng đăng nhập để tiếp tục:</p>
+    <div class='mb-3 small bg-light p-2 rounded' style='font-size:0.78rem;'>
+        <div class='mb-1'>
+            <span class='text-secondary'>Tiêu đề:</span> <strong class='text-dark'>{displayTitle}</strong>
+        </div>
+        <div>
+            <span class='text-secondary'>Mô tả:</span> <span class='text-dark'>{displayContent}</span>
+        </div>
+    </div>
+    <a href='/Auth/DangNhap?returnUrl=/Ticket/TaoPhieu?title={urlEncodedTitle}%26content={urlEncodedContent}%26categoryId={categoryId}%26serviceId={serviceId}%26priority={priority}' class='btn btn-danger btn-sm rounded-pill w-100 fw-bold text-white text-decoration-none d-block text-center py-2' style='background-color:#D71920; border-color:#D71920; font-size:0.8rem;'>
+        <i class='bi bi-shield-lock-fill me-1'></i> Đăng Nhập Để Tạo Phiếu
+    </a>
+</div>";
+                }
+                encoded = encoded.Replace(fullTag, cardHtml);
+            }
+        }
+
+        // 3. Parse bold Markdown: **text** -> <strong>text</strong>
+        encoded = System.Text.RegularExpressions.Regex.Replace(encoded, @"\*\*(.*?)\*\*", "<strong>$1</strong>");
+
+        // 4. Parse Markdown links: [Text](URL) -> <a href="URL" target="_blank">Text</a>
+        encoded = System.Text.RegularExpressions.Regex.Replace(encoded, @"\[(.*?)\]\((.*?)\)", "<a href=\"$2\" target=\"_blank\" class=\"fw-bold text-danger text-decoration-underline\">$1</a>");
+
+        // 5. Convert newlines to breaks
+        encoded = encoded.Replace("\n", "<br />");
+
+        return new Microsoft.AspNetCore.Html.HtmlString(encoded);
+    }
+}

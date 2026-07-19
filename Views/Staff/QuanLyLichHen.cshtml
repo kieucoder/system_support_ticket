@@ -1,0 +1,2014 @@
+@model SupportTicketSysterm.Models.LichHenCalendarViewModel
+@{
+    ViewData["Title"] = "Quản Lý Lịch Hẹn Kỹ Thuật";
+    Layout = null; // Standalone page with its own header/sidebar
+    var today = DateOnly.FromDateTime(DateTime.Today);
+    var chiTiet = Model.LichHenChiTiet;
+
+    string ClassTrangThai(string? tt) => tt switch {
+        "Chờ xác nhận"    => "waiting",
+        "Đã xác nhận"     => "confirmed",
+        "Đang di chuyển"  => "on_the_way",
+        "Đang thực hiện"  => "in_progress",
+        "Hoàn thành"      => "completed",
+        "Đã hủy"          => "cancelled",
+        _                  => "waiting"
+    };
+
+    string ClassPriority(int? p) => p switch {
+        4 => "emergency",
+        3 => "high",
+        2 => "medium",
+        _ => "low"
+    };
+}
+<!DOCTYPE html>
+<html lang="vi" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"] - TechSupport Viettel</title>
+    <meta name="description" content="Hệ thống điều phối, quản lý lịch hẹn kỹ thuật Viettel.">
+    <meta name="robots" content="noindex, nofollow">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/assets/css/staff/dashboard.css">
+    <link rel="stylesheet" href="~/assets/css/staff/admin-appointments.css">
+
+    <style>
+        :root {
+            --vt-primary: #EE0033;
+            --vt-primary-hover: #C30022;
+            --vt-primary-rgb: 238, 0, 51;
+            --vt-dark-blue: #102A43;
+            --vt-bg-glass: rgba(255, 255, 255, 0.85);
+            --vt-border-glass: rgba(226, 232, 240, 0.8);
+            --vt-shadow: 0 10px 30px rgba(0, 0, 0, 0.03), 0 1px 3px rgba(0, 0, 0, 0.02);
+            --vt-shadow-hover: 0 20px 40px rgba(238, 0, 51, 0.08);
+            --radius-18: 18px;
+            --radius-12: 12px;
+            --radius-8: 8px;
+            --font-inter: 'Inter', sans-serif;
+            
+            /* Status colors */
+            --status-waiting: #F59E0B; /* Orange */
+            --status-confirmed: #10B981; /* Green */
+            --status-on-the-way: #3B82F6; /* Blue */
+            --status-in-progress: #8B5CF6; /* Purple */
+            --status-completed: #047857; /* Dark Green */
+            --status-cancelled: #EF4444; /* Red */
+        }
+
+        [data-bs-theme="dark"] {
+            --vt-bg-glass: rgba(15, 23, 42, 0.8);
+            --vt-border-glass: rgba(51, 65, 85, 0.8);
+            --vt-dark-blue: #F8FAFC;
+            --vt-shadow: 0 10px 30px rgba(0, 0, 0, 0.3), 0 1px 3px rgba(0, 0, 0, 0.1);
+            --vt-shadow-hover: 0 20px 40px rgba(238, 0, 51, 0.2);
+            
+            --bs-body-bg: #090d16;
+            --bs-body-color: #cbd5e1;
+            --bs-light-bg: #1e293b;
+            --bs-border-color: #334155;
+        }
+
+        body {
+            font-family: var(--font-inter);
+            background-color: #f8fafc;
+            color: #334155;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        [data-bs-theme="dark"] body {
+            background-color: #0b0f19;
+            color: #cbd5e1;
+        }
+
+        /* Glassmorphism custom layouts */
+        .glass-panel {
+            background: var(--vt-bg-glass);
+            border: 1px solid var(--vt-border-glass);
+            backdrop-filter: blur(12px);
+            box-shadow: var(--vt-shadow);
+            border-radius: var(--radius-18);
+            transition: all 0.3s ease;
+        }
+
+        /* Stats KPI card */
+        .kpi-card {
+            background: var(--vt-bg-glass);
+            border: 1px solid var(--vt-border-glass);
+            border-radius: var(--radius-12);
+            padding: 16px 20px;
+            height: 98px;
+            box-shadow: var(--vt-shadow);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            backdrop-filter: blur(10px);
+        }
+        .kpi-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--vt-shadow-hover);
+        }
+        .kpi-label {
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #64748b;
+            display: block;
+            margin-bottom: 4px;
+        }
+        .kpi-num {
+            font-size: 1.7rem;
+            font-weight: 800;
+            margin: 0;
+            color: var(--vt-dark-blue);
+            line-height: 1;
+        }
+        .kpi-icon {
+            font-size: 2rem;
+            opacity: 0.15;
+            transition: all 0.3s ease;
+            color: var(--vt-dark-blue);
+        }
+        .kpi-card:hover .kpi-icon {
+            opacity: 0.8;
+            transform: scale(1.1);
+        }
+
+        /* Toolbar filtering styles */
+        .toolbar-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            background: var(--vt-bg-glass);
+            border: 1px solid var(--vt-border-glass);
+            border-radius: var(--radius-12);
+            padding: 12px 16px;
+            box-shadow: var(--vt-shadow);
+            backdrop-filter: blur(10px);
+            overflow-x: auto;
+            white-space: nowrap;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        .toolbar-container::-webkit-scrollbar {
+            display: none;
+        }
+        .toolbar-left-actions, .toolbar-right-filters {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+        .toolbar-left-actions button,
+        .toolbar-left-actions .view-switch-group,
+        .toolbar-right-filters select,
+        .toolbar-right-filters .filter-wrapper {
+            flex-shrink: 0;
+            white-space: nowrap;
+        }
+
+        /* Filter elements with icons */
+        .filter-wrapper {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+        }
+        .filter-icon {
+            position: absolute;
+            left: 12px;
+            color: #64748b;
+            font-size: 0.95rem;
+            pointer-events: none;
+            z-index: 5;
+            transition: color 0.2s ease;
+        }
+        [data-bs-theme="dark"] .filter-icon {
+            color: #94a3b8;
+        }
+        .filter-select {
+            padding-left: 36px !important;
+            height: 40px;
+            font-size: 0.88rem;
+            border-radius: 12px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border: 1px solid var(--vt-border-glass);
+            color: #334155;
+            transition: all 0.2s ease;
+        }
+        [data-bs-theme="dark"] .filter-select {
+            background-color: rgba(30, 41, 59, 0.8);
+            color: #f8fafc;
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+        .filter-select:focus {
+            border-color: var(--vt-primary);
+            box-shadow: 0 0 0 3px rgba(238, 0, 51, 0.15);
+        }
+        .filter-select:focus + .filter-icon {
+            color: var(--vt-primary);
+        }
+
+        /* View Switcher Segment Control */
+        .view-switch-group {
+            background-color: #f1f5f9;
+            padding: 3px;
+            border-radius: 12px;
+            border: 1px solid var(--vt-border-glass);
+            display: inline-flex;
+            gap: 2px;
+            height: 40px;
+            align-items: center;
+        }
+        [data-bs-theme="dark"] .view-switch-group {
+            background-color: #1e293b;
+        }
+        .btn-view-mode {
+            border: 0 !important;
+            background: transparent !important;
+            color: #475569 !important;
+            font-size: 0.85rem;
+            font-weight: 700;
+            padding: 6px 14px;
+            border-radius: 8px !important;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            height: 34px;
+        }
+        [data-bs-theme="dark"] .btn-view-mode {
+            color: #cbd5e1 !important;
+        }
+        .btn-view-mode:hover {
+            color: var(--vt-primary) !important;
+        }
+        .btn-view-mode.active {
+            background-color: var(--vt-primary) !important;
+            color: #ffffff !important;
+            box-shadow: 0 4px 10px rgba(238, 0, 51, 0.15);
+        }
+
+        #btnToday {
+            border: 1px solid var(--vt-border-glass) !important;
+            background-color: #ffffff !important;
+            color: #475569 !important;
+            height: 40px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.88rem;
+            font-weight: 700;
+            border-radius: 12px;
+            transition: all 0.2s ease;
+        }
+        [data-bs-theme="dark"] #btnToday {
+            background-color: #1e293b !important;
+            color: #cbd5e1 !important;
+            border-color: rgba(255, 255, 255, 0.1) !important;
+        }
+        #btnToday:hover {
+            border-color: var(--vt-primary) !important;
+            color: var(--vt-primary) !important;
+        }
+
+        /* Calendar grid layout styling */
+        .calendar-header-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            color: #64748b;
+            border-bottom: 1px solid var(--vt-border-glass);
+            margin-bottom: 12px;
+        }
+        .calendar-days-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+        }
+        .calendar-day-cell {
+            background-color: rgba(255, 255, 255, 0.4);
+            border: 1px solid var(--vt-border-glass);
+            border-radius: 12px;
+            padding: 8px;
+            min-height: 140px;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+        [data-bs-theme="dark"] .calendar-day-cell {
+            background-color: rgba(15, 23, 42, 0.3);
+        }
+        .calendar-day-cell:hover {
+            background-color: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+            border-color: #cbd5e1;
+        }
+        [data-bs-theme="dark"] .calendar-day-cell:hover {
+            background-color: rgba(30, 41, 59, 0.9);
+            border-color: #475569;
+        }
+        .calendar-day-cell.is-today {
+            background-color: rgba(238, 0, 51, 0.02);
+            border: 2px solid var(--vt-primary);
+        }
+        .calendar-day-cell.is-selected {
+            background-color: rgba(59, 130, 246, 0.02);
+            border: 2px solid #3b82f6;
+        }
+        .day-num-label {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #475569;
+        }
+        [data-bs-theme="dark"] .day-num-label {
+            color: #94a3b8;
+        }
+        .is-today .day-num-label {
+            color: var(--vt-primary);
+        }
+        
+        /* Day cell count badge: sleek gray pill */
+        .day-count-badge {
+            background-color: #f1f5f9;
+            color: #475569;
+            font-size: 0.68rem;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+            line-height: 1;
+        }
+        [data-bs-theme="dark"] .day-count-badge {
+            background-color: #1e293b;
+            color: #cbd5e1;
+            border-color: #334155;
+        }
+
+        /* Event Card rendering */
+        .calendar-event-card {
+            font-size: 0.74rem;
+            padding: 6px 8px;
+            border-radius: 8px;
+            border-left: 4px solid var(--status-waiting);
+            background-color: rgba(245, 158, 11, 0.08);
+            color: #334155;
+            margin-bottom: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+            transition: all 0.2s ease;
+        }
+        [data-bs-theme="dark"] .calendar-event-card {
+            color: #cbd5e1;
+        }
+        .calendar-event-card.waiting { border-left-color: var(--status-waiting); background-color: rgba(245, 158, 11, 0.08); }
+        .calendar-event-card.confirmed { border-left-color: var(--status-confirmed); background-color: rgba(16, 185, 129, 0.08); }
+        .calendar-event-card.on_the_way { border-left-color: var(--status-on-the-way); background-color: rgba(59, 130, 246, 0.08); }
+        .calendar-event-card.in_progress { border-left-color: var(--status-in-progress); background-color: rgba(139, 92, 246, 0.08); }
+        .calendar-event-card.completed { border-left-color: var(--status-completed); background-color: rgba(4, 120, 87, 0.08); }
+        .calendar-event-card.cancelled { border-left-color: var(--status-cancelled); background-color: rgba(239, 68, 68, 0.08); }
+        
+        .calendar-event-card:hover {
+            transform: translateX(2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+        }
+        .calendar-event-card.active {
+            box-shadow: 0 0 0 2px rgba(238, 0, 51, 0.15), var(--vt-shadow);
+            transform: scale(1.02);
+            border-top: 1px solid var(--vt-border-glass);
+            border-right: 1px solid var(--vt-border-glass);
+            border-bottom: 1px solid var(--vt-border-glass);
+        }
+        .event-time {
+            font-weight: 700;
+            font-size: 0.7rem;
+            color: #475569;
+        }
+        [data-bs-theme="dark"] .event-time {
+            color: #94a3b8;
+        }
+        .event-code {
+            font-weight: 700;
+            color: var(--vt-primary);
+        }
+        .event-service {
+            opacity: 0.85;
+            font-weight: 500;
+        }
+        .event-client {
+            font-weight: 600;
+        }
+        .event-status-pill {
+            font-size: 0.62rem;
+            font-weight: 800;
+            display: inline-block;
+            padding: 1px 4px;
+            border-radius: 4px;
+            margin-top: 4px;
+            text-transform: uppercase;
+        }
+        .waiting .event-status-pill { background-color: rgba(245, 158, 11, 0.15); color: var(--status-waiting); }
+        .confirmed .event-status-pill { background-color: rgba(16, 185, 129, 0.15); color: var(--status-confirmed); }
+        .on_the_way .event-status-pill { background-color: rgba(59, 130, 246, 0.15); color: var(--status-on-the-way); }
+        .in_progress .event-status-pill { background-color: rgba(139, 92, 246, 0.15); color: var(--status-in-progress); }
+        .completed .event-status-pill { background-color: rgba(4, 120, 87, 0.15); color: var(--status-completed); }
+        .cancelled .event-status-pill { background-color: rgba(239, 68, 68, 0.15); color: var(--status-cancelled); }
+
+        /* Legend items dot styling */
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 6px;
+        }
+        .legend-dot.waiting { background-color: var(--status-waiting); }
+        .legend-dot.confirmed { background-color: var(--status-confirmed); }
+        .legend-dot.on_the_way { background-color: var(--status-on-the-way); }
+        .legend-dot.in_progress { background-color: var(--status-in-progress); }
+        .legend-dot.completed { background-color: var(--status-completed); }
+        .legend-dot.cancelled { background-color: var(--status-cancelled); }
+
+        /* Horizontal timeline layout styling */
+        .timeline-horizontal-scroll {
+            overflow-x: auto;
+            padding: 12px 0;
+            scrollbar-width: thin;
+        }
+        .timeline-track {
+            display: flex;
+            min-width: 1050px;
+            justify-content: space-between;
+            position: relative;
+            padding-bottom: 12px;
+        }
+        .timeline-track::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 40px;
+            right: 40px;
+            height: 3px;
+            background-color: #cbd5e1;
+            z-index: 1;
+        }
+        [data-bs-theme="dark"] .timeline-track::before {
+            background-color: #334155;
+        }
+        .timeline-hour-point {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            cursor: pointer;
+        }
+        .hour-marker {
+            width: 32px;
+            height: 32px;
+            background: #ffffff;
+            border: 3px solid #cbd5e1;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 8px;
+            transition: all 0.3s ease;
+        }
+        [data-bs-theme="dark"] .hour-marker {
+            background: #1e293b;
+            border-color: #475569;
+        }
+        .timeline-hour-point.has-appt .hour-marker {
+            border-color: var(--vt-primary);
+            background-color: #ffeef0;
+            transform: scale(1.1);
+        }
+        [data-bs-theme="dark"] .timeline-hour-point.has-appt .hour-marker {
+            background-color: rgba(238, 0, 51, 0.2);
+        }
+        .marker-dot.filled {
+            color: var(--vt-primary);
+            font-size: 0.95rem;
+            line-height: 1;
+        }
+        .marker-dot.empty {
+            color: #94a3b8;
+            font-size: 0.95rem;
+            line-height: 1;
+        }
+        .hour-label {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #475569;
+        }
+        [data-bs-theme="dark"] .hour-label {
+            color: #94a3b8;
+        }
+        .hour-events {
+            margin-top: 8px;
+            width: 92%;
+            max-height: 90px;
+            overflow: hidden;
+        }
+        .hour-event-tag {
+            font-size: 0.7rem;
+            padding: 3px 6px;
+            border-radius: 6px;
+            margin-bottom: 2px;
+            text-align: left;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            border-left: 3px solid var(--status-waiting);
+            background-color: rgba(245, 158, 11, 0.08);
+            color: #334155;
+            transition: all 0.2s ease;
+        }
+        [data-bs-theme="dark"] .hour-event-tag {
+            color: #cbd5e1;
+        }
+        .hour-event-tag.waiting { border-left-color: var(--status-waiting); background-color: rgba(245, 158, 11, 0.08); }
+        .hour-event-tag.confirmed { border-left-color: var(--status-confirmed); background-color: rgba(16, 185, 129, 0.08); }
+        .hour-event-tag.on_the_way { border-left-color: var(--status-on-the-way); background-color: rgba(59, 130, 246, 0.08); }
+        .hour-event-tag.in_progress { border-left-color: var(--status-in-progress); background-color: rgba(139, 92, 246, 0.08); }
+        .hour-event-tag.completed { border-left-color: var(--status-completed); background-color: rgba(4, 120, 87, 0.08); }
+        .hour-event-tag.cancelled { border-left-color: var(--status-cancelled); background-color: rgba(239, 68, 68, 0.08); }
+        .hour-event-tag.empty {
+            border-left: 0;
+            background-color: transparent;
+            text-align: center;
+        }
+
+        /* Sidebar structure */
+        .sidebar-wrapper {
+            background: var(--vt-bg-glass);
+            border: 1px solid var(--vt-border-glass);
+        }
+        .sidebar-mini-card {
+            border-left: 4px solid var(--status-waiting);
+            background-color: #ffffff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+            transition: all 0.2s ease;
+            cursor: pointer;
+            margin-bottom: 6px;
+            border: 1px solid #e2e8f0;
+        }
+        [data-bs-theme="dark"] .sidebar-mini-card {
+            background-color: #1e293b;
+            border-color: #334155;
+        }
+        .sidebar-mini-card.waiting { border-left: 4px solid var(--status-waiting); }
+        .sidebar-mini-card.confirmed { border-left: 4px solid var(--status-confirmed); }
+        .sidebar-mini-card.on_the_way { border-left: 4px solid var(--status-on-the-way); }
+        .sidebar-mini-card.in_progress { border-left: 4px solid var(--status-in-progress); }
+        .sidebar-mini-card.completed { border-left: 4px solid var(--status-completed); }
+        .sidebar-mini-card.cancelled { border-left: 4px solid var(--status-cancelled); }
+        .sidebar-mini-card:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        }
+        .sidebar-mini-card.is-active {
+            background-color: #ffeef0;
+            border: 1px solid rgba(238, 0, 51, 0.3);
+            box-shadow: 0 4px 12px rgba(238, 0, 51, 0.08);
+        }
+        [data-bs-theme="dark"] .sidebar-mini-card.is-active {
+            background-color: rgba(238, 0, 51, 0.15);
+            border-color: rgba(238, 0, 51, 0.5);
+        }
+        .time-lbl {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: #475569;
+        }
+        [data-bs-theme="dark"] .time-lbl {
+            color: #94a3b8;
+        }
+        .status-badge {
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 1px 4px;
+            border-radius: 4px;
+        }
+        .sidebar-mini-card.waiting .status-badge { background-color: rgba(245, 158, 11, 0.15); color: var(--status-waiting); }
+        .sidebar-mini-card.confirmed .status-badge { background-color: rgba(16, 185, 129, 0.15); color: var(--status-confirmed); }
+        .sidebar-mini-card.on_the_way .status-badge { background-color: rgba(59, 130, 246, 0.15); color: var(--status-on-the-way); }
+        .sidebar-mini-card.in_progress .status-badge { background-color: rgba(139, 92, 246, 0.15); color: var(--status-in-progress); }
+        .sidebar-mini-card.completed .status-badge { background-color: rgba(4, 120, 87, 0.15); color: var(--status-completed); }
+        .sidebar-mini-card.cancelled .status-badge { background-color: rgba(239, 68, 68, 0.15); color: var(--status-cancelled); }
+
+        /* Accordion custom button style */
+        .accordion-button {
+            font-weight: 700;
+            font-size: 0.88rem;
+            color: var(--vt-dark-blue);
+            background-color: transparent;
+            padding: 12px 0;
+            box-shadow: none !important;
+            border: 0;
+        }
+        .accordion-button::after {
+            background-size: 0.8rem;
+        }
+        .accordion-button:not(.collapsed) {
+            color: var(--vt-primary);
+            background-color: transparent;
+        }
+        .accordion-body {
+            font-size: 0.85rem;
+            color: #475569;
+        }
+        [data-bs-theme="dark"] .accordion-body {
+            color: #cbd5e1;
+        }
+        .style-table tr td {
+            padding: 4px 0;
+            font-size: 0.85rem;
+        }
+        .badge-status-pill {
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 12px;
+        }
+        .badge-status-pill.waiting { background-color: rgba(245, 158, 11, 0.15); color: var(--status-waiting); }
+        .badge-status-pill.confirmed { background-color: rgba(16, 185, 129, 0.15); color: var(--status-confirmed); }
+        .badge-status-pill.on_the_way { background-color: rgba(59, 130, 246, 0.15); color: var(--status-on-the-way); }
+        .badge-status-pill.in_progress { background-color: rgba(139, 92, 246, 0.15); color: var(--status-in-progress); }
+        .badge-status-pill.completed { background-color: rgba(4, 120, 87, 0.15); color: var(--status-completed); }
+        .badge-status-pill.cancelled { background-color: rgba(239, 68, 68, 0.15); color: var(--status-cancelled); }
+
+        .badge-priority-pill {
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        .badge-priority-pill.emergency { background-color: rgba(239, 68, 68, 0.15); color: var(--status-cancelled); }
+        .badge-priority-pill.high { background-color: rgba(245, 158, 11, 0.15); color: var(--status-waiting); }
+        .badge-priority-pill.medium { background-color: rgba(59, 130, 246, 0.15); color: var(--status-on-the-way); }
+        .badge-priority-pill.low { background-color: rgba(100, 116, 139, 0.15); color: #64748b; }
+
+        /* Sidebar full-width horizontal list actions */
+        .sidebar-action-btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+            padding: 10px 16px;
+            border-radius: 12px;
+            border: 1px solid transparent;
+            font-size: 0.88rem;
+            font-weight: 700;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            text-align: left;
+        }
+        .sidebar-action-btn i {
+            font-size: 1.15rem;
+        }
+        
+        .btn-act-confirm {
+            background-color: rgba(16, 185, 129, 0.06);
+            color: var(--status-confirmed);
+            border-color: rgba(16, 185, 129, 0.15);
+        }
+        .btn-act-confirm:hover {
+            background-color: rgba(16, 185, 129, 0.12);
+            border-color: var(--status-confirmed);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(16, 185, 129, 0.1);
+        }
+        
+        .btn-act-start {
+            background-color: rgba(59, 130, 246, 0.06);
+            color: var(--status-on-the-way);
+            border-color: rgba(59, 130, 246, 0.15);
+        }
+        .btn-act-start:hover {
+            background-color: rgba(59, 130, 246, 0.12);
+            border-color: var(--status-on-the-way);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(59, 130, 246, 0.1);
+        }
+
+        .btn-act-complete {
+            background-color: rgba(4, 120, 87, 0.06);
+            color: var(--status-completed);
+            border-color: rgba(4, 120, 87, 0.15);
+        }
+        .btn-act-complete:hover {
+            background-color: rgba(4, 120, 87, 0.12);
+            border-color: var(--status-completed);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(4, 120, 87, 0.1);
+        }
+
+        .btn-act-reschedule {
+            background-color: rgba(245, 158, 11, 0.06);
+            color: var(--status-waiting);
+            border-color: rgba(245, 158, 11, 0.15);
+        }
+        .btn-act-reschedule:hover {
+            background-color: rgba(245, 158, 11, 0.12);
+            border-color: var(--status-waiting);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(245, 158, 11, 0.1);
+        }
+
+        .btn-act-change-ktv {
+            background-color: rgba(139, 92, 246, 0.06);
+            color: var(--status-in-progress);
+            border-color: rgba(139, 92, 246, 0.15);
+        }
+        .btn-act-change-ktv:hover {
+            background-color: rgba(139, 92, 246, 0.12);
+            border-color: var(--status-in-progress);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(139, 92, 246, 0.1);
+        }
+
+        .btn-act-cancel {
+            background-color: rgba(239, 68, 68, 0.06);
+            color: var(--status-cancelled);
+            border-color: rgba(239, 68, 68, 0.15);
+        }
+        .btn-act-cancel:hover {
+            background-color: rgba(239, 68, 68, 0.12);
+            border-color: var(--status-cancelled);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(239, 68, 68, 0.1);
+        }
+
+        /* Micro animation transitions */
+        .transition {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .flash-highlight {
+            animation: flashHighlightAnimation 2s ease-in-out;
+        }
+
+        @@keyframes flashHighlightAnimation {
+            0% { background-color: rgba(238, 0, 51, 0.3); transform: scale(1.05); }
+            50% { background-color: rgba(238, 0, 51, 0.15); transform: scale(1.02); }
+            100% { background-color: rgba(238, 0, 51, 0.05); transform: scale(1); }
+        }
+
+        /* Custom ripple visual style */
+        .btn-ripple {
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-ripple::after {
+            content: "";
+            background: rgba(255, 255, 255, 0.3);
+            display: block;
+            position: absolute;
+            border-radius: 50%;
+            padding-top: 240%;
+            padding-left: 240%;
+            margin-top: -120%;
+            margin-left: -120%;
+            opacity: 0;
+            transition: all 0.8s;
+        }
+        .btn-ripple:active::after {
+            padding: 0;
+            margin: 0;
+            opacity: 0.9;
+            transition: 0s;
+        }
+
+        /* Custom scrollbar style */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+        [data-bs-theme="dark"] ::-webkit-scrollbar-thumb {
+            background: #475569;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        /* Hide specific elements depending on active view mode */
+        .calendar-day-cell.hidden-by-view {
+            display: none !important;
+        }
+
+        /* Responsive styles */
+        @@media (max-width: 1200px) {
+            #sidebarContainer {
+                position: fixed;
+                top: 0;
+                right: -320px;
+                width: 320px;
+                height: 100vh;
+                z-index: 1050;
+                transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                box-shadow: -10px 0 30px rgba(0,0,0,0.15);
+            }
+            #sidebarContainer.show-drawer {
+                right: 0;
+            }
+            #detailSidebar {
+                height: 100%;
+                border-radius: 0 !important;
+            }
+            .sidebar-scroll-body {
+                height: calc(100vh - 120px) !important;
+            }
+            .drawer-overlay-backdrop {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                background: rgba(0, 0, 0, 0.4);
+                z-index: 1040;
+            }
+            .drawer-overlay-backdrop.show-drawer {
+                display: block;
+            }
+        }
+
+        @@media (max-width: 768px) {
+            .toolbar-container {
+                flex-direction: column;
+                align-items: stretch !important;
+            }
+            .toolbar-left-actions, .toolbar-right-filters {
+                overflow-x: auto;
+                white-space: nowrap;
+                padding-bottom: 8px;
+                width: 100%;
+                flex-wrap: nowrap !important;
+                justify-content: flex-start !important;
+            }
+            .filter-wrapper {
+                width: auto !important;
+            }
+            .filter-select {
+                min-width: 140px !important;
+            }
+            
+            .calendar-days-grid {
+                grid-template-columns: 1fr;
+            }
+            .calendar-header-grid {
+                display: none !important;
+            }
+            .calendar-day-cell.empty-day {
+                display: none !important;
+            }
+            .calendar-day-cell {
+                min-height: auto;
+                border-radius: var(--radius-12);
+                background-color: white !important;
+            }
+            [data-bs-theme="dark"] .calendar-day-cell {
+                background-color: #1e293b !important;
+            }
+            .calendar-day-cell:not(.has-events-mobile) {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body class="staff-ticket-page">
+<div id="adminLayout">
+    <div id="sidebarMount"></div>
+    <div class="main-wrapper">
+
+        <!-- ── TOPBAR ── -->
+        <header class="admin-topbar" role="banner">
+            <div class="topbar-left">
+                <button class="sidebar-toggle-btn d-lg-none" id="toggleMobileSidebar" aria-label="Mở sidebar"><i class="bi bi-bars"></i></button>
+                <button class="sidebar-toggle-btn d-none d-lg-flex" id="toggleSidebar" aria-label="Toggle sidebar"><i class="bi bi-bars"></i></button>
+                <div class="d-none d-md-block">
+                    <p class="mb-0 fw-bold" style="font-size:1rem;color:var(--vt-primary);">Điều Phối Lịch Hẹn</p>
+                    <p class="mb-0" style="font-size:0.78rem;color:var(--vt-text-muted);">Hệ thống điều phối kỹ thuật địa bàn Viettel</p>
+                </div>
+            </div>
+            <div class="topbar-right">
+                <div class="dropdown">
+                    <a class="user-profile-dropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <img src="https://ui-avatars.com/api/?name=@Uri.EscapeDataString(User.Identity?.Name ?? "NV")&background=D71920&color=fff&size=38" alt="Avatar" class="user-avatar">
+                        <div class="d-none d-sm-block">
+                            <p class="user-profile-name mb-0">@(User.Identity?.Name ?? "Nhân viên")</p>
+                            <p class="mb-0 user-profile-role">Nhân viên hỗ trợ</p>
+                        </div>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2" style="border-radius:12px;">
+                        <li><a class="dropdown-item py-2" asp-controller="Staff" asp-action="Dashboard"><i class="fa-solid fa-gauge-high me-2 text-danger"></i>Dashboard</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item py-2 text-danger" asp-controller="Account" asp-action="Logout"><i class="fa-solid fa-right-from-bracket me-2"></i>Đăng xuất</a></li>
+                    </ul>
+                </div>
+            </div>
+        </header>
+
+        <!-- ── MAIN CONTENT ── -->
+        <main class="admin-content container-fluid">
+
+            <!-- Breadcrumbs -->
+            <nav aria-label="breadcrumb" class="mb-3">
+                <ol class="breadcrumb mb-0 bg-transparent p-0" style="font-size:0.82rem;">
+                    <li class="breadcrumb-item">
+                        <a asp-controller="Staff" asp-action="Dashboard" class="text-danger text-decoration-none transition">
+                            <i class="fa-solid fa-gauge-high me-1"></i>Dashboard
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item active fw-semibold" aria-current="page">
+                        <i class="bi bi-calendar-event me-1"></i>Lịch hẹn kỹ thuật
+                    </li>
+                </ol>
+            </nav>
+
+            <!-- Page Title -->
+            <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+                <div>
+                    <h1 class="h3 fw-bold text-dark-blue mb-1" style="font-family: var(--font-inter); letter-spacing: -0.5px;">
+                        <i class="bi bi-calendar-event-fill text-danger me-2"></i>LỊCH HẸN KỸ THUẬT
+                    </h1>
+                    <p class="text-muted mb-0" style="font-size:0.92rem;">
+                        Điều phối, sắp xếp và kiểm soát lịch hẹn kỹ thuật lắp đặt/sửa chữa tại địa bàn.
+                    </p>
+                </div>
+                <button class="btn btn-outline-secondary btn-ripple border-0 rounded-circle" id="darkThemeToggle" aria-label="Đổi chế độ sáng tối" style="width: 42px; height: 42px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; background: var(--vt-bg-glass); border: 1px solid var(--vt-border-glass); box-shadow: var(--vt-shadow);">
+                    <i class="bi bi-moon-stars-fill text-secondary"></i>
+                </button>
+            </div>
+
+            <!-- Alert Messages -->
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show border-0 rounded-3 mb-4 shadow-sm" role="alert" style="border-left: 4px solid var(--status-confirmed) !important; background-color: rgba(16, 185, 129, 0.1);">
+                    <i class="bi bi-check-circle-fill me-2 text-success"></i>@TempData["SuccessMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show border-0 rounded-3 mb-4 shadow-sm" role="alert" style="border-left: 4px solid var(--status-cancelled) !important; background-color: rgba(239, 68, 68, 0.1);">
+                    <i class="bi bi-exclamation-triangle-fill me-2 text-danger"></i>@TempData["ErrorMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+
+            <!-- ── CARD THỐNG KÊ (KPI STATS) ── -->
+            <section aria-label="KPI Thống kê lịch hẹn" class="mb-4">
+                <div class="row g-3">
+                    <div class="col-6 col-md-4 col-xl-2">
+                        <div class="kpi-card" style="border-left: 4px solid var(--vt-primary);">
+                            <div>
+                                <span class="kpi-label">Hôm nay</span>
+                                <h3 class="kpi-num">@Model.TongHomNay</h3>
+                            </div>
+                            <div class="kpi-icon"><i class="fa-solid fa-calendar-day"></i></div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4 col-xl-2">
+                        <div class="kpi-card" style="border-left: 4px solid var(--status-waiting);">
+                            <div>
+                                <span class="kpi-label">Chờ xác nhận</span>
+                                <h3 class="kpi-num text-warning">@Model.ChoXacNhan</h3>
+                            </div>
+                            <div class="kpi-icon"><i class="fa-solid fa-hourglass-half"></i></div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4 col-xl-2">
+                        <div class="kpi-card" style="border-left: 4px solid var(--status-confirmed);">
+                            <div>
+                                <span class="kpi-label">Đã xác nhận</span>
+                                <h3 class="kpi-num text-success">@Model.DaXacNhan</h3>
+                            </div>
+                            <div class="kpi-icon"><i class="fa-solid fa-circle-check"></i></div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4 col-xl-2">
+                        <div class="kpi-card" style="border-left: 4px solid var(--status-in-progress);">
+                            <div>
+                                <span class="kpi-label">Đang thực hiện</span>
+                                <h3 class="kpi-num text-primary">@Model.DangThucHien</h3>
+                            </div>
+                            <div class="kpi-icon"><i class="fa-solid fa-screwdriver-wrench"></i></div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4 col-xl-2">
+                        <div class="kpi-card" style="border-left: 4px solid var(--status-completed);">
+                            <div>
+                                <span class="kpi-label">Hoàn thành</span>
+                                <h3 class="kpi-num text-success">@Model.HoanThanh</h3>
+                            </div>
+                            <div class="kpi-icon"><i class="fa-solid fa-check-double"></i></div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4 col-xl-2">
+                        <div class="kpi-card" style="border-left: 4px solid var(--status-cancelled);">
+                            <div>
+                                <span class="kpi-label">Đã hủy</span>
+                                <h3 class="kpi-num text-danger">@Model.DaHuy</h3>
+                            </div>
+                            <div class="kpi-icon"><i class="fa-solid fa-ban"></i></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ── TOOLBAR TÌM KIẾM & BỘ LỌC ── -->
+            <section class="mb-4" aria-label="Bộ lọc và tìm kiếm lịch hẹn">
+                <form method="get" asp-action="QuanLyLichHen" asp-controller="Staff" id="filterForm">
+                    <input type="hidden" name="thang" id="inputThang" value="@Model.CalendarThang" />
+                    <input type="hidden" name="nam" id="inputNam" value="@Model.CalendarNam" />
+                    <input type="hidden" name="sort" id="inputSort" value="@Model.Sort" />
+
+                    <div class="toolbar-container d-flex align-items-center justify-content-between gap-3">
+                        
+                        <!-- Left toolbar controls -->
+                        <div class="toolbar-left-actions d-flex align-items-center gap-2">
+                            <button type="button" class="btn btn-danger btn-ripple d-flex align-items-center gap-2 px-3 py-2 fw-semibold shadow-sm border-0"
+                                    data-bs-toggle="modal" data-bs-target="#newApptModal" style="border-radius: 12px; font-size: 0.88rem; background-color: var(--vt-primary); height: 40px; white-space: nowrap;">
+                                <i class="bi bi-plus-circle-fill"></i> <span>Thêm lịch hẹn</span>
+                            </button>
+                            <button type="button" class="btn btn-ripple" id="btnToday">
+                                Hôm nay
+                            </button>
+                            <div class="view-switch-group" role="group" aria-label="Chế độ xem calendar">
+                                <button type="button" class="btn-view-mode active" data-mode="month">Tháng</button>
+                                <button type="button" class="btn-view-mode" data-mode="week">Tuần</button>
+                                <button type="button" class="btn-view-mode" data-mode="day">Ngày</button>
+                            </div>
+                        </div>
+
+                        <!-- Right toolbar filters with clean icons inside inputs -->
+                        <div class="toolbar-right-filters d-flex align-items-center gap-2 flex-grow-1 justify-content-end">
+                            
+                            <div class="filter-wrapper">
+                                <i class="bi bi-person-fill filter-icon"></i>
+                                <select name="nhanVien" class="form-select filter-select" onchange="this.form.submit()" aria-label="Lọc nhân viên" style="width: 155px; padding-left: 34px !important;">
+                                    <option value="">Tất cả KTV</option>
+                                    @foreach (var nv in Model.DanhSachNhanVien)
+                                    {
+                                        <option value="@nv.Value" selected="@(Model.FilterNhanVien?.ToString() == nv.Value ? "selected" : null)">@nv.Text</option>
+                                    }
+                                </select>
+                            </div>
+
+                            <div class="filter-wrapper">
+                                <i class="bi bi-info-circle-fill filter-icon"></i>
+                                <select name="trangThai" class="form-select filter-select" onchange="this.form.submit()" aria-label="Lọc trạng thái" style="width: 175px; padding-left: 34px !important;">
+                                    <option value="">Tất cả Trạng thái</option>
+                                    @foreach (var tt in new[] { "Chờ xác nhận","Đã xác nhận","Đang thực hiện","Hoàn thành","Đã hủy" })
+                                    {
+                                        <option value="@tt" selected="@(Model.FilterTrangThai == tt ? "selected" : null)">@tt</option>
+                                    }
+                                </select>
+                            </div>
+
+                            <div class="filter-wrapper">
+                                <i class="bi bi-grid-fill filter-icon"></i>
+                                <select name="danhMuc" class="form-select filter-select" onchange="this.form.submit()" aria-label="Lọc danh mục" style="width: 165px; padding-left: 34px !important;">
+                                    <option value="">Tất cả Dịch vụ</option>
+                                    @foreach (var dm in Model.DanhSachDanhMuc)
+                                    {
+                                        <option value="@dm.Value" selected="@(Model.FilterDanhMuc?.ToString() == dm.Value ? "selected" : null)">@dm.Text</option>
+                                    }
+                                </select>
+                            </div>
+
+                            <div class="filter-wrapper">
+                                <i class="bi bi-calendar-event filter-icon"></i>
+                                <input type="date" name="tuNgay" value="@Model.FilterTuNgay" onchange="this.form.submit()" aria-label="Từ ngày" class="form-control filter-select" style="width: 145px; padding-left: 34px !important;" />
+                            </div>
+
+                            <div class="filter-wrapper">
+                                <i class="bi bi-calendar-check filter-icon"></i>
+                                <input type="date" name="denNgay" value="@Model.FilterDenNgay" onchange="this.form.submit()" aria-label="Đến ngày" class="form-control filter-select" style="width: 145px; padding-left: 34px !important;" />
+                            </div>
+
+                            <div class="filter-wrapper" style="width: 190px;">
+                                <i class="bi bi-search filter-icon"></i>
+                                <input type="text" name="keyword" value="@Model.Keyword" class="form-control filter-select" placeholder="Tìm mã, tên..." aria-label="Tìm kiếm" style="padding-left: 34px !important;">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </section>
+
+            <!-- ── CALENDAR & SIDEBAR WORKSPACE ── -->
+            <section class="row g-4 mb-4" aria-label="Khu vực lịch hẹn và chi tiết">
+
+                <!-- Left Column: Calendar + Legend + Timeline (75%) -->
+                <div class="col-12 col-xl-9 d-flex flex-column gap-4" id="calendarColumnMount">
+
+                    <!-- Calendar Body -->
+                    <div class="calendar-container shadow-sm border p-4 bg-white" style="border-radius: var(--radius-18);">
+                        
+                        <!-- Month navigation header -->
+                        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+                            <div class="d-flex align-items-center gap-3">
+                                <a href="@Url.Action("QuanLyLichHen","Staff", new {
+                                    thang = Model.CalendarThang == 1 ? 12 : Model.CalendarThang - 1,
+                                    nam   = Model.CalendarThang == 1 ? Model.CalendarNam - 1 : Model.CalendarNam,
+                                    nhanVien = Model.FilterNhanVien, trangThai = Model.FilterTrangThai,
+                                    danhMuc = Model.FilterDanhMuc, keyword = Model.Keyword, sort = Model.Sort
+                                    })" class="btn btn-outline-secondary btn-ripple rounded-circle border-1 d-flex align-items-center justify-content-center" style="width: 38px; height: 38px; background: white;" title="Tháng trước">
+                                    <i class="bi bi-chevron-left"></i>
+                                </a>
+                                <h4 class="calendar-title text-dark-blue mb-0 fw-bold" style="font-family: var(--font-inter); font-size: 1.25rem;">
+                                    @Model.TieuDeCalendar
+                                </h4>
+                                <a href="@Url.Action("QuanLyLichHen","Staff", new {
+                                    thang = Model.CalendarThang == 12 ? 1 : Model.CalendarThang + 1,
+                                    nam   = Model.CalendarThang == 12 ? Model.CalendarNam + 1 : Model.CalendarNam,
+                                    nhanVien = Model.FilterNhanVien, trangThai = Model.FilterTrangThai,
+                                    danhMuc = Model.FilterDanhMuc, keyword = Model.Keyword, sort = Model.Sort
+                                    })" class="btn btn-outline-secondary btn-ripple rounded-circle border-1 d-flex align-items-center justify-content-center" style="width: 38px; height: 38px; background: white;" title="Tháng sau">
+                                    <i class="bi bi-chevron-right"></i>
+                                </a>
+                            </div>
+                            
+                            <div class="badge bg-danger-subtle text-danger border border-danger px-3 py-2 fw-semibold rounded-pill" id="viewIndicator">
+                                Chế độ xem: Tháng
+                            </div>
+                        </div>
+
+                        <!-- Calendar Days Grid -->
+                        <div class="calendar-grid-wrapper">
+                            <div class="calendar-header-grid text-uppercase text-secondary fw-bold text-center pb-2 border-bottom">
+                                <div>Thứ 2</div>
+                                <div>Thứ 3</div>
+                                <div>Thứ 4</div>
+                                <div>Thứ 5</div>
+                                <div>Thứ 6</div>
+                                <div>Thứ 7</div>
+                                <div>Chủ nhật</div>
+                            </div>
+
+                            <div class="calendar-days-grid" id="calendarDaysGrid">
+                                <!-- Blank offset days -->
+                                @for (int offset = 0; offset < Model.OffsetNgayDau; offset++)
+                                {
+                                    <div class="calendar-day-cell empty-day"></div>
+                                }
+
+                                <!-- Month day cells -->
+                                @for (int day = 1; day <= Model.SoNgayTrongThang; day++)
+                                {
+                                    var dayDate = new DateOnly(Model.CalendarNam, Model.CalendarThang, day);
+                                    var dayAppts = Model.GetLichHenTheoNgay(day);
+                                    bool isToday = Model.IsToday(day);
+                                    bool isSelected = Model.IsSelectedDay(day);
+                                    
+                                    var cellClass = "calendar-day-cell" + (isToday ? " is-today" : "") + (isSelected ? " is-selected" : "") + (dayAppts.Any() ? " has-events-mobile" : "");
+
+                                    <div class="@cellClass" data-date="@dayDate.ToString("yyyy-MM-dd")">
+                                        <div class="day-cell-header d-flex justify-content-between align-items-center mb-1">
+                                            <span class="day-num-label">@day</span>
+                                            @if (dayAppts.Any())
+                                            {
+                                                <span class="day-count-badge">@dayAppts.Count</span>
+                                            }
+                                        </div>
+                                        
+                                        <div class="day-cell-events d-flex flex-column gap-1">
+                                            @foreach (var appt in dayAppts)
+                                            {
+                                                var stateClass = ClassTrangThai(appt.TrangThai);
+                                                bool isEventActive = Model.SelectedId == appt.IdLichHen;
+                                                
+                                                <a href="@Url.Action("QuanLyLichHen","Staff", new {
+                                                        selectedId = appt.IdLichHen,
+                                                        thang = Model.CalendarThang, nam = Model.CalendarNam,
+                                                        nhanVien = Model.FilterNhanVien, trangThai = Model.FilterTrangThai,
+                                                        danhMuc = Model.FilterDanhMuc, keyword = Model.Keyword, sort = Model.Sort
+                                                    })"
+                                                   class="calendar-event-card @stateClass text-decoration-none d-block transition @(isEventActive ? "active" : "")"
+                                                   title="@appt.TenKhachHang – @appt.MaPhieu"
+                                                   data-id="@appt.IdLichHen">
+                                                    <div class="event-time"><i class="bi bi-clock me-1"></i>@appt.GioBatDauStr</div>
+                                                    <div class="event-code">@appt.MaPhieu</div>
+                                                    <div class="event-service text-truncate">@appt.TenDanhMuc</div>
+                                                    <div class="event-client text-truncate">@appt.TenKhachHang</div>
+                                                    <div class="event-status-pill">@appt.TrangThai</div>
+                                                </a>
+                                            }
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Legend Section -->
+                    <div class="legend-panel d-flex justify-content-center align-items-center gap-4 flex-wrap bg-white shadow-sm border py-3 px-4" style="border-radius: var(--radius-12);">
+                        <div class="legend-item"><span class="legend-dot waiting"></span> Chờ xác nhận</div>
+                        <div class="legend-item"><span class="legend-dot confirmed"></span> Đã xác nhận</div>
+                        <div class="legend-item"><span class="legend-dot on_the_way"></span> Đang di chuyển</div>
+                        <div class="legend-item"><span class="legend-dot in_progress"></span> Đang thực hiện</div>
+                        <div class="legend-item"><span class="legend-dot completed"></span> Hoàn thành</div>
+                        <div class="legend-item"><span class="legend-dot cancelled"></span> Đã hủy</div>
+                    </div>
+
+                    <!-- Timeline Section -->
+                    <div class="timeline-container shadow-sm border p-4 bg-white" style="border-radius: var(--radius-18);">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="fw-bold mb-0 text-dark-blue">
+                                <i class="fa-solid fa-timeline text-danger me-2"></i>Dòng thời gian hôm nay – @today.ToString("dd/MM/yyyy")
+                            </h5>
+                            <span class="badge bg-danger-subtle text-danger px-3 py-1 rounded-pill fw-semibold" style="font-size: 0.8rem;">
+                                Tổng @Model.DanhSachHomNay.Count lịch hôm nay
+                            </span>
+                        </div>
+                        
+                        <div class="timeline-horizontal-scroll">
+                            <div class="timeline-track">
+                                @{
+                                    int[] hoursList = { 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17 };
+                                }
+                                @foreach (var h in hoursList)
+                                {
+                                    var apptThisHour = Model.DanhSachHomNay
+                                        .Where(x => x.GioBatDau.HasValue && x.GioBatDau.Value.Hour == h)
+                                        .ToList();
+                                    bool hasAppt = apptThisHour.Any();
+                                    bool isCurrentHour = DateTime.Now.Hour == h && today == DateOnly.FromDateTime(DateTime.Today);
+                                    
+                                    <div class="timeline-hour-point @(hasAppt ? "has-appt" : "") @(isCurrentHour ? "is-current" : "")" data-hour="@h">
+                                        <div class="hour-marker">
+                                            @if (hasAppt)
+                                            {
+                                                <span class="marker-dot filled">●</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="marker-dot empty">○</span>
+                                            }
+                                        </div>
+                                        <div class="hour-label">@h.ToString("00"):00</div>
+                                        <div class="hour-events">
+                                            @if (hasAppt)
+                                            {
+                                                @foreach (var a in apptThisHour)
+                                                {
+                                                    var stClass = ClassTrangThai(a.TrangThai);
+                                                    <div class="hour-event-tag @stClass" data-id="@a.IdLichHen" title="[@a.MaPhieu] @a.TenKhachHang - @a.TrangThai">
+                                                        <strong>@a.GioBatDauStr</strong> [@a.MaPhieu] @a.TenKhachHang
+                                                    </div>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <div class="hour-event-tag empty text-muted">Trống</div>
+                                            }
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Right Column: Sidebar details (25%) -->
+                <div class="col-12 col-xl-3" id="sidebarContainer">
+                    <div class="sidebar-wrapper shadow-sm border bg-white d-flex flex-column" id="detailSidebar" style="border-radius: var(--radius-18); overflow: hidden;">
+                        
+                        <!-- Header mini list today -->
+                        <div class="sidebar-header border-bottom p-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5 class="fw-bold text-dark-blue mb-0" style="font-size: 0.95rem;">
+                                    <i class="bi bi-calendar2-week text-danger me-2"></i>Lịch Hẹn Hôm Nay
+                                </h5>
+                                <button type="button" class="btn-close d-xl-none" id="closeSidebarDrawer" aria-label="Đóng chi tiết"></button>
+                            </div>
+                            <span class="text-muted small">@today.ToString("dddd, dd/MM/yyyy")</span>
+                        </div>
+
+                        <!-- Scrollable body inside sidebar -->
+                        <div class="sidebar-scroll-body d-flex flex-column flex-grow-1 overflow-y-auto" style="height: calc(100vh - 280px);">
+                            
+                            <!-- Mini schedule cards list -->
+                            <div class="sidebar-today-list border-bottom p-2 bg-light">
+                                @if (!Model.DanhSachHomNay.Any())
+                                {
+                                    <div class="text-center text-muted py-3">
+                                        <i class="bi bi-calendar-x d-block mb-1 text-muted"></i>
+                                        <small>Không có lịch hẹn hôm nay</small>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="d-flex flex-column gap-1">
+                                        @foreach (var appt in Model.DanhSachHomNay)
+                                        {
+                                            bool isMiniActive = chiTiet?.IdLichHen == appt.IdLichHen;
+                                            var stateClass = ClassTrangThai(appt.TrangThai);
+                                            <a href="@Url.Action("QuanLyLichHen","Staff", new {
+                                                    selectedId = appt.IdLichHen,
+                                                    thang = Model.CalendarThang, nam = Model.CalendarNam,
+                                                    nhanVien = Model.FilterNhanVien, trangThai = Model.FilterTrangThai,
+                                                    danhMuc = Model.FilterDanhMuc, keyword = Model.Keyword, sort = Model.Sort
+                                                })" class="text-decoration-none">
+                                                <div class="sidebar-mini-card @stateClass @(isMiniActive ? "is-active" : "") p-2" style="border-radius: 8px;" data-id="@appt.IdLichHen">
+                                                    <div class="d-flex justify-content-between mb-1">
+                                                        <span class="time-lbl"><i class="bi bi-clock me-1"></i>@appt.GioBatDauStr</span>
+                                                        <span class="status-badge text-uppercase">@appt.TrangThai</span>
+                                                    </div>
+                                                    <div class="fw-bold text-dark-blue small">@appt.TenKhachHang (@appt.MaPhieu)</div>
+                                                </div>
+                                            </a>
+                                        }
+                                    </div>
+                                }
+                            </div>
+
+                            <!-- Selected Appointment detail segment (Accordion details) -->
+                            @if (chiTiet != null)
+                            {
+                                <div class="sidebar-accordion-details p-3 flex-grow-1 d-flex flex-column gap-3">
+                                    <div class="accordion accordion-flush" id="appointmentDetailsAccordion">
+                                        
+                                        <!-- Card 1: Thông tin lịch -->
+                                        <div class="accordion-item border-bottom">
+                                            <h2 class="accordion-header">
+                                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTime" aria-expanded="true">
+                                                    <i class="fa-solid fa-clock-history me-2 text-danger"></i> Thông tin lịch
+                                                </button>
+                                            </h2>
+                                            <div id="collapseTime" class="accordion-collapse collapse show" data-bs-parent="#appointmentDetailsAccordion">
+                                                <div class="accordion-body px-0 py-2">
+                                                    <table class="table table-borderless table-sm mb-0 style-table">
+                                                        <tr>
+                                                            <td class="text-muted">Mã phiếu:</td>
+                                                            <td><strong class="text-danger">@chiTiet.MaPhieu</strong></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="text-muted">Ngày hẹn:</td>
+                                                            <td><strong>@(chiTiet.NgayHen?.ToString("dd/MM/yyyy") ?? "–")</strong></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="text-muted">Giờ làm:</td>
+                                                            <td><strong>@chiTiet.GioBatDauStr – @chiTiet.GioKetThucStr</strong></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="text-muted">Trạng thái:</td>
+                                                            <td><span class="badge-status-pill @ClassTrangThai(chiTiet.TrangThai)">@chiTiet.TrangThai</span></td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Card 2: Khách hàng -->
+                                        <div class="accordion-item border-bottom">
+                                            <h2 class="accordion-header">
+                                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCustomer">
+                                                    <i class="fa-solid fa-user-tie me-2 text-danger"></i> Khách hàng
+                                                </button>
+                                            </h2>
+                                            <div id="collapseCustomer" class="accordion-collapse collapse" data-bs-parent="#appointmentDetailsAccordion">
+                                                <div class="accordion-body px-0 py-2">
+                                                    <div class="d-flex align-items-center gap-3 mb-2">
+                                                        <img src="https://ui-avatars.com/api/?name=@Uri.EscapeDataString(chiTiet.TenKhachHang)&background=3B82F6&color=fff&size=40" class="rounded-circle border" alt="Avatar KH">
+                                                        <div>
+                                                            <div class="fw-bold text-dark-blue">@chiTiet.TenKhachHang</div>
+                                                            <a href="tel:@chiTiet.SoDienThoaiKH" class="text-danger text-decoration-none fw-semibold">
+                                                                <i class="bi bi-telephone-fill me-1"></i>@chiTiet.SoDienThoaiKH
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                    <table class="table table-borderless table-sm mb-0 style-table">
+                                                        <tr>
+                                                            <td class="text-muted" style="width: 25%;">Email:</td>
+                                                            <td><span class="text-break">@(chiTiet.EmailKH ?? "–")</span></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="text-muted">Địa chỉ:</td>
+                                                            <td><span>@(chiTiet.DiaChiKH ?? "–")</span></td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Card 3: Phiếu hỗ trợ -->
+                                        <div class="accordion-item border-bottom">
+                                            <h2 class="accordion-header">
+                                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTicket">
+                                                    <i class="fa-solid fa-file-invoice me-2 text-danger"></i> Phiếu hỗ trợ
+                                                </button>
+                                            </h2>
+                                            <div id="collapseTicket" class="accordion-collapse collapse" data-bs-parent="#appointmentDetailsAccordion">
+                                                <div class="accordion-body px-0 py-2">
+                                                    <div class="mb-2"><span class="text-muted">Tiêu đề:</span> <strong class="text-dark-blue">@(chiTiet.TieuDe ?? "–")</strong></div>
+                                                    <table class="table table-borderless table-sm mb-0 style-table">
+                                                        <tr>
+                                                            <td class="text-muted" style="width: 35%;">Danh mục:</td>
+                                                            <td>@(chiTiet.TenDanhMuc ?? "–")</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="text-muted">Dịch vụ:</td>
+                                                            <td>@(chiTiet.TenDichVu ?? "–")</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="text-muted">Ưu tiên:</td>
+                                                            <td>
+                                                                <span class="badge-priority-pill @ClassPriority(chiTiet.MucDoUuTien)">
+                                                                    @chiTiet.NhanUuTien
+                                                                </span>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="text-muted">TT Phiếu:</td>
+                                                            <td><span class="badge bg-danger-subtle text-danger border border-danger py-1 px-2 rounded" style="font-size:0.72rem;">@(chiTiet.TrangThaiPhieu ?? "–")</span></td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Card 4: Kỹ thuật viên -->
+                                        <div class="accordion-item border-bottom">
+                                            <h2 class="accordion-header">
+                                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTechnician">
+                                                    <i class="fa-solid fa-user-gear me-2 text-danger"></i> Kỹ thuật viên
+                                                </button>
+                                            </h2>
+                                            <div id="collapseTechnician" class="accordion-collapse collapse" data-bs-parent="#appointmentDetailsAccordion">
+                                                <div class="accordion-body px-0 py-2">
+                                                    <div class="d-flex align-items-center gap-3 mb-2">
+                                                        <img src="https://ui-avatars.com/api/?name=@Uri.EscapeDataString(chiTiet.TenNhanVien)&background=EE0033&color=fff&size=40" class="rounded-circle border" alt="Avatar KTV">
+                                                        <div>
+                                                            <div class="fw-bold text-dark-blue">@chiTiet.TenNhanVien</div>
+                                                            <span class="text-muted small">Kỹ thuật viên địa bàn</span>
+                                                        </div>
+                                                    </div>
+                                                    <table class="table table-borderless table-sm mb-0 style-table">
+                                                        <tr>
+                                                            <td class="text-muted" style="width: 35%;">Điện thoại:</td>
+                                                            <td><strong class="text-danger">@chiTiet.SoDienThoaiNV</strong></td>
+                                                        </tr>
+                                                        @if (!string.IsNullOrEmpty(chiTiet.EmailNV))
+                                                        {
+                                                            <tr>
+                                                                <td class="text-muted">Email:</td>
+                                                                <td><span>@chiTiet.EmailNV</span></td>
+                                                            </tr>
+                                                        }
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Card 5: Địa điểm -->
+                                        <div class="accordion-item border-bottom">
+                                            <h2 class="accordion-header">
+                                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAddress">
+                                                    <i class="fa-solid fa-map-location-dot me-2 text-danger"></i> Địa điểm
+                                                </button>
+                                            </h2>
+                                            <div id="collapseAddress" class="accordion-collapse collapse" data-bs-parent="#appointmentDetailsAccordion">
+                                                <div class="accordion-body px-0 py-2">
+                                                    <p class="small text-muted mb-2">
+                                                        <i class="bi bi-geo-alt-fill text-danger me-1"></i>
+                                                        @(chiTiet.DiaChiHoTro ?? chiTiet.DiaChiKH ?? "Chưa có địa chỉ")
+                                                    </p>
+                                                    <a href="@chiTiet.GoogleMapsUrl" target="_blank" class="btn btn-outline-danger btn-ripple w-100 d-flex align-items-center justify-content-center gap-2 border-1" style="border-radius: 10px; font-size: 0.85rem; padding: 6px; background-color: white;">
+                                                        <i class="bi bi-geo-alt-fill text-danger"></i> Xem bản đồ
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Card 6: Ghi chú -->
+                                        <div class="accordion-item border-bottom">
+                                            <h2 class="accordion-header">
+                                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseNotes">
+                                                    <i class="fa-solid fa-sticky-note me-2 text-danger"></i> Ghi chú
+                                                </button>
+                                            </h2>
+                                            <div id="collapseNotes" class="accordion-collapse collapse" data-bs-parent="#appointmentDetailsAccordion">
+                                                <div class="accordion-body px-0 py-2">
+                                                    <textarea class="form-control bg-light text-muted border-0" rows="3" readonly style="font-size:0.8rem; resize:none; border-radius: 8px;">@(chiTiet.GhiChu ?? "Không có ghi chú.")</textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Card 7: Thao tác -->
+                                        @if (chiTiet.CoTheThaoTac)
+                                        {
+                                            <div class="accordion-item">
+                                                <h2 class="accordion-header">
+                                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseActions" aria-expanded="true">
+                                                        <i class="fa-solid fa-sliders me-2 text-danger"></i> Thao tác
+                                                    </button>
+                                                </h2>
+                                                <div id="collapseActions" class="accordion-collapse collapse show" data-bs-parent="#appointmentDetailsAccordion">
+                                                    <div class="accordion-body px-0 py-2">
+                                                        <div class="d-flex flex-column gap-2 w-100">
+                                                            
+                                                            @if (chiTiet.TrangThai == "Chờ xác nhận")
+                                                            {
+                                                                <form method="post" asp-action="XacNhanLich" asp-controller="Staff" class="w-100">
+                                                                    @Html.AntiForgeryToken()
+                                                                    <input type="hidden" name="id" value="@chiTiet.IdLichHen" />
+                                                                    <button type="submit" class="sidebar-action-btn btn-act-confirm btn-ripple">
+                                                                        <i class="bi bi-calendar-check-fill"></i>
+                                                                        <span>Xác nhận lịch hẹn</span>
+                                                                    </button>
+                                                                </form>
+                                                            }
+
+                                                            @if (chiTiet.TrangThai == "Đã xác nhận")
+                                                            {
+                                                                <form method="post" asp-action="BatDauHoTro" asp-controller="Staff" class="w-100">
+                                                                    @Html.AntiForgeryToken()
+                                                                    <input type="hidden" name="id" value="@chiTiet.IdLichHen" />
+                                                                    <button type="submit" class="sidebar-action-btn btn-act-start btn-ripple">
+                                                                        <i class="bi bi-play-circle-fill"></i>
+                                                                        <span>Bắt đầu hỗ trợ</span>
+                                                                    </button>
+                                                                </form>
+                                                            }
+
+                                                            @if (chiTiet.TrangThai == "Đang thực hiện")
+                                                            {
+                                                                <form method="post" asp-action="HoanThanhLich" asp-controller="Staff" class="w-100">
+                                                                    @Html.AntiForgeryToken()
+                                                                    <input type="hidden" name="id" value="@chiTiet.IdLichHen" />
+                                                                    <button type="submit" class="sidebar-action-btn btn-act-complete btn-ripple">
+                                                                        <i class="bi bi-check-circle-fill"></i>
+                                                                        <span>Hoàn thành hỗ trợ</span>
+                                                                    </button>
+                                                                </form>
+                                                            }
+
+                                                            <!-- Dời lịch -->
+                                                            <button type="button" class="sidebar-action-btn btn-act-reschedule btn-ripple" data-bs-toggle="modal" data-bs-target="#editTimeModal">
+                                                                <i class="bi bi-clock-history"></i>
+                                                                <span>Dời thời gian hẹn</span>
+                                                            </button>
+
+                                                            <!-- Đổi KTV -->
+                                                            @if (chiTiet.CoTheDoiKTV)
+                                                            {
+                                                                <button type="button" class="sidebar-action-btn btn-act-change-ktv btn-ripple" data-bs-toggle="modal" data-bs-target="#transferTechModal">
+                                                                    <i class="bi bi-person-gear"></i>
+                                                                    <span>Đổi kỹ thuật viên</span>
+                                                                </button>
+                                                            }
+
+                                                            <!-- Hủy lịch -->
+                                                            <button type="button" class="sidebar-action-btn btn-act-cancel btn-ripple" data-bs-toggle="modal" data-bs-target="#cancelModal">
+                                                                <i class="bi bi-x-circle-fill"></i>
+                                                                <span>Hủy lịch hẹn kỹ thuật</span>
+                                                            </button>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+                                        
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="text-center text-muted p-5 flex-grow-1 d-flex flex-column align-items-center justify-content-center">
+                                    <i class="bi bi-hand-index fs-2 mb-2 text-secondary"></i>
+                                    <small>Chọn một lịch hẹn để xem chi tiết</small>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+
+        </main>
+    </div>
+</div>
+
+<!-- Drawer backdrop background -->
+<div class="drawer-overlay-backdrop" id="drawerBackdrop"></div>
+
+<!-- =============================================================
+     MODAL DIALOGS
+     ============================================================= -->
+
+<!-- Modal: Thêm lịch hẹn mới -->
+<div class="modal fade" id="newApptModal" tabindex="-1" aria-labelledby="newApptModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content shadow border-0" style="border-radius: 18px;">
+            <div class="modal-header border-bottom-0 pt-4 px-4">
+                <h5 class="modal-title fw-bold text-dark-blue" id="newApptModalLabel">
+                    <i class="bi bi-calendar-plus text-danger me-2"></i>Thêm lịch hẹn kỹ thuật mới
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body px-4 pb-4">
+                <form method="post" asp-action="ThemLichHen" asp-controller="Staff">
+                    @Html.AntiForgeryToken()
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label class="form-label fw-bold small text-secondary">Phiếu Hỗ Trợ (nhập ID phiếu)</label>
+                            <input type="number" name="IdPhieu" class="form-control px-3 py-2" placeholder="ID phiếu hỗ trợ" required style="border-radius:10px;">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-bold small text-secondary">Kỹ thuật viên phụ trách</label>
+                            <select name="IdNhanVien" class="form-select px-3 py-2" required style="border-radius:10px;">
+                                <option value="">-- Chọn kỹ thuật viên --</option>
+                                @foreach (var ktv in Model.DanhSachKTV)
+                                {
+                                    <option value="@ktv.Value">@ktv.Text</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-bold small text-secondary">Ngày hẹn</label>
+                            <input type="date" name="NgayHenStr" class="form-control px-3 py-2" required style="border-radius:10px;" value="@DateTime.Today.ToString("yyyy-MM-dd")">
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label fw-bold small text-secondary">Giờ bắt đầu</label>
+                            <input type="time" name="GioBatDauStr" class="form-control px-3 py-2" required style="border-radius:10px;" value="08:00">
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label fw-bold small text-secondary">Giờ kết thúc</label>
+                            <input type="time" name="GioKetThucStr" class="form-control px-3 py-2" required style="border-radius:10px;" value="10:00">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-bold small text-secondary">Địa chỉ hỗ trợ</label>
+                            <input type="text" name="DiaChiHoTro" class="form-control px-3 py-2" placeholder="Nhập địa chỉ cụ thể..." style="border-radius:10px;">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-bold small text-secondary">Ghi chú</label>
+                            <textarea name="GhiChu" class="form-control px-3 py-2" rows="2" placeholder="Nội dung/yêu cầu công việc..." style="border-radius:10px;"></textarea>
+                        </div>
+                    </div>
+                    <div class="d-flex gap-2 justify-content-end mt-4">
+                        <button type="button" class="btn btn-light fw-bold px-4" data-bs-dismiss="modal" style="border-radius:10px;">Hủy bỏ</button>
+                        <button type="submit" class="btn btn-danger fw-bold px-4 btn-ripple border-0" style="border-radius:10px; background-color: var(--vt-primary);">Lưu lịch hẹn</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Dời lịch hẹn -->
+@if (chiTiet != null)
+{
+    <div class="modal fade" id="editTimeModal" tabindex="-1" aria-labelledby="editTimeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content shadow border-0" style="border-radius: 18px;">
+                <div class="modal-header border-bottom-0 pt-4 px-4">
+                    <h5 class="modal-title fw-bold text-dark-blue" id="editTimeModalLabel">
+                        <i class="bi bi-clock-history text-danger me-2"></i>Dời lịch hẹn
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body px-4 pb-4">
+                    <form method="post" asp-action="DoiLichHen" asp-controller="Staff">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="id" value="@chiTiet.IdLichHen" />
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <label class="form-label fw-bold small text-secondary">Ngày hẹn mới</label>
+                                <input type="date" name="ngayHen" class="form-control px-3 py-2" required style="border-radius:10px;"
+                                       value="@chiTiet.NgayHen?.ToString("yyyy-MM-dd")">
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label fw-bold small text-secondary">Giờ bắt đầu</label>
+                                <input type="time" name="gioBatDau" class="form-control px-3 py-2" required style="border-radius:10px;"
+                                       value="@chiTiet.GioBatDauStr">
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label fw-bold small text-secondary">Giờ kết thúc</label>
+                                <input type="time" name="gioKetThuc" class="form-control px-3 py-2" required style="border-radius:10px;"
+                                       value="@chiTiet.GioKetThucStr">
+                            </div>
+                        </div>
+                        <div class="d-flex gap-2 justify-content-end mt-4">
+                            <button type="button" class="btn btn-light fw-bold px-4" data-bs-dismiss="modal" style="border-radius:10px;">Hủy bỏ</button>
+                            <button type="submit" class="btn btn-danger fw-bold px-4 btn-ripple border-0" style="border-radius:10px; background-color: var(--vt-primary);">Xác nhận</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Đổi KTV -->
+    <div class="modal fade" id="transferTechModal" tabindex="-1" aria-labelledby="transferTechModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content shadow border-0" style="border-radius: 18px;">
+                <div class="modal-header border-bottom-0 pt-4 px-4">
+                    <h5 class="modal-title fw-bold text-dark-blue" id="transferTechModalLabel">
+                        <i class="bi bi-person-gear text-danger me-2"></i>Đổi kỹ thuật viên
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body px-4 pb-4">
+                    <form method="post" asp-action="DoiKyThuatVien" asp-controller="Staff">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="id" value="@chiTiet.IdLichHen" />
+                        <div class="mb-3">
+                            <label class="form-label fw-bold small text-secondary">KTV mới phụ trách</label>
+                            <select name="idNhanVienMoi" class="form-select px-3 py-2" required style="border-radius:10px;">
+                                @foreach (var ktv in Model.DanhSachKTV)
+                                {
+                                    <option value="@ktv.Value" selected="@(chiTiet.IdNhanVien?.ToString() == ktv.Value ? "selected" : null)">@ktv.Text</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="d-flex gap-2 justify-content-end mt-4">
+                            <button type="button" class="btn btn-light fw-semibold px-4" data-bs-dismiss="modal" style="border-radius:10px;">Hủy</button>
+                            <button type="submit" class="btn btn-danger fw-bold px-4 btn-ripple border-0" style="border-radius:10px; background-color: var(--vt-primary);">Bàn giao việc</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Hủy lịch -->
+    <div class="modal fade" id="cancelModal" tabindex="-1" aria-labelledby="cancelModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content shadow border-0" style="border-radius: 18px;">
+                <div class="modal-header border-bottom-0 pt-4 px-4">
+                    <h5 class="modal-title fw-bold text-danger" id="cancelModalLabel">
+                        <i class="bi bi-x-circle-fill text-danger me-2"></i>Hủy lịch hẹn
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body px-4 pb-4">
+                    <form method="post" asp-action="HuyLich" asp-controller="Staff">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="id" value="@chiTiet.IdLichHen" />
+                        <div class="mb-3">
+                            <label class="form-label fw-bold small text-secondary">Lý do hủy lịch <span class="text-danger">*</span></label>
+                            <textarea name="lyDoHuy" class="form-control px-3 py-2" rows="3"
+                                      placeholder="Nhập lý do chi tiết..." required style="border-radius:10px;"></textarea>
+                        </div>
+                        <div class="d-flex gap-2 justify-content-end mt-4">
+                            <button type="button" class="btn btn-light fw-bold px-4" data-bs-dismiss="modal" style="border-radius:10px;">Hủy bỏ</button>
+                            <button type="submit" class="btn btn-danger fw-bold px-4 btn-ripple text-white border-0" style="border-radius:10px; background-color: var(--status-cancelled);">Xác nhận hủy lịch</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+<script src="~/assets/js/staff/sidebar-loader.js"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // --- 1. THEME MANAGEMENT (DARK MODE) ---
+        const htmlElement = document.documentElement;
+        const themeToggleBtn = document.getElementById("darkThemeToggle");
+        const toggleIcon = themeToggleBtn.querySelector("i");
+
+        // Load saved theme
+        const savedTheme = localStorage.getItem("staff-theme") || "light";
+        htmlElement.setAttribute("data-bs-theme", savedTheme);
+        updateThemeIcon(savedTheme);
+
+        themeToggleBtn.addEventListener("click", function() {
+            const currentTheme = htmlElement.getAttribute("data-bs-theme");
+            const newTheme = currentTheme === "dark" ? "light" : "dark";
+            htmlElement.setAttribute("data-bs-theme", newTheme);
+            localStorage.setItem("staff-theme", newTheme);
+            updateThemeIcon(newTheme);
+        });
+
+        function updateThemeIcon(theme) {
+            if (theme === "dark") {
+                toggleIcon.className = "bi bi-sun-fill text-warning";
+            } else {
+                toggleIcon.className = "bi bi-moon-stars-fill text-secondary";
+            }
+        }
+
+        // --- 2. CALENDAR VIEW MODE CONTROLLER (JS ONLY UI FILTERS) ---
+        let currentViewMode = "month"; // month, week, day
+        const viewModeButtons = document.querySelectorAll(".btn-view-mode");
+        const viewIndicator = document.getElementById("viewIndicator");
+        
+        // Find reference date (selected day or today)
+        let refDateStr = "@(chiTiet?.NgayHen?.ToString("yyyy-MM-dd") ?? today.ToString("yyyy-MM-dd"))";
+        
+        viewModeButtons.forEach(btn => {
+            btn.addEventListener("click", function() {
+                viewModeButtons.forEach(b => b.classList.remove("active"));
+                this.classList.add("active");
+                
+                const mode = this.getAttribute("data-mode");
+                setViewMode(mode);
+            });
+        });
+
+        function setViewMode(mode) {
+            currentViewMode = mode;
+            
+            if (mode === "month") {
+                viewIndicator.innerText = "Chế độ xem: Tháng";
+                showMonthView();
+            } else if (mode === "week") {
+                viewIndicator.innerText = "Chế độ xem: Tuần";
+                showWeekView(refDateStr);
+            } else if (mode === "day") {
+                viewIndicator.innerText = "Chế độ xem: Ngày";
+                showDayView(refDateStr);
+            }
+        }
+
+        function showMonthView() {
+            document.querySelectorAll(".calendar-day-cell").forEach(cell => {
+                cell.classList.remove("hidden-by-view");
+                cell.style.width = "";
+            });
+            document.querySelector(".calendar-header-grid").style.display = "";
+        }
+
+        function showWeekView(referenceDateStr) {
+            let refDate = new Date(referenceDateStr);
+            // Get day of week (0 = Sun, 1 = Mon, ..., 6 = Sat)
+            let day = refDate.getDay();
+            let diff = refDate.getDate() - day + (day === 0 ? -6 : 1); // Adjust for Monday start
+            let monday = new Date(refDate.setDate(diff));
+            monday.setHours(0,0,0,0);
+            
+            let sunday = new Date(monday);
+            sunday.setDate(monday.getDate() + 6);
+            sunday.setHours(23,59,59,999);
+            
+            document.querySelectorAll(".calendar-day-cell").forEach(cell => {
+                if (cell.classList.contains("empty-day")) {
+                    cell.classList.add("hidden-by-view");
+                    return;
+                }
+                let cellDate = new Date(cell.getAttribute("data-date"));
+                if (cellDate >= monday && cellDate <= sunday) {
+                    cell.classList.remove("hidden-by-view");
+                } else {
+                    cell.classList.add("hidden-by-view");
+                }
+            });
+            document.querySelector(".calendar-header-grid").style.display = "";
+        }
+
+        function showDayView(referenceDateStr) {
+            document.querySelectorAll(".calendar-day-cell").forEach(cell => {
+                if (cell.getAttribute("data-date") === referenceDateStr) {
+                    cell.classList.remove("hidden-by-view");
+                    cell.style.width = "100%";
+                } else {
+                    cell.classList.add("hidden-by-view");
+                }
+            });
+            document.querySelector(".calendar-header-grid").style.display = "none";
+        }
+
+        // Today Button Navigation click
+        const todayBtn = document.getElementById("btnToday");
+        todayBtn.addEventListener("click", function() {
+            // Check if current calendar has today's month & year
+            const todayThang = @today.Month;
+            const todayNam = @today.Year;
+            const currentThang = @Model.CalendarThang;
+            const currentNam = @Model.CalendarNam;
+
+            if (currentThang !== todayThang || currentNam !== todayNam) {
+                // Redirect to current month
+                window.location.href = "@Url.Action("QuanLyLichHen", "Staff")";
+            } else {
+                // Just select today's cell and highlight it
+                const todayCellStr = "@today.ToString("yyyy-MM-dd")";
+                const cell = document.querySelector(`.calendar-day-cell[data-date="${todayCellStr}"]`);
+                if (cell) {
+                    cell.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    cell.classList.add("flash-highlight");
+                    setTimeout(() => cell.classList.remove("flash-highlight"), 2000);
+                    
+                    // Trigger click to view
+                    const eventLink = cell.querySelector(".calendar-event-card");
+                    if (eventLink) {
+                        eventLink.click();
+                    }
+                }
+            }
+        });
+
+        // --- 3. TIMELINE & HOURS CLICK INTEGRATION ---
+        document.querySelectorAll(".hour-event-tag[data-id]").forEach(tag => {
+            tag.addEventListener("click", function(e) {
+                e.stopPropagation();
+                let apptId = this.getAttribute("data-id");
+                let card = document.querySelector(`.calendar-event-card[data-id="${apptId}"]`);
+                if (card) {
+                    card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    card.classList.add("flash-highlight");
+                    setTimeout(() => card.classList.remove("flash-highlight"), 2000);
+                    
+                    // Click the card to navigate
+                    setTimeout(() => {
+                        window.location.href = card.getAttribute("href");
+                    }, 400);
+                }
+            });
+        });
+
+        // Click on hourly point to navigate
+        document.querySelectorAll(".timeline-hour-point").forEach(point => {
+            point.addEventListener("click", function() {
+                const tag = this.querySelector(".hour-event-tag[data-id]");
+                if (tag) {
+                    tag.click();
+                }
+            });
+        });
+
+        // --- 4. RESPONSIVE SIDEBAR DRAWER SYSTEM ---
+        const sidebarContainer = document.getElementById("sidebarContainer");
+        const drawerBackdrop = document.getElementById("drawerBackdrop");
+        const closeDrawerBtn = document.getElementById("closeSidebarDrawer");
+
+        // Automatically show drawer on mobile/tablet if selectedId exists
+        const hasSelected = @(chiTiet != null ? "true" : "false");
+        if (hasSelected && window.innerWidth < 1200) {
+            openDrawer();
+        }
+
+        if (closeDrawerBtn) {
+            closeDrawerBtn.addEventListener("click", closeDrawer);
+        }
+        if (drawerBackdrop) {
+            drawerBackdrop.addEventListener("click", closeDrawer);
+        }
+
+        function openDrawer() {
+            sidebarContainer.classList.add("show-drawer");
+            drawerBackdrop.classList.add("show-drawer");
+        }
+
+        function closeDrawer() {
+            sidebarContainer.classList.remove("show-drawer");
+            drawerBackdrop.classList.remove("show-drawer");
+        }
+
+        // --- 5. RIPPLE CLICK ANIMATION EFFECT ---
+        document.querySelectorAll(".btn-ripple").forEach(btn => {
+            btn.addEventListener("click", function(e) {
+                let x = e.clientX - e.target.getBoundingClientRect().left;
+                let y = e.clientY - e.target.getBoundingClientRect().top;
+                
+                let ripple = document.createElement("span");
+                ripple.style.left = x + "px";
+                ripple.style.top = y + "px";
+                ripple.className = "ripple-span"; // Add standard style or animate directly
+                
+                this.appendChild(ripple);
+                setTimeout(() => ripple.remove(), 1000);
+            });
+        });
+
+        // Scroll active elements into view on startup
+        const activeCard = document.querySelector(".calendar-event-card.active");
+        if (activeCard) {
+            activeCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+        
+        // Scroll horizontal timeline to center current hour if today
+        const currentHourPoint = document.querySelector(".timeline-hour-point.is-current");
+        if (currentHourPoint) {
+            currentHourPoint.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        }
+    });
+</script>
+</body>
+</html>

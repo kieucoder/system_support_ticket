@@ -1,0 +1,432 @@
+@model SupportTicketSysterm.ViewModels.TaiKhoanNhanVienViewModel
+@{
+    Layout = "~/Views/Shared/_LayoutStaff.cshtml";
+    ViewData["Title"] = "Tài Khoản Nhân Viên - TechSupport";
+    ViewData["HeaderTitle"] = "Tài Khoản Nhân Viên";
+    ViewData["HeaderSubtitle"] = "Quản lý thông tin cá nhân, bảo mật và nhật ký hoạt động";
+    
+    var avatarUrl = !string.IsNullOrEmpty(Model.Avatar)
+        ? "/uploads/avatar/" + Model.Avatar
+        : "https://ui-avatars.com/api/?name=" + System.Net.WebUtility.UrlEncode(Model.HoTen) + "&background=EE0033&color=fff&size=80";
+
+    var vaiTroVn = Model.VaiTro == "Admin" ? "Quản trị viên" : "Nhân viên hỗ trợ";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/assets/css/staff/staff-account.css" asp-append-version="true" />
+}
+
+<!-- Profile Banner Header -->
+<div class="profile-banner mb-4">
+    <div class="profile-banner-content">
+        <img src="@avatarUrl" alt="Ảnh đại diện" class="profile-banner-avatar" id="bannerAvatar" style="object-fit: cover;">
+        <div class="profile-banner-info">
+            <h3 id="bannerName">@Model.HoTen</h3>
+            <p id="bannerRole">Mã nhân viên: @Model.MaNhanVien</p>
+            <p id="bannerEmail" style="color:rgba(255,255,255,0.7); font-size: 0.85rem; margin:0;">
+                <i class="fa-solid fa-envelope me-1"></i>@Model.Email
+            </p>
+            <span class="profile-banner-badge mt-2">
+                <i class="fa-solid fa-shield-halved"></i> @vaiTroVn
+            </span>
+        </div>
+    </div>
+</div>
+
+<!-- Alert Messages -->
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show border-0 rounded-3 mb-4 shadow-sm" role="alert" style="border-left: 4px solid #10B981 !important; background-color: rgba(16, 185, 129, 0.1);">
+        <i class="bi bi-check-circle-fill me-2 text-success"></i>@TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show border-0 rounded-3 mb-4 shadow-sm" role="alert" style="border-left: 4px solid #EF4444 !important; background-color: rgba(239, 68, 68, 0.1);">
+        <i class="bi bi-exclamation-triangle-fill me-2 text-danger"></i>@TempData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="card border-0 shadow-sm p-4 mb-4" style="border-radius: 18px; background: rgba(255,255,255,0.85); backdrop-filter: blur(10px);">
+    
+    <!-- Profile Tabs Navigation -->
+    <div class="profile-nav-tabs" role="tablist" aria-label="Profile settings tabs">
+        <button class="profile-nav-tab active" onclick="switchProfileTab('tab-info', this)" role="tab" aria-selected="true" id="btn-tab-info">
+            <i class="fa-solid fa-user-pen me-2"></i>Thông Tin Cá Nhân
+        </button>
+        <button class="profile-nav-tab" onclick="switchProfileTab('tab-password', this)" role="tab" aria-selected="false" id="btn-tab-password">
+            <i class="fa-solid fa-lock me-2"></i>Đổi Mật Khẩu
+        </button>
+        <button class="profile-nav-tab" onclick="switchProfileTab('tab-avatar', this)" role="tab" aria-selected="false" id="btn-tab-avatar">
+            <i class="fa-solid fa-image me-2"></i>Ảnh Đại Diện
+        </button>
+    </div>
+
+    <!-- ===========================
+         TAB 1: PERSONAL INFO
+         =========================== -->
+    <div class="profile-tab-panel active" id="tab-info" role="tabpanel" aria-labelledby="btn-tab-info">
+        <div class="row g-4">
+            <div class="col-lg-8 col-12">
+                <form asp-action="CapNhatThongTinCaNhan" asp-controller="Staff" method="post" id="profileInfoForm">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="IdNhanVien" />
+                    
+                    <div class="text-danger mb-3" asp-validation-summary="ModelOnly"></div>
+
+                    <div class="row g-3">
+                        <!-- Full Name -->
+                        <div class="col-md-6">
+                            <label asp-for="HoTen" class="form-label-custom">
+                                <i class="fa-solid fa-user me-1 text-danger"></i>Họ & Tên <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" asp-for="HoTen" class="form-control form-control-custom" placeholder="Nguyễn Văn A" required>
+                            <span asp-validation-for="HoTen" class="text-danger small mt-1 d-block"></span>
+                        </div>
+
+                        <!-- Email -->
+                        <div class="col-md-6">
+                            <label asp-for="Email" class="form-label-custom">
+                                <i class="fa-solid fa-envelope me-1 text-danger"></i>Email Nội Bộ <span class="text-danger">*</span>
+                            </label>
+                            <input type="email" asp-for="Email" class="form-control form-control-custom" placeholder="nhanvien@viettel.com.vn" required>
+                            <span asp-validation-for="Email" class="text-danger small mt-1 d-block"></span>
+                        </div>
+
+                        <!-- Phone -->
+                        <div class="col-md-6">
+                            <label asp-for="SoDienThoai" class="form-label-custom">
+                                <i class="fa-solid fa-phone me-1 text-danger"></i>Số Điện Thoại <span class="text-danger">*</span>
+                            </label>
+                            <input type="tel" asp-for="SoDienThoai" class="form-control form-control-custom" placeholder="0981234567" required>
+                            <span asp-validation-for="SoDienThoai" class="text-danger small mt-1 d-block"></span>
+                        </div>
+
+                        <!-- Employee ID (readonly) -->
+                        <div class="col-md-6">
+                             <label asp-for="MaNhanVien" class="form-label-custom">
+                                 <i class="fa-solid fa-id-badge me-1 text-danger"></i>Mã Nhân Viên (Tự Động)
+                             </label>
+                            <input type="text" asp-for="MaNhanVien" class="form-control form-control-custom" readonly style="background: rgba(238,0,51,0.04); color: #EE0033; font-weight: 700; letter-spacing: 1px;">
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="col-12 mt-3">
+                             <button type="submit" class="btn btn-viettel px-5">
+                                 <i class="fa-solid fa-floppy-disk me-2"></i>Lưu Thông Tin Cá Nhân
+                             </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Info Sidebar / Nhật ký hoạt động gần nhất -->
+            <div class="col-lg-4 col-12">
+                <div class="p-4 rounded-3 d-flex flex-column h-100" style="background: rgba(238,0,51,0.02); border: 1px solid rgba(238,0,51,0.08);">
+                    <p class="fw-bold mb-3" style="color: #EE0033; font-size: 0.85rem;">
+                        <i class="fa-solid fa-shield-check me-1"></i>Chính sách tài khoản
+                    </p>
+                    <ul class="mb-3 ps-3" style="font-size: 0.78rem; color: #64748b; line-height: 1.8;">
+                        <li>Thông tin tài khoản được mã hóa an toàn.</li>
+                        <li>Email không thể trùng với tài khoản khác.</li>
+                        <li>Số điện thoại phải đúng định dạng 10-11 số.</li>
+                        <li>Mã nhân viên được hệ thống cấp tự động.</li>
+                    </ul>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===========================
+         TAB 2: CHANGE PASSWORD
+         =========================== -->
+    <div class="profile-tab-panel" id="tab-password" role="tabpanel" aria-labelledby="btn-tab-password">
+        <div class="row justify-content-center">
+            <div class="col-lg-6 col-md-8 col-12">
+                <div class="text-center mb-4">
+                    <div class="d-inline-flex align-items-center justify-content-center bg-warning-subtle text-warning mx-auto mb-3 rounded-circle" style="width: 56px; height: 56px; font-size: 1.5rem;">
+                        <i class="fa-solid fa-lock"></i>
+                    </div>
+                    <h3 class="fw-bold text-dark-blue">Đổi Mật Khẩu Bảo Mật</h3>
+                    <p class="text-muted" style="font-size: 0.85rem;">Mật khẩu mạnh giúp bảo vệ tài khoản quản trị của bạn</p>
+                </div>
+
+                <form asp-action="DoiMatKhau" asp-controller="Staff" method="post" id="profilePasswordForm">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="IdNhanVien" />
+                    
+                    <!-- Current Password -->
+                    <div class="mb-3">
+                        <label asp-for="MatKhauCu" class="form-label-custom">
+                            <i class="fa-solid fa-lock-open me-1 text-danger"></i>Mật Khẩu Hiện Tại <span class="text-danger">*</span>
+                        </label>
+                        <div class="input-group-pwd">
+                            <input type="password" asp-for="MatKhauCu" class="form-control form-control-custom" placeholder="Nhập mật khẩu hiện tại" required>
+                            <button type="button" class="btn-eye-toggle" onclick="toggleEye(this, 'MatKhauCu')" aria-label="Toggle visibility">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
+                        <span asp-validation-for="MatKhauCu" class="text-danger small mt-1 d-block"></span>
+                    </div>
+
+                    <!-- New Password -->
+                    <div class="mb-3">
+                        <label asp-for="MatKhauMoi" class="form-label-custom">
+                            <i class="fa-solid fa-key me-1 text-danger"></i>Mật Khẩu Mới <span class="text-danger">*</span>
+                        </label>
+                        <div class="input-group-pwd">
+                            <input type="password" asp-for="MatKhauMoi" class="form-control form-control-custom" placeholder="Tối thiểu 6 ký tự" required oninput="checkPasswordStrength(this.value)">
+                            <button type="button" class="btn-eye-toggle" onclick="toggleEye(this, 'MatKhauMoi')" aria-label="Toggle visibility">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
+                        <div class="pwd-strength-meter" aria-hidden="true">
+                            <div class="pwd-strength-bar" id="pwdStrengthBar"></div>
+                        </div>
+                        <p class="pwd-strength-text text-muted" id="pwdStrengthText"></p>
+                        <span asp-validation-for="MatKhauMoi" class="text-danger small mt-1 d-block"></span>
+                    </div>
+
+                    <!-- Confirm Password -->
+                    <div class="mb-4">
+                        <label asp-for="NhapLaiMatKhau" class="form-label-custom">
+                            <i class="fa-solid fa-check-double me-1 text-danger"></i>Xác Nhận Mật Khẩu Mới <span class="text-danger">*</span>
+                        </label>
+                        <div class="input-group-pwd">
+                            <input type="password" asp-for="NhapLaiMatKhau" class="form-control form-control-custom" placeholder="Nhập lại mật khẩu mới" required>
+                            <button type="button" class="btn-eye-toggle" onclick="toggleEye(this, 'NhapLaiMatKhau')" aria-label="Toggle visibility">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
+                        <span asp-validation-for="NhapLaiMatKhau" class="text-danger small mt-1 d-block"></span>
+                    </div>
+
+                    <!-- Password Rules -->
+                    <div class="p-3 rounded-3 mb-4" style="background: rgba(245,158,11,0.04); border: 1px solid rgba(245,158,11,0.15);">
+                         <p class="mb-2 fw-bold" style="font-size: 0.8rem; color: #d97706;">
+                             <i class="fa-solid fa-triangle-exclamation me-1"></i>Yêu cầu mật khẩu bảo mật
+                         </p>
+                        <ul class="mb-0 ps-3" style="font-size: 0.75rem; color: #64748b;">
+                            <li id="rule-length">Tối thiểu <strong>6 ký tự</strong></li>
+                            <li id="rule-special">Chứa các ký tự đặc biệt (ví dụ: !@@#$%^&*)</li>
+                        </ul>
+                    </div>
+
+                    <button type="submit" class="btn btn-viettel w-100">
+                        <i class="fa-solid fa-shield-check me-2"></i>Xác Nhận Đổi Mật Khẩu
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===========================
+         TAB 3: AVATAR UPLOAD
+         =========================== -->
+    <div class="profile-tab-panel" id="tab-avatar" role="tabpanel" aria-labelledby="btn-tab-avatar">
+        <div class="row justify-content-center">
+            <div class="col-lg-6 col-md-8 col-12">
+                <div class="text-center mb-4">
+                     <div class="d-inline-flex align-items-center justify-content-center bg-success-subtle text-success mx-auto mb-3 rounded-circle" style="width: 56px; height: 56px; font-size: 1.5rem;">
+                         <i class="fa-solid fa-camera"></i>
+                     </div>
+                    <h3 class="fw-bold text-dark-blue">Thay Ảnh Đại Diện</h3>
+                    <p class="text-muted" style="font-size: 0.85rem;">Tải ảnh chân dung mới lên để cập nhật hình ảnh hiển thị trên toàn hệ thống</p>
+                </div>
+
+                <form asp-action="CapNhatAvatar" asp-controller="Staff" method="post" enctype="multipart/form-data" id="avatarUploadForm">
+                    @Html.AntiForgeryToken()
+                    
+                    <!-- Current Preview -->
+                    <div id="avatarPreview" class="text-center mb-4">
+                        <img id="avatarPreviewImg" src="@avatarUrl" alt="Xem trước ảnh đại diện" class="rounded-circle border border-3 shadow-sm" style="width: 130px; height: 130px; object-fit: cover;">
+                    </div>
+
+                    <!-- Drag & Drop Upload Area -->
+                    <div class="avatar-upload-area" id="avatarUploadArea" onclick="document.getElementById('avatarFile').click()" role="button" tabindex="0" aria-label="Khu vực tải ảnh đại diện">
+                         <div class="avatar-upload-icon">
+                             <i class="fa-solid fa-cloud-arrow-up"></i>
+                         </div>
+                        <p class="fw-bold mb-1">Kéo & Thả ảnh hoặc Click vào đây</p>
+                        <p class="text-muted mb-3" style="font-size: 0.82rem;">để chọn ảnh từ máy tính của bạn</p>
+                        <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-3 py-1 rounded-pill" style="font-size: 0.72rem;">
+                            JPG · PNG · WEBP · Tối đa 2MB
+                        </span>
+                        <input type="file" asp-for="AvatarFile" id="avatarFile" accept=".jpg,.jpeg,.png,.webp" style="display:none;">
+                    </div>
+
+                    <p class="avatar-size-guide mt-3 text-center">
+                        <i class="fa-solid fa-circle-info me-1"></i>Kích thước tối ưu: <strong>400×400px</strong>. Ảnh sẽ được cắt thành hình tròn.
+                    </p>
+
+                    <div class="mt-4 text-center">
+                         <button type="submit" class="btn btn-viettel px-5">
+                             <i class="fa-solid fa-floppy-disk me-2"></i>Lưu Ảnh Đại Diện
+                         </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // --- 1. TAB CONTROL SWITCHING ---
+        function switchProfileTab(tabId, btnElement) {
+            // Hide all tab panels
+            document.querySelectorAll(".profile-tab-panel").forEach(panel => {
+                panel.classList.remove("active");
+            });
+            // Show selected tab panel
+            document.getElementById(tabId).classList.add("active");
+
+            // Deactivate all tab buttons
+            document.querySelectorAll(".profile-nav-tab").forEach(btn => {
+                btn.classList.remove("active");
+                btn.setAttribute("aria-selected", "false");
+            });
+            // Activate current tab button
+            btnElement.classList.add("active");
+            btnElement.setAttribute("aria-selected", "true");
+            
+            // Save active tab in local session storage (client side only decoration)
+            sessionStorage.setItem("activeProfileTab", tabId);
+        }
+
+        // Restore tab on page reload or hash link
+        document.addEventListener("DOMContentLoaded", function() {
+            let activeTab = sessionStorage.getItem("activeProfileTab") || "tab-info";
+            
+            // Handle url hash (e.g. #changePassword)
+            if (window.location.hash === "#changePassword") {
+                activeTab = "tab-password";
+            }
+            
+            const tabButtonMap = {
+                "tab-info": "btn-tab-info",
+                "tab-password": "btn-tab-password",
+                "tab-avatar": "btn-tab-avatar"
+            };
+            
+            const btnId = tabButtonMap[activeTab] || "btn-tab-info";
+            const btn = document.getElementById(btnId);
+            if (btn) {
+                btn.click();
+            }
+        });
+
+        // --- 2. PASSWORD VISIBILITY TOGGLE ---
+        function toggleEye(button, inputId) {
+            const input = document.getElementById(inputId);
+            const icon = button.querySelector("i");
+            if (input.type === "password") {
+                input.type = "text";
+                icon.className = "bi bi-eye-slash";
+            } else {
+                input.type = "password";
+                icon.className = "bi bi-eye";
+            }
+        }
+
+        // --- 3. PASSWORD STRENGTH METER ---
+        function checkPasswordStrength(password) {
+            const bar = document.getElementById("pwdStrengthBar");
+            const txt = document.getElementById("pwdStrengthText");
+            let score = 0;
+
+            if (password.length >= 6) score++;
+            if (/[A-Z]/.test(password) || /[0-9]/.test(password)) score++;
+            if (/[!@@#$%^&*(),.?":{}|<>]/.test(password)) score++;
+
+            if (password.length === 0) {
+                bar.style.width = "0%";
+                txt.innerText = "";
+            } else if (score === 1) {
+                bar.style.width = "33%";
+                bar.style.backgroundColor = "#EF4444";
+                txt.innerText = "Yếu";
+                txt.style.color = "#EF4444";
+            } else if (score === 2) {
+                bar.style.width = "66%";
+                bar.style.backgroundColor = "#F59E0B";
+                txt.innerText = "Trung bình";
+                txt.style.color = "#F59E0B";
+            } else if (score >= 3) {
+                bar.style.width = "100%";
+                bar.style.backgroundColor = "#10B981";
+                txt.innerText = "Mạnh";
+                txt.style.color = "#10B981";
+            }
+        }
+
+        // --- 4. AVATAR UPLOAD PREVIEW & DRAG-DROP ---
+        const fileInput = document.getElementById("avatarFile");
+        const uploadArea = document.getElementById("avatarUploadArea");
+        const previewImg = document.getElementById("avatarPreviewImg");
+
+        fileInput.addEventListener("change", function() {
+            handleAvatarFile(this.files[0]);
+        });
+
+        // Drag events
+        ['dragenter', 'dragover'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                uploadArea.classList.add("dragover");
+            }, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                uploadArea.classList.remove("dragover");
+            }, false);
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            if (files.length) {
+                fileInput.files = files;
+                handleAvatarFile(files[0]);
+            }
+        }, false);
+
+        function handleAvatarFile(file) {
+            if (!file) return;
+            // Check size (2MB)
+            if (file.size > 2 * 1024 * 1024) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'File quá lớn',
+                    text: 'Kích thước file ảnh không được vượt quá 2MB.',
+                    confirmButtonColor: '#EE0033'
+                });
+                fileInput.value = "";
+                return;
+            }
+            // Check image format
+            if (!file.type.startsWith("image/")) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Định dạng sai',
+                    text: 'Chỉ chấp nhận các file định dạng ảnh (JPG, PNG, WEBP).',
+                    confirmButtonColor: '#EE0033'
+                });
+                fileInput.value = "";
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                previewImg.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    </script>
+}

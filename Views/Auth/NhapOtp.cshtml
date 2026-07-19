@@ -1,0 +1,202 @@
+@model SupportTicketSysterm.Models.NhapOtpViewModel
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Xác thực OTP | TechSupport</title>
+    <link rel="icon" type="image/x-icon" href="https://viettel.com.vn/favicon.ico">
+    
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="~/css/auth/otp.css" asp-append-version="true">
+</head>
+<body>
+    <!-- Back to Register Button -->
+    <a asp-controller="Auth" asp-action="DangKy" class="btn-back-home" title="Quay lại đăng ký" aria-label="Quay lại đăng ký">
+        <i class="bi bi-arrow-left"></i>
+    </a>
+
+    <div class="register-wrapper otp-page">
+        <div class="register-container">
+            <!-- ================ LEFT (40%) ================ -->
+            <div class="register-info otp-info-panel">
+                <div class="brand">
+                    <i class="fa-solid fa-microchip"></i>
+                    <span>TechSupport</span>
+                </div>
+
+                <div class="otp-info-content">
+                    <h2>Xác thực tài khoản<br>khách hàng</h2>
+                    <p class="description">Mã OTP đã được gửi tới thông tin liên hệ của bạn. Nhập chính xác 6 chữ số để hoàn tất quá trình xác thực và đăng nhập vào hệ thống.</p>
+                    
+                    <div class="otp-hero-card">
+                        <div class="otp-hero-icon">
+                            <i class="bi bi-shield-fill-check"></i>
+                        </div>
+                        <div>
+                            <span class="otp-hero-label">Thời gian còn lại</span>
+                            <div id="otpExpiryDisplay" class="otp-hero-timer">05:00</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="feature-list">
+                    <div class="feature-item">
+                        <i class="fa-solid fa-circle-check"></i>
+                        <span>Nhập mã xác thực gồm 6 chữ số</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fa-solid fa-circle-check"></i>
+                        <span>Mã OTP có hiệu lực trong 5 phút</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fa-solid fa-circle-check"></i>
+                        <span>Gửi lại mã sau mỗi 60 giây</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fa-solid fa-circle-check"></i>
+                        <span>Bảo mật thông tin xác thực</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fa-solid fa-circle-check"></i>
+                        <span>Đăng nhập hệ thống tự động</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fa-solid fa-circle-check"></i>
+                        <span>Hỗ trợ kỹ thuật chuyên nghiệp 24/7</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================ RIGHT (60%) ================ -->
+            <div class="register-form otp-form-panel">
+                <div class="form-card">
+                    <div class="register-header">
+                        <h3>Xác thực Email</h3>
+                        <p>Nhập mã OTP gồm 6 chữ số đã gửi tới Email của bạn.</p>
+                    </div>
+
+                    <!-- Alerts -->
+                    @if (TempData["Success"] != null)
+                    {
+                        <div class="alert alert-success py-3 px-3 mb-3 border-0 rounded-4" style="background-color:#e6f4ea; color:#137333;">
+                            <i class="bi bi-check-circle-fill me-2"></i> @TempData["Success"]
+                        </div>
+                    }
+
+                    @if (TempData["Error"] != null)
+                    {
+                        <div class="alert alert-danger py-3 px-3 mb-3 border-0 rounded-4" style="background-color:#fce8e6; color:#c5221f;">
+                            <i class="bi bi-exclamation-triangle-fill graves me-2"></i> @TempData["Error"]
+                        </div>
+                    }
+
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        @foreach (var error in ViewData.ModelState[string.Empty]?.Errors ?? new Microsoft.AspNetCore.Mvc.ModelBinding.ModelErrorCollection())
+                        {
+                            <div class="alert alert-danger py-3 px-3 mb-3 border-0 rounded-4" style="background-color:#fce8e6; color:#c5221f;">
+                                <i class="bi bi-exclamation-triangle-fill me-2"></i> @error.ErrorMessage
+                            </div>
+                        }
+                    }
+
+                    <!-- Main OTP Verification Form -->
+                    <form id="otpVerificationForm" asp-controller="Auth" asp-action="XacNhanOtp" method="post" novalidate>
+                        @Html.AntiForgeryToken()
+                        
+                        <!-- Hidden inputs storing parameters for JavaScript timers -->
+                        <input type="hidden" id="otpExpirySeconds" value="@Model.ExpirySeconds" />
+                        <input type="hidden" id="otpResendCooldown" value="@Model.ResendCooldownSeconds" />
+
+                        <!-- Hidden actual OTP input for model binding -->
+                        <input asp-for="Otp" type="hidden" id="otpInput" />
+
+                        <div class="mb-3">
+                            <label class="form-label">Thông tin liên hệ nhận OTP</label>
+                            <div class="otp-readonly-box">
+                                <i class="bi bi-envelope-at-fill"></i>
+                                <span>@Model.MaskedPhoneNumber</span>
+                            </div>
+                        </div>
+
+                        <!-- 6 OTP digits entry boxes -->
+                        <div class="mb-3">
+                            <label class="form-label">Nhập mã xác nhận</label>
+                            <div class="otp-box-container">
+                                <input type="text" class="otp-digit-input" maxlength="1" inputmode="numeric" autocomplete="one-time-code" required>
+                                <input type="text" class="otp-digit-input" maxlength="1" inputmode="numeric" autocomplete="one-time-code" required>
+                                <input type="text" class="otp-digit-input" maxlength="1" inputmode="numeric" autocomplete="one-time-code" required>
+                                <input type="text" class="otp-digit-input" maxlength="1" inputmode="numeric" autocomplete="one-time-code" required>
+                                <input type="text" class="otp-digit-input" maxlength="1" inputmode="numeric" autocomplete="one-time-code" required>
+                                <input type="text" class="otp-digit-input" maxlength="1" inputmode="numeric" autocomplete="one-time-code" required>
+                            </div>
+                            <span asp-validation-for="Otp" class="text-danger small mt-1 d-block"></span>
+                        </div>
+
+                        <div class="otp-status-bar mb-3">
+                            <div>
+                                <span class="otp-status-label">Hiệu lực còn lại</span>
+                                <strong id="otpCountdownText">05:00</strong>
+                            </div>
+                            <div>
+                                <span class="otp-status-label">Gửi lại sau</span>
+                                <strong id="resendCountdownText">(01:00)</strong>
+                            </div>
+                        </div>
+
+                        <!-- Progress Bar displaying expiration progress -->
+                        <div class="otp-progress-container">
+                            <div id="otpProgressBar" class="otp-progress-bar"></div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button type="submit" id="btnConfirmOtp" class="btn-login w-100 mb-3">
+                            <span class="btn-text">
+                                <i class="bi bi-shield-check-fill me-1"></i> Xác nhận OTP
+                            </span>
+                            <span class="spinner" style="display:none;">
+                                <i class="fa-solid fa-circle-notch fa-spin"></i> Đang xác thực...
+                            </span>
+                        </button>
+                    </form>
+
+                    <!-- Resend OTP Form -->
+                    <form id="resendOtpForm" asp-controller="Auth" asp-action="GuiLaiOtp" method="post">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" id="btnResendOtp" class="otp-resend-btn" disabled>
+                            <i class="bi bi-arrow-repeat me-1"></i> Gửi lại OTP
+                        </button>
+                    </form>
+
+                    <p class="text-center register-footer-text">
+                        Muốn chỉnh sửa thông tin?
+                        <a asp-controller="Auth" asp-action="DangKy" class="text-decoration-none fw-semibold">Quay lại Đăng ký</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notifications Container -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3"></div>
+
+    <!-- Scripts -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/js/auth/otp.js" asp-append-version="true"></script>
+</body>
+</html>

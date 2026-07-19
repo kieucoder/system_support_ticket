@@ -1,146 +1,340 @@
+/* -------------------------------------------------------------
+ * FILE: assets/css/staff/admin-appointments.css
+ * AUTHOR: Senior UI/UX Designer & Frontend Developer
+ * DESCRIPTION: Premium style sheet for TechSupport Admin Appointments Page
+ *              Google Calendar & Zendesk design patterns.
+ * ------------------------------------------------------------- */
+
+/* =============================================================
+   1. COLOR VARIABLES & THEME TOKENS
+   ============================================================= */
 :root {
-    --vt-primary: #0A5C8C;
-    --vt-primary-hover: #07476F;
-    --vt-primary-light: rgba(10, 92, 140, 0.08);
-    --vt-accent: #1A8CC4;
-    --vt-bg: #F5F7FA;
+    --vt-primary: #D71920;
+    --vt-primary-hover: #B5121B;
+    --vt-primary-light: rgba(215, 25, 32, 0.06);
+    --vt-bg: #F5F7FB;
     --vt-card-bg: #FFFFFF;
-    --vt-border: #E2E8F0;
-    --vt-text-main: #1E293B;
-    --vt-text-muted: #64748B;
+    --vt-border: #E5E7EB;
+    --vt-text-main: #1F2937;
+    --vt-text-muted: #6B7280;
     
+    /* Semantic Colors */
+    --vt-success: #10B981;
+    --vt-success-light: rgba(16, 185, 129, 0.08);
+    --vt-warning: #F59E0B;
+    --vt-warning-light: rgba(245, 158, 11, 0.08);
+    --vt-danger: #EF4444;
+    --vt-danger-light: rgba(239, 68, 68, 0.08);
+    --vt-info: #3B82F6;
+    --vt-info-light: rgba(59, 130, 246, 0.08);
+    --vt-purple: #8B5CF6;
+    --vt-purple-light: rgba(139, 92, 246, 0.08);
+    
+    /* Corner & Shadows */
     --vt-radius: 18px;
     --vt-radius-sm: 10px;
-    --vt-shadow: 0 4px 20px rgba(10, 92, 140, 0.04);
+    --vt-shadow: 0 10px 30px rgba(0, 0, 0, 0.02), 0 1px 4px rgba(0, 0, 0, 0.01);
+    --vt-shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.04);
     --vt-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     
-    /* Status colors */
-    --color-waiting: #F59E0B;
-    --color-confirmed: #2563EB;
-    --color-on-way: #8B5CF6;
-    --color-progress: #06B6D4;
-    --color-completed: #10B981;
-    --color-cancelled: #EF4444;
+    /* Glassmorphism */
+    --glass-bg: rgba(255, 255, 255, 0.7);
+    --glass-border: rgba(229, 231, 235, 0.5);
+    --glass-blur: blur(8px);
 }
 
-[data-bs-theme="dark"] {
-    --vt-bg: #0B0F19;
-    --vt-card-bg: #151F32;
-    --vt-border: #243249;
+/* Dark Mode Tokens */
+[data-bs-theme="dark"], body.dark-theme {
+    --vt-bg: #0F172A;
+    --vt-card-bg: #1E293B;
+    --vt-border: #334155;
     --vt-text-main: #F1F5F9;
     --vt-text-muted: #94A3B8;
-    --vt-primary-light: rgba(26, 140, 196, 0.15);
+    --vt-primary-light: rgba(215, 25, 32, 0.12);
+    
+    --glass-bg: rgba(30, 41, 59, 0.7);
+    --glass-border: rgba(51, 65, 85, 0.5);
+    
+    --vt-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+    --vt-shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.35);
 }
 
+/* Base Body settings override */
 body {
-    font-family: 'Poppins', 'Inter', sans-serif;
-    background-color: var(--vt-bg);
-    color: var(--vt-text-main);
+    background-color: var(--vt-bg) !important;
+    color: var(--vt-text-main) !important;
+    font-family: 'Inter', 'Poppins', sans-serif !important;
+    font-size: 16px;
+    transition: var(--vt-transition);
 }
 
-/* Stats Cards styling */
+/* =============================================================
+   2. DASHBOARD KPI CARDS (6 CARDS)
+   ============================================================= */
+.stats-cards-row {
+    margin-bottom: 28px;
+}
+
 .stat-card-appointments {
-    background-color: var(--vt-card-bg);
-    border-radius: var(--vt-radius);
+    background: var(--vt-card-bg);
     border: 1px solid var(--vt-border);
-    padding: 20px;
+    border-radius: var(--vt-radius);
+    padding: 24px;
     box-shadow: var(--vt-shadow);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     transition: var(--vt-transition);
     height: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card-appointments::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background-color: transparent;
+    transition: var(--vt-transition);
 }
 
 .stat-card-appointments:hover {
     transform: translateY(-4px);
-    box-shadow: 0 10px 25px rgba(10, 92, 140, 0.08);
+    box-shadow: var(--vt-shadow-lg);
+}
+
+.stat-card-appointments.today:hover::after { background-color: var(--vt-info); }
+.stat-card-appointments.pending:hover::after { background-color: var(--vt-warning); }
+.stat-card-appointments.confirmed:hover::after { background-color: var(--vt-success); }
+.stat-card-appointments.ongoing:hover::after { background-color: var(--vt-purple); }
+.stat-card-appointments.completed:hover::after { background-color: var(--vt-success); }
+.stat-card-appointments.cancelled:hover::after { background-color: var(--vt-danger); }
+
+.stat-card-info-box {
+    display: flex;
+    flex-direction: column;
+}
+
+.appt-label {
+    font-size: 0.8rem;
+    font-weight: 750;
+    text-transform: uppercase;
+    color: var(--vt-text-muted);
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+}
+
+.stat-card-num {
+    font-size: 1.85rem;
+    font-weight: 900;
+    color: var(--vt-text-main);
+    line-height: 1.1;
+    margin-bottom: 4px;
+}
+
+.stat-card-desc {
+    font-size: 0.72rem;
+    color: var(--vt-text-muted);
+    display: flex;
+    align-items: center;
+    gap: 4px;
 }
 
 .stat-icon-wrapper {
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.4rem;
+    font-size: 1.45rem;
     flex-shrink: 0;
+    transition: var(--vt-transition);
 }
 
-/* Toolbar styles */
+.stat-card-appointments:hover .stat-icon-wrapper {
+    transform: scale(1.08);
+}
+
+/* Stat color themes */
+.stat-card-appointments.today .stat-icon-wrapper { background: var(--vt-info-light); color: var(--vt-info); }
+.stat-card-appointments.pending .stat-icon-wrapper { background: var(--vt-warning-light); color: var(--vt-warning); }
+.stat-card-appointments.confirmed .stat-icon-wrapper { background: var(--vt-success-light); color: var(--vt-success); }
+.stat-card-appointments.ongoing .stat-icon-wrapper { background: var(--vt-purple-light); color: var(--vt-purple); }
+.stat-card-appointments.completed .stat-icon-wrapper { background: var(--vt-success-light); color: var(--vt-success); }
+.stat-card-appointments.cancelled .stat-icon-wrapper { background: var(--vt-danger-light); color: var(--vt-danger); }
+
+/* =============================================================
+   3. REFINED TOOLBAR CONTROLS
+   ============================================================= */
 .appt-toolbar {
-    background-color: var(--vt-card-bg);
+    background: var(--vt-card-bg);
     border: 1px solid var(--vt-border);
+    border-radius: var(--vt-radius);
+    padding: 20px;
+    margin-bottom: 28px;
+    box-shadow: var(--vt-shadow);
+    transition: var(--vt-transition);
+}
+
+.toolbar-scroll-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.btn-add-appt {
+    height: 46px;
     border-radius: var(--vt-radius-sm);
-    padding: 16px;
-    margin-bottom: 24px;
+    background-color: var(--vt-primary) !important;
+    border-color: var(--vt-primary) !important;
+    color: #FFFFFF !important;
+    font-weight: 700;
+    transition: var(--vt-transition);
+    box-shadow: 0 4px 12px rgba(215, 25, 32, 0.15);
+}
+
+.btn-add-appt:hover {
+    background-color: var(--vt-primary-hover) !important;
+    border-color: var(--vt-primary-hover) !important;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(215, 25, 32, 0.25);
+}
+
+.toolbar-view-modes {
+    display: flex;
+    gap: 6px;
+    background-color: var(--vt-bg);
+    padding: 4px;
+    border-radius: var(--vt-radius-sm);
+}
+
+.toolbar-view-modes .btn-mode {
+    border: none;
+    background: transparent;
+    padding: 8px 16px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--vt-text-muted);
+    border-radius: 8px;
+    transition: var(--vt-transition);
+}
+
+.toolbar-view-modes .btn-mode:hover {
+    color: var(--vt-text-main);
+}
+
+.toolbar-view-modes .btn-mode.active {
+    background-color: var(--vt-card-bg);
+    color: var(--vt-primary);
     box-shadow: var(--vt-shadow);
 }
 
-/* Two column layout grid */
+.toolbar-filters-panel {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.toolbar-filters-panel .form-select,
+.toolbar-filters-panel .form-control {
+    height: 44px;
+    border-radius: var(--vt-radius-sm);
+    border: 1.5px solid var(--vt-border);
+    background-color: var(--vt-card-bg);
+    color: var(--vt-text-main);
+    font-size: 0.85rem;
+    outline: none;
+    transition: var(--vt-transition);
+}
+
+.toolbar-filters-panel .form-select:focus,
+.toolbar-filters-panel .form-control:focus {
+    border-color: var(--vt-primary);
+    box-shadow: 0 0 0 3px rgba(215, 25, 32, 0.08);
+}
+
+.date-picker-box {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background-color: var(--vt-bg);
+    padding: 4px 10px;
+    border-radius: var(--vt-radius-sm);
+    border: 1.5px solid var(--vt-border);
+}
+
+.date-picker-box input {
+    border: none;
+    background: transparent;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--vt-text-main);
+    outline: none;
+}
+
+/* =============================================================
+   4. GOOGLE CALENDAR GRID & TIMELINE
+   ============================================================= */
 .appt-main-row {
     display: flex;
-    gap: 24px;
-    margin-bottom: 30px;
+    gap: 28px;
+    align-items: flex-start;
 }
 
 .appt-calendar-column {
-    flex-grow: 1;
+    flex: 1;
     min-width: 0;
     background-color: var(--vt-card-bg);
     border: 1px solid var(--vt-border);
     border-radius: var(--vt-radius);
     padding: 24px;
     box-shadow: var(--vt-shadow);
+    transition: var(--vt-transition);
 }
 
-.appt-detail-column {
-    width: 400px;
-    min-width: 400px;
-    background-color: var(--vt-card-bg);
-    border: 1px solid var(--vt-border);
-    border-radius: var(--vt-radius);
-    padding: 24px;
-    box-shadow: var(--vt-shadow);
-    display: flex;
-    flex-direction: column;
-    max-height: 800px;
-    overflow: hidden;
-}
-
-/* Calendar grid styling */
 .calendar-header-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 24px;
 }
 
 .calendar-header-title {
-    font-weight: 800;
-    font-size: 1.4rem;
+    font-weight: 900;
+    font-size: 1.5rem;
     color: var(--vt-primary);
+    letter-spacing: -0.5px;
 }
 
 .calendar-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 6px;
+    gap: 8px;
 }
 
 .calendar-weekday {
     text-align: center;
     font-size: 0.8rem;
-    font-weight: 700;
+    font-weight: 800;
     text-transform: uppercase;
-    padding: 10px 0;
+    padding: 12px 0;
     color: var(--vt-text-muted);
     letter-spacing: 0.5px;
+    border-bottom: 2px solid var(--vt-border);
 }
 
 .calendar-day {
     border: 1px solid var(--vt-border);
     border-radius: var(--vt-radius-sm);
-    min-height: 105px;
-    padding: 8px;
+    min-height: 120px;
+    padding: 10px;
     background-color: var(--vt-card-bg);
     cursor: pointer;
     display: flex;
@@ -150,106 +344,241 @@ body {
 }
 
 .calendar-day:hover {
-    border-color: var(--vt-accent);
+    border-color: var(--vt-primary);
     background-color: var(--vt-primary-light);
+    transform: scale(1.02);
+    box-shadow: var(--vt-shadow);
 }
 
 .calendar-day.empty {
-    background-color: rgba(100, 116, 139, 0.03);
+    background-color: rgba(100, 116, 139, 0.02);
     border-color: transparent;
     cursor: default;
 }
 
 .calendar-day.empty:hover {
-    background-color: rgba(100, 116, 139, 0.03);
+    background-color: rgba(100, 116, 139, 0.02);
     border-color: transparent;
+    transform: none;
+    box-shadow: none;
 }
 
 .calendar-day.today {
     border: 2px solid var(--vt-primary);
-    box-shadow: 0 0 10px rgba(10, 92, 140, 0.15);
+    background-color: rgba(215, 25, 32, 0.03);
+    box-shadow: 0 0 12px rgba(215, 25, 32, 0.1);
 }
 
 .calendar-day.selected {
     background-color: var(--vt-primary-light);
-    border-color: var(--vt-accent);
+    border-color: var(--vt-primary);
 }
 
 .day-number {
-    font-weight: 700;
-    font-size: 0.95rem;
+    font-weight: 800;
+    font-size: 1rem;
     color: var(--vt-text-main);
-    align-self: flex-start;
 }
 
 .calendar-day.today .day-number {
     color: var(--vt-primary);
+    font-size: 1.1rem;
 }
 
-/* Appt indicator dots/bars inside day */
+/* Event mini-card indicators inside day cells */
 .appt-indicators {
     display: flex;
     flex-direction: column;
     gap: 4px;
-    margin-top: 6px;
-    flex-grow: 1;
-    justify-content: flex-end;
+    margin-top: 8px;
 }
 
 .appt-bar {
-    font-size: 0.68rem;
-    font-weight: 600;
-    padding: 2px 6px;
-    border-radius: 4px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 6px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     color: #FFFFFF;
+    transition: var(--vt-transition);
 }
 
-.appt-bar.waiting { background-color: var(--color-waiting); }
-.appt-bar.confirmed { background-color: var(--color-confirmed); }
-.appt-bar.on_the_way { background-color: var(--color-on-way); }
-.appt-bar.in_progress { background-color: var(--color-progress); }
-.appt-bar.completed { background-color: var(--color-completed); }
-.appt-bar.cancelled { background-color: var(--color-cancelled); }
+.appt-bar:hover {
+    transform: scale(1.03);
+    filter: brightness(1.05);
+}
+
+.appt-bar.waiting { background-color: var(--vt-warning); color: #FFFFFF; }
+.appt-bar.confirmed { background-color: var(--vt-success); color: #FFFFFF; }
+.appt-bar.on_the_way { background-color: var(--vt-info); color: #FFFFFF; }
+.appt-bar.in_progress { background-color: var(--vt-purple); color: #FFFFFF; }
+.appt-bar.completed { background-color: var(--vt-success); color: #FFFFFF; }
+.appt-bar.cancelled { background-color: var(--vt-danger); color: #FFFFFF; }
 
 .appt-more-badge {
-    font-size: 0.65rem;
-    font-weight: 700;
+    font-size: 0.68rem;
+    font-weight: 800;
     color: var(--vt-text-muted);
     text-align: right;
-    padding-right: 2px;
+    margin-top: 2px;
 }
 
-/* Sidebar details styling */
-.detail-sidebar-header {
-    border-bottom: 1px solid var(--vt-border);
-    padding-bottom: 15px;
-    margin-bottom: 15px;
-    flex-shrink: 0;
+/* Calendar Legend Section */
+.calendar-legend-bar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid var(--vt-border);
 }
 
-.appt-detail-list {
-    flex-shrink: 0;
-    max-height: 240px;
-    overflow-y: auto;
-    margin-bottom: 15px;
-    padding-right: 4px;
+.legend-item {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--vt-text-muted);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
 }
 
-.appt-mini-card {
+.legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+.legend-dot.waiting { background-color: var(--vt-warning); }
+.legend-dot.confirmed { background-color: var(--vt-success); }
+.legend-dot.on_the_way { background-color: var(--vt-info); }
+.legend-dot.in_progress { background-color: var(--vt-purple); }
+.legend-dot.completed { background-color: var(--vt-success); }
+.legend-dot.cancelled { background-color: var(--vt-danger); }
+
+/* =============================================================
+   5. TIMELINE HOURLY BLOCK
+   ============================================================= */
+.timeline-hourly-section {
+    margin-top: 28px;
+    background: var(--vt-card-bg);
     border: 1px solid var(--vt-border);
+    border-radius: var(--vt-radius);
+    padding: 24px;
+    box-shadow: var(--vt-shadow);
+}
+
+.timeline-hourly-header {
+    border-bottom: 1.5px solid var(--vt-border);
+    padding-bottom: 12px;
+    margin-bottom: 20px;
+}
+
+.timeline-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.timeline-hour-row {
+    display: flex;
+    align-items: center;
+    padding: 10px 14px;
     border-radius: var(--vt-radius-sm);
-    padding: 12px;
-    margin-bottom: 10px;
+    background-color: var(--vt-bg);
+    border: 1px solid transparent;
     cursor: pointer;
     transition: var(--vt-transition);
 }
 
+.timeline-hour-row:hover {
+    border-color: var(--vt-border);
+    background-color: var(--vt-card-bg);
+    box-shadow: var(--vt-shadow);
+}
+
+.timeline-hour-row.active-time {
+    border-color: var(--vt-primary);
+    background-color: var(--vt-primary-light);
+}
+
+.timeline-time-lbl {
+    font-size: 0.9rem;
+    font-weight: 850;
+    color: var(--vt-text-main);
+    width: 80px;
+    flex-shrink: 0;
+}
+
+.timeline-event-preview {
+    font-size: 0.85rem;
+    color: var(--vt-text-muted);
+    flex: 1;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.timeline-event-preview.has-appt {
+    color: var(--vt-text-main);
+    font-weight: 750;
+}
+
+/* =============================================================
+   6. PREMIUM RIGHT SIDEBAR (SEGMENTED CARDS)
+   ============================================================= */
+.appt-detail-column {
+    width: 380px;
+    min-width: 380px;
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    flex-shrink: 0;
+}
+
+/* Detail mini list switcher */
+.detail-sidebar-header {
+    background: var(--vt-card-bg);
+    border: 1px solid var(--vt-border);
+    border-radius: var(--vt-radius);
+    padding: 16px 20px;
+    box-shadow: var(--vt-shadow);
+}
+
+.appt-detail-list {
+    background: var(--vt-card-bg);
+    border: 1px solid var(--vt-border);
+    border-radius: var(--vt-radius);
+    padding: 16px;
+    box-shadow: var(--vt-shadow);
+    max-height: 220px;
+    overflow-y: auto;
+}
+
+.appt-mini-card {
+    border: 1.5px solid var(--vt-border);
+    border-radius: var(--vt-radius-sm);
+    padding: 14px;
+    margin-bottom: 10px;
+    background-color: var(--vt-bg);
+    cursor: pointer;
+    transition: var(--vt-transition);
+}
+
+.appt-mini-card:last-child {
+    margin-bottom: 0;
+}
+
 .appt-mini-card:hover {
-    border-color: var(--vt-accent);
-    transform: translateX(4px);
+    border-color: var(--vt-primary);
+    background-color: var(--vt-card-bg);
+    transform: translateX(2px);
 }
 
 .appt-mini-card.active {
@@ -257,100 +586,144 @@ body {
     background-color: var(--vt-primary-light);
 }
 
-.appt-card-time {
-    font-size: 0.72rem;
-    font-weight: 700;
-    color: var(--vt-primary);
+/* Segmented card views */
+.detail-segment-card {
+    background: var(--vt-card-bg);
+    border: 1px solid var(--vt-border);
+    border-radius: var(--vt-radius);
+    padding: 20px;
+    box-shadow: var(--vt-shadow);
+    transition: var(--vt-transition);
 }
 
-.appt-card-title {
-    font-size: 0.82rem;
-    font-weight: 600;
-    margin: 2px 0 6px 0;
-    color: var(--vt-text-main);
+.detail-segment-card:hover {
+    box-shadow: var(--vt-shadow-lg);
 }
 
-/* Full appt description card */
-.appt-full-card {
-    border-top: 1px solid var(--vt-border);
-    padding-top: 15px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    font-size: 0.8rem;
-    overflow-y: auto;
-    flex-grow: 1;
-    min-height: 0;
-}
-
-.appt-label {
-    font-size: 0.7rem;
-    font-weight: 700;
+.detail-segment-card-title {
+    font-size: 0.85rem;
+    font-weight: 800;
     text-transform: uppercase;
     color: var(--vt-text-muted);
     letter-spacing: 0.5px;
-    margin-bottom: 2px;
-    display: block;
-}
-
-.appt-value {
-    font-weight: 600;
-    color: var(--vt-text-main);
-}
-
-.tech-badge-inline {
+    border-bottom: 1.5px solid var(--vt-border);
+    padding-bottom: 8px;
+    margin-bottom: 14px;
     display: flex;
     align-items: center;
     gap: 8px;
 }
 
-.tech-badge-avatar {
-    width: 28px;
-    height: 28px;
+.detail-segment-card-title i {
+    color: var(--vt-primary);
+}
+
+/* Badge priority mapping */
+.badge-priority {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.72rem;
+    font-weight: 750;
+    border: 1px solid transparent;
+}
+.badge-priority.low { background-color: var(--vt-success-light); color: var(--vt-success); border-color: rgba(16, 185, 129, 0.2); }
+.badge-priority.medium { background-color: var(--vt-warning-light); color: var(--vt-warning); border-color: rgba(245, 158, 11, 0.2); }
+.badge-priority.high { background-color: var(--vt-danger-light); color: var(--vt-danger); border-color: rgba(239, 68, 68, 0.2); }
+.badge-priority.emergency { background-color: var(--vt-danger); color: #FFFFFF; }
+
+/* Status Badges */
+.badge-status {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 12px;
+    border-radius: 50px;
+    font-size: 0.72rem;
+    font-weight: 750;
+    border: 1px solid transparent;
+}
+.badge-status.waiting { background-color: var(--vt-warning-light); color: var(--vt-warning); border-color: rgba(245, 158, 11, 0.2); }
+.badge-status.confirmed { background-color: var(--vt-success-light); color: var(--vt-success); border-color: rgba(16, 185, 129, 0.2); }
+.badge-status.on_the_way { background-color: var(--vt-info-light); color: var(--vt-info); border-color: rgba(59, 130, 246, 0.2); }
+.badge-status.in_progress { background-color: var(--vt-purple-light); color: var(--vt-purple); border-color: rgba(139, 92, 246, 0.2); }
+.badge-status.completed { background-color: var(--vt-success-light); color: var(--vt-success); border-color: rgba(16, 185, 129, 0.2); }
+.badge-status.cancelled { background-color: var(--vt-danger-light); color: var(--vt-danger); border-color: rgba(239, 68, 68, 0.2); }
+
+/* Avatar wrapper structures */
+.sidebar-avatar-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.sidebar-avatar-img {
+    width: 44px;
+    height: 44px;
     border-radius: 50%;
     object-fit: cover;
+    border: 2px solid var(--vt-border);
 }
 
-.status-badge-inline {
-    font-size: 0.72rem;
+.sidebar-avatar-info {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Mapping box layout styles */
+.sidebar-maps-btn {
+    width: 100%;
+    height: 42px;
+    border-radius: var(--vt-radius-sm);
+    border: 1.5px solid var(--vt-border);
+    color: var(--vt-text-main);
+    background-color: var(--vt-bg);
     font-weight: 700;
-    padding: 3px 10px;
-    border-radius: 50px;
-    display: inline-block;
+    font-size: 0.82rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    text-decoration: none;
+    transition: var(--vt-transition);
 }
 
-.status-badge-inline.waiting { background-color: rgba(245, 158, 11, 0.12); color: var(--color-waiting); }
-.status-badge-inline.confirmed { background-color: rgba(37, 99, 235, 0.12); color: var(--color-confirmed); }
-.status-badge-inline.on_the_way { background-color: rgba(139, 92, 246, 0.12); color: var(--color-on-way); }
-.status-badge-inline.in_progress { background-color: rgba(6, 182, 212, 0.12); color: var(--color-progress); }
-.status-badge-inline.completed { background-color: rgba(16, 185, 129, 0.12); color: var(--color-completed); }
-.status-badge-inline.cancelled { background-color: rgba(239, 68, 68, 0.12); color: var(--color-cancelled); }
+.sidebar-maps-btn:hover {
+    border-color: var(--vt-primary);
+    background-color: var(--vt-primary-light);
+    color: var(--vt-primary);
+}
 
-/* Action buttons layout */
+/* =============================================================
+   7. ACTIONS GRID (THAO TÁC LỊCH HẸN)
+   ============================================================= */
 .appt-actions-container {
-    border-top: 1px solid var(--vt-border);
-    padding-top: 15px;
-    flex-shrink: 0;
+    background: var(--vt-card-bg);
+    border: 1px solid var(--vt-border);
+    border-radius: var(--vt-radius);
+    padding: 20px;
+    box-shadow: var(--vt-shadow);
 }
 
 .appt-actions-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 8px;
+    gap: 10px;
 }
 
 .btn-appt-action {
-    font-size: 0.72rem;
-    font-weight: 700;
-    padding: 8px 10px;
+    height: 44px;
     border-radius: var(--vt-radius-sm);
-    border: 1px solid var(--vt-border);
-    background-color: var(--vt-card-bg);
+    border: 1.5px solid var(--vt-border);
+    background-color: var(--vt-bg);
     color: var(--vt-text-main);
+    font-size: 0.8rem;
+    font-weight: 700;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 6px;
+    gap: 8px;
+    cursor: pointer;
     transition: var(--vt-transition);
 }
 
@@ -358,34 +731,167 @@ body {
     border-color: var(--vt-primary);
     background-color: var(--vt-primary-light);
     color: var(--vt-primary);
+    transform: translateY(-1px);
 }
 
-/* Responsive breakpoints */
-@media (max-width: 1199.98px) {
+.btn-appt-action.danger:hover {
+    border-color: var(--vt-danger);
+    background-color: var(--vt-danger-light);
+    color: var(--vt-danger);
+}
+
+/* =============================================================
+   8. RESPONSIVE BREAKPOINTS
+   ============================================================= */
+
+/* Laptop and Desktop widths: full views */
+@media (min-width: 1200px) {
+    .appt-detail-column {
+        display: flex !important;
+    }
+}
+
+/* Tablet (768px - 1199px): Hides right panel, details shown in Drawer */
+@media (max-width: 1199px) {
     .appt-main-row {
         flex-direction: column;
     }
+    
     .appt-detail-column {
-        width: 100%;
-        min-width: 100%;
-        max-height: none;
-        overflow: visible;
+        position: fixed;
+        right: -400px;
+        top: 0;
+        bottom: 0;
+        z-index: 1050;
+        width: 380px;
+        background-color: var(--vt-bg);
+        border-left: 1px solid var(--vt-border);
+        box-shadow: -10px 0 30px rgba(0,0,0,0.1);
+        padding: 24px;
+        overflow-y: auto;
+        display: flex !important;
+        transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    .appt-detail-list {
-        max-height: 250px;
+    
+    .appt-detail-column.show {
+        right: 0;
     }
-    .appt-full-card {
-        overflow: visible;
+    
+    /* Overlay backdrop when drawer open */
+    .drawer-overlay-backdrop {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0,0,0,0.4);
+        z-index: 1040;
+        display: none;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+    
+    .drawer-overlay-backdrop.show {
+        display: block;
+        opacity: 1;
     }
 }
 
-@media (max-width: 767.98px) {
-    .calendar-day {
-        min-height: 80px;
-        padding: 4px;
+/* Mobile (<768px): Toolbar scroll, vertical stack cards */
+@media (max-width: 767px) {
+    .appt-toolbar {
+        overflow-x: auto;
+        padding: 14px;
     }
+    
+    .toolbar-scroll-wrapper {
+        flex-wrap: nowrap;
+        width: max-content;
+    }
+    
+    .calendar-grid {
+        gap: 4px;
+    }
+    
+    .calendar-day {
+        min-height: 85px;
+        padding: 6px;
+    }
+    
+    .day-number {
+        font-size: 0.85rem;
+    }
+    
     .appt-bar {
-        font-size: 0.58rem;
-        padding: 1px 3px;
+        font-size: 0.6rem;
+        padding: 2px 4px;
+    }
+    
+    .appt-more-badge {
+        font-size: 0.6rem;
+    }
+}
+
+/* =============================================================
+   9. LOADING SKELETON ANIMATIONS & TRANSITIONS
+   ============================================================= */
+
+/* Simulated Loading overlay style */
+.skeleton-loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--vt-card-bg);
+    z-index: 100;
+    display: none;
+    flex-direction: column;
+    padding: 20px;
+    border-radius: var(--vt-radius);
+    gap: 16px;
+    animation: fadeInSkeleton 0.2s ease;
+}
+
+.skeleton-loading-overlay.active {
+    display: flex;
+}
+
+@keyframes fadeInSkeleton {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.skeleton-box {
+    background-color: var(--vt-bg);
+    border-radius: var(--vt-radius-sm);
+    animation: pulseSkeleton 1.5s infinite;
+}
+
+@keyframes pulseSkeleton {
+    0% { opacity: 0.6; }
+    50% { opacity: 1; }
+    100% { opacity: 0.6; }
+}
+
+/* Ripple Button span container */
+.btn-ripple {
+    position: relative;
+    overflow: hidden;
+}
+
+.ripple-span {
+    position: absolute;
+    border-radius: 50%;
+    transform: scale(0);
+    animation: rippleEffect 0.6s linear;
+    background-color: rgba(255, 255, 255, 0.3);
+    pointer-events: none;
+}
+
+@keyframes rippleEffect {
+    to {
+        transform: scale(4);
+        opacity: 0;
     }
 }

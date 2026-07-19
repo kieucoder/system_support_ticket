@@ -1,0 +1,80 @@
+@model SupportTicketSysterm.ViewModels.LiveSupportViewModel
+
+<div class="chat-footer-pane p-3 bg-white border-top position-relative" style="border-bottom-right-radius: 20px; border-bottom-left-radius: 20px;">
+    <!-- File Preview Container -->
+    <div class="chat-file-preview-bar mb-2" id="filePreviewBar"></div>
+
+    @if (Model.CanChat)
+    {
+        <!-- Zalo Desktop Style Input Capsule -->
+        <div class="chat-input-capsule d-flex align-items-center gap-2.5 bg-light p-2 border rounded-4 shadow-xs" style="border-radius:28px !important; min-height:56px; border-color:#E2E8F0 !important;">
+            <!-- Action Toolbar Buttons -->
+            <div class="chat-toolbar-group d-flex align-items-center gap-1.5 flex-shrink-0 ps-1">
+                <input type="file" id="hiddenFileUpload" style="display:none;" />
+                <input type="file" id="hiddenImageUpload" style="display:none;" accept="image/*" />
+
+                <button type="button" class="input-tool-btn rounded-circle" id="emojiPickerBtn" title="Chèn Emoji 😊">
+                    <i class="bi bi-emoji-smile fs-5 text-secondary"></i>
+                </button>
+                <button type="button" class="input-tool-btn rounded-circle" id="fileUploadBtn" title="Gửi tệp đính kèm 📎">
+                    <i class="bi bi-paperclip fs-5 text-secondary"></i>
+                </button>
+                <button type="button" class="input-tool-btn rounded-circle" id="imageUploadBtn" title="Gửi hình ảnh 🖼️">
+                    <i class="bi bi-image fs-5 text-secondary"></i>
+                </button>
+
+                @if (Model.CurrentUserRole == "Customer" && (Model.Staff == null || !Model.Messages.Any(m => m.LoaiNguoiGui == "NhanVien")))
+                {
+                    <button type="button" class="input-tool-btn rounded-circle text-purple" id="btnAskAi" title="Trợ lý AI 🤖">
+                        <i class="bi bi-robot fs-5 text-warning"></i>
+                    </button>
+                }
+            </div>
+
+            <!-- Auto Expand Textarea -->
+            <textarea class="chat-textarea border-0 bg-transparent flex-grow-1 px-2 py-1" id="chatInputField" 
+                      placeholder="Nhập câu hỏi hoặc nội dung hỗ trợ... (Enter để gửi)" 
+                      rows="1" maxlength="500" style="font-size:0.92rem; outline:none; resize:none; max-height:120px; line-height:1.45;"></textarea>
+
+            <!-- Zalo Red Circular 52px Send Button with Ripple & Hover Scale -->
+            <button type="button" class="chat-send-btn rounded-circle text-white border-0 d-grid place-items-center flex-shrink-0 shadow-xs btn-ripple" id="chatSendBtn" aria-label="Gửi"
+                    style="width:52px; height:52px; background: linear-gradient(135deg, #D71920 0%, #E53935 100%); font-size:1.15rem; cursor:pointer; transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
+                <i class="bi bi-send-fill"></i>
+            </button>
+        </div>
+
+        <!-- Emoji Picker Popover Popup -->
+        <div class="emoji-picker-popup d-none position-absolute bg-white shadow-lg border rounded-4 p-2.5" id="emojiPickerPopup" style="bottom:82px; left:20px; z-index:1050; width:270px; border-color:#E2E8F0 !important;">
+            <div class="d-flex justify-content-between align-items-center px-2 py-1 mb-1 border-bottom">
+                <span class="fw-bold small text-dark"><i class="bi bi-emoji-smile text-warning me-1"></i>Emoji nhanh</span>
+                <button type="button" class="btn-close btn-sm" onclick="document.getElementById('emojiPickerPopup').classList.add('d-none');"></button>
+            </div>
+            <div class="d-flex flex-wrap gap-2.5 p-1.5" style="font-size:1.35rem;">
+                <span class="emoji-picker-item" style="cursor:pointer; transition: transform 0.15s ease;">😊</span>
+                <span class="emoji-picker-item" style="cursor:pointer; transition: transform 0.15s ease;">👍</span>
+                <span class="emoji-picker-item" style="cursor:pointer; transition: transform 0.15s ease;">🙏</span>
+                <span class="emoji-picker-item" style="cursor:pointer; transition: transform 0.15s ease;">❤️</span>
+                <span class="emoji-picker-item" style="cursor:pointer; transition: transform 0.15s ease;">👌</span>
+                <span class="emoji-picker-item" style="cursor:pointer; transition: transform 0.15s ease;">📶</span>
+                <span class="emoji-picker-item" style="cursor:pointer; transition: transform 0.15s ease;">🌐</span>
+                <span class="emoji-picker-item" style="cursor:pointer; transition: transform 0.15s ease;">💻</span>
+                <span class="emoji-picker-item" style="cursor:pointer; transition: transform 0.15s ease;">⚙️</span>
+                <span class="emoji-picker-item" style="cursor:pointer; transition: transform 0.15s ease;">❌</span>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="chat-closed-card p-3.5 text-center rounded-4 bg-white border shadow-xs" style="border-color:#E2E8F0 !important;">
+            <div class="fs-2 text-secondary mb-1">🔒</div>
+            <h6 class="fw-bold text-dark mb-1">Phiếu hỗ trợ đã hoàn thành.</h6>
+            <p class="text-muted small mb-2.5" style="font-size:0.8rem;">Cuộc trò chuyện này đã khép lại. Bạn không thể gửi thêm tin nhắn.</p>
+            @if (Model.CurrentUserRole == "Customer")
+            {
+                <a asp-controller="Ticket" asp-action="TaoPhieu" class="btn btn-danger btn-sm rounded-pill fw-bold px-4 py-2" style="background: linear-gradient(135deg, #D71920 0%, #E53935 100%);">
+                    <i class="bi bi-plus-circle-fill me-1.5"></i> Tạo phiếu hỗ trợ mới
+                </a>
+            }
+        </div>
+    }
+</div>

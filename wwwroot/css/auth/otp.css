@@ -1,0 +1,545 @@
+/* ==============================================================
+   FILE: wwwroot/css/auth/otp.css
+   AUTHOR: Senior UI/UX Designer & Frontend Developer
+   DESCRIPTION: Redesigned premium OTP verification stylesheet
+                aligned with Viettel Telecom & Zendesk design patterns.
+   ============================================================== */
+
+:root {
+    --primary-color: #D71920;      /* Viettel Telecom Red */
+    --secondary-color: #B5121B;    /* Viettel Dark Red */
+    --bg-light: #F7F9FC;           /* Clean Background */
+    --white: #FFFFFF;
+    --border-color: #E8EAF0;       /* Border Color */
+    --border-hover: #CBD5E1;       /* Hover Border */
+    --text-color: #222222;
+    --text-muted: #64748B;
+    --color-success: #28A745;
+    --color-warning: #FFC107;
+    --color-error: #DC3545;
+    --radius-card: 24px;
+    --radius-input: 14px;
+    --radius-btn: 18px;
+    --shadow-premium: 0 15px 45px rgba(0, 0, 0, 0.08);
+    --transition: all 0.3s ease;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', 'Poppins', sans-serif;
+    background-color: var(--bg-light);
+    color: var(--text-color);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow-x: hidden;
+}
+
+/* ========== Back to Home/Register Button ========== */
+.btn-back-home {
+    position: fixed;
+    top: 2rem;
+    left: 2rem;
+    width: 48px;
+    height: 48px;
+    background: var(--white);
+    color: var(--text-color);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--border-color);
+    transition: var(--transition);
+    z-index: 100;
+    font-size: 1.2rem;
+}
+
+.btn-back-home:hover {
+    transform: translateX(-4px);
+    background: var(--primary-color);
+    color: var(--white);
+    border-color: var(--primary-color);
+    box-shadow: 0 6px 20px rgba(215, 25, 32, 0.3);
+}
+
+/* ========== Main Wrapper Layout (2 Columns) ========== */
+.register-wrapper.otp-page {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    position: relative;
+}
+
+.register-container {
+    width: 100%;
+    display: flex;
+}
+
+/* LEFT COLUMN (40%) */
+.register-info.otp-info-panel {
+    width: 40%;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    color: var(--white);
+    padding: 4.5rem 3.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    overflow: hidden;
+}
+
+.register-info.otp-info-panel::before {
+    content: '';
+    position: absolute;
+    top: -10%;
+    right: -10%;
+    width: 350px;
+    height: 350px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.12) 0%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.register-info.otp-info-panel .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--white);
+    text-decoration: none;
+    z-index: 2;
+}
+
+.register-info.otp-info-panel .brand i {
+    font-size: 2rem;
+}
+
+.otp-info-content {
+    margin: auto 0;
+    z-index: 2;
+}
+
+.register-info.otp-info-panel h2 {
+    font-size: 2.3rem;
+    font-weight: 800;
+    line-height: 1.3;
+    margin-bottom: 1.25rem;
+    letter-spacing: -0.02em;
+}
+
+.register-info.otp-info-panel p {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 1.05rem;
+    line-height: 1.6;
+    margin-bottom: 2.5rem;
+}
+
+/* OTP Hero Card (Timer Card in Left Panel) */
+.otp-hero-card {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 18px;
+    padding: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 2.5rem;
+    backdrop-filter: blur(10px);
+}
+
+.otp-hero-icon {
+    width: 48px;
+    height: 48px;
+    background: var(--white);
+    color: var(--primary-color);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.otp-hero-label {
+    display: block;
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.7);
+    font-weight: 500;
+}
+
+.otp-hero-timer {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--white);
+    letter-spacing: 1px;
+}
+
+/* Benefits list */
+.feature-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    z-index: 2;
+}
+
+.feature-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.95rem;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.feature-item i {
+    color: var(--white);
+    font-size: 1.05rem;
+}
+
+/* RIGHT COLUMN (60%) */
+.register-form.otp-form-panel {
+    width: 60%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 4rem;
+    background-color: var(--bg-light);
+}
+
+.form-card {
+    background: var(--white);
+    width: 100%;
+    max-width: 600px;
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-premium);
+    padding: 50px;
+    position: relative;
+    transition: var(--transition);
+    animation: fadeInRight 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fadeInRight {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Titles */
+.register-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.register-header h3 {
+    font-size: 1.9rem;
+    font-weight: 800;
+    color: var(--text-color);
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.01em;
+}
+
+.register-header p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+}
+
+/* Form group */
+.mb-3 {
+    margin-bottom: 1.5rem !important;
+}
+
+.form-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #4A5568;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+/* Readonly phone box */
+.otp-readonly-box {
+    height: 56px;
+    border: 1px solid var(--border-color);
+    background-color: #F8FAFC;
+    border-radius: var(--radius-input);
+    padding: 0 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 700;
+    color: var(--text-color);
+    font-size: 1rem;
+}
+
+.otp-readonly-box i {
+    color: var(--primary-color);
+    font-size: 1.2rem;
+}
+
+/* OTP 6 boxes container */
+.otp-box-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.otp-digit-input {
+    width: 52px;
+    height: 56px;
+    border: 1.5px solid var(--border-color);
+    border-radius: 12px;
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-color);
+    outline: none;
+    transition: var(--transition);
+    background-color: var(--white);
+}
+
+.otp-digit-input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 4px rgba(215, 25, 32, 0.08);
+}
+
+/* Timer details card */
+.otp-status-bar {
+    display: flex;
+    justify-content: space-between;
+    background-color: #F8FAFC;
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+}
+
+.otp-status-bar > div {
+    display: flex;
+    flex-direction: column;
+}
+
+.otp-status-label {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    margin-bottom: 2px;
+}
+
+.otp-status-bar strong {
+    color: var(--primary-color);
+    font-weight: 700;
+}
+
+/* Progress Bar */
+.otp-progress-container {
+    width: 100%;
+    height: 6px;
+    background-color: #E2E8F0;
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 1.8rem;
+}
+
+.otp-progress-bar {
+    height: 100%;
+    width: 100%;
+    background-color: var(--color-success);
+    transition: width 1s linear, background-color 0.5s ease;
+}
+
+/* Buttons */
+.btn-login {
+    width: 100%;
+    height: 58px;
+    background: linear-gradient(95deg, var(--primary-color), var(--secondary-color));
+    color: var(--white);
+    border: none;
+    border-radius: var(--radius-btn);
+    font-size: 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 8px 24px rgba(215, 25, 32, 0.25);
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.btn-login:hover:not(:disabled) {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 30px rgba(215, 25, 32, 0.35);
+}
+
+.btn-login:active {
+    transform: translateY(0);
+}
+
+.btn-login:disabled {
+    background: #CBD5E1;
+    color: #64748B;
+    box-shadow: none;
+    cursor: not-allowed;
+}
+
+/* Resend Form */
+.otp-resend-btn {
+    width: 100%;
+    height: 48px;
+    background: transparent;
+    border: 1.5px solid var(--primary-color);
+    color: var(--primary-color);
+    border-radius: var(--radius-input);
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.otp-resend-btn:hover:not(:disabled) {
+    background: rgba(215, 25, 32, 0.05);
+    transform: translateY(-2px);
+}
+
+.otp-resend-btn:disabled {
+    border-color: #CBD5E1;
+    color: #94A3B8;
+    cursor: not-allowed;
+}
+
+/* Spinner Loader */
+.spinner {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Footer Back Link */
+.register-footer-text {
+    text-align: center;
+    margin-top: 1.5rem;
+    font-size: 0.95rem;
+    color: var(--text-muted);
+}
+
+.register-footer-text a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 700;
+    transition: var(--transition);
+}
+
+.register-footer-text a:hover {
+    text-decoration: underline;
+}
+
+/* Toast Container & Toasts */
+.toast-container {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 1080;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.toast {
+    background: var(--white);
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    border: none;
+    min-width: 300px;
+    max-width: 450px;
+    animation: toastIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes toastIn {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/* ========== RESPONSIVE DESIGN ========== */
+@media (max-width: 1200px) {
+    .register-info.otp-info-panel {
+        width: 45%;
+        padding: 3rem 2rem;
+    }
+    
+    .register-form.otp-form-panel {
+        width: 55%;
+        padding: 2rem;
+    }
+    
+    .form-card {
+        padding: 40px 30px;
+    }
+}
+
+@media (max-width: 991px) {
+    .register-info.otp-info-panel {
+        display: none; /* Hide left banner on mobile & tablet */
+    }
+    
+    .register-form.otp-form-panel {
+        width: 100%;
+        min-height: 100vh;
+        padding: 3rem 1.5rem;
+    }
+    
+    .form-card {
+        max-width: 550px;
+        padding: 35px 25px;
+    }
+}
+
+@media (max-width: 576px) {
+    .register-form.otp-form-panel {
+        padding: 1.5rem 1rem;
+    }
+    
+    .form-card {
+        padding: 30px 20px;
+        border-radius: 20px;
+    }
+    
+    .otp-digit-input {
+        width: 42px;
+        height: 48px;
+        font-size: 1.25rem;
+    }
+    
+    .otp-status-bar {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .btn-back-home {
+        top: 1rem;
+        left: 1rem;
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+    }
+}

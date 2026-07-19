@@ -1,0 +1,1393 @@
+/* ==========================================================================
+   FILE: wwwroot/assets/css/chatbox.css
+   AUTHOR: Antigravity (Senior UI/UX & Frontend Developer)
+   DESCRIPTION: Redesigned Floating Chat Support Widget styles.
+   ========================================================================== */
+
+:root {
+    /* Viettel Brand Colors */
+    --viettel-primary: #D71920;
+    --viettel-secondary: #F33B55;
+    --viettel-gradient-start: #D71920;
+    --viettel-gradient-end: #C4121A;
+    --viettel-hover: #FF4D67;
+    
+    /* Layout Colors */
+    --cb-bg: #F7F8FC;
+    --cb-card: #FFFFFF;
+    --cb-text: #1F2937;
+    --cb-text-muted: #6B7280;
+    --cb-border: #ECECEC;
+    
+    /* Semantic Colors */
+    --cb-success: #10B981;
+    --cb-success-bg: #DCFCE7;
+    --cb-warning: #F59E0B;
+    --cb-danger: #EF4444;
+    
+    /* Animation Timing */
+    --anim-fast: 0.15s;
+    --anim-normal: 0.25s;
+    --anim-slow: 0.35s;
+}
+
+/* Base resets & Fonts */
+.chatbox-wrapper * {
+    box-sizing: border-box;
+    font-family: 'Be Vietnam Pro', 'Segoe UI', system-ui, -apple-system, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* ==========================================================================
+   1. FLOATING LAUNCHER BUTTON
+   ========================================================================== */
+.chat-launcher {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--viettel-gradient-start) 0%, var(--viettel-gradient-end) 100%);
+    color: #FFFFFF;
+    border: none;
+    box-shadow: 0 8px 30px rgba(215, 25, 32, 0.25);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1050;
+    font-size: 1.5rem;
+    transition: all var(--anim-normal) cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.chat-launcher:hover {
+    transform: translateY(-4px) scale(1.08);
+    box-shadow: 0 12px 35px rgba(215, 25, 32, 0.4);
+}
+
+.chat-launcher.open {
+    opacity: 0;
+    pointer-events: none;
+    transform: scale(0.8);
+}
+
+.chat-launcher-badge {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    background-color: var(--cb-danger);
+    color: #FFFFFF;
+    font-size: 10px;
+    font-weight: 700;
+    min-width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid var(--cb-card);
+}
+
+.chat-launcher-online-dot {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    width: 11px;
+    height: 11px;
+    background-color: var(--cb-success);
+    border: 2px solid #FFFFFF;
+    border-radius: 50%;
+}
+
+.chat-launcher i {
+    position: absolute;
+    transition: transform 0.3s ease, opacity 0.2s ease;
+}
+
+.chat-launcher .chat-icon-close {
+    opacity: 0;
+    transform: rotate(-90deg) scale(0.5);
+}
+
+.chat-launcher.open .chat-icon-open {
+    opacity: 0;
+    transform: rotate(90deg) scale(0.5);
+}
+
+.chat-launcher.open .chat-icon-close {
+    opacity: 1;
+    transform: rotate(0) scale(1);
+}
+
+/* ==========================================================================
+   2. MAIN CHAT WINDOW CONTAINER
+   ========================================================================== */
+.chat-window {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 360px;
+    height: 540px;
+    max-height: calc(100vh - 140px);
+    background-color: var(--cb-bg);
+    border-radius: 20px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+    border: 1px solid var(--cb-border);
+    z-index: 1040;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+    pointer-events: none;
+    transition: opacity 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.chat-window.open {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+}
+
+.chat-window.chat-maximized {
+    width: 500px;
+    height: 700px;
+    max-height: calc(100vh - 140px);
+}
+
+/* ==========================================================================
+   3. HEADER
+   ========================================================================== */
+.chat-header {
+    background: linear-gradient(180deg, var(--viettel-gradient-start) 0%, var(--viettel-gradient-end) 100%);
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: #FFFFFF;
+    border-radius: 22px 22px 0 0;
+    height: 60px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+    z-index: 10;
+    flex-shrink: 0;
+}
+
+.chat-header-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.chat-header-avatar {
+    position: relative;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background-color: #FFFFFF;
+    color: var(--viettel-red);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    border: 2px solid #FFFFFF;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    flex-shrink: 0;
+}
+
+.chat-header-online-status {
+    position: absolute;
+    bottom: -1px;
+    right: -1px;
+    width: 10px;
+    height: 10px;
+    background-color: var(--cb-success);
+    border: 2px solid #FFFFFF;
+    border-radius: 50%;
+}
+
+.chat-header-text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.chat-header-title {
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.1;
+}
+
+.chat-header-status-badge-top {
+    font-size: 11px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.9);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 2px;
+}
+
+.chat-header-status-badge-top .status-dot {
+    width: 6px;
+    height: 6px;
+    background-color: var(--cb-success);
+    border-radius: 50%;
+    display: inline-block;
+    animation: pulseDot 2s infinite;
+}
+
+@keyframes pulseDot {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+.chat-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.chat-header-btn {
+    background: none;
+    border: none;
+    color: #FFFFFF;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 0.9rem;
+    opacity: 0.85;
+    transition: all var(--anim-fast) ease;
+}
+
+.chat-header-btn:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+/* ==========================================================================
+   4. CHAT SCREENS SLIDER
+   ========================================================================== */
+.chat-body-container {
+    flex-grow: 1;
+    position: relative;
+    overflow: hidden;
+}
+
+.chat-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--cb-bg);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#screenHome {
+    transform: translateX(0);
+    z-index: 10;
+}
+
+#screenConversations {
+    transform: translateX(100%);
+    z-index: 20;
+}
+
+#screenChatRoom {
+    transform: translateX(100%);
+    z-index: 30;
+}
+
+#screenAiChat {
+    transform: translateX(100%);
+    z-index: 35;
+}
+
+#screenTrackTickets {
+    transform: translateX(100%);
+    z-index: 40;
+}
+
+/* Active screen positioning */
+#screenHome:not(.d-none) { transform: translateX(0); }
+#screenConversations:not(.d-none) { transform: translateX(0); }
+#screenChatRoom:not(.d-none) { transform: translateX(0); }
+#screenAiChat:not(.d-none) { transform: translateX(0); }
+#screenTrackTickets:not(.d-none) { transform: translateX(0); }
+
+/* ==========================================================================
+   5. SCREEN 1: HOME DASHBOARD
+   ========================================================================== */
+.welcome-scrollable {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 24px 20px;
+}
+
+.welcome-greeting-box {
+    margin-bottom: 24px;
+    animation: fadeInSlideUp 0.3s ease-out;
+}
+
+.welcome-avatar-robot-container {
+    margin-bottom: 12px;
+}
+
+.welcome-avatar-robot {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--viettel-red-subtle) 0%, #FFFFFF 100%);
+    color: var(--viettel-red);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    box-shadow: 0 4px 12px rgba(238, 0, 51, 0.1);
+}
+
+.welcome-greeting-title {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--cb-text);
+    margin-bottom: 6px;
+}
+
+.welcome-greeting-desc {
+    font-size: 14px;
+    color: var(--cb-text-muted);
+    line-height: 1.5;
+}
+
+.quick-actions-section {
+    animation: fadeInSlideUp 0.4s ease-out;
+}
+
+.quick-actions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.quick-action-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    padding: 14px 16px;
+    background-color: var(--cb-card);
+    border: 1px solid var(--cb-border);
+    border-radius: 14px;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.25s ease;
+}
+
+.quick-action-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(238, 0, 51, 0.3);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
+}
+
+.quick-action-icon-wrapper {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+.chat-ai-icon { background-color: var(--viettel-red-subtle); color: var(--viettel-red); }
+.chat-staff-icon { background-color: #E0F2FE; color: #0284c7; }
+.chat-track-icon { background-color: #FEF3C7; color: #d97706; }
+.chat-create-icon { background-color: #DCFCE7; color: #15803d; }
+
+.quick-action-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.quick-action-card-title {
+    font-size: 14.5px;
+    font-weight: 700;
+    color: var(--cb-text);
+}
+
+.quick-action-card-desc {
+    font-size: 11.5px;
+    color: var(--cb-text-muted);
+    line-height: 1.4;
+}
+
+/* ==========================================================================
+   6. INNER SCREEN HEADER (STREAM HEADER BAR)
+   ========================================================================== */
+.stream-header-bar {
+    background-color: var(--cb-card);
+    border-bottom: 1px solid var(--cb-border);
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+}
+
+.stream-back-btn {
+    background: none;
+    border: none;
+    font-size: 0.95rem;
+    color: var(--cb-text);
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.stream-back-btn:hover {
+    background-color: #F1F5F9;
+}
+
+.stream-header-info {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.stream-header-title-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.stream-header-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--cb-text);
+}
+
+.stream-header-status-badge {
+    font-size: 10px !important;
+    font-weight: 700 !important;
+    background-color: rgba(16, 185, 129, 0.1) !important;
+    color: #10B981 !important;
+    border: 1px solid rgba(16, 185, 129, 0.3) !important;
+    padding: 2px 8px !important;
+    border-radius: 20px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+}
+
+.stream-header-desc {
+    font-size: 11px;
+    color: var(--cb-text-muted);
+}
+
+/* ==========================================================================
+   7. MESSAGES CONTAINER & SCROLLABLE
+   ========================================================================== */
+.messages-scrollable {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 12px 16px;
+    background-color: var(--cb-bg);
+    background-image: 
+        radial-gradient(circle at 20% 80%, rgba(215, 25, 32, 0.03) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(59, 130, 246, 0.02) 0%, transparent 50%);
+}
+
+/* ==========================================================================
+   7. MESSAGES CONTAINER — BUBBLE LAYOUT
+   Scoped inside .messages-scrollable to prevent bleed into full-page chat.
+   ========================================================================== */
+
+/* Row container — flex wrapper for avatar + bubble */
+.messages-scrollable .msg-row,
+.messages-scrollable .chat-message-item {
+    display: flex !important;
+    align-items: flex-start !important;
+    gap: 10px !important;
+    margin-bottom: 16px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    animation: messageSlideUp var(--anim-normal) cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+@keyframes messageSlideUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Optimistic UI — Instant bubble entrance animation */
+.messages-scrollable .optimistic-enter,
+.msg-row.optimistic-enter {
+    animation: optimisticBubbleIn 0.2s ease forwards !important;
+}
+
+@keyframes optimisticBubbleIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Outgoing (user) rows — align right */
+.messages-scrollable .msg-row.sent,
+.messages-scrollable .user-message {
+    flex-direction: row !important;
+    justify-content: flex-end !important;
+}
+
+/* Incoming (AI/staff) rows — align left */
+.messages-scrollable .msg-row.received,
+.messages-scrollable .ai-message,
+.messages-scrollable .partner-message {
+    flex-direction: row !important;
+    justify-content: flex-start !important;
+}
+
+/* Inner content wrapper for outgoing messages — Zalo style: fit-content column */
+.messages-scrollable .user-message .message-content,
+.messages-scrollable .msg-row.sent .message-content,
+.messages-scrollable .msg-row.sent .msg-bubble-wrapper {
+    display: inline-flex !important;
+    flex-direction: column !important;
+    align-items: flex-end !important;
+    width: fit-content !important;
+    max-width: 75% !important;
+    margin-left: auto !important;
+    min-width: 0 !important;
+}
+
+/* Inner content wrapper for incoming messages — Zalo style: fit-content column */
+.messages-scrollable .ai-message .message-content,
+.messages-scrollable .partner-message .message-content,
+.messages-scrollable .msg-row.received .message-content,
+.messages-scrollable .msg-row.received .msg-bubble-wrapper {
+    display: inline-flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    width: fit-content !important;
+    max-width: 75% !important;
+    min-width: 0 !important;
+}
+
+/* Bubble base — Zalo fit-content */
+.messages-scrollable .msg-bubble,
+.messages-scrollable .viettel-bubble {
+    display: inline-block !important;
+    width: fit-content !important;
+    max-width: 100% !important;
+    height: auto !important;
+    padding: 10px 14px !important;
+    border-radius: 18px !important;
+    font-size: 14px !important;
+    line-height: 1.45 !important;
+    word-break: break-word !important;
+    white-space: pre-wrap !important;
+    overflow-wrap: anywhere !important;
+    box-sizing: border-box !important;
+    font-weight: 400 !important;
+}
+
+/* Outgoing bubble style - Sender (Khách hàng / Outgoing / User) */
+.messages-scrollable .msg-row.sent .msg-bubble,
+.messages-scrollable .user-message .viettel-bubble,
+.messages-scrollable .user-message .msg-bubble,
+.messages-scrollable .msg-row.sent .chat-message-item,
+.messages-scrollable .user-message .chat-message-item {
+    display: inline-block !important;
+    width: fit-content !important;
+    height: auto !important;
+    max-width: 100% !important;
+    align-self: flex-end !important;
+    margin-left: auto !important;
+    line-height: 1.45 !important;
+    border-radius: 20px 20px 4px 20px !important;
+    padding: 10px 16px !important;
+    word-break: break-word !important;
+    white-space: pre-wrap !important;
+    overflow-wrap: anywhere !important;
+    box-sizing: border-box !important;
+    background: linear-gradient(135deg, #D71920 0%, #E53935 100%) !important;
+    color: #FFFFFF !important;
+    box-shadow: 0 4px 14px rgba(215, 25, 32, 0.18) !important;
+    border: none !important;
+}
+
+/* Incoming bubble style - Receiver (Nhân viên / Kỹ thuật viên / AI / Received) */
+.messages-scrollable .msg-row.received .msg-bubble,
+.messages-scrollable .ai-message .viettel-bubble,
+.messages-scrollable .ai-message .msg-bubble,
+.messages-scrollable .partner-message .viettel-bubble,
+.messages-scrollable .partner-message .msg-bubble,
+.messages-scrollable .msg-row.received .chat-message-item,
+.messages-scrollable .ai-message .chat-message-item,
+.messages-scrollable .partner-message .chat-message-item {
+    display: inline-block !important;
+    width: fit-content !important;
+    height: auto !important;
+    max-width: 100% !important;
+    align-self: flex-start !important;
+    margin-right: auto !important;
+    line-height: 1.45 !important;
+    border-radius: 20px 20px 20px 4px !important;
+    padding: 10px 16px !important;
+    word-break: break-word !important;
+    white-space: pre-wrap !important;
+    overflow-wrap: anywhere !important;
+    box-sizing: border-box !important;
+    background-color: #FFFFFF !important;
+    color: #1E293B !important;
+    border: 1px solid #E2E8F0 !important;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03) !important;
+}
+
+/* Error bubble for failed AI responses */
+.messages-scrollable .ai-error-bubble,
+.ai-error-bubble {
+    background: #FEF2F2 !important;
+    border: 1px solid #FECACA !important;
+    color: #991B1B !important;
+    box-shadow: none !important;
+}
+
+/* Timestamp / metadata */
+.messages-scrollable .time,
+.messages-scrollable .msg-metadata {
+    font-size: 11px !important;
+    color: #9CA3AF !important;
+    margin-top: 4px !important;
+}
+
+.messages-scrollable .user-message .time,
+.messages-scrollable .msg-row.sent .time {
+    text-align: right !important;
+}
+
+.messages-scrollable .ai-message .time,
+.messages-scrollable .partner-message .time,
+.messages-scrollable .msg-row.received .time {
+    text-align: left !important;
+}
+
+/* Avatar sizing */
+.messages-scrollable .msg-avatar,
+.messages-scrollable .avatar,
+.messages-scrollable .robot-avatar,
+.messages-scrollable .partner-avatar {
+    width: 30px !important;
+    height: 30px !important;
+    min-width: 30px !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 0.85rem !important;
+    flex-shrink: 0 !important;
+    overflow: hidden !important;
+}
+
+.messages-scrollable .robot-avatar {
+    background: linear-gradient(135deg, var(--viettel-red-subtle) 0%, #fff0f2 100%) !important;
+    color: var(--viettel-red) !important;
+    border: 1px solid rgba(238, 0, 51, 0.12) !important;
+}
+
+.messages-scrollable .avatar {
+    background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%) !important;
+    color: #475569 !important;
+    border: 1px solid #cbd5e1 !important;
+}
+
+.messages-scrollable .partner-avatar {
+    background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%) !important;
+    color: #1d4ed8 !important;
+    border: 1px solid #bfdbfe !important;
+    font-weight: bold !important;
+}
+
+.messages-scrollable .msg-avatar img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+}
+
+/* Remove stale standalone rules that conflict */
+.msg-row {
+    display: flex;
+    margin-bottom: 12px;
+}
+
+.msg-row.received {
+    align-self: flex-start;
+}
+
+.msg-row.sent {
+    align-self: flex-end;
+    margin-left: auto;
+}
+
+.msg-row .msg-bubble-wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+.msg-row.received .msg-bubble-wrapper {
+    align-items: flex-start;
+}
+
+.msg-row.sent .msg-bubble-wrapper {
+    align-items: flex-end;
+}
+
+.msg-row .msg-metadata {
+    font-size: 10px;
+    color: #9CA3AF;
+    margin-top: 4px;
+
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* ==========================================================================
+   8. TYPING INDICATOR
+   ========================================================================== */
+.ai-typing-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.ai-typing-bubble {
+    background-color: #FFFFFF;
+    border: 1px solid var(--cb-border);
+    padding: 12px 16px;
+    border-radius: 18px;
+    border-top-left-radius: 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+}
+
+.ai-typing-text {
+    font-size: 12px;
+    color: var(--cb-text-muted);
+}
+
+.ai-typing-dots {
+    display: flex;
+    gap: 4px;
+}
+
+.ai-typing-dots span {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: var(--viettel-red);
+    animation: typingDotsPulse 1.4s infinite ease-in-out both;
+}
+
+.ai-typing-dots span:nth-child(1) { animation-delay: -0.32s; }
+.ai-typing-dots span:nth-child(2) { animation-delay: -0.16s; }
+
+@keyframes typingDotsPulse {
+    0%, 80%, 100% { transform: scale(0.2); opacity: 0.3; }
+    40% { transform: scale(1); opacity: 1; }
+}
+
+/* ==========================================================================
+   9. FOOTER INPUT SECTION
+   ========================================================================== */
+.stream-footer {
+    background-color: #FFFFFF;
+    border-top: 1px solid var(--cb-border);
+    padding: 12px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.chatgpt-input-capsule {
+    display: flex;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.98) !important;
+    border: 2px solid var(--cb-border);
+    border-radius: 999px;
+    height: 48px;
+    padding: 3px 4px 3px 15px;
+    gap: 6px;
+    transition: all var(--anim-normal) ease;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.chatgpt-input-capsule:focus-within {
+    background-color: rgba(255, 255, 255, 0.98) !important;
+    border-color: var(--viettel-primary);
+    box-shadow: 0 4px 20px rgba(215, 25, 32, 0.12);
+}
+
+.capsule-icon-btn {
+    background: none;
+    border: none;
+    color: var(--cb-text-muted);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1.1rem;
+    transition: all 0.2s ease;
+}
+
+.capsule-icon-btn:hover {
+    color: var(--viettel-red);
+    background-color: var(--viettel-red-subtle);
+}
+
+.stream-textarea {
+    flex-grow: 1;
+    height: 24px;
+    max-height: 24px;
+    border: none !important;
+    background: transparent !important;
+    padding: 3px 0 !important;
+    resize: none;
+    font-size: 13.5px !important;
+    outline: none !important;
+    color: #111111 !important;
+    line-height: 1.4;
+}
+
+.stream-textarea::placeholder {
+    color: #555555 !important;
+    opacity: 1 !important;
+}
+
+.stream-send-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(180deg, var(--viettel-primary) 0%, var(--viettel-hover) 100%);
+    color: #FFFFFF;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    box-shadow: 0 4px 10px rgba(215, 25, 32, 0.2);
+    transition: all var(--anim-normal) cubic-bezier(0.4, 0, 0.2, 1);
+    flex-shrink: 0;
+}
+
+.stream-send-btn:hover {
+    transform: scale(1.08);
+    box-shadow: 0 6px 20px rgba(215, 25, 32, 0.4);
+}
+
+.stream-send-btn:disabled {
+    background: #E5E7EB;
+    color: #9CA3AF;
+    box-shadow: none;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* ==========================================================================
+   10. MODALS & OTHER VIEWS
+   ========================================================================== */
+.chat-modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(15, 23, 42, 0.45);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    animation: fadeIn 0.2s ease-out;
+}
+
+.chat-modal-card {
+    background-color: #FFFFFF;
+    border-radius: 16px;
+    width: 100%;
+    max-width: 320px;
+    padding: 24px 20px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    animation: scaleIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.chat-modal-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.chat-modal-body p {
+    font-size: 13px;
+    color: var(--cb-text-muted);
+    text-align: center;
+    line-height: 1.5;
+    margin-bottom: 20px;
+}
+
+/* Scrollbar customization */
+.messages-scrollable::-webkit-scrollbar,
+.welcome-scrollable::-webkit-scrollbar {
+    width: 4px;
+}
+
+.messages-scrollable::-webkit-scrollbar-track,
+.welcome-scrollable::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.messages-scrollable::-webkit-scrollbar-thumb,
+.welcome-scrollable::-webkit-scrollbar-thumb {
+    background-color: rgba(215, 25, 32, 0.2);
+    border-radius: 10px;
+}
+
+.messages-scrollable::-webkit-scrollbar-thumb:hover,
+.welcome-scrollable::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(215, 25, 32, 0.4);
+}
+
+/* General Animations */
+@keyframes fadeInSlideUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes scaleIn {
+    from { transform: scale(0.9); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+/* ==========================================================================
+   10. SUGGESTION PILLS
+   ========================================================================== */
+.chat-suggestion-pills-row {
+    display: flex;
+    gap: 8px;
+    padding: 8px 16px;
+    overflow-x: auto;
+    white-space: nowrap;
+    background-color: var(--cb-bg);
+    scrollbar-width: none;
+    flex-shrink: 0;
+    border-top: 1px solid rgba(226, 232, 240, 0.5);
+}
+
+.chat-suggestion-pills-row::-webkit-scrollbar {
+    display: none;
+}
+
+.suggestion-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 14px;
+    background-color: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    color: #334155;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+}
+
+.suggestion-pill:hover {
+    background-color: #F8FAFC;
+    border-color: #CBD5E1;
+    color: #0F172A;
+}
+
+/* ==========================================================================
+   11. RESPONSIVE BREAKPOINTS
+   ========================================================================== */
+@media (max-width: 480px) {
+    .chat-window {
+        bottom: 0;
+        right: 0;
+        width: 100% !important;
+        height: 100% !important;
+        max-height: 100% !important;
+        border-radius: 0;
+    }
+    
+    .chat-header {
+        border-radius: 0;
+    }
+    
+    .chat-launcher {
+        bottom: 16px;
+        right: 16px;
+    }
+}
+
+/* ==========================================================================
+   SUPER CHAT MESSAGE AREA OVERRIDES - ChatGPT + Zendesk + Viettel AI Style
+   ========================================================================== */
+
+/* 1. Containers and Scrollbar Layout */
+.messages-scrollable,
+.chat-messages-pane {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important; /* Gap 10px between avatar + bubble rows */
+    padding: 16px !important; /* padding: 16px */
+    background-color: #F7F8FA !important; /* background: #F7F8FA */
+    overflow-y: auto !important;
+    scrollbar-width: thin !important;
+    scrollbar-color: rgba(215, 25, 32, 0.2) transparent !important;
+}
+
+.messages-scrollable::-webkit-scrollbar,
+.chat-messages-pane::-webkit-scrollbar {
+    width: 4px !important;
+}
+
+.messages-scrollable::-webkit-scrollbar-track,
+.chat-messages-pane::-webkit-scrollbar-track {
+    background: transparent !important;
+}
+
+.messages-scrollable::-webkit-scrollbar-thumb,
+.chat-messages-pane::-webkit-scrollbar-thumb {
+    background-color: rgba(215, 25, 32, 0.2) !important;
+    border-radius: 4px !important;
+}
+
+/* 2. Message Row Styles (Flex containers) */
+.messages-scrollable .msg-row,
+.chat-messages-pane .chat-message-row {
+    display: flex !important;
+    align-items: flex-end !important; /* Bottom-aligned avatar + bubble */
+    gap: 10px !important; /* gap: 10px between avatar and bubble */
+    margin-bottom: 8px !important; /* margin-bottom: 8px */
+    width: 100% !important;
+    max-width: 100% !important;
+    opacity: 0;
+    transform: translateY(8px);
+    animation: bubbleFadeIn 0.25s cubic-bezier(0.25, 1, 0.5, 1) forwards !important; /* Animation 0.25s, translateY(8px) */
+}
+
+@keyframes bubbleFadeIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Chatbox & LiveSupport Alignments */
+.messages-scrollable .user-message,
+.messages-scrollable .msg-row.sent,
+.chat-messages-pane .chat-message-row.client {
+    flex-direction: row !important;
+    justify-content: flex-end !important;
+}
+
+.messages-scrollable .ai-message,
+.messages-scrollable .partner-message,
+.messages-scrollable .msg-row.received,
+.chat-messages-pane .chat-message-row.staff {
+    flex-direction: row !important;
+    justify-content: flex-start !important;
+}
+
+/* 3. Inner Wrapper Constraints */
+.messages-scrollable .message-content,
+.messages-scrollable .msg-bubble-wrapper {
+    display: flex !important;
+    flex-direction: column !important;
+    max-width: 72% !important;
+    min-width: 70px !important;
+    width: auto !important;
+    flex: 0 1 auto !important;
+}
+
+.chat-messages-pane .chat-message-wrapper {
+    display: flex !important;
+    flex-direction: column !important;
+    width: fit-content !important;
+    max-width: 55% !important; /* Desktop limit: 55% */
+    flex: 0 1 auto !important;
+}
+
+@media (max-width: 991.98px) {
+    .chat-messages-pane .chat-message-wrapper {
+        max-width: 70% !important; /* Tablet limit: 70% */
+    }
+}
+
+@media (max-width: 575.98px) {
+    .chat-messages-pane .chat-message-wrapper {
+        max-width: 82% !important; /* Mobile limit: 82% */
+    }
+}
+
+.messages-scrollable .user-message .message-content,
+.messages-scrollable .msg-row.sent .message-content,
+.chat-messages-pane .chat-message-row.client .chat-message-wrapper {
+    align-items: flex-end !important;
+}
+
+.messages-scrollable .ai-message .message-content,
+.messages-scrollable .partner-message .message-content,
+.messages-scrollable .msg-row.received .message-content,
+.chat-messages-pane .chat-message-row.staff .chat-message-wrapper {
+    align-items: flex-start !important;
+}
+
+/* 4. Bubble core styles (Zalo Fit-Content) */
+.messages-scrollable .viettel-bubble,
+.messages-scrollable .msg-bubble,
+.chat-messages-pane .chat-message-item {
+    display: inline-block !important;
+    width: fit-content !important; /* Bubble width = fit-content */
+    height: auto !important;
+    max-width: 100% !important;
+    padding: 12px 18px !important;
+    font-size: 0.92rem !important;
+    line-height: 1.5 !important;
+    font-weight: 400 !important;
+    word-break: break-word !important;
+    overflow-wrap: anywhere !important;
+    white-space: pre-wrap !important;
+    border-radius: 22px !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+}
+
+/* User Message bubble (linear-gradient Viettel, white text) */
+.messages-scrollable .user-message .viettel-bubble,
+.messages-scrollable .user-message .msg-bubble,
+.messages-scrollable .msg-row.sent .msg-bubble,
+.chat-messages-pane .chat-message-row.client .chat-message-item {
+    align-self: flex-end !important;
+    background: linear-gradient(135deg, #D71920, #E53935) !important;
+    color: #FFFFFF !important;
+    border: none !important;
+    border-radius: 22px 22px 4px 22px !important;
+    box-shadow: 0 4px 14px rgba(215, 25, 32, 0.18) !important;
+}
+
+/* AI / Staff Message bubble (white, border, shadow soft) */
+.messages-scrollable .ai-message .viettel-bubble,
+.messages-scrollable .ai-message .msg-bubble,
+.messages-scrollable .partner-message .viettel-bubble,
+.messages-scrollable .partner-message .msg-bubble,
+.messages-scrollable .msg-row.received .msg-bubble,
+.chat-messages-pane .chat-message-row.staff .chat-message-item {
+    align-self: flex-start !important;
+    background-color: #FFFFFF !important;
+    color: #1E293B !important;
+    border: 1px solid #E2E8F0 !important;
+    border-radius: 22px 22px 22px 4px !important;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03) !important;
+}
+
+/* 5. Timestamp alignment */
+.messages-scrollable .time,
+.messages-scrollable .msg-metadata,
+.chat-messages-pane .chat-message-meta {
+    font-size: 11px !important; /* Timestamp 11px */
+    color: #999999 !important; /* color #999 */
+    margin-top: 4px !important; /* đặt sát dưới bubble */
+    display: block !important;
+    font-weight: 400 !important;
+}
+
+.messages-scrollable .user-message .time,
+.messages-scrollable .msg-row.sent .time,
+.chat-messages-pane .chat-message-row.client .chat-message-meta {
+    text-align: right !important;
+    padding-right: 4px !important;
+}
+
+.messages-scrollable .ai-message .time,
+.messages-scrollable .partner-message .time,
+.messages-scrollable .msg-row.received .time,
+.chat-messages-pane .chat-message-row.staff .chat-message-meta {
+    text-align: left !important;
+    padding-left: 4px !important;
+}
+
+/* 6. Avatar sizing & alignment */
+.messages-scrollable .avatar,
+.messages-scrollable .msg-avatar,
+.chat-messages-pane .chat-avatar {
+    border-radius: 50% !important;
+    overflow: hidden !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-shrink: 0 !important;
+}
+
+/* AI / Staff Avatar (40px) */
+.messages-scrollable .robot-avatar,
+.messages-scrollable .ai-message .msg-avatar,
+.messages-scrollable .partner-avatar,
+.messages-scrollable .partner-message .msg-avatar,
+.chat-messages-pane .chat-message-row.staff .chat-avatar {
+    width: 40px !important; /* AI 40px */
+    height: 40px !important;
+    min-width: 40px !important;
+    background-color: rgba(215, 25, 32, 0.08) !important;
+    color: #D71920 !important;
+    border: 1px solid #ECECEC !important;
+    font-size: 16px !important;
+}
+
+.messages-scrollable .robot-avatar img,
+.messages-scrollable .ai-message .msg-avatar img,
+.chat-messages-pane .chat-avatar img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+}
+
+/* User / Client Avatar (36px) */
+.messages-scrollable .user-message .avatar,
+.messages-scrollable .msg-row.sent .avatar,
+.chat-messages-pane .chat-message-row.client .chat-avatar {
+    display: flex !important; /* Show user avatar */
+    width: 36px !important; /* User 36px */
+    height: 36px !important;
+    min-width: 36px !important;
+    background-color: #F1F5F9 !important;
+    color: #475569 !important;
+    border: 1px solid #CBD5E1 !important;
+    font-size: 13px !important;
+}
+
+/* 7. Input and Send Button styles */
+.chatgpt-input-capsule,
+.chat-input-capsule {
+    display: flex !important;
+    align-items: center !important;
+    background-color: #FFFFFF !important;
+    border: 1.5px solid #E2E8F0 !important;
+    border-radius: 28px !important; /* border-radius 28px */
+    height: 52px !important; /* cao 52px */
+    padding: 2px 4px 2px 16px !important;
+    gap: 6px !important;
+    transition: all 0.25s ease !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04) !important;
+}
+
+.chatgpt-input-capsule:focus-within,
+.chat-input-capsule:focus-within {
+    border-color: #D71920 !important;
+    box-shadow: 0 4px 15px rgba(215, 25, 32, 0.12) !important;
+}
+
+.stream-textarea,
+.chat-textarea {
+    flex-grow: 1 !important;
+    height: 36px !important;
+    max-height: 36px !important;
+    border: none !important;
+    background: transparent !important;
+    padding: 6px 0 !important;
+    resize: none !important;
+    font-size: 14.5px !important;
+    outline: none !important;
+    color: #1F2937 !important;
+    line-height: 1.4 !important;
+    overflow-y: hidden !important;
+}
+
+.stream-textarea::placeholder,
+.chat-textarea::placeholder {
+    color: #999999 !important; /* placeholder màu #999 */
+}
+
+/* Centering icons */
+.capsule-icon-btn {
+    background: none !important;
+    border: none !important;
+    color: #94A3B8 !important;
+    width: 36px !important;
+    height: 36px !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important; /* icon nằm giữa */
+    justify-content: center !important;
+    cursor: pointer !important;
+    font-size: 1.15rem !important;
+    transition: all 0.2s ease !important;
+}
+
+.capsule-icon-btn:hover {
+    color: #D71920 !important;
+    background-color: rgba(215, 25, 32, 0.08) !important;
+}
+
+/* Send Button: hình tròn 48x48 màu đỏ Viettel */
+.stream-send-btn,
+.chat-send-btn {
+    width: 48px !important; /* 48x48 */
+    height: 48px !important;
+    border-radius: 50% !important;
+    background: linear-gradient(135deg, #D71920 0%, #C00016 100%) !important;
+    color: #FFFFFF !important;
+    border: none !important;
+    cursor: pointer !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 1.1rem !important;
+    box-shadow: 0 3px 8px rgba(215, 25, 32, 0.25) !important;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    flex-shrink: 0 !important;
+}
+
+.stream-send-btn:hover,
+.chat-send-btn:hover {
+    transform: scale(1.05) !important; /* hover scale 1.05 */
+    background: #F02830 !important;
+    box-shadow: 0 4px 12px rgba(215, 25, 32, 0.35) !important;
+}
+
+.stream-send-btn:disabled,
+.chat-send-btn:disabled {
+    background: #E2E8F0 !important;
+    color: #94A3B8 !important;
+    box-shadow: none !important;
+    cursor: not-allowed !important;
+    transform: none !important;
+}

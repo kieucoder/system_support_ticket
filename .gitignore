@@ -24,3 +24,9 @@ obj/
 # OS files
 .DS_Store
 Thumbs.db
+
+# Environment & secret configuration
+appsettings.Development.json
+appsettings.Local.json
+*.bak
+

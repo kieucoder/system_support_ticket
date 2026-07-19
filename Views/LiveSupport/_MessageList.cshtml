@@ -1,0 +1,38 @@
+@model SupportTicketSysterm.ViewModels.LiveSupportViewModel
+
+<div class="chat-messages-pane" id="chatMessagesPane">
+    @if (Model.Messages != null && Model.Messages.Any())
+    {
+        var prevDate = DateOnly.MinValue;
+        @foreach (var msg in Model.Messages)
+        {
+            var msgDate = DateOnly.FromDateTime(msg.ThoiGian);
+            if (msgDate != prevDate)
+            {
+                prevDate = msgDate;
+                <div class="chat-date-separator">
+                    <span class="chat-date-text">@msgDate.ToString("dd/MM/yyyy")</span>
+                </div>
+            }
+            @await Html.PartialAsync("_MessageItem", msg, new ViewDataDictionary(ViewData) { { "CurrentUserRole", Model.CurrentUserRole } })
+        }
+    }
+    else
+    {
+        <div class="chat-empty-state">
+            <span class="empty-state-icon">💬</span>
+            <h3>Chưa có tin nhắn nào</h3>
+            <p class="text-muted">Bắt đầu cuộc trò chuyện bằng cách nhập tin nhắn bên dưới.</p>
+        </div>
+    }
+
+    <!-- Typing indicator slot -->
+    <div class="typing-indicator-row" id="typingIndicator" style="display: none;">
+        <div class="typing-dot-container">
+            <span class="typing-dot"></span>
+            <span class="typing-dot"></span>
+            <span class="typing-dot"></span>
+        </div>
+        <span class="typing-text" id="typingIndicatorText">Đang nhập...</span>
+    </div>
+</div>

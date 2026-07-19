@@ -1,3 +1,4 @@
+@model SupportTicketSysterm.Models.ViewModels.DashboardViewModel
 @{
     ViewData["Title"] = "Dashboard Tổng Quan";
     ViewData["HeaderTitle"] = "Tổng Quan Hệ Thống";
@@ -8,6 +9,11 @@
     <!-- Page-specific CSS -->
     <link rel="stylesheet" href="~/assets/css/staff/dashboard-page.css">
 }
+
+<script>
+    // Flag to tell the mock dashboard.js to skip setting up fake data and charts
+    window.isServerDashboard = true;
+</script>
 
 <!-- ====================================
      SECTION 1: STATISTICS CARDS
@@ -20,10 +26,9 @@
                 <div class="stat-card-wrapper">
                     <div>
                         <p class="stat-card-title">Tổng Phiếu Hỗ Trợ</p>
-                        <h2 class="stat-card-number" id="count-total">0</h2>
+                        <h2 class="stat-card-number">@Model.TongPhieu</h2>
                         <p class="stat-trend up mb-0 mt-1">
-                            <i class="bi bi-arrow-trend-up me-1"></i>+8
-                            so với tuần trước
+                            <i class="bi bi-arrow-trend-up me-1"></i>Hệ thống tiếp nhận
                         </p>
                     </div>
                     <div class="stat-card-icon primary">
@@ -39,8 +44,8 @@
                 <div class="stat-card-wrapper">
                     <div>
                         <p class="stat-card-title">Chờ Tiếp Nhận</p>
-                        <h2 class="stat-card-number" id="count-waiting">0</h2>
-                        <p class="stat-trend down mb-0 mt-1">
+                        <h2 class="stat-card-number text-warning">@Model.ChoTiepNhan</h2>
+                        <p class="stat-trend down mb-0 mt-1 text-warning">
                             <i class="fa-solid fa-circle-exclamation me-1"></i>Cần xử lý sớm
                         </p>
                     </div>
@@ -57,8 +62,8 @@
                 <div class="stat-card-wrapper">
                     <div>
                         <p class="stat-card-title">Đang Xử Lý</p>
-                        <h2 class="stat-card-number" id="count-processing">0</h2>
-                        <p class="stat-trend up mb-0 mt-1">
+                        <h2 class="stat-card-number text-primary">@Model.DangXuLy</h2>
+                        <p class="stat-trend up mb-0 mt-1 text-primary">
                             <i class="fa-solid fa-spinner fa-spin me-1"></i>Đang tiến hành
                         </p>
                     </div>
@@ -75,8 +80,8 @@
                 <div class="stat-card-wrapper">
                     <div>
                         <p class="stat-card-title">Đã Hoàn Thành</p>
-                        <h2 class="stat-card-number" id="count-completed">0</h2>
-                        <p class="stat-trend up mb-0 mt-1">
+                        <h2 class="stat-card-number text-success">@Model.DaHoanThanh</h2>
+                        <p class="stat-trend up mb-0 mt-1 text-success">
                             <i class="fa-solid fa-circle-check me-1"></i>Tốt! Tỉ lệ cao
                         </p>
                     </div>
@@ -93,8 +98,8 @@
                 <div class="stat-card-wrapper">
                     <div>
                         <p class="stat-card-title">Khách Hàng</p>
-                        <h2 class="stat-card-number" id="count-customers">0</h2>
-                        <p class="stat-trend up mb-0 mt-1">
+                        <h2 class="stat-card-number text-info">@Model.SoKhachHang</h2>
+                        <p class="stat-trend up mb-0 mt-1 text-info">
                             <i class="fa-solid fa-users me-1"></i>Đã gửi phiếu
                         </p>
                     </div>
@@ -111,8 +116,8 @@
                 <div class="stat-card-wrapper">
                     <div>
                         <p class="stat-card-title">Lịch Hẹn Kỹ Thuật</p>
-                        <h2 class="stat-card-number" id="count-appointments">0</h2>
-                        <p class="stat-trend up mb-0 mt-1">
+                        <h2 class="stat-card-number text-success">@Model.LichHenKyThuat</h2>
+                        <p class="stat-trend up mb-0 mt-1 text-success">
                             <i class="fa-solid fa-calendar-check me-1"></i>Đã được duyệt
                         </p>
                     </div>
@@ -129,8 +134,8 @@
                 <div class="stat-card-wrapper">
                     <div>
                         <p class="stat-card-title">Dịch Vụ Kỹ Thuật</p>
-                        <h2 class="stat-card-number" id="count-services">0</h2>
-                        <p class="stat-trend up mb-0 mt-1">
+                        <h2 class="stat-card-number text-info">@Model.SoDichVu</h2>
+                        <p class="stat-trend up mb-0 mt-1 text-info">
                             <i class="fa-solid fa-network-wired me-1"></i>Đang cung cấp
                         </p>
                     </div>
@@ -147,8 +152,8 @@
                 <div class="stat-card-wrapper">
                     <div>
                         <p class="stat-card-title">Danh Mục Sự Cố</p>
-                        <h2 class="stat-card-number" id="count-categories">0</h2>
-                        <p class="stat-trend up mb-0 mt-1">
+                        <h2 class="stat-card-number text-warning">@Model.SoDanhMuc</h2>
+                        <p class="stat-trend up mb-0 mt-1 text-warning">
                             <i class="fa-solid fa-layer-group me-1"></i>Nhóm sự cố
                         </p>
                     </div>
@@ -164,10 +169,10 @@
             <div class="dashboard-card">
                 <div class="stat-card-wrapper">
                     <div>
-                        <p class="stat-card-title">Chat with Customer</p>
-                        <h2 class="stat-card-number" id="count-chats">0</h2>
-                        <p class="stat-trend up mb-0 mt-1">
-                            <i class="fa-solid fa-comments me-1"></i>Chatbox
+                        <p class="stat-card-title">Tin Nhắn Chưa Đọc</p>
+                        <h2 class="stat-card-number text-danger">@Model.ChatChuaDoc</h2>
+                        <p class="stat-trend up mb-0 mt-1 text-danger">
+                            <i class="fa-solid fa-comments me-1"></i>Hộp thư hỗ trợ
                         </p>
                     </div>
                     <div class="stat-card-icon warning" style="background-color: rgba(255, 193, 7, 0.15); color: #ffc107;">
@@ -191,14 +196,14 @@
                     <div>
                         <h2 class="section-heading-line">
                             Phiếu Hỗ Trợ Theo Tháng
-                            <small>Biểu đồ xu hướng tiếp nhận phiếu trong 6 tháng gần nhất (2026)</small>
+                            <small>Biểu đồ xu hướng tiếp nhận phiếu trong 6 tháng gần nhất</small>
                         </h2>
                     </div>
                     <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-2 py-1 rounded fs-9">
                         <i class="fa-solid fa-chart-line me-1"></i>Line Chart
                     </span>
                 </div>
-                <div class="chart-container">
+                <div class="chart-container" style="position: relative; height: 320px;">
                     <canvas id="ticketTrendChart" aria-label="Biểu đồ phiếu theo tháng"></canvas>
                 </div>
             </div>
@@ -218,7 +223,7 @@
                         <i class="bi bi-chart-pie me-1"></i>Doughnut
                     </span>
                 </div>
-                <div class="chart-container">
+                <div class="chart-container" style="position: relative; height: 320px;">
                     <canvas id="ticketStatusChart" aria-label="Biểu đồ phân bổ trạng thái"></canvas>
                 </div>
             </div>
@@ -245,7 +250,7 @@
                         <i class="fa-solid fa-chart-bar me-1"></i>Bar Chart
                     </span>
                 </div>
-                <div class="chart-container">
+                <div class="chart-container" style="position: relative; height: 320px;">
                     <canvas id="ticketServiceChart" aria-label="Biểu đồ phiếu theo dịch vụ"></canvas>
                 </div>
             </div>
@@ -257,15 +262,15 @@
                 <div class="table-card-header">
                     <div>
                         <h2 class="section-heading-line">
-                            Đánh Giá Khách Hàng
-                            <small>Tỉ lệ đánh giá hài lòng theo phân nhóm sao</small>
+                            Đánh Giá Hài Lòng (Sao)
+                            <small>Phân bổ đánh giá theo thang từ 1 đến 5 sao</small>
                         </h2>
                     </div>
                     <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1 rounded fs-9">
                         <i class="fa-solid fa-star me-1"></i>Radar
                     </span>
                 </div>
-                <div class="chart-container">
+                <div class="chart-container" style="position: relative; height: 320px;">
                     <canvas id="ticketRatingChart" aria-label="Biểu đồ đánh giá khách hàng"></canvas>
                 </div>
             </div>
@@ -285,7 +290,7 @@
                     <small>5 phiếu hỗ trợ kỹ thuật được tạo mới nhất trong hệ thống</small>
                 </h2>
             </div>
-            <a href="#" class="btn btn-sm btn-viettel px-3">
+            <a asp-controller="Staff" asp-action="QuanLyPhieu" class="btn btn-sm btn-viettel px-3">
                 <i class="bi bi-eye me-1"></i>Xem tất cả
             </a>
         </div>
@@ -302,13 +307,70 @@
                         <th scope="col">Ngày Tạo</th>
                     </tr>
                 </thead>
-                <tbody id="recentTicketsBody">
-                    <!-- Populated by dashboard.js -->
-                    <tr>
-                        <td colspan="6" class="text-center py-4">
-                            <div class="skeleton-text skeleton-loading w-50 mx-auto"></div>
-                        </td>
-                    </tr>
+                <tbody>
+                    @if (Model.PhieuMoiNhat != null && Model.PhieuMoiNhat.Any())
+                    {
+                        foreach (var item in Model.PhieuMoiNhat)
+                        {
+                            <tr>
+                                <td class="fw-bold">
+                                    <a asp-controller="Staff" asp-action="ChiTietPhieu" asp-route-id="@item.MaPhieu" class="text-danger text-decoration-none">
+                                        @item.MaPhieu
+                                    </a>
+                                </td>
+                                <td>@item.KhachHang</td>
+                                <td>
+                                    <div class="fw-semibold text-truncate" style="max-width: 250px;" title="@item.NoiDung">
+                                        @item.NoiDung
+                                    </div>
+                                    <small class="text-muted">@item.DichVu</small>
+                                </td>
+                                <td>
+                                    @if (item.MucDoUuTien == "Khẩn Cấp")
+                                    {
+                                        <span class="badge bg-danger">Khẩn Cấp</span>
+                                    }
+                                    else if (item.MucDoUuTien == "Cao")
+                                    {
+                                        <span class="badge bg-warning text-dark">Cao</span>
+                                    }
+                                    else if (item.MucDoUuTien == "Trung Bình")
+                                    {
+                                        <span class="badge bg-info text-dark">Trung Bình</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary">Thấp</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (item.TrangThai == "waiting" || item.TrangThai == "Chờ tiếp nhận")
+                                    {
+                                        <span class="badge bg-warning-subtle text-warning border border-warning-subtle px-2 py-1 rounded">Chờ tiếp nhận</span>
+                                    }
+                                    else if (item.TrangThai == "processing" || item.TrangThai == "Đang xử lý")
+                                    {
+                                        <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2 py-1 rounded">Đang xử lý</span>
+                                    }
+                                    else if (item.TrangThai == "completed" || item.TrangThai == "Hoàn thành" || item.TrangThai == "Đã hoàn thành")
+                                    {
+                                        <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1 rounded">Hoàn thành</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-2 py-1 rounded">@item.TrangThai</span>
+                                    }
+                                </td>
+                                <td>@item.NgayTao?.ToString("dd/MM/yyyy")</td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="6" class="text-center text-muted py-4">Chưa có phiếu hỗ trợ nào.</td>
+                        </tr>
+                    }
                 </tbody>
             </table>
         </div>
@@ -340,7 +402,7 @@
             </a>
         </div>
         <div class="col-lg-3 col-md-6 col-6">
-            <a href="admin-services.html"
+            <a asp-controller="DichVu" asp-action="Index"
                class="dashboard-card d-flex align-items-center gap-3 text-decoration-none"
                style="padding: 18px 20px;">
                 <div class="stat-card-icon info" style="flex-shrink:0;">
@@ -355,7 +417,7 @@
             </a>
         </div>
         <div class="col-lg-3 col-md-6 col-6">
-            <a href="admin-appointments.html"
+            <a asp-controller="LichHen" asp-action="Index"
                class="dashboard-card d-flex align-items-center gap-3 text-decoration-none"
                style="padding: 18px 20px;">
                 <div class="stat-card-icon warning" style="flex-shrink:0;">
@@ -370,7 +432,7 @@
             </a>
         </div>
         <div class="col-lg-3 col-md-6 col-6">
-            <a href="admin-profile.html"
+            <a asp-controller="NhanVien" asp-action="Index"
                class="dashboard-card d-flex align-items-center gap-3 text-decoration-none"
                style="padding: 18px 20px;">
                 <div class="stat-card-icon success" style="flex-shrink:0;">
@@ -384,20 +446,177 @@
                 </div>
             </a>
         </div>
-        <div class="col-lg-3 col-md-6 col-6">
-            <a href="staff-chat.html"
-               class="dashboard-card d-flex align-items-center gap-3 text-decoration-none"
-               style="padding: 18px 20px;">
-                <div class="stat-card-icon success" style="flex-shrink:0;">
-                    <i class="fa-solid fa-comments" aria-hidden="true"></i>
-                </div>
-                <div>
-                    <p class="fw-bold mb-0" style="color:var(--text-main); font-size:0.88rem;">
-                        Chat Hỗ Trợ
-                    </p>
-                    <p class="mb-0 text-muted" style="font-size:0.78rem;">Hộp thư hỗ trợ</p>
-                </div>
-            </a>
-        </div>
     </div>
 </section>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Theme settings mapping
+            const theme = document.documentElement.getAttribute('data-bs-theme') || 'light';
+            const isDark = theme === 'dark';
+            const labelColor = isDark ? '#94A3B8' : '#6B7280';
+            const gridColor = isDark ? 'rgba(51, 65, 85, 0.4)' : 'rgba(229, 231, 235, 0.6)';
+
+            // 1. Line Chart: Monthly Trend
+            const trendLabels = @Html.Raw(Json.Serialize(Model.ThongKeTheoThang.Select(x => $"Tháng {x.Thang}")));
+            const trendData = @Html.Raw(Json.Serialize(Model.ThongKeTheoThang.Select(x => x.SoLuong)));
+            const trendCtx = document.getElementById('ticketTrendChart');
+            if (trendCtx) {
+                new Chart(trendCtx, {
+                    type: 'line',
+                    data: {
+                        labels: trendLabels,
+                        datasets: [{
+                            label: 'Phiếu hỗ trợ tiếp nhận',
+                            data: trendData,
+                            borderColor: '#EE0033',
+                            backgroundColor: 'rgba(238, 0, 51, 0.1)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.35,
+                            pointBackgroundColor: '#EE0033',
+                            pointBorderColor: '#FFFFFF',
+                            pointBorderWidth: 2,
+                            pointRadius: 6,
+                            pointHoverRadius: 8
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false }
+                        },
+                        scales: {
+                            x: {
+                                grid: { color: gridColor },
+                                ticks: { color: labelColor, font: { family: 'Inter', size: 11 } }
+                            },
+                            y: {
+                                grid: { color: gridColor },
+                                ticks: { color: labelColor, font: { family: 'Inter', size: 11 } },
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            }
+
+            // 2. Doughnut Chart: Ticket Status
+            const statusCtx = document.getElementById('ticketStatusChart');
+            if (statusCtx) {
+                new Chart(statusCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Chờ tiếp nhận', 'Đang xử lý', 'Đã hoàn thành'],
+                        datasets: [{
+                            data: [@Model.ChoTiepNhan, @Model.DangXuLy, @Model.DaHoanThanh],
+                            backgroundColor: [
+                                '#F59E0B', // Warning
+                                '#EE0033', // Primary/Red
+                                '#10B981'  // Success/Green
+                            ],
+                            borderWidth: isDark ? 2 : 1,
+                            borderColor: isDark ? '#1E293B' : '#FFFFFF'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    color: labelColor,
+                                    font: { family: 'Inter', size: 12 },
+                                    padding: 15
+                                }
+                            }
+                        },
+                        cutout: '65%'
+                    }
+                });
+            }
+
+            // 3. Bar Chart: Ticket Service distribution
+            const serviceLabels = @Html.Raw(Json.Serialize(Model.ThongKeTheoDichVu.Select(x => x.TenDichVu)));
+            const serviceData = @Html.Raw(Json.Serialize(Model.ThongKeTheoDichVu.Select(x => x.SoLuong)));
+            const serviceCtx = document.getElementById('ticketServiceChart');
+            if (serviceCtx) {
+                new Chart(serviceCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: serviceLabels,
+                        datasets: [{
+                            label: 'Số phiếu',
+                            data: serviceData,
+                            backgroundColor: 'rgba(238, 0, 51, 0.85)',
+                            hoverBackgroundColor: '#EE0033',
+                            borderRadius: 6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false }
+                        },
+                        scales: {
+                            x: {
+                                grid: { display: false },
+                                ticks: { color: labelColor, font: { family: 'Inter', size: 10 } }
+                            },
+                            y: {
+                                grid: { color: gridColor },
+                                ticks: { color: labelColor, font: { family: 'Inter', size: 11 } },
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            }
+
+            // 4. Radar Chart: Star Ratings satisfaction
+            const radarCtx = document.getElementById('ticketRatingChart');
+            if (radarCtx) {
+                new Chart(radarCtx, {
+                    type: 'radar',
+                    data: {
+                        labels: ['1 Sao (Tệ)', '2 Sao (Kém)', '3 Sao (Bình thường)', '4 Sao (Tốt)', '5 Sao (Rất Tốt)'],
+                        datasets: [{
+                            label: 'Số lượng đánh giá',
+                            data: [@Model.DanhGiaSao.Sao1, @Model.DanhGiaSao.Sao2, @Model.DanhGiaSao.Sao3, @Model.DanhGiaSao.Sao4, @Model.DanhGiaSao.Sao5],
+                            backgroundColor: 'rgba(16, 185, 129, 0.2)',
+                            borderColor: '#10B981',
+                            pointBackgroundColor: '#10B981',
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false }
+                        },
+                        scales: {
+                            r: {
+                                angleLines: { color: gridColor },
+                                grid: { color: gridColor },
+                                pointLabels: {
+                                    color: labelColor,
+                                    font: { family: 'Inter', size: 10 }
+                                },
+                                ticks: {
+                                    backdropColor: 'transparent',
+                                    color: labelColor,
+                                    font: { size: 9 }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+}

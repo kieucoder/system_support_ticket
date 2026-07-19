@@ -4,6 +4,10 @@
     var hoTen = Context.Session?.GetString("HoTen") ?? User.FindFirstValue("HoTen") ?? User.Identity?.Name ?? "Nhân viên";
     var vaiTro = Context.Session?.GetString("Role") ?? User.FindFirstValue(ClaimTypes.Role) ?? "NhanVien";
     var vaiTroVn = vaiTro == "Admin" ? "Quản trị viên" : "Nhân viên hỗ trợ";
+    var avatar = Context.Session?.GetString("Avatar");
+    var avatarUrl = !string.IsNullOrEmpty(avatar) 
+        ? "/uploads/avatar/" + avatar 
+        : "https://ui-avatars.com/api/?name=" + System.Net.WebUtility.UrlEncode(hoTen) + "&background=EE0033&color=fff&size=38";
 }
 <!DOCTYPE html>
 <html lang="vi" data-bs-theme="light">
@@ -58,7 +62,7 @@
                             @(ViewData["HeaderTitle"] ?? "Tổng Quan Hệ Thống")
                         </p>
                         <p class="mb-0" style="font-size: 0.75rem; color: var(--text-muted);">
-                            @(ViewData["HeaderSubtitle"] ?? "Cập nhật lần cuối hôm nay, 08/06/2026")
+                            @(ViewData["HeaderSubtitle"] ?? "Cập nhật lần cuối hôm nay")
                         </p>
                     </div>
                 </div>
@@ -90,8 +94,7 @@
                     <div class="dropdown">
                         <a class="user-profile-dropdown" href="#" role="button" data-bs-toggle="dropdown"
                            aria-expanded="false" id="userDropdown" aria-label="User profile menu">
-                            <img src="https://ui-avatars.com/api/?name=@(System.Net.WebUtility.UrlEncode(hoTen))&background=EE0033&color=fff&size=38"
-                                 alt="Avatar nhân viên" class="user-avatar">
+                            <img src="@avatarUrl" alt="Avatar nhân viên" class="user-avatar" style="object-fit: cover;">
                             <div class="d-none d-sm-block">
                                 <p class="user-profile-name mb-0">@hoTen</p>
                                 <p class="mb-0 user-profile-role">
@@ -102,12 +105,12 @@
                         <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-2"
                             style="border-radius:12px; min-width:200px;">
                             <li>
-                                <a class="dropdown-item py-2" href="admin-profile.html">
+                                <a class="dropdown-item py-2" asp-controller="Staff" asp-action="TaiKhoanNhanVien">
                                     <i class="fa-solid fa-user me-2 text-primary"></i>Thông tin cá nhân
                                 </a>
                             </li>
                             <li>
-                                <a class="dropdown-item py-2" href="admin-profile.html#changePassword">
+                                <a class="dropdown-item py-2" asp-controller="Staff" asp-action="TaiKhoanNhanVien" asp-fragment="changePassword">
                                     <i class="fa-solid fa-key me-2 text-warning"></i>Đổi mật khẩu
                                 </a>
                             </li>

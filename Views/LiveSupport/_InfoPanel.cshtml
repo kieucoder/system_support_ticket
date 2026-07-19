@@ -1,0 +1,118 @@
+@model SupportTicketSysterm.ViewModels.LiveSupportViewModel
+
+<div class="chat-info-pane-inner p-3 d-flex flex-column gap-3 overflow-auto h-100" style="background:#F8FAFC;">
+
+    <!-- Ticket Summary Card (Jira / Zendesk Style) -->
+    <div class="info-pane-card bg-white p-3.5 rounded-4 border shadow-xs" style="border-color:#E2E8F0 !important;">
+        <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2.5">
+            <h6 class="fw-bold mb-0 text-dark d-flex align-items-center" style="font-size:0.88rem;">
+                <i class="bi bi-ticket-perforated-fill text-danger me-2 fs-6"></i>Phiếu hỗ trợ
+            </h6>
+            <span class="badge rounded-pill px-2.5 py-1 fw-bold" style="font-size:0.75rem; background: linear-gradient(135deg, #D71920 0%, #E53935 100%); color:#ffffff;">@Model.Ticket.MaPhieu</span>
+        </div>
+        <div class="info-list d-flex flex-column gap-2.5" style="font-size:0.8rem;">
+            <div class="d-flex justify-content-between align-items-start">
+                <span class="text-muted fw-medium">Tiêu đề:</span>
+                <span class="fw-bold text-dark text-end ms-2" style="max-width:170px; line-height:1.3;" title="@Model.Ticket.TieuDe">@Model.Ticket.TieuDe</span>
+            </div>
+            <div class="d-flex justify-content-between">
+                <span class="text-muted fw-medium">Dịch vụ:</span>
+                <span class="text-dark font-medium">@(Model.Ticket.IdDichVuNavigation?.TenDichVu ?? "Internet Cố Định")</span>
+            </div>
+            <div class="d-flex justify-content-between align-items-center">
+                <span class="text-muted fw-medium">Mức ưu tiên:</span>
+                <div>
+                    @if (Model.Ticket.MucDoUuTien == 1) { <span class="badge bg-secondary-subtle text-secondary rounded-pill px-2 py-0.5">Thấp</span> }
+                    else if (Model.Ticket.MucDoUuTien == 2) { <span class="badge bg-info-subtle text-info rounded-pill px-2 py-0.5 fw-semibold">Trung bình</span> }
+                    else if (Model.Ticket.MucDoUuTien == 3) { <span class="badge bg-warning-subtle text-warning rounded-pill px-2 py-0.5 fw-semibold">Cao</span> }
+                    else if (Model.Ticket.MucDoUuTien == 4) { <span class="badge bg-danger text-white rounded-pill px-2 py-0.5 fw-bold">Khẩn cấp</span> }
+                    else { <span class="badge bg-light text-dark rounded-pill px-2 py-0.5">Mặc định</span> }
+                </div>
+            </div>
+            <div class="d-flex justify-content-between align-items-center">
+                <span class="text-muted fw-medium">Trạng thái:</span>
+                <span class="badge bg-success-subtle text-success fw-bold rounded-pill px-2.5 py-1 d-inline-flex align-items-center gap-1">
+                    <span class="status-pulse-dot" style="width:6px; height:6px; background-color:#22C55E; border-radius:50%; display:inline-block;"></span>
+                    @Model.Ticket.TrangThai
+                </span>
+            </div>
+            <div class="d-flex justify-content-between">
+                <span class="text-muted fw-medium">Ngày tạo:</span>
+                <span class="text-dark font-monospace">@Model.Ticket.NgayTao?.ToString("dd/MM/yyyy")</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Technician Card -->
+    @if (Model.Staff != null)
+    {
+        <div class="info-pane-card bg-white p-3.5 rounded-4 border shadow-xs" style="border-color:#E2E8F0 !important;">
+            <h6 class="fw-bold mb-3 text-dark d-flex align-items-center" style="font-size:0.88rem;">
+                <i class="bi bi-person-badge-fill text-danger me-2 fs-6"></i>Kỹ thuật viên phụ trách
+            </h6>
+            <div class="text-center mb-3 p-2 rounded-3" style="background:#F8FAFC;">
+                <img src="https://ui-avatars.com/api/?name=@(Uri.EscapeDataString(Model.Staff.HoTen ?? "KTV"))&background=D71920&color=fff" 
+                     alt="Avatar" class="rounded-circle border border-2 border-danger mb-2 shadow-xs" style="width:52px; height:52px; object-fit:cover;" />
+                <h6 class="fw-bold text-dark mb-1" style="font-size:0.92rem;">@Model.Staff.HoTen</h6>
+                <span class="badge rounded-pill px-3 py-1 fw-bold" style="font-size:0.72rem; background-color:#FEF2F2; color:#D71920; border:1px solid #FECACA;">
+                    @(Model.Staff.VaiTro ?? "Kỹ sư Viettel Telecom")
+                </span>
+            </div>
+            <div class="info-list d-flex flex-column gap-2" style="font-size:0.78rem;">
+                <div class="d-flex align-items-center gap-2">
+                    <i class="bi bi-telephone-fill text-danger"></i>
+                    <span class="text-muted">Điện thoại:</span>
+                    <a href="tel:@Model.Staff.SoDienThoai" class="fw-bold text-danger text-decoration-none ms-auto">@Model.Staff.SoDienThoai</a>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                    <i class="bi bi-envelope-fill text-danger"></i>
+                    <span class="text-muted">Email:</span>
+                    <span class="text-dark text-truncate ms-auto" style="max-width:140px;" title="@Model.Staff.Email">@Model.Staff.Email</span>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                    <i class="bi bi-geo-alt-fill text-danger"></i>
+                    <span class="text-muted">Đơn vị:</span>
+                    <span class="text-dark text-truncate ms-auto" style="max-width:140px;" title="@Model.Staff.DiaChi">@Model.Staff.DiaChi</span>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="info-pane-card bg-white p-4 rounded-4 border text-center shadow-xs" style="border-color:#E2E8F0 !important;">
+            <div class="rounded-circle bg-warning-subtle mx-auto p-3 mb-2" style="width:54px; height:54px; display:grid; place-items:center;">
+                <i class="bi bi-clock-history text-warning fs-3"></i>
+            </div>
+            <h6 class="fw-bold text-dark mb-1" style="font-size:0.88rem;">Đang phân công kỹ thuật viên</h6>
+            <p class="text-muted small mb-0" style="font-size:0.75rem;">Hệ thống đang chỉ định kỹ sư khu vực hỗ trợ bạn.</p>
+        </div>
+    }
+
+    <!-- Customer Card -->
+    @if (Model.Customer != null)
+    {
+        <div class="info-pane-card bg-white p-3.5 rounded-4 border shadow-xs" style="border-color:#E2E8F0 !important;">
+            <h6 class="fw-bold mb-3 text-dark d-flex align-items-center" style="font-size:0.88rem;">
+                <i class="bi bi-person-circle text-danger me-2 fs-6"></i>Khách hàng yêu cầu
+            </h6>
+            <div class="info-list d-flex flex-column gap-2" style="font-size:0.78rem;">
+                <div class="d-flex justify-content-between">
+                    <span class="text-muted">Họ tên:</span>
+                    <strong class="text-dark">@Model.Customer.HoTen</strong>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <span class="text-muted">Điện thoại:</span>
+                    <span class="text-dark font-monospace">@Model.Customer.SoDienThoai</span>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <span class="text-muted">Email:</span>
+                    <span class="text-dark text-truncate ms-2" style="max-width:150px;" title="@Model.Customer.Email">@Model.Customer.Email</span>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <span class="text-muted">Địa chỉ:</span>
+                    <span class="text-dark text-end ms-2 text-truncate" style="max-width:150px;" title="@Model.Customer.DiaChi">@Model.Customer.DiaChi</span>
+                </div>
+            </div>
+        </div>
+    }
+</div>

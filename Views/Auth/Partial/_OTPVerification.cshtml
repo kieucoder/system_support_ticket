@@ -1,0 +1,258 @@
+@model SupportTicketSysterm.Models.DangKyViewModel
+
+<!-- STYLES DÀNH RIÊNG CHO KHU VỰC OTP (ĐỒNG BỘ 100% VỚI DANGKY & DANGNHAP) -->
+<style>
+    .otp-section {
+        animation: otpFadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        width: 100%;
+    }
+
+    @@keyframes otpFadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(15px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Card thông báo gửi Email */
+    .otp-banner-card {
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        border: 1px solid #e2e8f0;
+        border-left: 4px solid #e11b1e;
+        border-radius: 16px;
+        padding: 1.1rem 1.25rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+    }
+
+    .otp-banner-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        background: rgba(225, 27, 30, 0.1);
+        color: #e11b1e;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+        flex-shrink: 0;
+    }
+
+    .otp-banner-content {
+        flex: 1;
+    }
+
+    .otp-banner-title {
+        font-weight: 700;
+        color: #0f172a;
+        font-size: 0.98rem;
+        margin-bottom: 2px;
+    }
+
+    .otp-banner-text {
+        font-size: 0.83rem;
+        color: #64748b;
+        margin-bottom: 6px;
+    }
+
+    .otp-email-pill {
+        display: inline-flex;
+        align-items: center;
+        background: #ffffff;
+        border: 1px solid #cbd5e1;
+        padding: 0.3rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #e11b1e;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.04);
+        word-break: break-all;
+    }
+
+    /* 6 Ô nhập OTP */
+    .otp-box-container {
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        gap: 10px !important;
+        margin: 1.25rem 0 !important;
+        width: 100% !important;
+    }
+
+    .otp-digit-input {
+        width: 48px !important;
+        height: 56px !important;
+        min-width: 44px !important;
+        border-radius: 14px !important;
+        border: 2px solid #cbd5e1 !important;
+        background-color: #f8fafc !important;
+        font-size: 1.5rem !important;
+        font-weight: 700 !important;
+        color: #0f172a !important;
+        text-align: center !important;
+        outline: none !important;
+        padding: 0 !important;
+        transition: all 0.2s cubic-bezier(0.2, 0.9, 0.4, 1.1) !important;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03) !important;
+    }
+
+    .otp-digit-input::placeholder {
+        color: #cbd5e1;
+        font-weight: 400;
+    }
+
+    .otp-digit-input:focus {
+        border-color: #e11b1e !important;
+        background-color: #ffffff !important;
+        box-shadow: 0 0 0 4px rgba(225, 27, 30, 0.15), 0 4px 12px rgba(225, 27, 30, 0.1) !important;
+        transform: translateY(-2px) !important;
+    }
+
+    .otp-digit-input:not(:placeholder-shown) {
+        border-color: #0f172a !important;
+        background-color: #ffffff !important;
+    }
+
+    /* Thanh đếm ngược & Gửi lại OTP */
+    .otp-timer-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 14px;
+        padding: 0.65rem 1rem;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+    }
+
+    .otp-countdown-card {
+        font-size: 0.85rem;
+        color: #475569;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+    }
+
+    .otp-countdown-card strong {
+        font-weight: 700;
+        font-size: 0.95rem;
+        color: #e11b1e;
+        margin-left: 4px;
+        font-family: 'Poppins', monospace;
+    }
+
+    .btn-resend-custom {
+        background: #ffffff;
+        border: 1px solid #cbd5e1;
+        color: #334155;
+        font-weight: 600;
+        font-size: 0.82rem;
+        padding: 0.4rem 0.9rem;
+        border-radius: 20px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.04);
+    }
+
+    .btn-resend-custom:hover:not(:disabled) {
+        background: linear-gradient(95deg, #e11b1e, #b91c1c);
+        border-color: #e11b1e;
+        color: #ffffff;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(225, 27, 30, 0.3);
+    }
+
+    .btn-resend-custom:disabled {
+        opacity: 0.65;
+        cursor: not-allowed;
+        background: #f1f5f9;
+        border-color: #e2e8f0;
+        color: #94a3b8;
+        box-shadow: none;
+    }
+
+    @@media (max-width: 576px) {
+        .otp-box-container {
+            gap: 6px !important;
+        }
+        
+        .otp-digit-input {
+            width: 40px !important;
+            height: 48px !important;
+            font-size: 1.25rem !important;
+            border-radius: 10px !important;
+        }
+
+        .otp-banner-card {
+            padding: 0.85rem;
+            gap: 0.75rem;
+        }
+
+        .otp-timer-bar {
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+    }
+</style>
+
+<!-- KHU VỰC OTP (ẨN BAN ĐẦU - HIỆN SAU KHI GỬI OTP THÀNH CÔNG) -->
+<div id="otpSection" class="otp-section d-none">
+    <!-- Banner thông báo email -->
+    <div class="otp-banner-card mb-4">
+        <div class="otp-banner-icon">
+            <i class="fa-solid fa-shield-halved"></i>
+        </div>
+        <div class="otp-banner-content">
+            <div class="otp-banner-title">Xác thực mã OTP</div>
+            <div class="otp-banner-text">Mã xác thực 6 chữ số đã được gửi tới địa chỉ Email:</div>
+            <div class="otp-email-pill">
+                <i class="fa-solid fa-envelope me-1 text-danger"></i>
+                <span id="displayEmailText">email@domain.com</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ô nhập 6 chữ số OTP -->
+    <div class="form-group mb-4 text-center">
+        <label class="form-label fw-bold text-dark mb-2" style="font-size: 0.95rem;">
+            Nhập mã OTP 6 chữ số <span class="text-danger">*</span>
+        </label>
+        <div class="otp-box-container">
+            <input type="text" class="otp-digit-input" maxlength="1" inputmode="numeric" autocomplete="one-time-code" required placeholder="•">
+            <input type="text" class="otp-digit-input" maxlength="1" inputmode="numeric" autocomplete="one-time-code" required placeholder="•">
+            <input type="text" class="otp-digit-input" maxlength="1" inputmode="numeric" autocomplete="one-time-code" required placeholder="•">
+            <input type="text" class="otp-digit-input" maxlength="1" inputmode="numeric" autocomplete="one-time-code" required placeholder="•">
+            <input type="text" class="otp-digit-input" maxlength="1" inputmode="numeric" autocomplete="one-time-code" required placeholder="•">
+            <input type="text" class="otp-digit-input" maxlength="1" inputmode="numeric" autocomplete="one-time-code" required placeholder="•">
+        </div>
+        <span asp-validation-for="OTP" class="field-validation-error text-danger small mt-2 d-block"></span>
+    </div>
+
+    <!-- Thanh trạng thái đếm ngược & nút gửi lại OTP -->
+    <div class="otp-timer-bar mb-4">
+        <div class="otp-countdown-card">
+            <i class="fa-regular fa-clock me-1 text-danger"></i>
+            <span>Hiệu lực còn: <strong id="otpCountdownText">05:00</strong></span>
+        </div>
+        
+        <button type="button" id="btnResendOtp" class="btn-resend-custom" disabled>
+            <span class="btn-text">
+                <i class="fa-solid fa-rotate-right me-1"></i> Gửi lại OTP <span id="resendCountdownText"></span>
+            </span>
+            <span class="spinner spinner-icon" style="display: none;">
+                <i class="fa-solid fa-circle-notch fa-spin me-1"></i>
+            </span>
+        </button>
+    </div>
+</div>

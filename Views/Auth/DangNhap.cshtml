@@ -19,14 +19,57 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
     <!-- Chatbox Widget CSS -->
     <link rel="stylesheet" href="assets/css/chatbox.css">
+    <link rel="stylesheet" href="assets/css/chat-message.css">
     <!-- Google Font -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=Poppins:wght@500;600;700;800&display=swap"
           rel="stylesheet">
 
     <!-- Site CSS -->
-    <link rel="stylesheet" href="~/assets/css/site.css">
+    <link rel="stylesheet" href="~/assets/css/site.css" asp-append-version="true">
     <!-- Login CSS -->
-    <link rel="stylesheet" href="~/assets/css/login.css">
+    <link rel="stylesheet" href="~/assets/css/login.css" asp-append-version="true">
+    <style>
+        /* ========== AUTH SWITCHER TOGGLE ========== */
+        .auth-toggle-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .auth-toggle-wrapper {
+            background-color: #f1f5f9;
+            padding: 6px;
+            border-radius: 30px;
+            display: inline-flex;
+            gap: 4px;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.04);
+            border: 1px solid #e2e8f0;
+        }
+
+        .auth-toggle-btn {
+            padding: 0.6rem 2rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #64748b;
+            text-decoration: none;
+            border-radius: 25px;
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            display: inline-block;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+        }
+
+        .auth-toggle-btn:hover {
+            color: #e11b1e;
+        }
+
+        .auth-toggle-btn.active {
+            background: linear-gradient(95deg, #e11b1e, #b91c1c);
+            color: white !important;
+            box-shadow: 0 4px 12px rgba(225, 27, 30, 0.25);
+        }
+    </style>
 </head>
 
 <body>
@@ -75,13 +118,20 @@
 
                                 <div class="mt-4 pt-3">
                                     <p class="text-white-50 small mb-0">
-                                        <i class="bi bi-shield-check"></i> 🔒 Bảo mật tuyệt đối thông tin cá nhân
+                                        <i class="bi bi-shield-check"></i> Bảo mật tuyệt đối thông tin cá nhân
                                     </p>
                                 </div>
                             </div>
 
                             <!-- Right side: Login Form -->
                             <div class="col-lg-6 login-form p-4 p-xl-5">
+                                <div class="auth-toggle-container">
+                                    <div class="auth-toggle-wrapper">
+                                        <a href="#" class="auth-toggle-btn active">Đăng nhập</a>
+                                        <a asp-controller="Auth" asp-action="DangKy" class="auth-toggle-btn">Đăng ký</a>
+                                    </div>
+                                </div>
+
                                 <div class="text-center mb-4">
                                     <h3 class="fw-bold text-dark">Đăng nhập</h3>
                                     <p class="text-muted">Nhập thông tin tài khoản của bạn</p>
@@ -132,7 +182,7 @@
                                                 Ghi nhớ đăng nhập
                                             </label>
                                         </div>
-                                        <a href="/auth/step1-verify-account.html"
+                                        <a href="@Url.Action("ForgotPassword", "Auth")"
                                            class="text-danger text-decoration-none small">Quên mật khẩu?</a>
                                     </div>
 
@@ -204,6 +254,7 @@
     <!-- Chatbox Widget -->
     <div id="chatbox-container" style="position:fixed;bottom:0;right:0;z-index:99990"></div>
     <script src="~/assets/js/chatbox.js" asp-append-version="true"></script>
+    <script src="~/assets/js/chat-message.js" asp-append-version="true"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
           const el = document.getElementById('chatbox-container');

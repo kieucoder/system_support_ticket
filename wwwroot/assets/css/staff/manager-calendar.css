@@ -1,0 +1,627 @@
+/* ==========================================================================
+   FILE: assets/css/staff/manager-calendar.css
+   AUTHOR: Antigravity
+   DESCRIPTION: Stylesheet for staff "Manager Calendar" (Lịch Hẹn) module.
+                Viettel red design language, border-radius 16px, soft shadow.
+   ========================================================================== */
+
+:root {
+    --mc-primary: #D71920;
+    --mc-primary-hover: #B5121B;
+    --mc-primary-glow: rgba(215, 25, 32, 0.08);
+    --mc-success: #16A34A;
+    --mc-warning: #F59E0B;
+    --mc-danger: #DC2626;
+    --mc-info: #0284C7;
+    --mc-neutral-dark: #1E293B;
+    --mc-neutral-light: #F8FAFC;
+    --mc-border-color: #E2E8F0;
+    --mc-radius: 16px;
+    --mc-radius-sm: 10px;
+    --mc-shadow-soft: 0 10px 30px rgba(17, 24, 39, 0.04);
+    --mc-shadow-hover: 0 15px 35px rgba(215, 25, 32, 0.07);
+    --mc-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+[data-bs-theme="dark"] {
+    --mc-neutral-light: #0B0F19;
+    --mc-border-color: #243249;
+    --mc-shadow-soft: 0 8px 30px rgba(0, 0, 0, 0.2);
+    --mc-shadow-hover: 0 15px 40px rgba(0, 0, 0, 0.3);
+}
+
+/* ==================== 1. GENERAL & ANIMATIONS ==================== */
+.mc-fade-in {
+    animation: mcFadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+@keyframes mcFadeIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ==================== 2. STATS KPI CARDS ==================== */
+.stat-card-cal {
+    background-color: var(--bg-card);
+    border: 1px solid var(--mc-border-color);
+    border-radius: var(--mc-radius);
+    padding: 22px;
+    box-shadow: var(--mc-shadow-soft);
+    transition: var(--mc-transition);
+    position: relative;
+    overflow: hidden;
+    height: 100%;
+    cursor: default;
+}
+
+.stat-card-cal::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background-color: transparent;
+    transition: var(--mc-transition);
+}
+
+.stat-card-cal:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--mc-shadow-hover);
+}
+
+.stat-card-cal.sc-total:hover::before      { background-color: var(--mc-neutral-dark); }
+.stat-card-cal.sc-today:hover::before      { background-color: var(--mc-info); }
+.stat-card-cal.sc-pending:hover::before    { background-color: var(--mc-warning); }
+.stat-card-cal.sc-confirmed:hover::before  { background-color: var(--mc-primary); }
+.stat-card-cal.sc-ongoing:hover::before    { background-color: #6366F1; }
+.stat-card-cal.sc-completed:hover::before  { background-color: var(--mc-success); }
+
+.sc-icon-wrap {
+    width: 46px;
+    height: 46px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    flex-shrink: 0;
+}
+
+.sc-num {
+    font-size: 1.8rem;
+    font-weight: 850;
+    line-height: 1.1;
+    color: var(--text-main);
+}
+
+.sc-lbl {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 4px;
+}
+
+/* ==================== 3. SEARCH & FILTERS ==================== */
+.filter-card {
+    background-color: var(--bg-card);
+    border: 1px solid var(--mc-border-color);
+    border-radius: var(--mc-radius);
+    padding: 24px;
+    box-shadow: var(--mc-shadow-soft);
+    margin-bottom: 24px;
+}
+
+.form-control-custom,
+.form-select-custom {
+    border-radius: var(--mc-radius-sm) !important;
+    border: 1.5px solid var(--mc-border-color);
+    padding: 10px 14px;
+    font-size: 0.9rem;
+    background-color: var(--bg-card);
+    color: var(--text-main);
+    transition: var(--mc-transition);
+}
+
+.form-control-custom:focus,
+.form-select-custom:focus {
+    border-color: var(--mc-primary);
+    box-shadow: var(--mc-primary-glow);
+    outline: none;
+}
+
+.btn-search-submit {
+    background-color: var(--mc-primary) !important;
+    border-color: var(--mc-primary) !important;
+    color: #fff !important;
+    font-weight: 700;
+    border-radius: var(--mc-radius-sm);
+    padding: 10px 24px;
+    transition: var(--mc-transition);
+}
+
+.btn-search-submit:hover {
+    background-color: var(--mc-primary-hover) !important;
+    border-color: var(--mc-primary-hover) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(215, 25, 32, 0.2);
+}
+
+.btn-search-reset {
+    background-color: transparent !important;
+    border: 1.5px solid var(--mc-border-color) !important;
+    color: var(--text-main) !important;
+    font-weight: 600;
+    border-radius: var(--mc-radius-sm);
+    padding: 10px 20px;
+    transition: var(--mc-transition);
+}
+
+.btn-search-reset:hover {
+    border-color: var(--mc-primary) !important;
+    color: var(--mc-primary) !important;
+    background-color: var(--mc-primary-glow) !important;
+}
+
+/* ==================== 4. TABS & VIEW MODE SELECTOR ==================== */
+.view-tabs-card {
+    background-color: var(--bg-card);
+    border: 1px solid var(--mc-border-color);
+    border-radius: var(--mc-radius);
+    padding: 10px 16px;
+    box-shadow: var(--mc-shadow-soft);
+    margin-bottom: 24px;
+}
+
+.nav-pills-mc .nav-link {
+    border-radius: var(--mc-radius-sm) !important;
+    font-weight: 700;
+    font-size: 0.9rem;
+    padding: 10px 24px;
+    color: var(--text-muted);
+    transition: var(--mc-transition);
+    border: 1px solid transparent;
+}
+
+.nav-pills-mc .nav-link:hover {
+    color: var(--mc-primary);
+    background-color: var(--mc-primary-glow);
+}
+
+.nav-pills-mc .nav-link.active {
+    background-color: var(--mc-primary) !important;
+    color: #fff !important;
+    box-shadow: 0 4px 15px rgba(215, 25, 32, 0.18);
+}
+
+/* ==================== 5. APPOINTMENTS TABLE LIST ==================== */
+.table-responsive-mc {
+    background-color: var(--bg-card);
+    border: 1px solid var(--mc-border-color);
+    border-radius: var(--mc-radius);
+    overflow: hidden;
+    box-shadow: var(--mc-shadow-soft);
+}
+
+.mc-table {
+    margin: 0;
+}
+
+.mc-table th {
+    background-color: var(--mc-neutral-light) !important;
+    color: var(--text-main);
+    font-weight: 700;
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 16px 20px;
+    border-bottom: 1.5px solid var(--mc-border-color);
+}
+
+.mc-table td {
+    padding: 16px 20px;
+    vertical-align: middle;
+    font-size: 0.88rem;
+    color: var(--text-main);
+    border-bottom: 1px solid var(--mc-border-color);
+    transition: var(--mc-transition);
+}
+
+.mc-table tr:last-child td {
+    border-bottom: none;
+}
+
+.mc-table tbody tr:hover td {
+    background-color: rgba(215, 25, 32, 0.015);
+}
+
+/* BADGES STYLING */
+.badge-mc {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 12px;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    border: 1px solid transparent;
+}
+
+.badge-mc.status-pending {
+    background-color: #FEF3C7;
+    color: #D97706;
+    border-color: #FCD34D;
+}
+
+.badge-mc.status-confirmed {
+    background-color: #E0F2FE;
+    color: #0369A1;
+    border-color: #7DD3FC;
+}
+
+.badge-mc.status-ongoing {
+    background-color: #EEF2FF;
+    color: #4F46E5;
+    border-color: #C7D2FE;
+}
+
+.badge-mc.status-completed {
+    background-color: #DCFCE7;
+    color: #15803D;
+    border-color: #86EFAC;
+}
+
+.badge-mc.status-cancelled {
+    background-color: #FEE2E2;
+    color: #B91C1C;
+    border-color: #FCA5A5;
+}
+
+/* ==================== 6. ACTION BUTTONS ==================== */
+.action-btn-circle {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background-color: var(--mc-neutral-light);
+    color: var(--text-muted);
+    font-size: 0.88rem;
+    transition: var(--mc-transition);
+    margin-right: 4px;
+}
+
+.action-btn-circle:last-child {
+    margin-right: 0;
+}
+
+.action-btn-circle:hover {
+    transform: translateY(-2px);
+    color: #fff;
+}
+
+.action-btn-circle.btn-view:hover { background-color: var(--mc-info); }
+.action-btn-circle.btn-confirm:hover { background-color: var(--mc-success); }
+.action-btn-circle.btn-start:hover { background-color: #4F46E5; }
+.action-btn-circle.btn-complete:hover { background-color: var(--mc-success); }
+.action-btn-circle.btn-postpone:hover { background-color: var(--mc-warning); }
+.action-btn-circle.btn-cancel:hover { background-color: var(--mc-danger); }
+
+/* ==================== 7. CALENDAR GRID LAYOUT ==================== */
+.calendar-view-container {
+    background-color: var(--bg-card);
+    border: 1px solid var(--mc-border-color);
+    border-radius: var(--mc-radius);
+    padding: 24px;
+    box-shadow: var(--mc-shadow-soft);
+    margin-bottom: 30px;
+}
+
+.cal-nav-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.cal-nav-btn {
+    border: 1.5px solid var(--mc-border-color);
+    background-color: var(--bg-card);
+    color: var(--text-main);
+    border-radius: var(--mc-radius-sm);
+    padding: 8px 16px;
+    font-weight: 600;
+    font-size: 0.88rem;
+    transition: var(--mc-transition);
+}
+
+.cal-nav-btn:hover {
+    border-color: var(--mc-primary);
+    color: var(--mc-primary);
+    background-color: var(--mc-primary-glow);
+}
+
+.cal-title-label {
+    font-size: 1.35rem;
+    font-weight: 850;
+    color: var(--text-main);
+    letter-spacing: -0.5px;
+}
+
+/* Hourly timeline grid design */
+.calendar-main-grid {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    border: 1.5px solid var(--mc-border-color);
+    border-radius: var(--mc-radius-sm);
+    overflow: hidden;
+    background-color: var(--bg-card);
+}
+
+/* Time Scale column */
+.time-scale-col {
+    background-color: var(--mc-neutral-light);
+    border-right: 1.5px solid var(--mc-border-color);
+    display: flex;
+    flex-direction: column;
+}
+
+.time-slot-label {
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--mc-border-color);
+}
+
+.time-slot-label:last-child {
+    border-bottom: none;
+}
+
+/* Main scheduler cells column */
+.calendar-grid-cells {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.grid-cell-hour {
+    height: 70px;
+    border-bottom: 1px dashed var(--mc-border-color);
+    position: relative;
+    box-sizing: border-box;
+}
+
+.grid-cell-hour:last-child {
+    border-bottom: none;
+}
+
+/* Floating Appointment Blocks */
+.calendar-event-block {
+    position: absolute;
+    left: 20px;
+    right: 20px;
+    border-radius: var(--mc-radius-sm);
+    padding: 10px 14px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    z-index: 5;
+    transition: var(--mc-transition);
+    cursor: pointer;
+    border-left: 4px solid transparent;
+}
+
+.calendar-event-block:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.07);
+    z-index: 10;
+}
+
+.calendar-event-block.event-pending {
+    background-color: #FEF3C7;
+    border-left-color: #D97706;
+    color: #92400E;
+}
+
+.calendar-event-block.event-confirmed {
+    background-color: #E0F2FE;
+    border-left-color: #0369A1;
+    color: #075985;
+}
+
+.calendar-event-block.event-ongoing {
+    background-color: #EEF2FF;
+    border-left-color: #4F46E5;
+    color: #3730A3;
+}
+
+.calendar-event-block.event-completed {
+    background-color: #DCFCE7;
+    border-left-color: #15803D;
+    color: #166534;
+}
+
+.calendar-event-block.event-cancelled {
+    background-color: #FEE2E2;
+    border-left-color: #B91C1C;
+    color: #991B1B;
+}
+
+.evt-block-title {
+    font-size: 0.85rem;
+    font-weight: 750;
+    margin-bottom: 2px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.evt-block-time {
+    font-size: 0.72rem;
+    font-weight: 600;
+    opacity: 0.85;
+}
+
+/* ==================== 8. PREMIUM MODALS DESIGN ==================== */
+.modal-content-custom {
+    border-radius: var(--mc-radius) !important;
+    border: none !important;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.15) !important;
+    overflow: hidden;
+    background-color: var(--bg-card);
+}
+
+.modal-header-custom {
+    border-bottom: 1.5px solid var(--mc-border-color) !important;
+    padding: 20px 28px !important;
+}
+
+.modal-body-custom {
+    padding: 28px !important;
+}
+
+.modal-footer-custom {
+    border-top: 1.5px solid var(--mc-border-color) !important;
+    padding: 18px 28px !important;
+}
+
+.modal-title-custom {
+    font-size: 1.15rem;
+    font-weight: 850;
+    letter-spacing: -0.3px;
+    color: var(--text-main);
+}
+
+/* Custom details cards inside modal */
+.modal-meta-card {
+    background-color: var(--mc-neutral-light);
+    border-radius: var(--mc-radius-sm);
+    padding: 16px 20px;
+    border: 1px solid var(--mc-border-color);
+}
+
+.modal-meta-lbl {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.modal-meta-val {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-top: 4px;
+    word-break: break-word;
+}
+
+/* Custom file attachment box inside modal */
+.mc-file-item {
+    background-color: var(--bg-card);
+    border: 1px solid var(--mc-border-color);
+    border-radius: var(--mc-radius-sm);
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.mc-file-dl-link {
+    color: var(--mc-primary);
+    font-size: 1.1rem;
+    transition: var(--mc-transition);
+}
+
+.mc-file-dl-link:hover {
+    color: var(--mc-primary-hover);
+    transform: translateY(-1px);
+}
+
+/* Form fields styling inside popups */
+.form-group-popup label {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 6px;
+    display: block;
+}
+
+.btn-popup-cancel {
+    background-color: var(--mc-neutral-light) !important;
+    border: 1.5px solid var(--mc-border-color) !important;
+    color: var(--text-main) !important;
+    font-weight: 600;
+    border-radius: var(--mc-radius-sm) !important;
+    padding: 10px 24px !important;
+    transition: var(--mc-transition);
+}
+
+.btn-popup-cancel:hover {
+    background-color: var(--mc-border-color) !important;
+}
+
+.btn-popup-save {
+    background-color: var(--mc-primary) !important;
+    border-color: var(--mc-primary) !important;
+    color: #fff !important;
+    font-weight: 700;
+    border-radius: var(--mc-radius-sm) !important;
+    padding: 10px 24px !important;
+    transition: var(--mc-transition);
+}
+
+.btn-popup-save:hover {
+    background-color: var(--mc-primary-hover) !important;
+    transform: translateY(-1px);
+}
+
+.btn-popup-danger {
+    background-color: var(--mc-danger) !important;
+    border-color: var(--mc-danger) !important;
+    color: #fff !important;
+    font-weight: 700;
+    border-radius: var(--mc-radius-sm) !important;
+    padding: 10px 24px !important;
+    transition: var(--mc-transition);
+}
+
+.btn-popup-danger:hover {
+    background-color: #B91C1C !important;
+    transform: translateY(-1px);
+}
+
+/* ==================== 9. RESPONSIVE MEDIA QUERIES ==================== */
+@media (max-width: 991px) {
+    .time-scale-col {
+        width: 70px;
+    }
+}
+
+@media (max-width: 768px) {
+    .cal-nav-bar {
+        flex-direction: column;
+        align-items: stretch;
+        text-align: center;
+    }
+    
+    .cal-title-label {
+        font-size: 1.2rem;
+    }
+    
+    .table-responsive-mc {
+        border-radius: var(--mc-radius-sm);
+    }
+}

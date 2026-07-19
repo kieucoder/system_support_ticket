@@ -1,0 +1,326 @@
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    var idKhachHang = HttpContextAccessor.HttpContext?.Session?.GetInt32("IdKhachHang");
+    var isLoggedIn = idKhachHang != null;
+    var currentUrl = HttpContextAccessor.HttpContext?.Request?.Path + HttpContextAccessor.HttpContext?.Request?.QueryString;
+}
+
+<div id="chatbox-container" class="chatbox-wrapper">
+    @Html.AntiForgeryToken()
+    <!-- 1. Floating Chat Launcher -->
+    <button class="chat-launcher" id="chatLauncher" aria-label="Mở Trợ lý Hỗ trợ Kỹ thuật">
+        <i class="bi bi-chat-dots-fill chat-icon-open"></i>
+        <i class="bi bi-x-lg chat-icon-close"></i>
+        <span class="chat-launcher-badge" id="launcherBadge" style="display:none;">!</span>
+        <span class="chat-launcher-online-dot"></span>
+    </button>
+
+    <!-- 2. Chat Window Box -->
+    <div class="chat-window" id="chatWindow">
+
+        <!-- Fixed Header Area -->
+        <div class="chat-header">
+            <div class="chat-header-brand">
+                <div class="chat-header-avatar">
+                    <i class="bi bi-robot"></i>
+                    <span class="chat-header-online-status"></span>
+                </div>
+                <div class="chat-header-text">
+                    <span class="chat-header-title">TechSupport AI</span>
+                    <span class="chat-header-status-badge-top"><span class="status-dot"></span> Trợ lý kỹ thuật trực tuyến</span>
+                </div>
+            </div>
+            <div class="chat-header-actions">
+                <button class="chat-header-btn" id="chatMinimize" title="Thu nhỏ" aria-label="Minimize">
+                    <i class="bi bi-dash-lg"></i>
+                </button>
+                <button class="chat-header-btn" id="chatMaximize" title="Phóng to" aria-label="Maximize">
+                    <i class="bi bi-arrows-fullscreen"></i>
+                </button>
+                <button class="chat-header-btn" id="chatRefresh" title="Làm mới hội thoại" aria-label="Refresh">
+                    <i class="bi bi-arrow-clockwise"></i>
+                </button>
+                <button class="chat-header-btn" id="chatClose" title="Đóng" aria-label="Close">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Chat Body Sliding Containers -->
+        <div class="chat-body-container">
+
+            <!-- Screen 1: Home Dashboard -->
+            <div class="chat-screen" id="screenHome">
+                <div class="welcome-scrollable">
+                    <div class="welcome-greeting-box">
+                        <div class="welcome-avatar-robot-container">
+                            <span class="welcome-avatar-robot"><i class="bi bi-robot"></i></span>
+                        </div>
+                        <h2 class="welcome-greeting-title">Xin chào 👋</h2>
+                        <p class="welcome-greeting-desc">
+                            Tôi là TechSupport AI. Bạn cần hỗ trợ gì từ Viettel Telecom hôm nay?
+                        </p>
+                    </div>
+
+                    <!-- Quick Actions Grid -->
+                    <div class="quick-actions-section">
+                        <div class="quick-actions-list">
+                            <!-- Action 1: Chat AI -->
+                            <button class="quick-action-card" id="btnGoChatAi">
+                                <div class="quick-action-icon-wrapper chat-ai-icon">
+                                    <i class="bi bi-robot"></i>
+                                </div>
+                                <div class="quick-action-info">
+                                    <span class="quick-action-card-title">Chat với Trợ lý AI</span>
+                                    <span class="quick-action-card-desc">Giải đáp thắc mắc, tự động tạo phiếu hỗ trợ 24/7</span>
+                                </div>
+                            </button>
+
+                            <!-- Action 2: Liên hệ hỗ trợ (Staff Room) -->
+                            <button class="quick-action-card" id="btnGoConversations">
+                                <div class="quick-action-icon-wrapper chat-staff-icon">
+                                    <i class="bi bi-chat-dots-fill"></i>
+                                </div>
+                                <div class="quick-action-info">
+                                    <span class="quick-action-card-title">Liên hệ kỹ thuật viên</span>
+                                    <span class="quick-action-card-desc">Gửi yêu cầu chat trực tiếp với nhân viên phụ trách</span>
+                                </div>
+                            </button>
+
+                            <!-- Action 3: Tra cứu phiếu -->
+                            <button class="quick-action-card" id="btnGoTrackTickets">
+                                <div class="quick-action-icon-wrapper chat-track-icon">
+                                    <i class="bi bi-search"></i>
+                                </div>
+                                <div class="quick-action-info">
+                                    <span class="quick-action-card-title">Tra cứu trạng thái phiếu</span>
+                                    <span class="quick-action-card-desc">Xem tiến trình, phản hồi của các phiếu kỹ thuật</span>
+                                </div>
+                            </button>
+
+                            <!-- Action 4: Tạo phiếu hỗ trợ -->
+
+@*                             <button class="quick-action-card" id="btnGoCreateTicket">
+                                <div class="quick-action-icon-wrapper chat-create-icon">
+                                    <i class="bi bi-file-earmark-plus-fill"></i>
+                                </div>
+                                <div class="quick-action-info">
+                                    <span class="quick-action-card-title">Tạo phiếu hỗ trợ nhanh</span>
+                                    <span class="quick-action-card-desc">Tạo phiếu yêu cầu trực tiếp cho kỹ thuật viên qua nhà</span>
+                                </div>
+                            </button>
+ *@
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Screen 2: Conversations List (Staff chats) -->
+            <div class="chat-screen d-none" id="screenConversations">
+                <div class="stream-header-bar">
+                    <button class="stream-back-btn btn-back-home" title="Quay lại" aria-label="Quay lại">
+                        <i class="bi bi-chevron-left"></i>
+                    </button>
+                    <div class="stream-header-info">
+                        <span class="stream-header-title">Hội thoại của bạn</span>
+                        <span class="stream-header-desc">Lịch sử trao đổi với đội ngũ kỹ thuật</span>
+                    </div>
+                </div>
+                <div class="messages-scrollable p-0" id="convoListContainer">
+                    <!-- Loaded dynamically via GET DanhSachConversation -->
+                </div>
+                <div class="p-3 bg-white border-top flex-shrink-0">
+                    <button class="btn btn-danger w-100 rounded-pill font-bold py-2 btn-create-convo" id="btnCreateNewConvo">
+                        <i class="bi bi-plus-circle-fill me-1"></i> Tạo cuộc trò chuyện mới
+                    </button>
+                </div>
+            </div>
+
+            <!-- Screen 3: Staff Chat Room (Active Chat) -->
+            <div class="chat-screen d-none" id="screenChatRoom">
+                <div id="chatRoomHeaderContainer">
+                    <!-- Loaded dynamically via GET ChiTietConversation -->
+                </div>
+                
+                <div class="messages-scrollable" id="chatMessagesContainer">
+                    <!-- Loaded dynamically via GET LayTinNhan -->
+                </div>
+
+                <!-- Pre-upload file preview -->
+                <div id="chatFilePreviewBar" class="file-preview-card d-none">
+                    <div class="file-preview-info">
+                        <i class="bi bi-file-earmark-check-fill text-danger fs-4 me-2"></i>
+                        <div class="file-preview-text">
+                            <span id="chatFilePreviewName" class="file-preview-name">file.png</span>
+                            <span class="file-preview-size">Tệp đính kèm sẳn sàng gửi</span>
+                        </div>
+                    </div>
+                    <button type="button" class="file-preview-remove" id="btnCancelChatFile" title="Hủy file">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
+                </div>
+
+                <!-- Input box footer -->
+                <div class="stream-footer">
+                    <div class="chatgpt-input-capsule">
+                        <input type="file" id="roomFileInput" style="display:none;" accept=".jpg,.jpeg,.png,.pdf,.docx,.xlsx,.zip" />
+                        <button class="capsule-icon-btn" id="btnRoomUpload" type="button" title="Đính kèm tài liệu" onclick="document.getElementById('roomFileInput').click();">
+                            <i class="bi bi-paperclip"></i>
+                        </button>
+                        <button class="capsule-icon-btn" type="button" title="Gửi hình ảnh" onclick="document.getElementById('roomFileInput').click();">
+                            <i class="bi bi-image"></i>
+                        </button>
+                        <textarea class="stream-textarea" id="roomInputField" placeholder="Đặt câu hỏi..." rows="1" maxlength="500"></textarea>
+                        <button class="stream-send-btn animate-send" id="btnRoomSend" type="button" aria-label="Gửi">
+                            <i class="bi bi-send-fill"></i>
+                        </button>
+                    </div>
+                    <div class="d-flex justify-content-between px-2 pt-1">
+                        <span class="small text-muted" style="font-size: 10px; opacity: 0.6;">Nhân viên sẽ phản hồi sớm nhất</span>
+                        <span class="text-muted" id="roomCharCounter" style="font-size: 10px; opacity: 0.6;">0/500</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Screen 4: AI Chat Room -->
+            <div class="chat-screen d-none" id="screenAiChat">
+                <div class="stream-header-bar">
+                    <button class="stream-back-btn btn-back-home" title="Quay lại" aria-label="Quay lại">
+                        <i class="bi bi-chevron-left"></i>
+                    </button>
+                    <div class="stream-header-info">
+                        <div class="stream-header-title-row">
+                            <span class="stream-header-title">Trò chuyện với AI Hỗ trợ</span>
+                            <span class="stream-header-status-badge text-white text-bg-success">Trực tuyến</span>
+                        </div>
+                        <span class="stream-header-desc">Hỗ trợ tự động 24/7 giải đáp thắc mắc và xử lý sự cố kỹ thuật</span>
+                    </div>
+                </div>
+
+                <div class="messages-scrollable" id="chatAiMessagesContainer">
+                    <!-- Loaded dynamically via GET LayLichSuChatAI -->
+                </div>
+
+                <!-- Pre-upload file preview for AI -->
+                <div id="aiFilePreviewBar" class="file-preview-card d-none">
+                    <div class="file-preview-info">
+                        <i class="bi bi-file-earmark-check-fill text-danger fs-4 me-2"></i>
+                        <div class="file-preview-text">
+                            <span id="aiFilePreviewName" class="file-preview-name">file.png</span>
+                            <span class="file-preview-size">Tệp đính kèm sẳn sàng gửi</span>
+                        </div>
+                    </div>
+                    <button type="button" class="file-preview-remove" id="btnCancelAiFile" title="Hủy file">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
+                </div>
+
+                <!-- AI Typing Indicator -->
+                <div class="messages-scrollable py-0 flex-grow-0" id="aiTypingContainer">
+                    <div class="ai-typing-row" id="aiTypingIndicator" style="display:none;">
+                        <div class="msg-avatar">
+                            <img src="https://img.icons8.com/color/48/robot-3.png" alt="AI Assistant" />
+                        </div>
+                        <div class="ai-typing-bubble">
+                            <span class="ai-typing-text">TechSupport AI đang trả lời</span>
+                            <div class="ai-typing-dots">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Input Capsule -->
+                <div class="stream-footer">
+                    <div class="chatgpt-input-capsule">
+                        <input type="file" id="aiFileInput" style="display:none;" accept=".jpg,.jpeg,.png,.pdf,.docx,.xlsx,.zip" />
+                        <button class="capsule-icon-btn" id="btnAiUpload" type="button" title="Đính kèm tài liệu" onclick="document.getElementById('aiFileInput').click();">
+                            <i class="bi bi-paperclip"></i>
+                        </button>
+                        <button class="capsule-icon-btn" type="button" title="Gửi hình ảnh" onclick="document.getElementById('aiFileInput').click();">
+                            <i class="bi bi-image"></i>
+                        </button>
+                        <textarea class="stream-textarea" id="aiInputField" placeholder="Đặt câu hỏi..." rows="1" maxlength="500"></textarea>
+                        <button class="stream-send-btn animate-send" id="btnAiSend" type="button" aria-label="Gửi">
+                            <i class="bi bi-send-fill"></i>
+                        </button>
+                    </div>
+                    <div class="d-flex justify-content-between px-2 pt-1">
+                        <span class="small text-muted" style="font-size: 10px; opacity: 0.6;">AI có thể đưa ra câu trả lời không chính xác.</span>
+                        <span class="text-muted" id="aiCharCounter" style="font-size: 10px; opacity: 0.6;">0/500</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Screen 5: Track Tickets List -->
+            <div class="chat-screen d-none" id="screenTrackTickets">
+                <div class="stream-header-bar">
+                    <button class="stream-back-btn btn-back-home" title="Quay lại" aria-label="Quay lại">
+                        <i class="bi bi-chevron-left"></i>
+                    </button>
+                    <div class="stream-header-info">
+                        <span class="stream-header-title">Phiếu hỗ trợ kỹ thuật</span>
+                        <span class="stream-header-desc">Theo dõi tiến trình xử lý sự cố trực tuyến</span>
+                    </div>
+                </div>
+                <div class="messages-scrollable p-0" id="trackTicketsContainer">
+                    <!-- Loaded dynamically via GET TraCuuPhieuChatBox -->
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- 3. Modal Popup: Login Prompt for Guests -->
+    <div class="chat-modal-overlay" id="chatLoginModal" style="display:none;">
+        <div class="chat-modal-card">
+            <div class="chat-modal-header text-danger">
+                <i class="bi bi-shield-lock-fill fs-3"></i>
+                <h5 class="fw-bold m-0 mt-2">Yêu Cầu Đăng Nhập</h5>
+            </div>
+            <div class="chat-modal-body">
+                <p>Để thực hiện chức năng này (tạo phiếu hỗ trợ hoặc liên hệ trực tuyến), vui lòng đăng nhập tài khoản Khách hàng Viettel của bạn.</p>
+            </div>
+            <div class="chat-modal-footer">
+                <a href="/Auth/DangNhap?returnUrl=@currentUrl" class="btn btn-danger font-bold rounded-pill w-100 mb-2 btn-login-redirect">Đăng nhập</a>
+                <a href="/Auth/DangKy?returnUrl=@currentUrl" class="btn btn-outline-danger font-bold rounded-pill w-100 mb-2 btn-register-redirect">Đăng ký</a>
+                <button type="button" class="btn btn-link text-muted w-100 p-0 text-decoration-none" id="btnContinueGuestChat" style="font-size:0.85rem;">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <!-- 3. Modal Popup: Login Prompt for Guests -->
+    <div class="chat-modal-overlay" id="chatLoginModal" style="display:none;">
+        <div class="chat-modal-card">
+            <div class="chat-modal-header text-danger">
+                <i class="bi bi-shield-lock-fill fs-3"></i>
+                <h5 class="fw-bold m-0 mt-2">Yêu Cầu Đăng Nhập</h5>
+            </div>
+            <div class="chat-modal-body">
+                <p>Để thực hiện chức năng này (tạo phiếu hỗ trợ hoặc liên hệ trực tuyến), vui lòng đăng nhập tài khoản Khách hàng Viettel của bạn.</p>
+            </div>
+            <div class="chat-modal-footer">
+                <a href="/Auth/DangNhap?returnUrl=@currentUrl" class="btn btn-danger font-bold rounded-pill w-100 mb-2 btn-login-redirect">Đăng nhập</a>
+                <a href="/Auth/DangKy?returnUrl=@currentUrl" class="btn btn-outline-danger font-bold rounded-pill w-100 mb-2 btn-register-redirect">Đăng ký</a>
+                <button type="button" class="btn btn-link text-muted w-100 p-0 text-decoration-none" id="btnContinueGuestChat" style="font-size:0.85rem;">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    window.TechSupportChatConfig = {
+        isLoggedIn: @(isLoggedIn ? "true" : "false"),
+        autoOpen: @(HttpContextAccessor.HttpContext?.Session?.GetString("AutoOpenChat") == "true" || HttpContextAccessor.HttpContext?.Request?.Query["openChat"].ToString() == "true" ? "true" : "false")
+    };
+    @* Clean auto open session variable so it fires only once *@
+    @{
+        HttpContextAccessor.HttpContext?.Session?.Remove("AutoOpenChat");
+    }
+</script>

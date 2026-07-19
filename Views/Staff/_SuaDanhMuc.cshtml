@@ -1,4 +1,4 @@
-﻿@model SupportTicketSysterm.Data.DanhMuc
+@model SupportTicketSysterm.Data.DanhMuc
 <!-- MODAL: CẬP NHẬT DANH MỤC -->
 <div id="editModal" class="vt-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="editModalTitle">
         <div class="vt-modal">
@@ -18,11 +18,10 @@
             </div>
             <div class="vt-modal-body">
                 <form asp-action="SuaDanhMuc" asp-controller="Staff" method="post" id="editCatForm" novalidate>
-                    <input type="hidden" id="editCatIdField">
-
                     @Html.AntiForgeryToken()
 
                     <input asp-for="IdDanhMuc" type="hidden" id="editId" />
+
 
                     <!-- Tên danh mục -->
                     <div class="vt-form-group">

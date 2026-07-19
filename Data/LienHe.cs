@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace SupportTicketSysterm.Data;
@@ -19,7 +19,7 @@ public partial class LienHe
 
     public int? TinChuaDocKhach { get; set; }
 
-    public string TieuDe { get; set; } = null!;
+    public string? TieuDe { get; set; }
 
     public string? NoiDung { get; set; }
 
@@ -30,6 +30,8 @@ public partial class LienHe
     public virtual KhachHang? IdKhachHangNavigation { get; set; }
 
     public virtual NhanVien? IdNhanVienNavigation { get; set; }
+
+    public virtual PhieuHoTro? IdPhieuNavigation { get; set; }
 
     public virtual ICollection<TinNhan> TinNhans { get; set; } = new List<TinNhan>();
 }

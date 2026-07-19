@@ -1,0 +1,433 @@
+/* ==========================================================================
+   FILE: assets/css/page-hero.css
+   AUTHOR: Antigravity
+   DESCRIPTION: Shared "Page Hero Bar" component — synchronised hero section
+                used across ChiTietPhieu, LienHe, ChonDMDichVu, TaoPhieuThanhCong.
+                Replaces the old two-column hero-section with a clean, premium
+                top-bar that is consistent with the ticket-detail design system.
+   ========================================================================== */
+
+/* ---------- Design tokens (override or extend :root) ---------- */
+:root {
+    --hero-bg:          linear-gradient(135deg, #D71920 0%, #C4121A 100%);
+    --hero-border:      rgba(215, 25, 32, 0.08);
+    --hero-accent:      #D71920;
+    --hero-accent-soft: rgba(215, 25, 32, 0.06);
+    --hero-radius:      20px;
+    --hero-shadow:      0 4px 24px rgba(215, 25, 32, 0.04), 0 2px 8px rgba(0,0,0,0.03);
+    --page-bg-light:    #FFF8F8;
+}
+
+/* ===================================================================
+   1. PAGE HERO BAR  (.page-hero-bar)
+   Full-width banner: breadcrumb + badge + title + subtitle + CTAs
+   =================================================================== */
+.page-hero-bar {
+    background: var(--hero-bg);
+    border-bottom: 1px solid var(--hero-border);
+    padding: 24px 0 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Subtle decorative accent blob */
+.page-hero-bar::before {
+    content: '';
+    position: absolute;
+    top: -80px;
+    right: -80px;
+    width: 320px;
+    height: 320px;
+    background: radial-gradient(circle, rgba(215, 25, 32, 0.07) 0%, transparent 68%);
+    pointer-events: none;
+    border-radius: 50%;
+}
+
+/* ---------- Breadcrumb pill ---------- */
+.phb-breadcrumb {
+    display: inline-flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50px;
+    padding: 5px 16px;
+    margin-bottom: 18px;
+}
+
+.phb-breadcrumb .breadcrumb {
+    margin: 0;
+    padding: 0;
+    background: transparent;
+    font-size: 0.82rem;
+    font-weight: 500;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+}
+
+.phb-breadcrumb .breadcrumb-item a {
+    color: rgba(255, 255, 255, 0.85);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.phb-breadcrumb .breadcrumb-item a:hover {
+    color: #fff;
+}
+
+.phb-breadcrumb .breadcrumb-item.active {
+    color: #fff;
+    font-weight: 700;
+}
+
+.phb-breadcrumb .breadcrumb-item + .breadcrumb-item::before {
+    content: "\F285";
+    font-family: "bootstrap-icons";
+    font-size: 0.68rem;
+    color: rgba(255, 255, 255, 0.5);
+    padding: 0 8px;
+    vertical-align: middle;
+}
+
+/* ---------- Page badge / label ---------- */
+.phb-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    color: #fff;
+    border-radius: 50px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    margin-bottom: 14px;
+}
+
+/* ---------- Page title ---------- */
+.phb-title {
+    font-size: 2rem;
+    font-weight: 850;
+    line-height: 1.25;
+    letter-spacing: -0.03em;
+    color: #fff;
+    margin-bottom: 10px;
+}
+
+@media (max-width: 768px) {
+    .phb-title { font-size: 1.55rem; }
+}
+
+/* ---------- Page subtitle / description ---------- */
+.phb-desc {
+    font-size: 0.97rem;
+    color: rgba(255, 255, 255, 0.9);
+    line-height: 1.65;
+    max-width: 620px;
+    margin-bottom: 0;
+}
+
+/* ---------- CTA buttons row ---------- */
+.phb-cta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 22px;
+}
+
+.phb-btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: linear-gradient(135deg, #D71920 0%, #b5121b 100%);
+    color: #fff !important;
+    font-weight: 700;
+    font-size: 0.9rem;
+    border: none;
+    border-radius: 50px;
+    padding: 10px 26px;
+    text-decoration: none;
+    box-shadow: 0 6px 20px rgba(215, 25, 32, 0.22);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+}
+
+.phb-btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 28px rgba(215, 25, 32, 0.32);
+    color: #fff;
+}
+
+.phb-btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: #fff;
+    color: #333 !important;
+    font-weight: 600;
+    font-size: 0.9rem;
+    border: 1.5px solid #E5E7EB;
+    border-radius: 50px;
+    padding: 10px 24px;
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+}
+
+.phb-btn-secondary:hover {
+    border-color: var(--hero-accent);
+    color: var(--hero-accent) !important;
+    background: rgba(215, 25, 32, 0.03);
+    transform: translateY(-2px);
+}
+
+/* ---------- Quick stats row (optional) ---------- */
+.phb-stats {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0;
+    margin-top: 22px;
+}
+
+.phb-stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0 20px 0 0;
+    margin-right: 20px;
+    border-right: 1px solid #E5E7EB;
+}
+
+.phb-stat-item:last-child {
+    border-right: none;
+    margin-right: 0;
+    padding-right: 0;
+}
+
+.phb-stat-num {
+    font-size: 1.35rem;
+    font-weight: 800;
+    line-height: 1;
+}
+
+.phb-stat-label {
+    font-size: 0.78rem;
+    color: #888;
+    font-weight: 500;
+    margin-top: 2px;
+}
+
+/* ---------- Right illustration pane ---------- */
+.phb-illustration {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.phb-icon-wrap {
+    width: 140px;
+    height: 140px;
+    border-radius: 32px;
+    background: linear-gradient(135deg, rgba(215, 25, 32, 0.08) 0%, rgba(215, 25, 32, 0.03) 100%);
+    border: 1px solid rgba(215, 25, 32, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 4rem;
+    color: var(--hero-accent);
+    box-shadow: 0 10px 30px rgba(215, 25, 32, 0.08);
+    position: relative;
+}
+
+.phb-icon-wrap::after {
+    content: '';
+    position: absolute;
+    inset: -8px;
+    border-radius: 38px;
+    border: 1px dashed rgba(215, 25, 32, 0.12);
+    animation: phb-spin 20s linear infinite;
+}
+
+@keyframes phb-spin {
+    to { transform: rotate(360deg); }
+}
+
+@media (max-width: 991px) {
+    .phb-illustration { display: none; }
+}
+
+/* ===================================================================
+   2. SUCCESS HERO (for TaoPhieuThanhCong — keeps dark aesthetic but
+      uses the same structural components for consistency)
+   =================================================================== */
+.page-hero-bar.success-variant {
+    background: linear-gradient(135deg, #1a1d22 0%, #0d0f12 100%);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.page-hero-bar.success-variant .phb-breadcrumb {
+    background: rgba(255,255,255,0.06);
+    border-color: rgba(255,255,255,0.1);
+}
+
+.page-hero-bar.success-variant .phb-breadcrumb .breadcrumb-item a {
+    color: rgba(255,255,255,0.55);
+}
+
+.page-hero-bar.success-variant .phb-breadcrumb .breadcrumb-item a:hover {
+    color: #fff;
+}
+
+.page-hero-bar.success-variant .phb-breadcrumb .breadcrumb-item.active {
+    color: rgba(255,255,255,0.85);
+}
+
+.page-hero-bar.success-variant .phb-badge {
+    background: rgba(255, 255, 255, 0.07);
+    border-color: rgba(255, 255, 255, 0.12);
+    color: #ff6b8b;
+}
+
+.page-hero-bar.success-variant .phb-title {
+    color: #fff;
+}
+
+.page-hero-bar.success-variant .phb-desc {
+    color: rgba(255,255,255,0.6);
+}
+
+/* Success check icon */
+.success-icon-ring-wrap {
+    position: relative;
+    width: 90px;
+    height: 90px;
+    margin: 0 auto 20px;
+}
+
+.success-icon-ring-wrap .icon-ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 2px solid rgba(215, 25, 32, 0.22);
+    animation: success-pulse 2.2s ease-in-out infinite;
+}
+
+.success-icon-ring-wrap .icon-ring:nth-child(2) {
+    inset: -10px;
+    animation-delay: 0.5s;
+    border-color: rgba(215, 25, 32, 0.13);
+}
+
+.success-icon-ring-wrap .icon-ring:nth-child(3) {
+    inset: -20px;
+    animation-delay: 1s;
+    border-color: rgba(215, 25, 32, 0.07);
+}
+
+@keyframes success-pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50%       { transform: scale(1.06); opacity: 0.7; }
+}
+
+.success-icon-ring-wrap .icon-circle {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #D71920, #b5121b);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: #fff;
+    box-shadow: 0 8px 24px rgba(215, 25, 32, 0.4);
+    animation: success-pop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes success-pop {
+    from { transform: scale(0); opacity: 0; }
+    to   { transform: scale(1); opacity: 1; }
+}
+
+/* Ticket code box in success hero */
+.phb-code-box {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.14);
+    border-radius: 14px;
+    padding: 12px 22px;
+    margin-top: 14px;
+}
+
+.phb-code-val {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: 0.05em;
+    font-family: 'Courier New', monospace;
+}
+
+.phb-copy-btn {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.18);
+    color: #fff;
+    border-radius: 8px;
+    padding: 4px 10px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.phb-copy-btn:hover {
+    background: rgba(255,255,255,0.18);
+}
+
+/* ===================================================================
+   3. PAGE WORKSPACE AREA (shared)
+   =================================================================== */
+.page-workspace {
+    background: var(--page-bg-light);
+    padding: 38px 0 80px;
+}
+
+/* ===================================================================
+   4. RESPONSIVE
+   =================================================================== */
+@media (max-width: 576px) {
+    .page-hero-bar {
+        padding: 28px 0 24px;
+    }
+
+    .phb-title {
+        font-size: 1.4rem;
+    }
+
+    .phb-cta-row {
+        gap: 8px;
+    }
+
+    .phb-btn-primary,
+    .phb-btn-secondary {
+        padding: 9px 18px;
+        font-size: 0.85rem;
+    }
+}
+
+/* ===================================================================
+   5. ANIMATION UTILITIES
+   =================================================================== */
+.animate-fade-up {
+    animation: fadeUp 0.55s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+.animate-fade-up.delay-1 { animation-delay: 0.1s; }
+.animate-fade-up.delay-2 { animation-delay: 0.2s; }
+.animate-fade-up.delay-3 { animation-delay: 0.3s; }
+
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+}

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace SupportTicketSysterm.Data;
@@ -24,6 +24,12 @@ public partial class NhanVien
     public string TrangThai { get; set; } = null!;
 
     public DateOnly? NgayTao { get; set; }
+
+    public string? MaNhanVien { get; set; }
+
+    public string? Avatar { get; set; }
+
+
 
     public virtual ICollection<LichHen> LichHens { get; set; } = new List<LichHen>();
 

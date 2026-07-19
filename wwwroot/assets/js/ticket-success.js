@@ -1,50 +1,14 @@
 /* --------------------------------------------------------------------------
    FILE: assets/js/ticket-success.js
-   AUTHOR: Antigravity
    DESCRIPTION: Interactive logic for the Ticket Success Portal Page
+                ALL DATA is rendered server-side via Razor @Model
+                This file ONLY handles UI interactions (copy, accordion, animation)
    -------------------------------------------------------------------------- */
 
 document.addEventListener('DOMContentLoaded', () => {
     'use strict';
 
-    // ==================== 1. DATA LAYER ====================
-    const TICKET_DATA = {
-        code:          'PT2026000123',
-        title:         'Internet cáp quang mất kết nối',
-        service:       'Internet Cáp Quang',
-        requestType:   'Sự cố kỹ thuật',
-        createdDate:   null,
-        status:        'pending',
-        statusText:    'Chờ tiếp nhận',
-        priority:      'high',
-        priorityText:  'Cao',
-        customer: {
-            name:    'Nguyễn Văn An',
-            phone:   '0909123456',
-            email:   'nguyenvanan@gmail.com',
-            address: '123 Nguyễn Văn Linh, Cần Thơ'
-        }
-    };
-
-    // If there's URL params ?code= use them; else use demo data
-    const urlParams = new URLSearchParams(window.location.search);
-    const codeParam = urlParams.get('code');
-    if (codeParam) TICKET_DATA.code = codeParam.trim().toUpperCase();
-
-    // Check if there's a freshly created ticket in localStorage to display
-    const tryLoadFromStorage = () => {
-        const lastTicket = JSON.parse(localStorage.getItem('techsupport_last_created_ticket') || 'null');
-        if (lastTicket) {
-            if (lastTicket.code)         TICKET_DATA.code         = lastTicket.code;
-            if (lastTicket.title)        TICKET_DATA.title        = lastTicket.title;
-            if (lastTicket.service)      TICKET_DATA.service      = lastTicket.service;
-            if (lastTicket.priority)     TICKET_DATA.priorityText = lastTicket.priority;
-            if (lastTicket.customer)     Object.assign(TICKET_DATA.customer, lastTicket.customer);
-        }
-    };
-    tryLoadFromStorage();
-
-    // ==================== 2. TOAST UTILITY ====================
+    // ==================== 1. TOAST UTILITY ====================
     const showToast = (message) => {
         const toastContainer = document.getElementById('toastContainer');
         if (!toastContainer) return;
@@ -66,97 +30,22 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 3000);
     };
 
-    // ==================== 3. RENDER PAGE DATA ====================
-    const getNowDateStr = () => {
-        const now = new Date();
-        return now.toLocaleDateString('vi-VN') + ' ' + now.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
-    };
-
-    const setTextById = (id, text) => {
-        const el = document.getElementById(id);
-        if (el) el.textContent = text;
-    };
-
-    const renderTicketInfo = () => {
-        // Success Card Badge Code
-        setTextById('ticketCodeValue', TICKET_DATA.code);
-
-        // Table details
-        setTextById('infoTicketCode',    TICKET_DATA.code);
-        setTextById('infoCreatedDate',   getNowDateStr());
-        setTextById('infoTicketTitle',   TICKET_DATA.title);
-        setTextById('infoTicketService', TICKET_DATA.service);
-        setTextById('infoTicketType',    TICKET_DATA.requestType);
-        
-        // Customer Info
-        setTextById('infoCustomerName',    TICKET_DATA.customer.name);
-        setTextById('infoCustomerAddress', TICKET_DATA.customer.address);
-
-        // Phone links
-        const customerPhone = document.getElementById('infoCustomerPhone');
-        if (customerPhone) {
-            customerPhone.textContent = TICKET_DATA.customer.phone;
-            customerPhone.href = `tel:${TICKET_DATA.customer.phone.replace(/\s+/g, '')}`;
-        }
-        const confirmPhone = document.getElementById('confirmPhone');
-        if (confirmPhone) {
-            confirmPhone.textContent = TICKET_DATA.customer.phone;
-            confirmPhone.href = `tel:${TICKET_DATA.customer.phone.replace(/\s+/g, '')}`;
-        }
-
-        // Email links
-        const customerEmail = document.getElementById('infoCustomerEmail');
-        if (customerEmail) {
-            customerEmail.textContent = TICKET_DATA.customer.email;
-            customerEmail.href = `mailto:${TICKET_DATA.customer.email}`;
-        }
-        const confirmEmail = document.getElementById('confirmEmail');
-        if (confirmEmail) {
-            confirmEmail.textContent = TICKET_DATA.customer.email;
-            confirmEmail.href = `mailto:${TICKET_DATA.customer.email}`;
-        }
-
-        // Customer avatar initials
-        const avatarEl = document.getElementById('customerAvatarInitials');
-        if (avatarEl) {
-            const nameParts = TICKET_DATA.customer.name.trim().split(' ');
-            const initials = nameParts.length >= 2
-                ? (nameParts[0][0] + nameParts[nameParts.length - 1][0]).toUpperCase()
-                : nameParts[0].substring(0, 2).toUpperCase();
-            avatarEl.textContent = initials;
-        }
-
-        // Priority pill
-        const priorityPill = document.getElementById('infoTicketPriority');
-        if (priorityPill) {
-            priorityPill.textContent = TICKET_DATA.priorityText || 'Cao';
-        }
-
-        // View ticket button href
-        const btnViewTicket = document.getElementById('btnViewTicket');
-        if (btnViewTicket) btnViewTicket.href = `ticket-detail.html?code=${TICKET_DATA.code}`;
-
-        // Step 1 time
-        const step1TimeEl = document.querySelector('#step1 .step-h-time');
-        if (step1TimeEl) {
-            step1TimeEl.innerHTML = `<i class="bi bi-clock-fill"></i> ${getNowDateStr()}`;
-        }
-    };
-
-    // ==================== 4. COPY TICKET CODE ====================
+    // ==================== 2. COPY TICKET CODE ====================
+    // Reads the ticket code from the DOM (rendered by Razor @Model.MaPhieu)
     const btnCopyCode = document.getElementById('btnCopyCode');
-    const copyIcon    = document.getElementById('copyIcon');
+    const copyIcon = document.getElementById('copyIcon');
+    const ticketCodeEl = document.getElementById('ticketCodeValue');
 
-    if (btnCopyCode) {
+    if (btnCopyCode && ticketCodeEl) {
         btnCopyCode.addEventListener('click', async () => {
-            const code = TICKET_DATA.code;
+            const code = ticketCodeEl.textContent.trim();
             try {
                 await navigator.clipboard.writeText(code);
                 if (copyIcon) {
                     copyIcon.className = 'bi bi-clipboard-check';
                     setTimeout(() => { copyIcon.className = 'bi bi-clipboard'; }, 2000);
                 }
-                showToast(`Đã sao chép mã phiếu.`);
+                showToast(`Đã sao chép mã phiếu: ${code}`);
             } catch {
                 // Fallback for older browsers
                 const tempInput = document.createElement('input');
@@ -165,23 +54,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 tempInput.select();
                 document.execCommand('copy');
                 document.body.removeChild(tempInput);
-                showToast(`Đã sao chép mã phiếu.`);
+                showToast(`Đã sao chép mã phiếu: ${code}`);
             }
         });
     }
 
-    // ==================== 5. FAQ ACCORDION ====================
+    // ==================== 3. FAQ ACCORDION ====================
     const faqQuestions = document.querySelectorAll('.faq-question');
 
     faqQuestions.forEach(btn => {
         btn.addEventListener('click', () => {
-            const expanded  = btn.getAttribute('aria-expanded') === 'true';
-            const answerId  = btn.getAttribute('aria-controls');
-            const answerEl  = document.getElementById(answerId);
+            const expanded = btn.getAttribute('aria-expanded') === 'true';
+            const answerId = btn.getAttribute('aria-controls');
+            const answerEl = document.getElementById(answerId);
 
             // Close all others
             faqQuestions.forEach(otherBtn => {
-                const otherId    = otherBtn.getAttribute('aria-controls');
+                const otherId = otherBtn.getAttribute('aria-controls');
                 const otherAnswer = document.getElementById(otherId);
                 otherBtn.setAttribute('aria-expanded', 'false');
                 if (otherAnswer) otherAnswer.hidden = true;
@@ -195,9 +84,30 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // ==================== 6. PAGE TITLE AUTO-UPDATE ====================
-    document.title = `${TICKET_DATA.code} - Tạo Phiếu Thành Công | TechSupport Viettel`;
+    // ==================== 4. CUSTOMER AVATAR INITIALS ====================
+    // Generate initials from the name already rendered in the DOM by Razor
+    const avatarEl = document.getElementById('customerAvatarInitials');
+    if (avatarEl && avatarEl.dataset.name) {
+        const nameParts = avatarEl.dataset.name.trim().split(' ');
+        const initials = nameParts.length >= 2
+            ? (nameParts[0][0] + nameParts[nameParts.length - 1][0]).toUpperCase()
+            : nameParts[0].substring(0, 2).toUpperCase();
+        avatarEl.textContent = initials;
+    }
 
-    // ==================== 7. INITIALIZE RENDER ====================
-    renderTicketInfo();
+    // ==================== 5. SCROLL ANIMATIONS ====================
+    // Intersection Observer for animate-fade-up elements
+    const animatedEls = document.querySelectorAll('.animate-fade-up');
+    if ('IntersectionObserver' in window) {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+
+        animatedEls.forEach(el => observer.observe(el));
+    }
 });

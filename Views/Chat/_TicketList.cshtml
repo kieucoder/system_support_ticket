@@ -1,0 +1,41 @@
+@model IEnumerable<SupportTicketSysterm.Data.PhieuHoTro>
+
+<div class="ticket-list-scrollable p-2" style="max-height: 480px; overflow-y: auto;">
+    @if (Model == null || !Model.Any())
+    {
+        <div class="text-center py-5 text-muted">
+            <i class="bi bi-file-earmark-lock2 fs-2 mb-2 d-block"></i>
+            <p class="small mb-0">Bạn chưa gửi phiếu hỗ trợ kỹ thuật nào.</p>
+        </div>
+    }
+    else
+    {
+        @foreach (var ticket in Model)
+        {
+            var isClosed = ticket.TrangThai == "Hoàn thành" || ticket.TrangThai == "Đã đóng";
+            var statusClass = ticket.TrangThai switch
+            {
+                "Chờ tiếp nhận" => "bg-warning-subtle text-warning",
+                "Đang xử lý" => "bg-danger-subtle text-danger",
+                "Hoàn thành" => "bg-success-subtle text-success",
+                "Đã đóng" => "bg-secondary-subtle text-secondary",
+                _ => "bg-light text-dark"
+            };
+
+            <div class="ticket-row border rounded p-3 mb-2 bg-white shadow-sm" style="border-left: 4px solid @(isClosed ? "#10B981" : "#D71920") !important;">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="fw-bold text-dark" style="font-size: 0.82rem;"><i class="bi bi-ticket-detailed me-1 text-danger"></i>@ticket.MaPhieu</span>
+                    <span class="badge @statusClass" style="font-size: 0.72rem; font-weight:700;">@ticket.TrangThai</span>
+                </div>
+                <h6 class="text-dark fw-bold mb-1 text-truncate" style="font-size: 0.85rem;" title="@ticket.TieuDe">@ticket.TieuDe</h6>
+                <div class="text-muted mb-2 d-flex justify-content-between" style="font-size: 0.74rem;">
+                    <span>Ngày tạo: @(ticket.NgayTao?.ToString("dd/MM/yyyy") ?? "-")</span>
+                    <span>Phụ trách: <strong>@(ticket.IdNhanVienNavigation?.HoTen ?? "Chưa phân công")</strong></span>
+                </div>
+                <a href="/Ticket/ChiTietPhieu/@ticket.IdPhieu" target="_blank" class="btn btn-danger btn-sm w-100 rounded-pill fw-bold text-white text-decoration-none d-block text-center py-2 mt-1" style="background-color:#D71920; border-color:#D71920; font-size:0.78rem;">
+                    <i class="bi bi-box-arrow-up-right me-1"></i> Xem Chi Tiết Phiếu
+                </a>
+            </div>
+        }
+    }
+</div>

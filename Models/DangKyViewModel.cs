@@ -5,40 +5,36 @@ namespace SupportTicketSysterm.Models
 {
     public class DangKyViewModel
     {
-        [Required(ErrorMessage = "Họ tên không được để trống.")]
-        [StringLength(100, ErrorMessage = "Họ tên không được vượt quá 100 ký tự.")]
-        [Display(Name = "Họ và tên")]
+        [Required(ErrorMessage = "Họ tên không được để trống")]
         public string HoTen { get; set; } = null!;
 
-        [Required(ErrorMessage = "Số điện thoại không được để trống.")]
-        [RegularExpression(@"^(0[3|5|7|8|9])[0-9]{8}$", ErrorMessage = "Số điện thoại không hợp lệ (phải là số VN 10 chữ số, bắt đầu 03/05/07/08/09).")]
-        [StringLength(15, ErrorMessage = "Số điện thoại không được vượt quá 15 ký tự.")]
-        [Display(Name = "Số điện thoại")]
+        [Required(ErrorMessage = "Số điện thoại không được để trống")]
+        [RegularExpression(@"^(0[3|5|7|8|9])[0-9]{8}$", ErrorMessage = "Số điện thoại không hợp lệ (phải bắt đầu bằng 03, 05, 07, 08, 09 và đủ 10 số)")]
         public string SoDienThoai { get; set; } = null!;
 
-        [EmailAddress(ErrorMessage = "Địa chỉ Email không hợp lệ.")]
-        [StringLength(100, ErrorMessage = "Email không được vượt quá 100 ký tự.")]
-        [Display(Name = "Email")]
-        public string? Email { get; set; }
+        [Required(ErrorMessage = "Email không được để trống")]
+        [EmailAddress(ErrorMessage = "Email không đúng định dạng")]
+        public string Email { get; set; } = null!;
 
-        [StringLength(255, ErrorMessage = "Địa chỉ không được vượt quá 255 ký tự.")]
-        [Display(Name = "Địa chỉ")]
+        public string? TenDangNhap { get; set; }
+
         public string? DiaChi { get; set; }
 
-        [Display(Name = "Ngày sinh")]
-        public DateOnly? NgaySinh { get; set; }
+        public DateTime? NgaySinh { get; set; }
 
-
-        [Required(ErrorMessage = "Mật khẩu không được để trống.")]
-        [StringLength(255, MinimumLength = 6, ErrorMessage = "Mật khẩu phải từ 6 ký tự trở lên.")]
-        [DataType(DataType.Password)]
-        [Display(Name = "Mật khẩu")]
+        [Required(ErrorMessage = "Mật khẩu không được để trống")]
+        [MinLength(6, ErrorMessage = "Mật khẩu phải có ít nhất 6 ký tự")]
         public string MatKhau { get; set; } = null!;
 
-        [Required(ErrorMessage = "Xác nhận mật khẩu không được để trống.")]
-        [DataType(DataType.Password)]
-        [Compare("MatKhau", ErrorMessage = "Mật khẩu xác nhận không khớp.")]
-        [Display(Name = "Xác nhận mật khẩu")]
-        public string NhapLaiMatKhau { get; set; } = null!;
+        [Required(ErrorMessage = "Xác nhận mật khẩu không được để trống")]
+        [Compare("MatKhau", ErrorMessage = "Mật khẩu xác nhận không khớp")]
+        public string XacNhanMatKhau { get; set; } = null!;
+
+        // OTP
+        [Required(ErrorMessage = "Mã OTP không được để trống")]
+        [RegularExpression(@"^[0-9]{6}$", ErrorMessage = "Mã OTP phải đúng 6 chữ số")]
+        public string? OTP { get; set; }
+
+        public bool DaGuiOTP { get; set; }
     }
 }

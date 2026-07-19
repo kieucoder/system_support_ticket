@@ -1,0 +1,472 @@
+@model SupportTicketSysterm.ViewModels.DanhGiaListViewModel
+
+@{
+    ViewData["Title"] = "Đánh Giá Khách Hàng";
+    ViewData["HeaderTitle"] = "Đánh Giá Khách Hàng";
+    ViewData["HeaderSubtitle"] = "Xem ý kiến đóng góp và phản hồi các đánh giá dịch vụ hỗ trợ";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/assets/css/staff/staff-review-list.css" asp-append-version="true" />
+    <style>
+        /* Custom override for not-replied status badge to be red */
+        .reply-status-badge.not-replied {
+            background-color: rgba(220, 53, 69, 0.08) !important;
+            border: 1px solid rgba(220, 53, 69, 0.15) !important;
+            color: #dc3545 !important;
+        }
+        .reply-content-box {
+            background-color: rgba(25, 135, 84, 0.04);
+            border: 1.5px dashed rgba(25, 135, 84, 0.2);
+            border-radius: 8px;
+            padding: 14px 18px;
+            margin-top: 10px;
+            font-size: 0.85rem;
+        }
+        .reply-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+            color: #198754;
+            font-weight: 700;
+        }
+        .reply-body {
+            color: var(--text-main);
+            line-height: 1.5;
+        }
+    </style>
+}
+
+<!-- Breadcrumb -->
+<nav aria-label="breadcrumb" class="hero-breadcrumb-nav mb-4">
+    <ol class="breadcrumb" style="font-size: 0.82rem; margin: 0; padding: 0;">
+        <li class="breadcrumb-item">
+            <a href="/Staff/Dashboard" class="text-danger text-decoration-none">
+                <i class="fa-solid fa-gauge-high me-1"></i>Dashboard
+            </a>
+        </li>
+        <li class="breadcrumb-item active fw-semibold" style="color: var(--text-main);">Đánh Giá Khách Hàng</li>
+    </ol>
+</nav>
+
+<!-- Hero Banner Section -->
+<div class="list-hero-section">
+    <h1 class="hero-title-main">Đánh giá & Phản hồi</h1>
+    <p class="hero-desc-main">Theo dõi mức độ hài lòng của khách hàng đối với các dịch vụ hỗ trợ kỹ thuật Viettel. Thực hiện phản hồi đánh giá để nâng cao chất lượng chăm sóc khách hàng.</p>
+</div>
+
+<!-- Overview Stats Grid -->
+<div class="stats-summary-grid">
+    <div class="stats-summary-card">
+        <div class="stats-card-info">
+            <span class="stats-card-label">Tổng số đánh giá</span>
+            <h3 class="stats-card-value">@Model.TotalReviews</h3>
+        </div>
+        <div class="stats-card-icon-box variant-blue">
+            <i class="fa-solid fa-comments"></i>
+        </div>
+    </div>
+    
+    <div class="stats-summary-card">
+        <div class="stats-card-info">
+            <span class="stats-card-label">Đã phản hồi</span>
+            <h3 class="stats-card-value text-success">@Model.RepliedCount</h3>
+        </div>
+        <div class="stats-card-icon-box variant-green">
+            <i class="fa-solid fa-circle-check"></i>
+        </div>
+    </div>
+
+    <div class="stats-summary-card border-danger-hover">
+        <div class="stats-card-info">
+            <span class="stats-card-label">Chưa phản hồi</span>
+            <h3 class="stats-card-value text-danger">@Model.NotRepliedCount</h3>
+        </div>
+        <div class="stats-card-icon-box variant-red">
+            <i class="fa-solid fa-circle-exclamation"></i>
+        </div>
+    </div>
+
+    <div class="stats-summary-card">
+        <div class="stats-card-info">
+            <span class="stats-card-label">Điểm trung bình</span>
+            <h3 class="stats-card-value text-warning">@Model.AverageRating ★</h3>
+        </div>
+        <div class="stats-card-icon-box variant-yellow">
+            <i class="fa-solid fa-star-half-stroke"></i>
+        </div>
+    </div>
+</div>
+
+<!-- Filter Toolbar -->
+<div class="filter-card-panel">
+    <form method="get" asp-controller="Staff" asp-action="DanhSachDanhGia">
+        <div class="filter-grid-layout">
+            <div class="filter-form-group col-span-2">
+                <label class="filter-label-text">Tìm kiếm</label>
+                <input type="search" name="keyword" value="@Model.Keyword" class="filter-input-control" placeholder="Mã phiếu, Khách hàng, Nhân viên, Tiêu đề..." />
+            </div>
+
+            <div class="filter-form-group">
+                <label class="filter-label-text">Trạng thái</label>
+                <select name="status" class="filter-select-control">
+                    <option value="" selected="@(string.IsNullOrEmpty(Model.StatusFilter) ? "selected" : null)">Tất cả trạng thái</option>
+                    <option value="da-phan-hoi" selected="@(Model.StatusFilter == "da-phan-hoi" ? "selected" : null)">Đã phản hồi</option>
+                    <option value="chua-phan-hoi" selected="@(Model.StatusFilter == "chua-phan-hoi" ? "selected" : null)">Chưa phản hồi</option>
+                </select>
+            </div>
+
+            <div class="filter-form-group">
+                <label class="filter-label-text">Sắp xếp</label>
+                <select name="sort" class="filter-select-control">
+                    <option value="newest" selected="@(Model.SortOrder == "newest" ? "selected" : null)">Mới nhất</option>
+                    <option value="oldest" selected="@(Model.SortOrder == "oldest" ? "selected" : null)">Cũ nhất</option>
+                    <option value="highest-rating" selected="@(Model.SortOrder == "highest-rating" ? "selected" : null)">Điểm cao nhất</option>
+                    <option value="lowest-rating" selected="@(Model.SortOrder == "lowest-rating" ? "selected" : null)">Điểm thấp nhất</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="filter-button-group mt-3">
+            <button type="submit" class="btn-filter-action btn-filter-search">
+                <i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm
+            </button>
+            <a href="/Staff/DanhSachDanhGia" class="btn-filter-action btn-filter-reset text-decoration-none">
+                <i class="fa-solid fa-rotate-right"></i> Reset
+            </a>
+        </div>
+    </form>
+</div>
+
+<!-- Evaluation Content Panel -->
+<div class="list-content-panel">
+    <div class="list-panel-header">
+        <h5 class="list-panel-title">
+            <i class="fa-solid fa-list-check"></i> Danh sách đánh giá dịch vụ
+        </h5>
+    </div>
+
+    <!-- Desktop View (Table Layout) -->
+    <div class="desktop-table-container table-responsive">
+        @if (Model.Items.Any())
+        {
+            <table class="table review-data-table align-middle">
+                <thead>
+                    <tr>
+                        <th style="width: 100px;">Mã phiếu</th>
+                        <th style="width: 180px;">Khách hàng / Nhân viên</th>
+                        <th style="width: 150px;">Danh mục / Dịch vụ</th>
+                        <th style="width: 180px;">Tiêu chí đánh giá</th>
+                        <th style="width: 80px; text-align: center;">ĐTB</th>
+                        <th>Nhận xét của khách</th>
+                        <th style="width: 110px;">Ngày đánh giá</th>
+                        <th style="width: 110px; text-align: center;">Trạng thái</th>
+                        <th style="width: 110px; text-align: center;">Hành động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Items)
+                    {
+                        <tr>
+                            <td>
+                                <span class="fw-bold text-primary">@item.MaPhieu</span>
+                            </td>
+                            <td>
+                                <div class="d-flex flex-column">
+                                    <span class="fw-bold text-dark" style="font-size: 0.88rem;"><i class="fa-solid fa-user me-1 text-secondary"></i> KH: @item.HoTenKhachHang</span>
+                                    <span class="text-muted" style="font-size: 0.78rem;"><i class="fa-solid fa-user-gear me-1"></i> NV: @item.HoTenNhanVien</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex flex-column">
+                                    <span class="fw-semibold text-dark" style="font-size: 0.8rem;">@item.TenDanhMuc</span>
+                                    <span class="text-muted" style="font-size: 0.75rem;">@item.TenDichVu</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="text-muted" style="font-size: 0.75rem; line-height: 1.4;">
+                                    <div>Chất lượng: <strong class="text-warning">@item.ChatLuongDichVu ★</strong></div>
+                                    <div>Thái độ: <strong class="text-warning">@item.ThaiDoNhanVien ★</strong></div>
+                                    <div>Tốc độ: <strong class="text-warning">@item.TocDoXuLy ★</strong></div>
+                                </div>
+                            </td>
+                            <td class="text-center">
+                                <span class="badge bg-warning text-dark fw-bold px-2 py-1" style="font-size: 0.85rem;">@item.DiemTrungBinh ★</span>
+                            </td>
+                            <td>
+                                <div class="text-wrap" style="max-width: 250px; font-size: 0.85rem;">
+                                    @(string.IsNullOrEmpty(item.NhanXet) ? "Không có nhận xét." : item.NhanXet)
+                                </div>
+                                @if (item.FileDinhKems.Any())
+                                {
+                                    <div class="mt-1 d-flex flex-wrap gap-1">
+                                        @foreach (var file in item.FileDinhKems)
+                                        {
+                                            <a href="@file.DuongDan" target="_blank" class="badge bg-light text-secondary border d-inline-flex align-items-center gap-1 text-decoration-none" style="font-size: 0.7rem;">
+                                                @if (file.LoaiFile != null && file.LoaiFile.Contains("image"))
+                                                {
+                                                    <i class="fa-solid fa-image text-success"></i>
+                                                }
+                                                else if (file.LoaiFile != null && file.LoaiFile.Contains("pdf"))
+                                                {
+                                                    <i class="fa-solid fa-file-pdf text-danger"></i>
+                                                }
+                                                else
+                                                {
+                                                    <i class="fa-solid fa-file text-primary"></i>
+                                                }
+                                                @file.TenFile
+                                            </a>
+                                        }
+                                    </div>
+                                }
+                            </td>
+                            <td>
+                                <span class="text-muted" style="font-family: monospace; font-size: 0.8rem;">@item.NgayDanhGia.ToString("dd/MM/yyyy")</span>
+                            </td>
+                            <td class="text-center">
+                                @if (item.IsResponded)
+                                {
+                                    <span class="reply-status-badge replied">Đã phản hồi</span>
+                                }
+                                else
+                                {
+                                    <span class="reply-status-badge not-replied">Chưa phản hồi</span>
+                                }
+                            </td>
+                            <td class="text-center">
+                                @if (item.IsResponded)
+                                {
+                                    <a href="/Staff/PhanHoiDanhGia/@item.IdDanhGia" class="btn btn-sm btn-success fw-bold px-2 py-1 w-100" style="font-size: 0.72rem; border-radius: 6px;">
+                                        <i class="fa-solid fa-pen-to-square me-1"></i> Cập nhật
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a href="/Staff/PhanHoiDanhGia/@item.IdDanhGia" class="btn btn-sm btn-primary fw-bold px-2 py-1 w-100" style="font-size: 0.72rem; border-radius: 6px;">
+                                        <i class="fa-solid fa-reply me-1"></i> Phản hồi
+                                    </a>
+                                }
+                            </td>
+                        </tr>
+                        @if (item.IsResponded)
+                        {
+                            <tr style="background-color: transparent;">
+                                <td colspan="9" class="p-0 border-0">
+                                    <div class="px-3 pb-3" style="margin-top: -10px;">
+                                        <div class="reply-content-box">
+                                            <div class="reply-header">
+                                                <span>
+                                                    <i class="fa-solid fa-user-shield me-1"></i> Phản hồi từ: @item.HoTenNhanVienPhanHoi
+                                                </span>
+                                                <small class="text-muted" style="font-family: monospace; font-weight: normal;">
+                                                    <i class="fa-regular fa-clock me-1"></i> @item.NgayPhanHoi?.ToString("dd/MM/yyyy HH:mm")
+                                                </small>
+                                            </div>
+                                            <div class="reply-body">
+                                                @item.PhanHoiNhanVien
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="text-center py-5 text-muted">
+                <i class="fa-regular fa-folder-open fs-1 mb-3 text-secondary d-block"></i>
+                Không tìm thấy đánh giá nào phù hợp.
+            </div>
+        }
+    </div>
+
+    <!-- Mobile View (Card Layout) -->
+    <div class="mobile-cards-container">
+        @if (Model.Items.Any())
+        {
+            @foreach (var item in Model.Items)
+            {
+                <div class="mobile-review-card">
+                    <div class="mobile-card-header">
+                        <div>
+                            <span class="mobile-card-ticket">@item.MaPhieu</span>
+                            <h4 class="mobile-card-customer">@item.HoTenKhachHang</h4>
+                        </div>
+                        <span class="mobile-card-date">@item.NgayDanhGia.ToString("dd/MM/yyyy")</span>
+                    </div>
+
+                    <div class="mobile-card-body">
+                        <div class="mobile-card-body-row">
+                            <span class="mobile-card-body-label">Nhân viên:</span>
+                            <span class="mobile-card-body-val">@item.HoTenNhanVien</span>
+                        </div>
+                        <div class="mobile-card-body-row">
+                            <span class="mobile-card-body-label">Danh mục:</span>
+                            <span class="mobile-card-body-val">@item.TenDanhMuc</span>
+                        </div>
+                        <div class="mobile-card-body-row">
+                            <span class="mobile-card-body-label">Dịch vụ:</span>
+                            <span class="mobile-card-body-val text-truncate" style="max-width: 200px;">@item.TenDichVu</span>
+                        </div>
+                        <div class="mobile-card-body-row">
+                            <span class="mobile-card-body-label">Đánh giá chung:</span>
+                            <span class="mobile-card-body-val text-warning">
+                                @item.DiemTrungBinh ★
+                            </span>
+                        </div>
+                        <div class="mobile-card-body-row">
+                            <span class="mobile-card-body-label">Chi tiết:</span>
+                            <span class="mobile-card-body-val text-muted" style="font-size:0.78rem;">
+                                CL: @item.ChatLuongDichVu★ - TĐ: @item.ThaiDoNhanVien★ - TĐ: @item.TocDoXuLy★
+                            </span>
+                        </div>
+                        <div class="mt-2 border-top pt-2">
+                            <div class="small fw-bold mb-1"><i class="fa-solid fa-comment-dots text-primary me-1"></i>Nhận xét từ khách hàng:</div>
+                            <div class="text-muted small" style="font-style: italic;">
+                                "@(string.IsNullOrEmpty(item.NhanXet) ? "Không có nhận xét." : item.NhanXet)"
+                            </div>
+                        </div>
+
+                        @if (item.IsResponded)
+                        {
+                            <div class="reply-content-box mt-3">
+                                <div class="reply-header">
+                                    <span style="font-size: 0.8rem;">
+                                        <i class="fa-solid fa-user-shield me-1"></i> @item.HoTenNhanVienPhanHoi
+                                    </span>
+                                    <small class="text-muted" style="font-size:0.75rem; font-family: monospace;">
+                                        @item.NgayPhanHoi?.ToString("dd/MM/yyyy HH:mm")
+                                    </small>
+                                </div>
+                                <div class="reply-body" style="font-size: 0.8rem;">
+                                    @item.PhanHoiNhanVien
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                    <div class="mobile-card-footer">
+                        <div>
+                            @if (item.IsResponded)
+                            {
+                                <span class="reply-status-badge replied">Đã phản hồi</span>
+                            }
+                            else
+                            {
+                                <span class="reply-status-badge not-replied">Chưa phản hồi</span>
+                            }
+                        </div>
+                        <div>
+                            @if (item.IsResponded)
+                            {
+                                <a href="/Staff/PhanHoiDanhGia/@item.IdDanhGia" class="mobile-card-action-link">
+                                    <i class="fa-solid fa-pen-to-square"></i> Cập nhật phản hồi
+                                </a>
+                            }
+                            else
+                            {
+                                <a href="/Staff/PhanHoiDanhGia/@item.IdDanhGia" class="mobile-card-action-link">
+                                    <i class="fa-solid fa-reply"></i> Gửi phản hồi
+                                </a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="text-center py-5 text-muted">
+                <i class="fa-regular fa-folder-open fs-1 mb-3 text-secondary d-block"></i>
+                Không tìm thấy đánh giá nào phù hợp.
+            </div>
+        }
+    </div>
+
+    <!-- Pagination Footer -->
+    @if (Model.TotalPages > 1)
+    {
+        <div class="list-panel-footer">
+            <span class="footer-info-text">
+                Hiển thị trang <strong>@Model.CurrentPage</strong> trên tổng số <strong>@Model.TotalPages</strong> trang (@Model.TotalItems đánh giá)
+            </span>
+
+            <nav aria-label="Page navigation" role="navigation">
+                <ul class="pagination pagination-sm mb-0">
+                    <!-- Previous Page Link -->
+                    @if (Model.CurrentPage > 1)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" href="@Url.Action("DanhSachDanhGia", new { keyword = Model.Keyword, status = Model.StatusFilter, sort = Model.SortOrder, page = Model.CurrentPage - 1 })" aria-label="Previous">
+                                <span aria-hidden="true">&laquo; Trở lại</span>
+                            </a>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="page-item disabled">
+                            <span class="page-link">&laquo; Trở lại</span>
+                        </li>
+                    }
+
+                    <!-- Page Numbers -->
+                    @for (int p = 1; p <= Model.TotalPages; p++)
+                    {
+                        <li class="page-item @(p == Model.CurrentPage ? "active" : "")">
+                            <a class="page-link" href="@Url.Action("DanhSachDanhGia", new { keyword = Model.Keyword, status = Model.StatusFilter, sort = Model.SortOrder, page = p })">@p</a>
+                        </li>
+                    }
+
+                    <!-- Next Page Link -->
+                    @if (Model.CurrentPage < Model.TotalPages)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" href="@Url.Action("DanhSachDanhGia", new { keyword = Model.Keyword, status = Model.StatusFilter, sort = Model.SortOrder, page = Model.CurrentPage + 1 })" aria-label="Next">
+                                <span aria-hidden="true">Tiếp &raquo;</span>
+                            </a>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="page-item disabled">
+                            <span class="page-link">Tiếp &raquo;</span>
+                        </li>
+                    }
+                </ul>
+            </nav>
+        </div>
+    }
+    else if (Model.TotalItems > 0)
+    {
+        <div class="list-panel-footer">
+            <span class="footer-info-text">
+                Hiển thị <strong>@Model.TotalItems</strong> đánh giá
+            </span>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Thành công!',
+                    text: '@Html.Raw(TempData["SuccessMessage"])',
+                    confirmButtonText: 'Đóng',
+                    confirmButtonColor: '#198754',
+                    timer: 3000,
+                    timerProgressBar: true
+                });
+            });
+        </script>
+    }
+}

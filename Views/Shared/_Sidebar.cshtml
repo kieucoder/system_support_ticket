@@ -1,0 +1,108 @@
+<div id="sidebar-container">
+    <!-- Slide Menu Drawer for Mobile & Tablet -->
+    <div class="mobile-drawer" id="mobileDrawer">
+        <div class="drawer-header border-bottom">
+            <h5 class="drawer-title fw-bold">
+                <span>TechSupport</span>
+            </h5>
+            <button type="button" class="btn-close-custom" id="drawerClose" aria-label="Close">
+                <i class="fa-solid fa-times"></i>
+            </button>
+        </div>
+        <div class="drawer-body">
+            <!-- Navbar Links -->
+            <ul class="drawer-nav-list">
+                <li class="drawer-nav-item">
+                    <a class="drawer-nav-link active" href="#heroSection" id="mobileLinkHome">Trang chủ</a>
+                </li>
+                <li class="drawer-nav-item drawer-dropdown-custom">
+                    <a class="drawer-nav-link dropdown-toggle-custom d-flex justify-content-between align-items-center"
+                       href="#" id="mobileLinkServices">
+                        Dịch vụ hỗ trợ <i class="fa-solid fa-chevron-down ms-1"
+                                          style="font-size: 0.8rem; transition: transform 0.3s ease;"></i>
+                    </a>
+                    <ul class="drawer-dropdown-menu-custom">
+                        <li>
+                            <a class="drawer-dropdown-item-custom" href="#serviceGridSection">
+                                Hỗ trợ Internet Cáp
+                                Quang
+                            </a>
+                        </li>
+                        <li>
+                            <a class="drawer-dropdown-item-custom" href="#serviceGridSection">Hỗ trợ Home Camera</a>
+                        </li>
+                        <li>
+                            <a class="drawer-dropdown-item-custom" href="#serviceGridSection">
+                                Hỗ trợ Server &
+                                Cloud
+                            </a>
+                        </li>
+                        <li>
+                            <a class="drawer-dropdown-item-custom" href="#serviceGridSection">
+                                Hỗ trợ Phần mềm & Mạng
+                                nội bộ
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="drawer-nav-item">
+                    <a class="drawer-nav-link" asp-controller="Ticket"
+                       asp-action="ChonDMDichVu"
+                       id="mobileLinkGuides">Dịch vụ</a>
+                </li>
+                <li class="drawer-nav-item">
+                    <a class="drawer-nav-link" href="#quickActionSection" id="mobileLinkSearch">Tra cứu phiếu</a>
+                </li>
+                <li class="drawer-nav-item">
+                    <a class="drawer-nav-link" asp-controller="Customers" asp-action="ChatTrucTuyen" id="mobileLinkChat">Chat trực tuyến</a>
+                </li>
+                <li class="drawer-nav-item">
+                    <a class="drawer-nav-link" asp-controller="Customers" asp-action="LienHe" id="mobileLinkContact">Liên hệ</a>
+                </li>
+            </ul>
+        </div>
+        @using Microsoft.AspNetCore.Http
+        @using System.Security.Claims
+        @{
+            var hoTenMobile = Context.Session?.GetString("HoTen") ?? User.FindFirstValue("HoTen") ?? User.Identity?.Name;
+            var isAuthMobile = !string.IsNullOrEmpty(hoTenMobile);
+        }
+        <div class="drawer-buttons-group d-flex flex-column gap-2">
+            @if (isAuthMobile)
+            {
+                <div class="text-center py-2 text-white-50 small mb-1">
+                    <i class="fa-solid fa-user me-1"></i> Xin chào, @hoTenMobile
+                </div>
+                <a asp-controller="Customers" asp-action="ThongTinCaNhan" class="btn btn-login-custom btn-ripple rounded-pill px-4 justify-content-center">
+                    Thông tin cá nhân
+                </a>
+                <a href="/KhachHang/PhieuHoTro" class="btn btn-login-custom btn-ripple rounded-pill px-4 justify-content-center">
+                    Phiếu hỗ trợ của tôi
+                </a>
+                <a asp-controller="Customers" asp-action="ChatTrucTuyen" class="btn btn-login-custom btn-ripple rounded-pill px-4 justify-content-center">
+                    Chat với nhân viên
+                </a>
+                <a href="/KhachHang/DoiMatKhau" class="btn btn-login-custom btn-ripple rounded-pill px-4 justify-content-center">
+                    Đổi mật khẩu
+                </a>
+                <a asp-controller="Auth" asp-action="DangXuat" class="btn btn-create-ticket-custom btn-ripple px-4 justify-content-center">
+                    <i class="bi bi-box-arrow-right me-1"></i> Đăng xuất
+                </a>
+            }
+            else
+            {
+                <a href="/Auth/DangNhap" class="btn btn-login-custom btn-ripple rounded-pill px-4 justify-content-center"
+                   id="mobileBtnLogin">
+                    <i class="fa-solid fa-user me-1"></i> Đăng nhập
+                </a>
+                <a href="/Auth/DangKy" class="btn btn-create-ticket-custom btn-ripple px-4 justify-content-center"
+                   id="mobileBtnCreateTicket">
+                    <i class="bi bi-person-plus-fill me-1"></i> Đăng ký
+                </a>
+            }
+        </div>
+    </div>
+
+    <!-- Dark Overlay behind Slide Menu -->
+    <div class="drawer-overlay" id="drawerOverlay"></div>
+</div>

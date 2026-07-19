@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
@@ -39,6 +39,12 @@ public partial class TechSupportContext : DbContext
 
     public virtual DbSet<TinNhan> TinNhans { get; set; }
 
+    public virtual DbSet<SupportTicketSysterm.Models.ChatMessage> ChatMessages { get; set; }
+
+    public virtual DbSet<XacThucOtp> XacThucOtps { get; set; }
+
+
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
         => optionsBuilder.UseSqlServer("Data Source=LAPTOP-EUOBO6JQ;Initial Catalog=TechSupport;Integrated Security=True;Encrypt=True;TrustServerCertificate=True");
@@ -59,6 +65,9 @@ public partial class TechSupportContext : DbContext
             entity.HasOne(d => d.IdPhieuNavigation).WithOne(p => p.DanhGium)
                 .HasForeignKey<DanhGium>(d => d.IdPhieu)
                 .HasConstraintName("FK__DanhGia__IdPhieu__66603565");
+
+            entity.HasOne(d => d.IdNhanVienPhanHoiNavigation).WithMany()
+                .HasForeignKey(d => d.IdNhanVienPhanHoi);
         });
 
         modelBuilder.Entity<DanhMuc>(entity =>
@@ -194,6 +203,10 @@ public partial class TechSupportContext : DbContext
             entity.HasOne(d => d.IdNhanVienNavigation).WithMany(p => p.LienHes)
                 .HasForeignKey(d => d.IdNhanVien)
                 .HasConstraintName("FK__LienHe__IdNhanVi__5812160E");
+
+            entity.HasOne(d => d.IdPhieuNavigation).WithMany()
+                .HasForeignKey(d => d.IdPhieu)
+                .HasConstraintName("FK_LienHe_PhieuHoTro");
         });
 
         modelBuilder.Entity<NhanVien>(entity =>
@@ -280,6 +293,18 @@ public partial class TechSupportContext : DbContext
             entity.HasOne(d => d.IdLienHeNavigation).WithMany(p => p.TinNhans)
                 .HasForeignKey(d => d.IdLienHe)
                 .HasConstraintName("FK__TinNhan__IdLienH__5AEE82B9");
+        });
+
+        modelBuilder.Entity<XacThucOtp>(entity =>
+        {
+            entity.ToTable("XacThucOtp");
+        });
+
+
+
+        modelBuilder.Entity<SupportTicketSysterm.Models.ChatMessage>(entity =>
+        {
+            entity.ToTable("ChatMessages");
         });
 
         OnModelCreatingPartial(modelBuilder);

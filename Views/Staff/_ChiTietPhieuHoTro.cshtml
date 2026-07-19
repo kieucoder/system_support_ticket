@@ -1,0 +1,355 @@
+@model SupportTicketSysterm.ViewModels.ChiTietPhieuViewModel
+@{
+    ViewData["Title"] = "Chi Tiết Phiếu Hỗ Trợ - TechSupport Viettel";
+    ViewData["HeaderTitle"] = "Chi Tiết Phiếu Hỗ Trợ";
+    ViewData["HeaderSubtitle"] = "Hệ thống quản lý thông tin chi tiết và xử lý sự cố";
+}
+
+@section Styles {
+    <style>
+        .detail-card {
+            border: 1px solid var(--border-color, #e5e7eb) !important;
+            border-radius: var(--vt-border-radius, 16px) !important;
+            background-color: var(--bg-card, #fff);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            margin-bottom: 24px;
+        }
+        
+        .timeline-wrapper {
+            position: relative;
+            padding-left: 20px;
+            border-left: 2px solid #dee2e6;
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        
+        .timeline-dot {
+            position: absolute;
+            left: -26px;
+            top: 4px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #dc3545;
+        }
+
+        .badge-status-lg {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 9999px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            border: 1px solid transparent;
+        }
+        .badge-status-lg.waiting {
+            background-color: rgba(245, 158, 11, 0.08);
+            color: #D97706;
+            border-color: rgba(245, 158, 11, 0.2);
+        }
+        .badge-status-lg.processing {
+            background-color: rgba(59, 130, 246, 0.08);
+            color: #2563EB;
+            border-color: rgba(59, 130, 246, 0.2);
+        }
+        .badge-status-lg.feedback {
+            background-color: rgba(6, 182, 212, 0.08);
+            color: #0891B2;
+            border-color: rgba(6, 182, 212, 0.2);
+        }
+        .badge-status-lg.completed {
+            background-color: rgba(16, 185, 129, 0.08);
+            color: #059669;
+            border-color: rgba(16, 185, 129, 0.2);
+        }
+        .badge-status-lg.cancelled {
+            background-color: rgba(239, 68, 68, 0.08);
+            color: #DC2626;
+            border-color: rgba(239, 68, 68, 0.2);
+        }
+
+        .badge-priority-lg {
+            display: inline-flex;
+            align-items: center;
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border: 1px solid transparent;
+        }
+        .badge-priority-lg.low {
+            background-color: rgba(16, 185, 129, 0.08);
+            color: #059669;
+            border-color: rgba(16, 185, 129, 0.15);
+        }
+        .badge-priority-lg.medium {
+            background-color: rgba(245, 158, 11, 0.08);
+            color: #D97706;
+            border-color: rgba(245, 158, 11, 0.15);
+        }
+        .badge-priority-lg.high {
+            background-color: rgba(238, 0, 51, 0.08);
+            color: #EE0033;
+            border-color: rgba(238, 0, 51, 0.2);
+        }
+        .badge-priority-lg.emergency {
+            background-color: #EE0033;
+            color: #FFFFFF;
+            border-color: #EE0033;
+            box-shadow: 0 2px 4px rgba(238, 0, 51, 0.25);
+        }
+    </style>
+}
+
+<!-- Breadcrumbs Navigation -->
+<nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb" style="font-size: 0.82rem; margin: 0; padding: 0;">
+        <li class="breadcrumb-item">
+            <a href="/Staff/QuanLyPhieuHoTro" class="text-danger text-decoration-none">
+                <i class="fa-solid fa-ticket me-1"></i>Quản lý phiếu hỗ trợ
+            </a>
+        </li>
+        <li class="breadcrumb-item active fw-semibold" style="color: var(--text-main);">
+            Chi tiết phiếu @Model.MaPhieu
+        </li>
+    </ol>
+</nav>
+
+<div class="row g-4">
+    <!-- Left Column: Core Ticket Details -->
+    <div class="col-lg-8 col-12">
+        <div class="card detail-card p-4">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 border-bottom pb-3 mb-4">
+                <div>
+                    <span class="text-muted small">Mã phiếu hỗ trợ</span>
+                    <h3 class="fw-bold text-danger mb-0">@Model.MaPhieu</h3>
+                </div>
+                <div class="d-flex gap-2">
+                    <!-- Status Badge -->
+                    @if (Model.TrangThai == "Chờ tiếp nhận" || Model.TrangThai == "ChoTiepNhan")
+                    {
+                        <span class="badge-status-lg waiting"><i class="fa-solid fa-clock me-1"></i>Chờ tiếp nhận</span>
+                    }
+                    else if (Model.TrangThai == "Đang xử lý" || Model.TrangThai == "DangXuLy")
+                    {
+                        <span class="badge-status-lg processing"><i class="fa-solid fa-spinner fa-spin-pulse me-1"></i>Đang xử lý</span>
+                    }
+                    else if (Model.TrangThai == "Chờ phản hồi" || Model.TrangThai == "ChoKhachHangPhanHoi")
+                    {
+                        <span class="badge-status-lg feedback"><i class="fa-solid fa-comment-dots me-1"></i>Chờ phản hồi</span>
+                    }
+                    else if (Model.TrangThai == "Hoàn thành" || Model.TrangThai == "DaHoanThanh" || Model.TrangThai == "Đã hoàn thành")
+                    {
+                        <span class="badge-status-lg completed"><i class="fa-solid fa-circle-check me-1"></i>Hoàn thành</span>
+                    }
+                    else if (Model.TrangThai == "Đã hủy" || Model.TrangThai == "DaHuy")
+                    {
+                        <span class="badge-status-lg cancelled"><i class="fa-solid fa-circle-xmark me-1"></i>Đã hủy</span>
+                    }
+                    else
+                    {
+                        <span class="badge-status-lg waiting">@Model.TrangThai</span>
+                    }
+
+                    <!-- Priority Badge -->
+                    @switch (Model.MucDoUuTien)
+                    {
+                        case 1:
+                            <span class="badge-priority-lg low">Thấp</span>
+                            break;
+                        case 2:
+                            <span class="badge-priority-lg medium">Trung bình</span>
+                            break;
+                        case 3:
+                            <span class="badge-priority-lg high">Cao</span>
+                            break;
+                        case 4:
+                            <span class="badge-priority-lg emergency">Khẩn cấp</span>
+                            break;
+                        default:
+                            <span class="badge-priority-lg low">Thấp</span>
+                            break;
+                    }
+                </div>
+            </div>
+
+            <!-- Content details -->
+            <div class="mb-4">
+                <span class="text-muted small d-block">Tiêu đề sự cố</span>
+                <h5 class="fw-bold text-dark-emphasis mb-3">@Model.TieuDe</h5>
+
+                <span class="text-muted small d-block">Nội dung chi tiết</span>
+                <div class="p-3 bg-light rounded-3 text-muted border" style="font-size: 0.92rem; white-space: pre-wrap; line-height: 1.6;">@Model.NoiDung</div>
+            </div>
+
+            <div class="row g-3 mb-4 border-top pt-3">
+                <div class="col-md-6">
+                    <span class="text-muted small d-block">Loại yêu cầu kỹ thuật</span>
+                    <strong class="text-dark-emphasis">@Model.LoaiYeuCau</strong>
+                </div>
+                <div class="col-md-6">
+                    <span class="text-muted small d-block">Ngày tạo phiếu</span>
+                    <strong class="text-dark-emphasis">@Model.NgayTao.ToString("dd/MM/yyyy")</strong>
+                </div>
+            </div>
+        </div>
+
+        <!-- Attached Files Section -->
+        <div class="card detail-card p-4">
+            <h5 class="fw-bold text-danger border-bottom pb-2 mb-3"><i class="fa-solid fa-paperclip me-2"></i>Tài liệu đính kèm</h5>
+            <div class="p-3 bg-light rounded-3 border">
+                @if (Model.DanhSachFile == null || Model.DanhSachFile.Count == 0)
+                {
+                    <p class="text-muted mb-0 small"><i class="fa-solid fa-folder-open me-2 text-secondary"></i>Không có file đính kèm nào được tải lên.</p>
+                }
+                else
+                {
+                    <ul class="list-group list-group-flush rounded bg-transparent">
+                        @foreach (var file in Model.DanhSachFile)
+                        {
+                            var isImg = file.LoaiFile != null && (file.LoaiFile.StartsWith("image/", StringComparison.OrdinalIgnoreCase) || 
+                                         file.TenFile.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase) || 
+                                         file.TenFile.EndsWith(".png", StringComparison.OrdinalIgnoreCase) || 
+                                         file.TenFile.EndsWith(".jpeg", StringComparison.OrdinalIgnoreCase) ||
+                                         file.TenFile.EndsWith(".gif", StringComparison.OrdinalIgnoreCase) ||
+                                         file.TenFile.EndsWith(".webp", StringComparison.OrdinalIgnoreCase));
+                            <li class="list-group-item bg-transparent d-flex flex-column py-3 px-0 border-bottom">
+                                @if (isImg)
+                                {
+                                    <div class="mb-2" style="max-width: 280px; max-height: 160px; overflow: hidden; border-radius: 8px; border: 1px solid #dee2e6;">
+                                        <a href="@file.DuongDan" target="_blank" title="Xem ảnh đầy đủ">
+                                            <img src="@file.DuongDan" alt="@file.TenFile" style="width: 100%; height: 100%; object-fit: cover;" />
+                                        </a>
+                                    </div>
+                                }
+                                <div class="d-flex justify-content-between align-items-center w-100">
+                                    <span class="text-truncate text-dark small" style="max-width: 70%;"><i class="fa-solid @(isImg ? "fa-image text-primary" : "fa-file-lines text-secondary") me-2"></i>@file.TenFile</span>
+                                    <a href="@file.DuongDan" class="btn btn-sm btn-outline-danger px-3 rounded-pill" download><i class="fa-solid fa-download me-1"></i>Tải xuống</a>
+                                </div>
+                            </li>
+                        }
+                    </ul>
+                }
+            </div>
+        </div>
+
+        <!-- Treatment Log History Timeline -->
+        <div class="card detail-card p-4">
+            <h5 class="fw-bold text-danger border-bottom pb-2 mb-3"><i class="fa-solid fa-clock-rotate-left me-2"></i>Lịch sử & Timeline xử lý</h5>
+            <div class="timeline-wrapper p-3 border rounded-3 bg-light">
+                @if (Model.DanhSachLichSu == null || Model.DanhSachLichSu.Count == 0)
+                {
+                    <p class="text-muted text-center py-2 mb-0 small">Không có lịch sử cập nhật.</p>
+                }
+                else
+                {
+                    @foreach (var log in Model.DanhSachLichSu.OrderBy(lh => lh.NgayCapNhat))
+                    {
+                        <div class="timeline-item">
+                            <div class="timeline-dot"></div>
+                            <div class="d-flex justify-content-between align-items-center flex-wrap mb-1">
+                                <span class="fw-bold text-dark-emphasis small">@(log.IdNhanVienNavigation?.HoTen ?? "Hệ thống")</span>
+                                <span class="text-muted small" style="font-size:0.75rem;">@(log.NgayCapNhat.HasValue ? log.NgayCapNhat.Value.ToString("dd/MM/yyyy") : "--")</span>
+                            </div>
+                            <p class="text-muted mb-0 small">@log.NoiDungCapNhat</p>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Column: Relational Details (Client, Service, Technician, Assessment) -->
+    <div class="col-lg-4 col-12">
+        <!-- Client Information Card -->
+        <div class="card detail-card p-4">
+            <h5 class="fw-bold text-danger border-bottom pb-2 mb-3"><i class="fa-solid fa-user me-2"></i>Thông tin Khách hàng</h5>
+            <div class="p-3 bg-light rounded-3 border">
+                <p class="mb-2"><span class="text-muted small d-inline-block" style="width: 80px;">Họ tên:</span> <strong>@Model.HoTenKhachHang</strong></p>
+                <p class="mb-2"><span class="text-muted small d-inline-block" style="width: 80px;">Điện thoại:</span> <strong class="text-danger">@Model.SoDienThoai</strong></p>
+                <p class="mb-0"><span class="text-muted small d-inline-block" style="width: 80px;">Email:</span> <span class="text-muted small">@(string.IsNullOrEmpty(Model.Email) ? "Chưa cung cấp" : Model.Email)</span></p>
+            </div>
+        </div>
+
+        <!-- Service Information Card -->
+        <div class="card detail-card p-4">
+            <h5 class="fw-bold text-danger border-bottom pb-2 mb-3"><i class="fa-solid fa-screwdriver-wrench me-2"></i>Dịch vụ kỹ thuật</h5>
+            <div class="p-3 bg-light rounded-3 border">
+                <p class="mb-2"><span class="text-muted small d-inline-block" style="width: 90px;">Danh mục:</span> <strong class="text-dark-emphasis">@Model.TenDanhMuc</strong></p>
+                <p class="mb-0"><span class="text-muted small d-inline-block" style="width: 90px;">Dịch vụ:</span> <strong class="text-danger">@Model.TenDichVu</strong></p>
+            </div>
+        </div>
+
+        <!-- Assignee & Appointment Card -->
+        <div class="card detail-card p-4">
+            <h5 class="fw-bold text-danger border-bottom pb-2 mb-3"><i class="fa-solid fa-calendar-check me-2"></i>Kỹ thuật viên & Lịch hẹn</h5>
+            <div class="p-3 bg-light rounded-3 border mb-3">
+                <span class="text-muted small d-block mb-1">Nhân viên kỹ thuật</span>
+                @if (string.IsNullOrEmpty(Model.TenNhanVien))
+                {
+                    <p class="text-danger italic mb-0 small"><i class="fa-solid fa-triangle-exclamation me-1"></i>Chưa phân công kỹ thuật viên</p>
+                }
+                else
+                {
+                    <p class="mb-2"><span class="text-muted small d-inline-block" style="width: 80px;">Nhân viên:</span> <strong>@Model.TenNhanVien</strong></p>
+                    <p class="mb-0"><span class="text-muted small d-inline-block" style="width: 80px;">Điện thoại:</span> <strong>@Model.SoDienThoaiNV</strong></p>
+                }
+            </div>
+
+            <div class="p-3 bg-light rounded-3 border">
+                <span class="text-muted small d-block mb-1">Lịch hẹn tại nhà</span>
+                @if (!Model.NgayHen.HasValue)
+                {
+                    <p class="text-muted mb-0 small"><i class="fa-solid fa-circle-info me-1 text-info"></i>Chưa hẹn ngày hỗ trợ</p>
+                }
+                else
+                {
+                    <p class="mb-2"><span class="text-muted small d-inline-block" style="width: 80px;">Ngày hẹn:</span> <strong>@Model.NgayHen.Value.ToString("dd/MM/yyyy")</strong></p>
+                    <p class="mb-2"><span class="text-muted small d-inline-block" style="width: 80px;">Giờ hẹn:</span> <strong>@(Model.GioHen.HasValue ? Model.GioHen.Value.ToString("HH:mm") : "--:--")</strong></p>
+                    <p class="mb-0"><span class="text-muted small d-inline-block" style="width: 80px;">Địa chỉ:</span> <span class="text-muted small">@Model.DiaChi</span></p>
+                }
+            </div>
+        </div>
+
+        <!-- Evaluation & Assessment Card -->
+        <div class="card detail-card p-4">
+            <h5 class="fw-bold text-danger border-bottom pb-2 mb-3"><i class="fa-solid fa-star me-2"></i>Đánh giá của Khách hàng</h5>
+            <div class="p-3 bg-light rounded-3 border">
+                @if (Model.DanhGia == null)
+                {
+                    <p class="text-muted mb-0 small"><i class="fa-solid fa-comment-slash me-1 text-secondary"></i>Khách hàng chưa gửi đánh giá.</p>
+                }
+                else
+                {
+                    <div class="d-flex align-items-center gap-1.5 mb-2 flex-wrap">
+                        <span class="text-muted small">Chất lượng:</span>
+                        <span class="text-warning small">
+                            @for (int i = 1; i <= 5; i++)
+                            {
+                                <i class="bi @(i <= Model.SoSao ? "bi-star-fill" : "bi-star")"></i>
+                            }
+                        </span>
+                        <span class="fw-bold text-dark small">(@Model.SoSao/5)</span>
+                    </div>
+                    <p class="mb-0 text-muted small" style="white-space: pre-wrap;"><i class="fa-solid fa-quote-left me-1 opacity-50"></i>@Model.NhanXet</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mt-2 mb-5 d-flex gap-2">
+    <a href="/Staff/QuanLyPhieuHoTro" class="btn btn-outline-secondary fw-bold px-4 py-2" style="border-radius:10px;">
+        <i class="fa-solid fa-chevron-left me-1"></i> Quay lại danh sách
+    </a>
+    <a href="/Staff/PhanCongNhanVien/@Model.IdPhieu" class="btn btn-warning fw-bold px-4 py-2 text-dark" style="border-radius:10px;">
+        <i class="fa-solid fa-user-gear me-1"></i> Phân công xử lý
+    </a>
+    <a href="/Staff/CapNhatTrangThai/@Model.IdPhieu" class="btn btn-danger fw-bold px-4 py-2" style="border-radius:10px;">
+        <i class="fa-solid fa-arrows-spin me-1"></i> Cập nhật trạng thái
+    </a>
+</div>

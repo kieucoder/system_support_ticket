@@ -1,0 +1,120 @@
+@model SupportTicketSysterm.Data.PhieuHoTro
+@{
+    ViewData["Title"] = "Lịch Sử Xử Lý - TechSupport Viettel";
+    ViewData["HeaderTitle"] = "Lịch Sử Xử Lý Phiếu";
+    ViewData["HeaderSubtitle"] = "Nhật ký timeline hoạt động cập nhật và phân công";
+}
+
+@section Styles {
+    <style>
+        .timeline-wrapper {
+            position: relative;
+            padding-left: 30px;
+            margin-top: 20px;
+        }
+        .timeline-wrapper::before {
+            content: '';
+            position: absolute;
+            left: 9px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #e9ecef;
+        }
+        .timeline-item {
+            position: relative;
+            margin-bottom: 25px;
+        }
+        .timeline-marker {
+            position: absolute;
+            left: -30px;
+            top: 5px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #fff;
+            border: 4px solid #adb5bd;
+            z-index: 2;
+        }
+        .timeline-marker.waiting { border-color: #ffc107; }
+        .timeline-marker.processing { border-color: #0d6efd; }
+        .timeline-marker.feedback { border-color: #0dcaf0; }
+        .timeline-marker.completed { border-color: #198754; }
+        .timeline-marker.cancelled { border-color: #dc3545; }
+        
+        .timeline-content {
+            background: var(--bg-card, #f8f9fa);
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+    </style>
+}
+
+<nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb" style="font-size: 0.82rem;">
+        <li class="breadcrumb-item"><a href="/Staff/QuanLyPhieuHoTro" class="text-danger text-decoration-none">Quản lý phiếu</a></li>
+        <li class="breadcrumb-item active">Lịch sử xử lý</li>
+    </ol>
+</nav>
+
+<div class="row justify-content-center">
+    <div class="col-md-8 col-12">
+        <div class="card border-0 shadow-sm rounded-4 p-4">
+            <h4 class="fw-bold mb-4 text-dark-emphasis"><i class="fa-solid fa-clock-rotate-left text-danger me-2"></i>Lịch sử & Update Timeline</h4>
+            
+            <div class="row g-3 mb-4 border-bottom pb-3">
+                <div class="col-md-6">
+                    <span class="text-muted small d-block">Mã Phiếu</span>
+                    <strong class="text-danger fs-5">@Model.MaPhieu</strong>
+                </div>
+                <div class="col-md-6">
+                    <span class="text-muted small d-block">Khách hàng</span>
+                    <strong class="fs-6">@(Model.IdKhachHangNavigation?.HoTen ?? "Không rõ")</strong>
+                </div>
+                <div class="col-12">
+                    <span class="text-muted small d-block">Tiêu đề yêu cầu</span>
+                    <p class="mb-0 fw-medium">@Model.TieuDe</p>
+                </div>
+            </div>
+
+            <div class="timeline-wrapper">
+                @if (Model.LichSuHoTros == null || Model.LichSuHoTros.Count == 0)
+                {
+                    <p class="text-center text-muted py-3">Không có lịch sử cập nhật.</p>
+                }
+                else
+                {
+                    @foreach (var log in Model.LichSuHoTros.OrderByDescending(x => x.NgayCapNhat))
+                    {
+                        string markerClass = "waiting";
+                        if (log.TrangThaiMoi == "Đang xử lý" || log.TrangThaiMoi == "DangXuLy") markerClass = "processing";
+                        else if (log.TrangThaiMoi == "Chờ phản hồi" || log.TrangThaiMoi == "ChoKhachHangPhanHoi") markerClass = "feedback";
+                        else if (log.TrangThaiMoi == "Hoàn thành" || log.TrangThaiMoi == "DaHoanThanh" || log.TrangThaiMoi == "Đã hoàn thành") markerClass = "completed";
+                        else if (log.TrangThaiMoi == "Đã hủy" || log.TrangThaiMoi == "DaHuy") markerClass = "cancelled";
+
+                        <div class="timeline-item">
+                            <div class="timeline-marker @markerClass"></div>
+                            <div class="timeline-content">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <span class="fw-bold text-danger"><i class="fa-solid fa-user-circle me-1"></i>@(log.IdNhanVienNavigation?.HoTen ?? "Hệ thống")</span>
+                                    <span class="text-muted small"><i class="fa-solid fa-clock me-1"></i>@(log.NgayCapNhat.HasValue ? log.NgayCapNhat.Value.ToString("dd/MM/yyyy") : "--")</span>
+                                </div>
+                                <div class="small mb-2">
+                                    Trạng thái: <span class="badge bg-secondary">@log.TrangThaiCu</span> 
+                                    <i class="fa-solid fa-arrow-right mx-1 text-muted"></i> 
+                                    <span class="badge bg-primary">@log.TrangThaiMoi</span>
+                                </div>
+                                <p class="mb-0 text-muted">@log.NoiDungCapNhat</p>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+
+            <div class="mt-4 pt-3 border-top">
+                <a href="/Staff/QuanLyPhieuHoTro" class="btn btn-outline-secondary fw-bold px-4 py-2" style="border-radius:10px;">Quay lại danh sách</a>
+            </div>
+        </div>
+    </div>
+</div>

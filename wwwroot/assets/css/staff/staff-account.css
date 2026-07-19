@@ -1,0 +1,275 @@
+/* =============================================================
+   staff-account.css — TechSupport Viettel Admin
+   Page-specific styles cho trang Tài Khoản Nhân Viên
+   ============================================================= */
+
+/* ── Utility font sizes ── */
+.fs-8 { font-size: 0.78rem; }
+.fs-9 { font-size: 0.7rem;  }
+
+/* ── Password Strength Meter ── */
+.pwd-strength-meter {
+    height: 4px;
+    border-radius: 2px;
+    background: #e2e8f0;
+    margin-top: 8px;
+    overflow: hidden;
+}
+.pwd-strength-bar {
+    height: 100%;
+    border-radius: 2px;
+    width: 0%;
+    transition: width 0.3s ease, background-color 0.3s ease;
+}
+.pwd-strength-text {
+    font-size: 0.72rem;
+    font-weight: 600;
+    margin-top: 4px;
+}
+
+/* ── Password toggle eye button ── */
+.input-group-pwd { position: relative; }
+.input-group-pwd .form-control { padding-right: 44px; }
+.btn-eye-toggle {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #94a3b8;
+    cursor: pointer;
+    padding: 4px;
+    z-index: 5;
+    transition: color 0.2s ease;
+}
+.btn-eye-toggle:hover { color: #334155; }
+
+/* ── Profile page nav tabs ── */
+.profile-nav-tabs {
+    display: flex;
+    gap: 4px;
+    border-bottom: 2px solid #e2e8f0;
+    margin-bottom: 28px;
+}
+[data-bs-theme="dark"] .profile-nav-tabs {
+    border-bottom-color: #334155;
+}
+.profile-nav-tab {
+    padding: 12px 24px;
+    border-radius: 12px 12px 0 0;
+    border: none;
+    background: none;
+    font-weight: 700;
+    font-size: 0.88rem;
+    color: #64748b;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+}
+[data-bs-theme="dark"] .profile-nav-tab {
+    color: #94a3b8;
+}
+.profile-nav-tab:hover {
+    color: #0f172a;
+    background: rgba(0,0,0,0.02);
+}
+[data-bs-theme="dark"] .profile-nav-tab:hover {
+    color: #f8fafc;
+    background: rgba(255,255,255,0.02);
+}
+.profile-nav-tab.active {
+    color: #EE0033;
+    border-bottom: 2px solid #EE0033;
+    background: rgba(238, 0, 51, 0.04);
+}
+.profile-tab-panel        { display: none;  }
+.profile-tab-panel.active { display: block; }
+
+/* ── Avatar upload area ── */
+.avatar-size-guide {
+    font-size: 0.72rem;
+    color: #64748b;
+    margin-top: 8px;
+    text-align: center;
+}
+
+/* ── Profile header banner ── */
+.profile-banner {
+    background: linear-gradient(135deg, #102a43 0%, #1e293b 50%, #0f172a 100%);
+    border-radius: 18px;
+    padding: 32px 30px;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 24px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+.profile-banner::before {
+    content: '';
+    position: absolute;
+    top: -40px;
+    right: -40px;
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    background: rgba(238, 0, 51, 0.08);
+}
+.profile-banner-content {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    z-index: 2;
+}
+.profile-banner-avatar {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid rgba(255,255,255,0.15);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+}
+.profile-banner-info {
+    color: #ffffff;
+}
+.profile-banner-info h3 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-bottom: 6px;
+}
+.profile-banner-info p {
+    font-size: 0.88rem;
+    margin-bottom: 6px;
+    opacity: 0.85;
+}
+.profile-banner-badge {
+    background-color: rgba(238, 0, 51, 0.2);
+    color: #ff8a9a;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 20px;
+    border: 1px solid rgba(238, 0, 51, 0.4);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* ── Form custom components ── */
+.form-label-custom {
+    font-weight: 700;
+    font-size: 0.82rem;
+    color: #475569;
+    margin-bottom: 6px;
+}
+[data-bs-theme="dark"] .form-label-custom {
+    color: #cbd5e1;
+}
+.form-control-custom, .form-select-custom {
+    border-radius: 12px;
+    padding: 10px 16px;
+    font-size: 0.88rem;
+    border: 1px solid #cbd5e1;
+    background-color: #ffffff;
+    transition: all 0.2s ease;
+}
+[data-bs-theme="dark"] .form-control-custom,
+[data-bs-theme="dark"] .form-select-custom {
+    border-color: #334155;
+    background-color: #1e293b;
+    color: #f8fafc;
+}
+.form-control-custom:focus, .form-select-custom:focus {
+    border-color: #EE0033;
+    box-shadow: 0 0 0 3px rgba(238, 0, 51, 0.15);
+}
+
+/* Drag & Drop Upload Area */
+.avatar-upload-area {
+    border: 2px dashed #cbd5e1;
+    border-radius: 18px;
+    padding: 40px 20px;
+    text-align: center;
+    background: rgba(255,255,255,0.4);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+[data-bs-theme="dark"] .avatar-upload-area {
+    border-color: #475569;
+    background: rgba(30,41,59,0.3);
+}
+.avatar-upload-area:hover, .avatar-upload-area.dragover {
+    border-color: #EE0033;
+    background: rgba(238, 0, 51, 0.02);
+}
+.avatar-upload-icon {
+    font-size: 2.5rem;
+    color: #94a3b8;
+    margin-bottom: 12px;
+}
+.avatar-upload-area:hover .avatar-upload-icon {
+    color: #EE0033;
+}
+
+/* Button style */
+.btn-viettel {
+    background-color: #EE0033;
+    color: #ffffff;
+    border-radius: 12px;
+    padding: 10px 24px;
+    font-weight: 700;
+    font-size: 0.88rem;
+    border: none;
+    transition: all 0.2s ease;
+}
+.btn-viettel:hover {
+    background-color: #c30022;
+    color: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(238, 0, 51, 0.2);
+}
+
+/* Activity history list */
+.log-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px dashed #e2e8f0;
+}
+[data-bs-theme="dark"] .log-item {
+    border-bottom-color: #334155;
+}
+.log-item:last-child {
+    border-bottom: 0;
+}
+.log-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: rgba(238, 0, 51, 0.08);
+    color: #EE0033;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.72rem;
+    flex-shrink: 0;
+}
+.log-body {
+    flex-grow: 1;
+}
+.log-text {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #334155;
+    margin: 0;
+}
+[data-bs-theme="dark"] .log-text {
+    color: #cbd5e1;
+}
+.log-time {
+    font-size: 0.7rem;
+    color: #94a3b8;
+    margin: 2px 0 0 0;
+}

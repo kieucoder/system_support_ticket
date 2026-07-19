@@ -1,0 +1,279 @@
+@model List<SupportTicketSysterm.Models.MessageViewModel>
+@{
+    string currentUserRole = (string)(ViewData["CurrentUserRole"] ?? "");
+    DateTime? lastDate = null;
+}
+
+@if (Model == null || !Model.Any())
+{
+    <div class="chat-empty-state text-center py-5 px-3 d-flex flex-column align-items-center justify-content-center h-100">
+        <div class="empty-icon-ring mb-3" style="width:72px; height:72px; border-radius:50%; background:rgba(215,25,32,0.08); display:grid; place-items:center;">
+            <i class="bi bi-chat-square-dots-fill text-danger fs-2"></i>
+        </div>
+        <h5 class="fw-bold mb-2 text-dark" style="font-family:'Inter', sans-serif;">Hỗ Trợ Kỹ Thuật TechSupport</h5>
+        <p class="text-muted mb-4 small" style="max-width:320px; line-height:1.5;">Chào bạn! Bạn chưa có tin nhắn nào trong hội thoại này. Hãy đặt câu hỏi để bắt đầu ngay.</p>
+        <div class="d-flex flex-column gap-2 text-start small text-secondary p-3 rounded-4 bg-white border shadow-sm" style="max-width:340px;">
+            <div><i class="bi bi-check-circle-fill text-danger me-2"></i> Hỗ hỗ sự cố đường truyền Internet, Wi-Fi</div>
+            <div><i class="bi bi-check-circle-fill text-danger me-2"></i> Tư vấn lắp đặt Camera, Truyền hình Viettel</div>
+            <div><i class="bi bi-check-circle-fill text-danger me-2"></i> Tra cứu & khởi tạo phiếu kỹ thuật 24/7</div>
+        </div>
+    </div>
+}
+else
+{
+    @foreach (var msg in Model)
+    {
+        var msgDate = msg.ThoiGian.Date;
+        if (!lastDate.HasValue || lastDate.Value != msgDate)
+        {
+            string dateLabel = msgDate == DateTime.Today ? "Hôm nay" : (msgDate == DateTime.Today.AddDays(-1) ? "Hôm qua" : msgDate.ToString("dd/MM/yyyy"));
+            <div class="chat-date-separator d-flex align-items-center justify-content-center my-4">
+                <span class="chat-date-line"></span>
+                <span class="chat-date-pill px-3 py-1 bg-white border rounded-pill shadow-sm">@dateLabel</span>
+                <span class="chat-date-line"></span>
+            </div>
+            lastDate = msgDate;
+        }
+
+        bool isOutgoing = (currentUserRole == "KhachHang" && msg.LoaiNguoiGui == "KhachHang") ||
+                          (currentUserRole != "KhachHang" && msg.LoaiNguoiGui == "NhanVien");
+        bool isAi = msg.LoaiNguoiGui == "AI";
+
+        string senderTitle = isAi ? "Trợ lý Kỹ Thuật AI" : (msg.LoaiNguoiGui == "NhanVien" ? "Kỹ thuật viên Viettel" : "Khách hàng");
+
+        if (isOutgoing)
+        {
+            <!-- Outgoing message (Right side) -->
+            <div class="chat-message-row outgoing msg-row sent d-flex justify-content-end align-items-end gap-2 mb-3" data-id="@msg.IdTinNhan">
+                <div class="chat-message-wrapper message-content d-flex flex-column align-items-end">
+                    <div class="chat-message-item viettel-bubble msg-bubble text-white shadow-sm">
+                        @* File attachments *@
+                        @if (msg.Files != null && msg.Files.Any())
+                        {
+                            @foreach (var file in msg.Files)
+                            {
+                                var ext = System.IO.Path.GetExtension(file.TenFile ?? "").ToLower();
+                                var isImg = file.LoaiFile.StartsWith("image/") || ext == ".jpg" || ext == ".png" || ext == ".jpeg" || ext == ".gif" || ext == ".webp";
+                                if (isImg)
+                                {
+                                    <div class="chat-message-image mb-2">
+                                        <img src="@file.DuongDan" alt="@file.TenFile" class="rounded-3 border shadow-sm" style="max-width:260px;" />
+                                    </div>
+                                }
+                                else
+                                {
+                                    string iconClass = ext switch {
+                                        ".pdf" => "bi-file-earmark-pdf-fill",
+                                        ".doc" or ".docx" => "bi-file-earmark-word-fill",
+                                        ".xls" or ".xlsx" => "bi-file-earmark-excel-fill",
+                                        ".zip" or ".rar" => "bi-file-earmark-zip-fill",
+                                        _ => "bi-file-earmark-arrow-down-fill"
+                                    };
+                                    <div class="border-0 rounded-3 p-2 bg-white bg-opacity-25 text-white mb-2 d-flex align-items-center gap-2" style="min-width:220px;">
+                                        <i class="bi @iconClass fs-3"></i>
+                                        <div class="text-truncate flex-grow-1">
+                                            <span class="fw-semibold small d-block text-truncate">@file.TenFile</span>
+                                            <a href="@file.DuongDan" class="text-white text-decoration-underline" download="@file.TenFile" style="font-size:0.72rem;">Tải về <i class="bi bi-download ms-1"></i></a>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                        }
+                        @* Text content *@
+                        @if (!string.IsNullOrEmpty(msg.NoiDung) && !msg.NoiDung.StartsWith("[Đính kèm tệp:"))
+                        {
+                            <div class="message-text">@FormatMessageContent(msg.NoiDung)</div>
+                        }
+                    </div>
+                    <!-- Timestamp under bubble -->
+                    <div class="chat-message-meta time text-end mt-1 d-flex align-items-center gap-1">
+                        <span>@msg.ThoiGian.ToString("HH:mm")</span>
+                        <span class="read-status-checks" title="Đã xem">✔✔</span>
+                    </div>
+                </div>
+
+                <!-- Avatar right side (KH) -->
+                <div class="chat-avatar msg-avatar avatar user-avatar position-relative flex-shrink-0" title="@senderTitle">
+                    <span class="avatar-initial">KH</span>
+                </div>
+            </div>
+        }
+        else
+        {
+            <!-- Incoming message (Left side) -->
+            <div class="chat-message-row incoming msg-row received @(isAi ? "ai-message" : "") d-flex justify-content-start align-items-end gap-2 mb-3" data-id="@msg.IdTinNhan">
+                <!-- Avatar left side (Robot for AI, otherwise standard) -->
+                <div class="chat-avatar msg-avatar @(isAi ? "robot-avatar" : "staff-avatar") position-relative flex-shrink-0" title="@senderTitle">
+                    @if (isAi) { <i class="bi bi-robot"></i> }
+                    else { <i class="bi bi-person-badge"></i> }
+                </div>
+
+                <div class="chat-message-wrapper message-content d-flex flex-column align-items-start">
+                    <div class="chat-message-sender-name sender-name fw-bold mb-1">
+                        @senderTitle
+                    </div>
+                    <div class="chat-message-item viettel-bubble msg-bubble shadow-sm @(isAi ? "ai-bubble" : "")">
+                        @* File attachments *@
+                        @if (msg.Files != null && msg.Files.Any())
+                        {
+                            @foreach (var file in msg.Files)
+                            {
+                                var ext = System.IO.Path.GetExtension(file.TenFile ?? "").ToLower();
+                                var isImg = file.LoaiFile.StartsWith("image/") || ext == ".jpg" || ext == ".png" || ext == ".jpeg" || ext == ".gif" || ext == ".webp";
+                                if (isImg)
+                                {
+                                    <div class="chat-message-image mb-2">
+                                        <img src="@file.DuongDan" alt="@file.TenFile" class="rounded-3 border shadow-sm" style="max-width:260px;" />
+                                    </div>
+                                }
+                                else
+                                {
+                                    string iconClass = ext switch {
+                                        ".pdf" => "bi-file-earmark-pdf-fill text-danger",
+                                        ".doc" or ".docx" => "bi-file-earmark-word-fill text-primary",
+                                        ".xls" or ".xlsx" => "bi-file-earmark-excel-fill text-success",
+                                        ".zip" or ".rar" => "bi-file-earmark-zip-fill text-warning",
+                                        _ => "bi-file-earmark-arrow-down-fill text-danger"
+                                    };
+                                    <div class="border rounded-3 p-2 bg-light text-dark mb-2 d-flex align-items-center gap-2" style="min-width:220px;">
+                                        <i class="bi @iconClass fs-3"></i>
+                                        <div class="text-truncate flex-grow-1">
+                                            <span class="fw-semibold small d-block text-truncate">@file.TenFile</span>
+                                            <a href="@file.DuongDan" class="text-danger fw-bold text-decoration-none" download="@file.TenFile" style="font-size:0.72rem;">Tải về <i class="bi bi-download ms-1"></i></a>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                        }
+                        @* Text content *@
+                        @if (!string.IsNullOrEmpty(msg.NoiDung) && !msg.NoiDung.StartsWith("[Đính kèm tệp:"))
+                        {
+                            @FormatMessageContent(msg.NoiDung)
+                        }
+                    </div>
+                    <!-- Timestamp under bubble -->
+                    <div class="chat-message-meta text-start mt-1">
+                        <span>@msg.ThoiGian.ToString("HH:mm")</span>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+}
+
+@functions {
+    public Microsoft.AspNetCore.Html.IHtmlContent FormatMessageContent(string? content)
+    {
+        if (string.IsNullOrEmpty(content))
+        {
+            return Microsoft.AspNetCore.Html.HtmlString.Empty;
+        }
+
+        // 1. HTML encode first to prevent XSS
+        var encoded = System.Net.WebUtility.HtmlEncode(content);
+
+        // 2. Parse custom action ticket card tag: [XEM_CHI_TIET_PHIEU|IdPhieu=X|MaPhieu=Y]
+        var ticketMarker = "[XEM_CHI_TIET_PHIEU|";
+        if (encoded.Contains(ticketMarker))
+        {
+            int tIndex = encoded.IndexOf(ticketMarker);
+            int eIndex = encoded.IndexOf("]", tIndex);
+            if (eIndex > tIndex)
+            {
+                var fullTag = encoded.Substring(tIndex, eIndex - tIndex + 1);
+                var inner = fullTag.Replace("[XEM_CHI_TIET_PHIEU|", "").Replace("]", "");
+                var tokens = inner.Split('|');
+                
+                string idPhieu = "";
+                string maPhieu = "";
+                foreach (var token in tokens)
+                {
+                    var kv = token.Split('=');
+                    if (kv.Length == 2)
+                    {
+                        if (kv[0].Trim() == "IdPhieu") idPhieu = kv[1].Trim();
+                        else if (kv[0].Trim() == "MaPhieu") maPhieu = kv[1].Trim();
+                    }
+                }
+
+                var cardHtml = $@"
+<div class='ticket-success-card border-0 rounded-3 p-3 mt-3 bg-white shadow-sm' style='border-left: 4px solid #D71920 !important;'>
+    <div class='d-flex align-items-center mb-2'>
+        <i class='bi bi-patch-check-fill text-danger fs-4 me-2'></i>
+        <h6 class='m-0 fw-bold text-dark' style='font-size:0.9rem;'>Tạo Phiếu Thành Công</h6>
+    </div>
+    <p class='small text-muted mb-2' style='font-size:0.75rem;'>Hệ thống đã tự động tạo phiếu hỗ trợ kỹ thuật và phân công kỹ sư xử lý.</p>
+    <div class='mb-2 small bg-light p-2 rounded-3' style='font-size:0.78rem;'>
+        <div class='d-flex justify-content-between mb-1'>
+            <span class='text-secondary'>Mã Phiếu:</span>
+            <strong class='text-dark'>{maPhieu}</strong>
+        </div>
+        <div class='d-flex justify-content-between'>
+            <span class='text-secondary'>Trạng thái:</span>
+            <span class='badge bg-warning-subtle text-warning fw-bold rounded-pill'>Chờ tiếp nhận</span>
+        </div>
+    </div>
+    <a href='/Ticket/ChiTietPhieu/{idPhieu}' class='btn btn-danger btn-sm rounded-pill w-100 fw-bold text-white text-decoration-none d-block text-center py-2' style='background-color:#D71920; border-color:#D71920; font-size:0.8rem;' target='_blank'>
+        <i class='bi bi-file-earmark-text-fill me-1'></i> Xem Chi Tiết Phiếu
+    </a>
+</div>";
+                encoded = encoded.Replace(fullTag, cardHtml);
+            }
+        }
+
+        // 2.5 Parse redirect to create ticket tag: [REDIRECT:CREATE_TICKET|Title=X|Content=Y|CategoryId=C|ServiceId=S|Priority=P]
+        var redirectMarker = "[REDIRECT:CREATE_TICKET|";
+        if (encoded.Contains(redirectMarker))
+        {
+            int rIndex = encoded.IndexOf(redirectMarker);
+            int rEnd = encoded.IndexOf("]", rIndex);
+            if (rEnd > rIndex)
+            {
+                var fullTag = encoded.Substring(rIndex, rEnd - rIndex + 1);
+                var inner = fullTag.Replace("[REDIRECT:CREATE_TICKET|", "").Replace("]", "");
+                var tokens = inner.Split('|');
+                string title = "", contentTxt = "", catId = "", srvId = "", prio = "";
+                foreach (var token in tokens)
+                {
+                    var kv = token.Split('=');
+                    if (kv.Length >= 2)
+                    {
+                        var k = kv[0].Trim();
+                        var v = string.Join("=", kv.Skip(1)).Trim();
+                        if (k == "Title") title = v;
+                        else if (k == "Content") contentTxt = v;
+                        else if (k == "CategoryId") catId = v;
+                        else if (k == "ServiceId") srvId = v;
+                        else if (k == "Priority") prio = v;
+                    }
+                }
+
+                var redirectUrl = $"/Ticket/TaoPhieu?title={System.Net.WebUtility.UrlEncode(title)}&content={System.Net.WebUtility.UrlEncode(contentTxt)}&categoryId={catId}&serviceId={srvId}&priority={prio}";
+                var btnHtml = $@"
+<div class='ticket-creation-card d-block w-100 p-3 rounded-3 mt-3 bg-white border border-danger-subtle shadow-sm' style='clear:both; box-sizing:border-box;'>
+    <div class='d-flex align-items-center mb-2'>
+        <i class='bi bi-ticket-perforated-fill text-danger fs-4 me-2'></i>
+        <h6 class='m-0 fw-bold text-dark' style='font-size:0.88rem;'>Đề Xuất Tạo Phiếu Hỗ Trợ</h6>
+    </div>
+    <p class='small text-muted mb-3' style='font-size:0.75rem;'>Hệ thống sẽ điền sẵn thông tin bạn vừa trao đổi vào mẫu phiếu hỗ trợ.</p>
+    <a href='{redirectUrl}' class='btn btn-danger btn-sm rounded-pill w-100 fw-bold text-white text-decoration-none d-block text-center py-2' style='background-color:#D71920; border-color:#D71920; font-size:0.8rem;'>
+        <i class='bi bi-plus-circle-fill me-1'></i> Chuyển Sang Trang Tạo Phiếu
+    </a>
+</div>";
+                encoded = encoded.Replace(fullTag, btnHtml);
+            }
+        }
+
+        // 3. Parse bold Markdown: **text** -> <strong>text</strong>
+        encoded = System.Text.RegularExpressions.Regex.Replace(encoded, @"\*\*(.*?)\*\*", "<strong>$1</strong>");
+
+        // 4. Parse Markdown links: [Text](URL) -> <a href="URL" target="_blank">Text</a>
+        encoded = System.Text.RegularExpressions.Regex.Replace(encoded, @"\[(.*?)\]\((.*?)\)", "<a href=\"$2\" target=\"_blank\" class=\"fw-bold text-danger text-decoration-underline\">$1</a>");
+
+        // 5. Convert line breaks
+        encoded = encoded.Replace("\n", "<br />");
+
+        return new Microsoft.AspNetCore.Html.HtmlString(encoded);
+    }
+}
+

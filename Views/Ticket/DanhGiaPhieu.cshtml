@@ -1,0 +1,248 @@
+@model SupportTicketSysterm.ViewModels.DanhGiaPhieuViewModel
+@{
+    Layout = null;
+    ViewData["Title"] = "Đánh giá chất lượng dịch vụ";
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Đánh Giá Phiếu Hỗ Trợ - TechSupport Viettel</title>
+
+    <!-- SEO Optimization -->
+    <meta name="description" content="Đánh giá dịch vụ và kỹ thuật viên TechSupport Viettel.">
+    <meta name="robots" content="noindex, nofollow">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="https://viettel.com.vn/favicon.ico">
+
+    <!-- Bootstrap 5.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <!-- Font Awesome 6.6.0 CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Core Stylesheets -->
+    <link rel="stylesheet" href="~/assets/css/style.css">
+    <link rel="stylesheet" href="~/assets/css/responsive.css">
+    <link rel="stylesheet" href="~/assets/css/header.css">
+    <link rel="stylesheet" href="~/assets/css/sidebar.css">
+    <link rel="stylesheet" href="~/assets/css/footer.css">
+
+    <!-- Custom Page CSS -->
+    <link rel="stylesheet" href="~/assets/css/ticket-detail.css">
+</head>
+
+<body>
+
+    <!-- ==================== HEADER ==================== -->
+    @await Html.PartialAsync("_Header", Context.Session)
+
+    <!-- ==================== SIDEBAR ==================== -->
+    @await Html.PartialAsync("_Sidebar")
+
+    <!-- MAIN WORKSPACE -->
+    <main class="workspace-area">
+        <div class="container" style="max-width: 900px;">
+
+            <!-- BREADCRUMBS & HEADER BLOCK -->
+            <div class="detail-header-card animate-fade-up">
+                <nav aria-label="breadcrumb" class="detail-breadcrumb mb-3">
+                    <ol class="breadcrumb m-0">
+                        <li class="breadcrumb-item">
+                            <a href="/">
+                                <i class="fa-solid fa-house-door-fill me-1"></i> Trang chủ
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a asp-controller="Customers" asp-action="PhieuCuaToi">Phiếu của tôi</a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a asp-controller="Ticket" asp-action="ChiTietPhieu" asp-route-id="@Model.IdPhieu">Chi tiết phiếu</a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">Đánh giá dịch vụ</li>
+                    </ol>
+                </nav>
+
+                <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
+                    <div>
+                        <span class="text-danger fw-bold fs-6"><i class="fa-solid fa-star"></i> Đánh giá chất lượng dịch vụ</span>
+                        <h1 class="detail-main-title">Gửi phản hồi cho phiếu: @Model.MaPhieu</h1>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FORM CARD -->
+            <div class="detail-card animate-fade-up">
+                <div class="detail-card-head">
+                    <div class="card-icon red">
+                        <i class="fa-solid fa-ticket-fill"></i>
+                    </div>
+                    <h2 class="detail-card-title">Thông tin phiếu hỗ trợ đã hoàn thành</h2>
+                </div>
+                
+                <div class="detail-card-body">
+                    <div class="data-grid mb-4">
+                        <div class="data-cell">
+                            <span class="cell-lbl"><i class="bi bi-tag-fill"></i> Tiêu đề phiếu</span>
+                            <span class="cell-val">@Model.TieuDe</span>
+                        </div>
+                        <div class="data-cell">
+                            <span class="cell-lbl"><i class="bi bi-folder-fill"></i> Danh mục & Dịch vụ</span>
+                            <span class="cell-val">@Model.TenDanhMuc / @Model.TenDichVu</span>
+                        </div>
+                        <div class="data-cell">
+                            <span class="cell-lbl"><i class="bi bi-person-badge-fill"></i> Kỹ thuật viên xử lý</span>
+                            <span class="cell-val text-danger">@Model.TenNhanVien</span>
+                        </div>
+                        <div class="data-cell">
+                            <span class="cell-lbl"><i class="bi bi-check-circle-fill"></i> Trạng thái</span>
+                            <span class="badge bg-success-subtle text-success border border-success fw-bold py-1 px-3" style="width: fit-content;">@Model.TrangThai</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- EVALUATION FORM -->
+            <form asp-controller="Ticket" asp-action="DanhGiaPhieu" asp-route-id="@Model.IdPhieu" method="post" enctype="multipart/form-data" class="detail-card animate-fade-up">
+                @Html.AntiForgeryToken()
+                
+                @Html.HiddenFor(m => m.IdPhieu)
+                @Html.HiddenFor(m => m.MaPhieu)
+                @Html.HiddenFor(m => m.TieuDe)
+                @Html.HiddenFor(m => m.TrangThai)
+                @Html.HiddenFor(m => m.TenDanhMuc)
+                @Html.HiddenFor(m => m.TenDichVu)
+                @Html.HiddenFor(m => m.TenNhanVien)
+                
+                <div class="detail-card-head">
+                    <div class="card-icon red">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                    </div>
+                    <h2 class="detail-card-title">Mẫu khảo sát & ý kiến đóng góp</h2>
+                </div>
+
+                <div class="detail-card-body">
+                    
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        <div class="alert alert-danger border-0 rounded-3 mb-4">
+                            <h5 class="fw-bold mb-2"><i class="bi bi-exclamation-triangle-fill"></i> Vui lòng sửa các lỗi sau:</h5>
+                            <div asp-validation-summary="All" class="small m-0"></div>
+                        </div>
+                    }
+
+                    <!-- 1. Chất lượng dịch vụ -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold d-block text-dark mb-2">1. Đánh giá chất lượng xử lý sự cố <span class="text-danger">*</span></label>
+                        <span class="small text-muted d-block mb-3">Chất lượng khôi phục dịch vụ, đường truyền ổn định hay không.</span>
+                        <div class="rating-stars-picker">
+                            <input type="radio" id="quality-5" name="ChatLuongDichVu" value="5" @(Model.ChatLuongDichVu == 5 ? "checked" : "") />
+                            <label for="quality-5" title="5 sao"><i class="fa-solid fa-star"></i></label>
+                            <input type="radio" id="quality-4" name="ChatLuongDichVu" value="4" @(Model.ChatLuongDichVu == 4 ? "checked" : "") />
+                            <label for="quality-4" title="4 sao"><i class="fa-solid fa-star"></i></label>
+                            <input type="radio" id="quality-3" name="ChatLuongDichVu" value="3" @(Model.ChatLuongDichVu == 3 ? "checked" : "") />
+                            <label for="quality-3" title="3 sao"><i class="fa-solid fa-star"></i></label>
+                            <input type="radio" id="quality-2" name="ChatLuongDichVu" value="2" @(Model.ChatLuongDichVu == 2 ? "checked" : "") />
+                            <label for="quality-2" title="2 sao"><i class="fa-solid fa-star"></i></label>
+                            <input type="radio" id="quality-1" name="ChatLuongDichVu" value="1" @(Model.ChatLuongDichVu == 1 ? "checked" : "") />
+                            <label for="quality-1" title="1 sao"><i class="fa-solid fa-star"></i></label>
+                        </div>
+                        <span asp-validation-for="ChatLuongDichVu" class="text-danger small"></span>
+                    </div>
+
+                    <hr class="my-4 border-light">
+
+                    <!-- 2. Thái độ nhân viên -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold d-block text-dark mb-2">2. Đánh giá thái độ phục vụ của nhân viên <span class="text-danger">*</span></label>
+                        <span class="small text-muted d-block mb-3">Sự nhiệt tình, chu đáo, thân thiện và chuyên nghiệp của kỹ thuật viên.</span>
+                        <div class="rating-stars-picker">
+                            <input type="radio" id="attitude-5" name="ThaiDoNhanVien" value="5" @(Model.ThaiDoNhanVien == 5 ? "checked" : "") />
+                            <label for="attitude-5" title="5 sao"><i class="fa-solid fa-star"></i></label>
+                            <input type="radio" id="attitude-4" name="ThaiDoNhanVien" value="4" @(Model.ThaiDoNhanVien == 4 ? "checked" : "") />
+                            <label for="attitude-4" title="4 sao"><i class="fa-solid fa-star"></i></label>
+                            <input type="radio" id="attitude-3" name="ThaiDoNhanVien" value="3" @(Model.ThaiDoNhanVien == 3 ? "checked" : "") />
+                            <label for="attitude-3" title="3 sao"><i class="fa-solid fa-star"></i></label>
+                            <input type="radio" id="attitude-2" name="ThaiDoNhanVien" value="2" @(Model.ThaiDoNhanVien == 2 ? "checked" : "") />
+                            <label for="attitude-2" title="2 sao"><i class="fa-solid fa-star"></i></label>
+                            <input type="radio" id="attitude-1" name="ThaiDoNhanVien" value="1" @(Model.ThaiDoNhanVien == 1 ? "checked" : "") />
+                            <label for="attitude-1" title="1 sao"><i class="fa-solid fa-star"></i></label>
+                        </div>
+                        <span asp-validation-for="ThaiDoNhanVien" class="text-danger small"></span>
+                    </div>
+
+                    <hr class="my-4 border-light">
+
+                    <!-- 3. Tốc độ xử lý -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold d-block text-dark mb-2">3. Đánh giá thời gian tiếp nhận & xử lý sự cố <span class="text-danger">*</span></label>
+                        <span class="small text-muted d-block mb-3">Tốc độ phản hồi, thời gian khắc phục mạng nhanh hay chậm.</span>
+                        <div class="rating-stars-picker">
+                            <input type="radio" id="speed-5" name="TocDoXuLy" value="5" @(Model.TocDoXuLy == 5 ? "checked" : "") />
+                            <label for="speed-5" title="5 sao"><i class="fa-solid fa-star"></i></label>
+                            <input type="radio" id="speed-4" name="TocDoXuLy" value="4" @(Model.TocDoXuLy == 4 ? "checked" : "") />
+                            <label for="speed-4" title="4 sao"><i class="fa-solid fa-star"></i></label>
+                            <input type="radio" id="speed-3" name="TocDoXuLy" value="3" @(Model.TocDoXuLy == 3 ? "checked" : "") />
+                            <label for="speed-3" title="3 sao"><i class="fa-solid fa-star"></i></label>
+                            <input type="radio" id="speed-2" name="TocDoXuLy" value="2" @(Model.TocDoXuLy == 2 ? "checked" : "") />
+                            <label for="speed-2" title="2 sao"><i class="fa-solid fa-star"></i></label>
+                            <input type="radio" id="speed-1" name="TocDoXuLy" value="1" @(Model.TocDoXuLy == 1 ? "checked" : "") />
+                            <label for="speed-1" title="1 sao"><i class="fa-solid fa-star"></i></label>
+                        </div>
+                        <span asp-validation-for="TocDoXuLy" class="text-danger small"></span>
+                    </div>
+
+                    <hr class="my-4 border-light">
+
+                    <!-- Nhận xét ý kiến -->
+                    <div class="mb-4">
+                        <label asp-for="NhanXet" class="form-label fw-bold text-dark mb-2">Ý kiến nhận xét đóng góp (Không bắt buộc)</label>
+                        <textarea asp-for="NhanXet" class="form-control" rows="4" maxlength="1000" placeholder="Hãy viết ý kiến nhận xét của bạn để giúp chúng tôi cải tiến dịch vụ..." style="border-radius: 12px; padding: 12px; resize: none;" oninput="document.getElementById('charLeft').textContent = (1000 - this.value.length)"></textarea>
+                        <div class="d-flex justify-content-between mt-2">
+                            <span asp-validation-for="NhanXet" class="text-danger small"></span>
+                            <span class="text-muted small">Còn lại <strong id="charLeft">1000</strong> ký tự.</span>
+                        </div>
+                    </div>
+
+                    <!-- File đính kèm hình ảnh minh chứng -->
+                    <div class="mb-4">
+                        <label asp-for="Files" class="form-label fw-bold text-dark mb-2">Đính kèm ảnh minh họa hoặc tài liệu (Không bắt buộc)</label>
+                        <input asp-for="Files" type="file" multiple class="form-control" accept=".jpg,.png,.jpeg,.pdf,.doc,.docx,.xls,.xlsx" style="border-radius: 10px; padding: 10px;" />
+                        <span class="small text-muted mt-2 d-block"><i class="bi bi-info-circle"></i> Chấp nhận file định dạng JPG, PNG, PDF, Word, Excel.</span>
+                        <span asp-validation-for="Files" class="text-danger small"></span>
+                    </div>
+
+                    <!-- SUBMIT BUTTONS -->
+                    <div class="action-buttons-layout mt-4 border-top pt-3">
+                        <a asp-controller="Customers" asp-action="PhieuCuaToi" class="btn btn-viettel btn-outline">
+                            <i class="bi bi-x-circle"></i> Hủy bỏ
+                        </a>
+                        <button type="submit" class="btn btn-viettel btn-red">
+                            <i class="bi bi-send-fill"></i> Gửi đánh giá dịch vụ
+                        </button>
+                    </div>
+
+                </div>
+            </form>
+
+        </div>
+    </main>
+
+    <!-- ==================== FOOTER ==================== -->
+    @await Html.PartialAsync("_Footer")
+
+</body>
+
+</html>

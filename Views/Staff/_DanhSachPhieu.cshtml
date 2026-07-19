@@ -1,0 +1,225 @@
+﻿@model IEnumerable<SupportTicketSysterm.Models.DanhSachPhieuViewModel>
+
+<section aria-label="Danh sách phiếu hỗ trợ" class="mb-4">
+    <div class="kpi-card p-0" style="overflow:hidden;">
+        <!-- Header Details card -->
+        <div class="p-4 d-flex justify-content-between align-items-center flex-wrap gap-2 border-bottom">
+            <div>
+                <h5 class="fw-bold mb-0 text-dark-emphasis">📋 Danh sách phiếu hỗ trợ kỹ thuật</h5>
+                <p class="text-muted small mb-0 mt-1">
+                    Sắp xếp, tìm kiếm và thao tác trực tiếp trên dữ
+                    liệu hệ thống.
+                </p>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+                <label for="pageSizeSelect" class="text-muted mb-0 small"
+                       style="white-space:nowrap;">Dòng mỗi trang:</label>
+                <select id="pageSizeSelect" class="form-select form-select-sm"
+                        style="width:75px; border-radius:6px;">
+                    <option value="10" selected>10</option>
+                    <option value="20">20</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Desktop Table view -->
+        <div class="table-responsive-wrapper">
+            <table class="table align-middle custom-table table-hover"
+                   aria-label="Bảng quản lý phiếu hỗ trợ">
+                <thead>
+                    <tr>
+                        <th scope="col" class="sortable" data-sort="id">STT</th>
+                        <th scope="col" class="sortable" data-sort="ticketCode">Mã phiếu</th>
+                        <th scope="col" class="sortable" data-sort="title">Tiêu đề</th>
+                        <th scope="col" class="sortable" data-sort="customerName">Khách hàng</th>
+                        <th scope="col">Số điện thoại</th>
+                        <th scope="col" class="sortable" data-sort="serviceId">Dịch vụ</th>
+                        <th scope="col" class="sortable" data-sort="staffId">Nhân viên phụ trách</th>
+                        <th scope="col">Yêu cầu</th>
+                        <th scope="col" class="sortable" data-sort="priority">Ưu tiên</th>
+                        <th scope="col" class="sortable" data-sort="status">Trạng thái</th>
+                        <th scope="col" class="sortable" data-sort="createdDate">Ngày tạo</th>
+                        <th scope="col" class="sortable" data-sort="updatedDate">Ngày cập nhật</th>
+                        <th scope="col" style="text-align:center;">Thao tác</th>
+                    </tr>
+                </thead>
+                @* <tbody id="ticketsTableBody">
+                </tbody> *@
+                <tbody>
+
+                    @{
+                        int stt = 1;
+                    }
+
+                    @foreach (var item in Model)
+
+                    {
+                        <tr>
+
+                            <td>@stt</td>
+
+                            <td>
+                                @item.MaPhieu
+                            </td>
+
+                            <td>
+                                @item.TieuDe
+                            </td>
+
+                            <td>
+                                @item.TenKhachHang
+                            </td>
+                             
+                            <td>
+                                @item.SoDienThoai
+                            </td>
+
+                            <td>
+                                @item.TenDichVu
+                            </td>
+
+                            <td>
+
+                                @if (!string.IsNullOrEmpty(item.TenNhanVien))
+
+                                {
+                                    @item.TenNhanVien
+                                }
+
+                                else
+
+                                {
+                                    <span class="text-danger">
+                                        Chưa phân công
+                                    </span>
+                                }
+
+                            </td>
+
+                            <td>
+                                @item.LoaiYeuCau
+                            </td>
+
+                            <td>
+
+                                @switch (item.MucDoUuTien)
+
+                                {
+
+                                    case 1:
+                                        <span class="badge bg-success">Thấp</span>
+                                        break;
+
+
+
+                                    case 2:
+                                        <span class="badge bg-warning text-dark">Trung bình</span>
+                                        break;
+
+
+
+                                    case 3:
+                                        <span class="badge bg-danger">Cao</span>
+                                        break;
+
+
+
+                                    case 4:
+                                        <span class="badge bg-dark">Khẩn cấp</span>
+                                        break;
+
+                                }
+
+                            </td>
+
+                            <td>
+
+                                @if (item.TrangThai == "Chờ tiếp nhận")
+
+                                {
+                                    <span class="badge bg-warning text-dark">
+                                        @item.TrangThai
+                                    </span>
+                                }
+
+                                else if (item.TrangThai == "Đang xử lý")
+
+                                {
+                                    <span class="badge bg-primary">
+                                        @item.TrangThai
+                                    </span>
+                                }
+
+                                else if (item.TrangThai == "Hoàn thành")
+
+                                {
+                                    <span class="badge bg-success">
+                                        @item.TrangThai
+                                    </span>
+                                }
+
+                                else
+
+                                {
+                                    <span class="badge bg-secondary">
+                                        @item.TrangThai
+                                    </span>
+                                }
+
+                            </td>
+
+                            <td>
+
+                                @item.NgayTao?.ToString("dd/MM/yyyy")
+
+                            </td>
+
+                            <td>
+
+                                @(item.NgayCapNhat?.ToString("dd/MM/yyyy") ?? "--")
+
+                            </td>
+
+                            <td class="text-center">
+
+                                <a asp-controller="Ticket"
+                                   asp-action="ChiTietPhieu"
+                                   asp-route-id="@item.IdPhieu"
+                                   class="btn btn-sm btn-primary">
+
+                                    <i class="bi bi-eye"></i>
+
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+                        stt++;
+
+                    }
+
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Mobile Cards view -->
+        <div id="mobileTicketsContainer" class="mobile-ticket-list p-3">
+            <!-- Populated via JS -->
+        </div>
+
+        <!-- Pagination Footer -->
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 p-4 border-top">
+            <div class="small text-muted" id="tableCountDetails">
+                Đang hiển thị 0-0 / 0 phiếu hỗ trợ
+            </div>
+            <nav aria-label="Điều hướng phân trang">
+                <ul class="pagination pagination-sm mb-0" id="tablePagination">
+                    <!-- Populated via JS -->
+                </ul>
+            </nav>
+        </div>
+    </div>
+</section>

@@ -39,7 +39,10 @@
     @await Html.PartialAsync("_ThongKeDanhMuc")
 </div>
 
-<form id="filterForm" method="get">
+@* Global CSRF token dùng cho AJAX (ngoài form) *@
+@Html.AntiForgeryToken()
+
+<form id="filterForm" method="get" action="/Staff/QuanLyDanhMuc">
     <div class="vt-filter-toolbar">
         <div class="vt-filter-left">
             <div class="vt-search-input-group">
@@ -176,6 +179,12 @@
 </div>
 
 @section Scripts {
+    @* Inject TempData toast messages cho JS *@
+    <script>
+        window.__catSuccess     = '@Html.Raw(TempData["CatSuccess"] ?? "")';
+        window.__catError       = '@Html.Raw(TempData["CatError"] ?? "")';
+        window.__catCurrentPage = @(ViewBag.CurrentPage ?? 1);
+    </script>
     <!-- Page-specific JS -->
     <script src="~/assets/js/staff/admin-categories.js" asp-append-version="true"></script>
 }

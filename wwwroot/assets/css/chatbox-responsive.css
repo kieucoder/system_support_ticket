@@ -5,8 +5,9 @@
 /* 1. LAPTOP BREAKPOINT (max-width: 1199.98px) */
 @media (max-width: 1199.98px) {
     .chat-window {
-        width: 380px;
-        height: 660px;
+        width: 350px;
+        height: 520px;
+        max-height: calc(100vh - 140px);
         bottom: 20px;
         right: 20px;
     }
@@ -22,9 +23,9 @@
 /* 2. TABLET BREAKPOINT (max-width: 991.98px) */
 @media (max-width: 991.98px) {
     .chat-window {
-        width: 360px;
-        height: 620px;
-        max-height: calc(100vh - 40px);
+        width: 340px;
+        height: 500px;
+        max-height: calc(100vh - 140px);
         bottom: 20px;
         right: 20px;
     }

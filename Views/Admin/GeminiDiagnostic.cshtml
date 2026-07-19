@@ -1,0 +1,223 @@
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+@{
+    ViewData["Title"] = "Chẩn Đoán Gemini AI";
+    ViewData["HeaderTitle"] = "Chẩn Đoán Kết Nối Gemini AI";
+    ViewData["HeaderSubtitle"] = "Kiểm tra cấu hình, trạng thái API Gateway và phản hồi từ Google Generative Language Service.";
+    
+    var apiKeyConfigured = !string.IsNullOrEmpty(Configuration["Gemini:ApiKey"]);
+    var activeModel = Configuration["Gemini:Model"] ?? "gemini-1.5-flash";
+    var apiEndpoint = $"https://generativelanguage.googleapis.com/v1beta/models/{activeModel}:generateContent";
+}
+
+@Html.AntiForgeryToken()
+
+<div class="container-fluid py-4" style="font-family: 'Inter', sans-serif;">
+    <!-- Section 1: System Status Cards -->
+    <div class="row g-4 mb-4">
+        <!-- API Key Status Card -->
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm rounded-4 p-3" style="background-color: #ffffff;">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <span class="text-muted fw-semibold text-uppercase" style="font-size: 0.75rem;">Khóa API Key</span>
+                        <h4 class="fw-bold mb-0 mt-1">
+                            @if (apiKeyConfigured)
+                            {
+                                <span class="text-success"><i class="bi bi-shield-check-fill me-2"></i> Đã cấu hình</span>
+                            }
+                            else
+                            {
+                                <span class="text-danger"><i class="bi bi-shield-x-fill me-2"></i> Chưa cấu hình</span>
+                            }
+                        </h4>
+                    </div>
+                    <div class="p-3 bg-light rounded-circle text-center d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                        <i class="bi bi-key-fill text-secondary fs-5"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Model Status Card -->
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm rounded-4 p-3" style="background-color: #ffffff;">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <span class="text-muted fw-semibold text-uppercase" style="font-size: 0.75rem;">Model Gemini</span>
+                        <h4 class="fw-bold mb-0 mt-1 text-primary">@activeModel</h4>
+                    </div>
+                    <div class="p-3 bg-light rounded-circle text-center d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                        <i class="bi bi-cpu text-secondary fs-5"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- API Endpoint Card -->
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm rounded-4 p-3" style="background-color: #ffffff;">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <span class="text-muted fw-semibold text-uppercase" style="font-size: 0.75rem;">API Gateway</span>
+                        <h4 class="fw-bold mb-0 mt-1 text-dark text-truncate" style="max-width: 250px; font-size: 0.95rem;" title="@apiEndpoint">
+                            v1beta / models
+                        </h4>
+                    </div>
+                    <div class="p-3 bg-light rounded-circle text-center d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                        <i class="bi bi-cloud-arrow-up-fill text-secondary fs-5"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 2: Diagnostics Panel -->
+    <div class="row g-4">
+        <!-- Diagnostic Test Form -->
+        <div class="col-lg-5">
+            <div class="card border-0 shadow-sm rounded-4 h-100 p-4" style="background-color: #ffffff;">
+                <h5 class="fw-bold mb-3 text-dark"><i class="bi bi-terminal-fill text-danger me-2"></i> Trình kiểm thử kết nối</h5>
+                <p class="text-muted" style="font-size: 0.85rem;">
+                    Nhập nội dung hội thoại kiểm thử để gọi trực tiếp tới Endpoint của máy chủ AI thông qua cổng Backend dự án.
+                </p>
+
+                <div class="mb-3 mt-4">
+                    <label for="txtTestPrompt" class="form-label fw-semibold text-dark" style="font-size: 0.85rem;">Test Prompt</label>
+                    <textarea class="form-control rounded-3 border-2" id="txtTestPrompt" rows="5" style="font-size: 0.9rem;" placeholder="Ví dụ: Xin chào AI, bạn có hoạt động tốt không?"></textarea>
+                </div>
+
+                <button type="button" id="btnRunTest" class="btn btn-danger w-100 py-2.5 rounded-3 fw-semibold transition-all" style="background-color: #D71920; border-color: #D71920;">
+                    <i class="bi bi-play-circle-fill me-2"></i> Kiểm tra kết nối
+                </button>
+            </div>
+        </div>
+
+        <!-- Diagnostic Response Inspector -->
+        <div class="col-lg-7">
+            <div class="card border-0 shadow-sm rounded-4 h-100 p-4" style="background-color: #ffffff;">
+                <h5 class="fw-bold mb-3 text-dark d-flex justify-content-between align-items-center">
+                    <span><i class="bi bi-bug-fill text-primary me-2"></i> Báo cáo chẩn đoán (Diagnostic Report)</span>
+                    <span id="badgeStatus" class="badge bg-secondary rounded-pill" style="font-size: 0.75rem; font-weight: 500;">Chưa kiểm tra</span>
+                </h5>
+
+                <div class="diagnostic-stats d-flex gap-4 border rounded-3 p-3 mb-3 bg-light">
+                    <div>
+                        <span class="text-muted block" style="font-size: 0.75rem;">Thời gian phản hồi</span>
+                        <div class="fw-bold text-dark fs-5" id="lblResponseTime">-- ms</div>
+                    </div>
+                    <div style="width: 1px; background-color: #e2e8f0;"></div>
+                    <div>
+                        <span class="text-muted block" style="font-size: 0.75rem;">Mã trạng thái HTTP</span>
+                        <div class="fw-bold text-dark fs-5" id="lblHttpStatus">--</div>
+                    </div>
+                </div>
+
+                <div class="mb-3 flex-grow-1 d-flex flex-column">
+                    <label class="form-label fw-semibold text-dark" style="font-size: 0.85rem;">Phản hồi từ API (JSON / Text)</label>
+                    <pre class="bg-dark text-light p-3 rounded-3 flex-grow-1 border overflow-auto text-wrap mb-0" id="preResponseBody" style="font-family: 'Consolas', monospace; font-size: 0.82rem; min-height: 180px;">Sẵn sàng chạy kiểm thử...</pre>
+                </div>
+
+                <div class="mt-2 text-danger fw-semibold d-none" id="errorContainer" style="font-size:0.85rem;">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i> Lỗi kết nối: <span id="lblErrorDetails"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const btnRun = document.getElementById('btnRunTest');
+            const txtPrompt = document.getElementById('txtTestPrompt');
+            const badgeStatus = document.getElementById('badgeStatus');
+            const lblTime = document.getElementById('lblResponseTime');
+            const lblStatus = document.getElementById('lblHttpStatus');
+            const preBody = document.getElementById('preResponseBody');
+            const errDiv = document.getElementById('errorContainer');
+            const errSpan = document.getElementById('lblErrorDetails');
+
+            btnRun.addEventListener('click', function() {
+                const prompt = txtPrompt.value.trim();
+                if (!prompt) {
+                    alert('Vui lòng điền nội dung Test Prompt.');
+                    return;
+                }
+
+                // Reset UI
+                btnRun.disabled = true;
+                btnRun.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Đang gửi kết nối...';
+                badgeStatus.className = 'badge bg-warning text-dark rounded-pill';
+                badgeStatus.textContent = 'Đang gọi API...';
+                lblTime.textContent = '-- ms';
+                lblStatus.textContent = '--';
+                preBody.textContent = 'Đang gửi yêu cầu và ghi nhận thời gian phản hồi...';
+                errDiv.classList.add('d-none');
+
+                const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+                const formData = new FormData();
+                formData.append('testPrompt', prompt);
+                formData.append('__RequestVerificationToken', token);
+
+                const startTime = performance.now();
+
+                fetch('/Admin/GeminiDiagnostic/Test', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(res => res.json())
+                .then(resData => {
+                    btnRun.disabled = false;
+                    btnRun.innerHTML = '<i class="bi bi-play-circle-fill me-2"></i> Kiểm tra kết nối';
+                    
+                    const endTime = performance.now();
+                    const duration = Math.round(endTime - startTime);
+
+                    if (resData.success && resData.data) {
+                        const data = resData.data;
+                        badgeStatus.className = 'badge bg-success rounded-pill';
+                        badgeStatus.textContent = 'Thành công (200)';
+                        lblTime.textContent = data.responseTimeMs.toFixed(1) + ' ms';
+                        lblStatus.textContent = data.httpStatusCode;
+                        
+                        try {
+                            const parsed = JSON.parse(data.responseBody);
+                            preBody.textContent = JSON.stringify(parsed, null, 4);
+                        } catch {
+                            preBody.textContent = data.responseBody;
+                        }
+                    } else {
+                        badgeStatus.className = 'badge bg-danger rounded-pill';
+                        badgeStatus.textContent = 'Thất bại';
+                        
+                        if (resData.data) {
+                            const data = resData.data;
+                            lblTime.textContent = data.responseTimeMs.toFixed(1) + ' ms';
+                            lblStatus.textContent = data.httpStatusCode || 'Exception';
+                            preBody.textContent = data.responseBody || 'Không có phản hồi từ máy chủ.';
+                            
+                            if (data.exceptionDetails) {
+                                errDiv.classList.remove('d-none');
+                                errSpan.textContent = data.exceptionDetails;
+                            }
+                        } else {
+                            lblStatus.textContent = 'Error';
+                            preBody.textContent = resData.message || 'Lỗi không xác định.';
+                        }
+                    }
+                })
+                .catch(err => {
+                    btnRun.disabled = false;
+                    btnRun.innerHTML = '<i class="bi bi-play-circle-fill me-2"></i> Kiểm tra kết nối';
+                    badgeStatus.className = 'badge bg-danger rounded-pill';
+                    badgeStatus.textContent = 'Lỗi kết nối';
+                    
+                    lblStatus.textContent = 'Failed';
+                    preBody.textContent = 'Yêu cầu thất bại hoặc gặp sự cố mạng khi gọi Endpoint nội bộ.';
+                    errDiv.classList.remove('d-none');
+                    errSpan.textContent = err.toString();
+                });
+            });
+        });
+    </script>
+}

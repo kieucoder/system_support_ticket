@@ -7,785 +7,199 @@
 document.addEventListener('DOMContentLoaded', () => {
     'use strict';
 
-    // ==================== 1. DATA SCHEMA & FALLBACK SYSTEM ====================
-    
-    // Default Mock User
-    const DEFAULT_MOCK_USER = {
-        fullname: "Nguyễn Văn An",
-        phone: "0987654321",
-        email: "nguyenvanan@gmail.com",
-        identity: "012345678912",
-        address: "210 Đường Trần Phú, Phường Cái Khế, Quận Ninh Kiều, Cần Thơ",
-        customerCode: "VT-889922",
-        password: "password123",
-        joinDate: "01/01/2026",
-        status: "active"
-    };
+    // ==================== 1. UI INTERACTION ONLY - DATA FROM RAZOR @Model ====================
 
-    // Default Mock Tickets (exactly 12 tickets matching stats targets)
-    const DEFAULT_MOCK_TICKETS = [
-        {
-            code: "PT001",
-            category: "Mất kết nối",
-            service: "Internet Cáp Quang",
-            date: "01/06/2026",
-            status: "processing", // pending, processing, completed, cancelled
-            statusText: "Đang xử lý",
-            priority: "Cao"
-        },
-        {
-            code: "PT002",
-            category: "Camera không ghi hình",
-            service: "Home Camera Viettel",
-            date: "02/06/2026",
-            status: "pending",
-            statusText: "Chờ tiếp nhận",
-            priority: "Trung bình"
-        },
-        {
-            code: "PT003",
-            category: "Hết tài nguyên Cloud VPS",
-            service: "Server & Cloud VPS",
-            date: "03/06/2026",
-            status: "processing",
-            statusText: "Đang xử lý",
-            priority: "Cao"
-        },
-        {
-            code: "PT004",
-            category: "Đổi mật khẩu Wifi",
-            service: "Internet Cáp Quang",
-            date: "04/06/2026",
-            status: "completed",
-            statusText: "Đã hoàn thành",
-            priority: "Thấp"
-        },
-        {
-            code: "PT005",
-            category: "Lỗi phần mềm hóa đơn",
-            service: "Phần mềm & Mạng nội bộ",
-            date: "05/06/2026",
-            status: "completed",
-            statusText: "Đã hoàn thành",
-            priority: "Trung bình"
-        },
-        {
-            code: "PT006",
-            category: "Tín hiệu chập chờn",
-            service: "Internet Cáp Quang",
-            date: "06/06/2026",
-            status: "processing",
-            statusText: "Đang xử lý",
-            priority: "Cao"
-        },
-        {
-            code: "PT007",
-            category: "Camera không kết nối Wifi",
-            service: "Home Camera Viettel",
-            date: "07/06/2026",
-            status: "pending",
-            statusText: "Chờ tiếp nhận",
-            priority: "Trung bình"
-        },
-        {
-            code: "PT008",
-            category: "Lỗi kết nối CSDL MySQL",
-            service: "Server & Cloud VPS",
-            date: "08/06/2026",
-            status: "processing",
-            statusText: "Đang xử lý",
-            priority: "Cao"
-        },
-        {
-            code: "PT009",
-            category: "Đứt cáp quang thuê bao",
-            service: "Internet Cáp Quang",
-            date: "09/06/2026",
-            status: "processing",
-            statusText: "Đang xử lý",
-            priority: "Cao"
-        },
-        {
-            code: "PT010",
-            category: "Cấu hình mạng LAN văn phòng",
-            service: "Phần mềm & Mạng nội bộ",
-            date: "10/06/2026",
-            status: "completed",
-            statusText: "Đã hoàn thành",
-            priority: "Trung bình"
-        },
-        {
-            code: "PT011",
-            category: "Thay đổi vị trí lắp đặt",
-            service: "Home Camera Viettel",
-            date: "11/06/2026",
-            status: "completed",
-            statusText: "Đã hoàn thành",
-            priority: "Thấp"
-        },
-        {
-            code: "PT012",
-            category: "Khởi động lại Server vật lý",
-            service: "Server & Cloud VPS",
-            date: "12/06/2026",
-            status: "completed",
-            statusText: "Đã hoàn thành",
-            priority: "Thấp"
-        }
-    ];
-
-    // Default Mock Appointments
-    const DEFAULT_MOCK_APPOINTMENTS = [
-        {
-            id: "AP-552",
-            date: "12/06/2026",
-            time: "14:00 - 16:00",
-            title: "Cấu hình thiết bị Home Wifi phụ",
-            desc: "Kỹ thuật viên qua nhà di dời cục Wifi phụ tầng 2 và cấu hình lại Mesh.",
-            staffName: "Trần Minh Quân",
-            staffCode: "NV-4889",
-            staffPhone: "0912345678",
-            active: true
-        },
-        {
-            id: "AP-489",
-            date: "15/06/2026",
-            time: "09:00 - 11:30",
-            title: "Bảo trì định kỳ hệ thống Camera",
-            desc: "Vệ sinh mắt đọc Camera, cập nhật firmware và kiểm tra dung lượng ổ cứng đầu ghi.",
-            staffName: "Phạm Thanh Sơn",
-            staffCode: "NV-1205",
-            staffPhone: "0988776655",
-            active: false
-        }
-    ];
-
-    // đổi mật khẩu 
+    // đổi mật khẩu - Chỉ quản lý hiệu ứng UI (loading, disable button)
     const changePasswordForm = document.getElementById("changePasswordForm");
 
-    changePasswordForm.addEventListener("submit", function (e) {
-
-        e.preventDefault();
-
-        const currentPassword =
-            document.getElementById("currentPassword").value.trim();
-
-        const newPassword =
-            document.getElementById("newPassword").value.trim();
-
-        const confirmPassword =
-            document.getElementById("confirmPassword").value.trim();
-
-        if (currentPassword === "") {
-            alert("Vui lòng nhập mật khẩu hiện tại.");
-            return;
-        }
-
-        if (newPassword.length < 6) {
-            alert("Mật khẩu mới tối thiểu 6 ký tự.");
-            return;
-        }
-
-        if (newPassword !== confirmPassword) {
-            alert("Xác nhận mật khẩu không khớp.");
-            return;
-        }
-
-        fetch("/Customers/DoiMatKhau", {
-
-            method: "POST",
-
-            headers: {
-                "Content-Type": "application/json",
-                "RequestVerificationToken":
-                    document.querySelector('input[name="__RequestVerificationToken"]').value
-            },
-
-            body: JSON.stringify({
-
-                MatKhauCu: currentPassword,
-                MatKhauMoi: newPassword,
-                XacNhanMatKhau: confirmPassword
-
-            })
-
-        })
-
-            .then(res => res.json())
-
-            .then(result => {
-
-                if (result.success) {
-
-                    alert(result.message);
-
-                    changePasswordForm.reset();
-
-                    document
-                        .getElementById("changePasswordModal")
-                        .classList.remove("show");
-
-                }
-                else {
-
-                    alert(result.message);
-
-                }
-
-            })
-
-            .catch(() => {
-
-                alert("Có lỗi xảy ra.");
-
-            });
-
-    });
-    //
-
-    // Initialize mock database in localStorage if empty
-    const initLocalStorageDatabases = () => {
-        // Users database
-        let users = JSON.parse(localStorage.getItem('techsupport_users') || '[]');
-        const userExists = users.some(u => u.email === DEFAULT_MOCK_USER.email || u.phone === DEFAULT_MOCK_USER.phone);
-        if (!userExists) {
-            users.push(DEFAULT_MOCK_USER);
-            localStorage.setItem('techsupport_users', JSON.stringify(users));
-        }
-
-        // Force overwrite tickets list if length is not 12 to ensure mock values are correct
-        const existingTickets = JSON.parse(localStorage.getItem('techsupport_tickets') || '[]');
-        if (existingTickets.length !== 12 || !existingTickets.some(t => t.code === 'PT001')) {
-            localStorage.setItem('techsupport_tickets', JSON.stringify(DEFAULT_MOCK_TICKETS));
-        }
-
-        // Appointments database
-        if (!localStorage.getItem('techsupport_appointments')) {
-            localStorage.setItem('techsupport_appointments', JSON.stringify(DEFAULT_MOCK_APPOINTMENTS));
-        }
-    };
-
-    // Initialize session if not logged in
-    const initSessionState = () => {
-        const sessionStr = sessionStorage.getItem('techsupport_session');
-        const legacyName = sessionStorage.getItem('ts_customer_name') || localStorage.getItem('ts_customer_name');
-        
-        let loggedInUser = null;
-
-        if (sessionStr) {
-            try {
-                const sessionData = JSON.parse(sessionStr);
-                if (sessionData && sessionData.isLoggedIn && sessionData.user) {
-                    loggedInUser = sessionData.user;
-                }
-            } catch (e) {
-                console.error("Error parsing session storage:", e);
-            }
-        }
-
-        // Handle fallback login for testing
-        if (!loggedInUser) {
-            let users = JSON.parse(localStorage.getItem('techsupport_users') || '[]');
-            
-            // Try to find by legacy name or just fallback to default mock user
-            let userObj = null;
-            if (legacyName) {
-                userObj = users.find(u => u.fullname === legacyName);
-            }
-            if (!userObj) {
-                userObj = users.find(u => u.email === DEFAULT_MOCK_USER.email);
-            }
-            if (!userObj) {
-                userObj = DEFAULT_MOCK_USER;
-            }
-
-            // Write session
-            const newSession = {
-                isLoggedIn: true,
-                user: {
-                    fullname: userObj.fullname,
-                    email: userObj.email,
-                    phone: userObj.phone,
-                    loginTime: new Date().toISOString()
-                }
-            };
-            sessionStorage.setItem('techsupport_session', JSON.stringify(newSession));
-            sessionStorage.setItem('ts_customer_name', userObj.fullname);
-            loggedInUser = newSession.user;
-        }
-
-        return loggedInUser;
-    };
-
-    // Core setup
-    initLocalStorageDatabases();
-    const activeSessionUser = initSessionState();
-
-    // ==================== 2. APPLICATION STATE & DATABASES ====================
-    let usersDb = JSON.parse(localStorage.getItem('techsupport_users') || '[]');
-    let currentUser = window.RealCustomerData || usersDb.find(u => u.email === activeSessionUser.email || u.phone === activeSessionUser.phone) || DEFAULT_MOCK_USER;
-    
-    let ticketsList = window.RealTicketsData || JSON.parse(localStorage.getItem('techsupport_tickets') || '[]');
-    let appointmentsList = window.RealAppointmentsData || JSON.parse(localStorage.getItem('techsupport_appointments') || '[]');
-
-    // Active Ticket Filters
-    let currentFilter = 'all';
-    let currentPage = 1;
-    const itemsPerPage = 5;
-
-    // DOM References
-    // DOM References
-    const statTotalTickets = document.getElementById('statTotalTickets');
-    const statPendingTickets = document.getElementById('statPendingTickets');
-    const statCompletedTickets = document.getElementById('statCompletedTickets');
-
-    const profileInitials = document.getElementById('profileInitials');
-    const sidebarUserFullname = document.getElementById('sidebarUserFullname');
-    const sidebarUserJoinDate = document.getElementById('sidebarUserJoinDate');
-
-    const ticketsTableBody = document.getElementById('ticketsTableBody');
-    const ticketsPagination = document.getElementById('ticketsPagination');
-    const appointmentsTimeline = document.getElementById('appointmentsTimeline');
-
-    // ==================== 3. RENDER FUNCTIONS ====================
-    
-    // Get Initials from Full Name
-    const getInitials = (name) => {
-        if (!name) return "VT";
-        const parts = name.trim().split(/\s+/);
-        if (parts.length >= 2) {
-            const first = parts[parts.length - 2].charAt(0).toUpperCase();
-            const second = parts[parts.length - 1].charAt(0).toUpperCase();
-            return first + second;
-        }
-        return name.charAt(0).toUpperCase();
-    };
-
-    // Set Statistic Targets
-    const updateStatsTargets = () => {
-        const total = ticketsList.length;
-        const pending = ticketsList.filter(t => t.status === 'pending').length;
-        const processing = ticketsList.filter(t => t.status === 'processing').length;
-        const completed = ticketsList.filter(t => t.status === 'completed').length;
-
-        if (statTotalTickets) statTotalTickets.setAttribute('data-target', total.toString());
-        if (statPendingTickets) statPendingTickets.setAttribute('data-target', pending.toString());
-        
-        const statProcessingTickets = document.getElementById('statProcessingTickets');
-        if (statProcessingTickets) statProcessingTickets.setAttribute('data-target', processing.toString());
-        
-        if (statCompletedTickets) statCompletedTickets.setAttribute('data-target', completed.toString());
-
-        // Animate counter values
-        const counters = document.querySelectorAll('.counter-value');
-        const duration = 1200; // 1.2s animation duration
-
-        counters.forEach(counter => {
-            counter.classList.add('animated'); // Prevent main.js from double-animating
-            const target = parseInt(counter.getAttribute('data-target'), 10) || 0;
-            let startTime = null;
-
-            const step = (timestamp) => {
-                if (!startTime) startTime = timestamp;
-                const progress = Math.min((timestamp - startTime) / duration, 1);
-                const easeValue = progress * (2 - progress); // Ease out quad
-                counter.textContent = Math.floor(easeValue * target);
-                if (progress < 1) {
-                    window.requestAnimationFrame(step);
-                } else {
-                    counter.textContent = target;
-                }
-            };
-
-            window.requestAnimationFrame(step);
-        });
-    };
-
-    // Populate profile inputs helper
-    const resetInlineFormValues = () => {
-        const fullnameEl = document.getElementById('profileFullname');
-        const phoneEl = document.getElementById('profilePhone');
-        const emailEl = document.getElementById('profileEmail');
-        const identityEl = document.getElementById('profileIdentity');
-        const addressEl = document.getElementById('profileAddress');
-        const joinDateEl = document.getElementById('profileJoinDate');
-        const codeEl = document.getElementById('profileUserCode');
-
-        if (fullnameEl) fullnameEl.value = currentUser.fullname;
-        if (phoneEl) phoneEl.value = currentUser.phone;
-        if (emailEl) emailEl.value = currentUser.email || '';
-        if (identityEl) identityEl.value = currentUser.identity;
-        if (addressEl) addressEl.value = currentUser.address;
-        if (joinDateEl) joinDateEl.value = currentUser.joinDate;
-        if (codeEl) codeEl.value = currentUser.customerCode;
-    };
-
-    // Render User Details
-    const renderUserProfile = () => {
-        if (sidebarUserFullname) sidebarUserFullname.textContent = currentUser.fullname;
-        if (profileInitials) {
-            profileInitials.textContent = getInitials(currentUser.fullname);
-        }
-        if (sidebarUserJoinDate) sidebarUserJoinDate.textContent = currentUser.joinDate;
-        resetInlineFormValues();
-    };
-
-    // Render Tickets Table with Filter & Pagination
-    const ticketSearchInput = document.getElementById('ticketSearchInput');
-    const ticketStatusFilter = document.getElementById('ticketStatusFilter');
-    const btnSearchTickets = document.getElementById('btnSearchTickets');
-
-    const renderTicketsTable = () => {
-        if (!ticketsTableBody) return;
-
-        let filteredTickets = ticketsList;
-
-        // Apply Status Filter
-        const statusVal = ticketStatusFilter ? ticketStatusFilter.value : 'all';
-        if (statusVal !== 'all') {
-            filteredTickets = filteredTickets.filter(t => t.status === statusVal);
-        }
-
-        // Apply Search Query Filter
-        const query = ticketSearchInput ? ticketSearchInput.value.trim().toLowerCase() : '';
-        if (query) {
-            filteredTickets = filteredTickets.filter(t => 
-                t.code.toLowerCase().includes(query) ||
-                t.service.toLowerCase().includes(query) ||
-                t.category.toLowerCase().includes(query)
-            );
-        }
-
-        // Calculate pages
-        const totalItems = filteredTickets.length;
-        const totalPages = Math.max(1, Math.ceil(totalItems / itemsPerPage));
-        
-        if (currentPage > totalPages) {
-            currentPage = totalPages;
-        }
-
-        const startIndex = (currentPage - 1) * itemsPerPage;
-        const endIndex = Math.min(startIndex + itemsPerPage, totalItems);
-        const paginatedTickets = filteredTickets.slice(startIndex, endIndex);
-
-        ticketsTableBody.innerHTML = '';
-
-        if (paginatedTickets.length === 0) {
-            ticketsTableBody.innerHTML = `
-                <tr>
-                    <td colspan="8" class="table-empty-state">
-                        <i class="bi bi-ticket-perforated"></i>
-                        <p>Không tìm thấy phiếu hỗ trợ nào phù hợp.</p>
-                    </td>
-                </tr>
-            `;
-            if (ticketsPagination) ticketsPagination.style.display = 'none';
-            return;
-        }
-
-        // Populate rows
-        paginatedTickets.forEach((ticket, idx) => {
-            const tr = document.createElement('tr');
-            
-            let badgeClass = 'badge-pending';
-            if (ticket.status === 'processing') badgeClass = 'badge-processing';
-            if (ticket.status === 'completed') badgeClass = 'badge-completed';
-            if (ticket.status === 'cancelled') badgeClass = 'badge-cancelled';
-
-            let prioClass = 'text-warning';
-            let prioText = ticket.priority || 'Trung bình';
-            if (prioText === 'Cao') prioClass = 'text-danger fw-bold';
-            if (prioText === 'Thấp') prioClass = 'text-muted';
-
-            tr.innerHTML = `
-                <td data-label="STT">${startIndex + idx + 1}</td>
-                <td data-label="Mã phiếu" class="ticket-code">${ticket.code}</td>
-                <td data-label="Dịch vụ">${ticket.service}</td>
-                <td data-label="Loại sự cố">${ticket.category}</td>
-                <td data-label="Ngày tạo">${ticket.date}</td>
-                <td data-label="Trạng thái">
-                    <span class="badge ${badgeClass}">${ticket.statusText}</span>
-                </td>
-                <td data-label="Mức ưu tiên" class="${prioClass}">${prioText}</td>
-                <td data-label="Thao tác">
-                    <button class="btn-table-action btn-view-ticket" data-code="${ticket.code}">
-                        Xem <i class="bi bi-eye ms-1"></i>
-                    </button>
-                </td>
-            `;
-            ticketsTableBody.appendChild(tr);
-        });
-
-        // Add event listeners to "Xem" buttons
-        const viewButtons = ticketsTableBody.querySelectorAll('.btn-view-ticket');
-        viewButtons.forEach(btn => {
-            btn.addEventListener('click', function() {
-                const code = this.getAttribute('data-code');
-                openTicketDetailModal(code);
-            });
-        });
-
-        // Render Pagination Info and Controls
-        if (ticketsPagination) {
-            ticketsPagination.style.display = 'flex';
-            
-            const infoEl = ticketsPagination.querySelector('.pagination-info');
-            if (infoEl) {
-                infoEl.textContent = `Hiển thị ${startIndex + 1}-${endIndex} trong số ${totalItems} phiếu`;
-            }
-
-            const buttonsWrapper = ticketsPagination.querySelector('.pagination-buttons');
-            if (buttonsWrapper) {
-                buttonsWrapper.innerHTML = '';
-
-                // Prev button
-                const prevBtn = document.createElement('button');
-                prevBtn.className = 'btn-page-arrow';
-                prevBtn.innerHTML = '<i class="bi bi-chevron-left"></i>';
-                prevBtn.disabled = currentPage === 1;
-                prevBtn.addEventListener('click', () => {
-                    if (currentPage > 1) {
-                        currentPage--;
-                        renderTicketsTable();
-                    }
-                });
-                buttonsWrapper.appendChild(prevBtn);
-
-                // Page numbers
-                for (let i = 1; i <= totalPages; i++) {
-                    const pageBtn = document.createElement('button');
-                    pageBtn.className = `btn-page-number ${currentPage === i ? 'active' : ''}`;
-                    pageBtn.textContent = i;
-                    pageBtn.addEventListener('click', () => {
-                        currentPage = i;
-                        renderTicketsTable();
-                    });
-                    buttonsWrapper.appendChild(pageBtn);
-                }
-
-                // Next button
-                const nextBtn = document.createElement('button');
-                nextBtn.className = 'btn-page-arrow';
-                nextBtn.innerHTML = '<i class="bi bi-chevron-right"></i>';
-                nextBtn.disabled = currentPage === totalPages;
-                nextBtn.addEventListener('click', () => {
-                    if (currentPage < totalPages) {
-                        currentPage++;
-                        renderTicketsTable();
-                    }
-                });
-                buttonsWrapper.appendChild(nextBtn);
-            }
-        }
-    };
-
-    if (btnSearchTickets) {
-        btnSearchTickets.addEventListener('click', () => {
-            currentPage = 1;
-            renderTicketsTable();
-        });
-    }
-
-    if (ticketStatusFilter) {
-        ticketStatusFilter.addEventListener('change', () => {
-            currentPage = 1;
-            renderTicketsTable();
-        });
-    }
-
-    if (ticketSearchInput) {
-        ticketSearchInput.addEventListener('keyup', (e) => {
-            if (e.key === 'Enter') {
-                currentPage = 1;
-                renderTicketsTable();
-            }
-        });
-    }
-
-    // Render Appointments Timeline
-    const renderAppointmentsTimeline = () => {
-        if (!appointmentsTimeline) return;
-
-        appointmentsTimeline.innerHTML = '';
-
-        if (appointmentsList.length === 0) {
-            appointmentsTimeline.innerHTML = `
-                <div class="timeline-empty-state">
-                    <i class="bi bi-calendar-check"></i>
-                    <p>Hiện tại bạn không có lịch hẹn hỗ trợ nào sắp diễn ra.</p>
-                </div>
-            `;
-            return;
-        }
-
-        appointmentsList.forEach(appointment => {
-            const item = document.createElement('div');
-            item.className = `timeline-item ${appointment.active ? 'active' : ''}`;
-            
-            item.innerHTML = `
-                <div class="timeline-bullet"></div>
-                <div class="timeline-card">
-                    <div class="timeline-date-time">
-                        <span><i class="bi bi-calendar3"></i> ${appointment.date}</span>
-                        <span><i class="bi bi-clock"></i> ${appointment.time}</span>
-                    </div>
-                    <h4 class="timeline-title">${appointment.title}</h4>
-                    <p class="timeline-desc">${appointment.desc}</p>
-                    <div class="timeline-staff">
-                        <div class="staff-info-item">
-                            <i class="bi bi-person-badge text-danger"></i>
-                            <span>Kỹ thuật viên: <strong>${appointment.staffName}</strong> (${appointment.staffCode})</span>
-                        </div>
-                        <div class="staff-info-item">
-                            <i class="bi bi-telephone text-success"></i>
-                            <span>Hotline: <a href="tel:${appointment.staffPhone}" class="text-decoration-none text-muted"><strong>${appointment.staffPhone}</strong></a></span>
-                        </div>
-                    </div>
-                    <div class="appointment-card-actions mt-3 d-flex gap-2 justify-content-end">
-                        <button type="button" class="btn btn-sm btn-outline-danger btn-view-appointment-detail" data-id="${appointment.id}">
-                            <i class="bi bi-info-circle"></i> Xem chi tiết
-                        </button>
-                        <button type="button" class="btn btn-sm btn-outline-secondary btn-reschedule-appointment" data-id="${appointment.id}">
-                            <i class="bi bi-calendar-event"></i> Đổi lịch
-                        </button>
-                    </div>
-                </div>
-            `;
-            appointmentsTimeline.appendChild(item);
-        });
-
-        // Add event listeners
-        const viewDetailBtns = appointmentsTimeline.querySelectorAll('.btn-view-appointment-detail');
-        viewDetailBtns.forEach(btn => {
-            btn.addEventListener('click', function() {
-                const id = this.getAttribute('data-id');
-                const app = appointmentsList.find(a => a.id === id);
-                if (app) {
-                    showProfileToast(`📅 Chi tiết lịch hẹn: ${app.title} vào ${app.time} ngày ${app.date}. Kỹ thuật viên phụ trách: ${app.staffName}.`, 'info');
-                }
-            });
-        });
-
-        const rescheduleBtns = appointmentsTimeline.querySelectorAll('.btn-reschedule-appointment');
-        rescheduleBtns.forEach(btn => {
-            btn.addEventListener('click', function() {
-                const id = this.getAttribute('data-id');
-                const app = appointmentsList.find(a => a.id === id);
-                if (app) {
-                    openRescheduleModal(app);
-                }
-            });
-        });
-    };
-
-    const openRescheduleModal = (app) => {
-        document.getElementById('rescheduleAppointmentId').value = app.id;
-        document.getElementById('rescheduleCurrentDetails').value = `${app.date} | ${app.time} - ${app.title}`;
-        document.getElementById('rescheduleNewDate').value = '';
-        document.getElementById('rescheduleReason').value = '';
-        
-        openProfileModal('rescheduleModal');
-    };
-
-    const rescheduleForm = document.getElementById('rescheduleForm');
-    if (rescheduleForm) {
-        rescheduleForm.addEventListener('submit', function(e) {
+    if (changePasswordForm) {
+        changePasswordForm.addEventListener("submit", async function (e) {
             e.preventDefault();
-            
-            const id = document.getElementById('rescheduleAppointmentId').value;
-            const newDateVal = document.getElementById('rescheduleNewDate').value;
-            const newTimeVal = document.getElementById('rescheduleNewTime').value;
-            
-            if (!newDateVal) {
-                showProfileToast("Vui lòng chọn ngày mới hợp lệ!", "danger");
+
+            const currentPasswordInput = document.getElementById("currentPassword");
+            const newPasswordInput = document.getElementById("newPassword");
+            const confirmPasswordInput = document.getElementById("confirmPassword");
+            const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+            // Client-side quick check
+            let hasError = false;
+
+            if (currentPasswordInput) {
+                const currVal = currentPasswordInput.value;
+                const errEl = document.getElementById("currentPasswordError");
+                if (!currVal.trim()) {
+                    setInputError(currentPasswordInput, true);
+                    if (errEl) {
+                        errEl.textContent = "Vui lòng nhập mật khẩu hiện tại.";
+                        errEl.style.display = 'block';
+                    }
+                    hasError = true;
+                } else {
+                    setInputError(currentPasswordInput, false);
+                    if (errEl) errEl.style.display = 'none';
+                }
+            }
+
+            if (newPasswordInput) {
+                const newVal = newPasswordInput.value;
+                const errEl = document.getElementById("newPasswordError");
+                if (!newVal.trim()) {
+                    setInputError(newPasswordInput, true);
+                    if (errEl) {
+                        errEl.textContent = "Vui lòng nhập mật khẩu mới.";
+                        errEl.style.display = 'block';
+                    }
+                    hasError = true;
+                } else if (newVal.length < 8 || !passwordRegex.test(newVal)) {
+                    setInputError(newPasswordInput, true);
+                    if (errEl) {
+                        errEl.textContent = "Mật khẩu mới phải từ 8 ký tự trở lên và chứa ít nhất 1 chữ hoa, 1 chữ thường, 1 chữ số và 1 ký tự đặc biệt.";
+                        errEl.style.display = 'block';
+                    }
+                    hasError = true;
+                } else {
+                    setInputError(newPasswordInput, false);
+                    if (errEl) errEl.style.display = 'none';
+                }
+            }
+
+            if (confirmPasswordInput) {
+                const confirmVal = confirmPasswordInput.value;
+                const errEl = document.getElementById("confirmPasswordError");
+                if (!confirmVal.trim()) {
+                    setInputError(confirmPasswordInput, true);
+                    if (errEl) {
+                        errEl.textContent = "Vui lòng xác nhận mật khẩu mới.";
+                        errEl.style.display = 'block';
+                    }
+                    hasError = true;
+                } else if (confirmVal !== newPasswordInput.value) {
+                    setInputError(confirmPasswordInput, true);
+                    if (errEl) {
+                        errEl.textContent = "Mật khẩu xác nhận không khớp.";
+                        errEl.style.display = 'block';
+                    }
+                    hasError = true;
+                } else {
+                    setInputError(confirmPasswordInput, false);
+                    if (errEl) errEl.style.display = 'none';
+                }
+            }
+
+            if (hasError) {
                 return;
             }
 
-            const dateParts = newDateVal.split('-');
-            const formattedDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
+            const submitBtn = changePasswordForm.querySelector('button[type="submit"]');
+            const originalIconClass = submitBtn?.querySelector('i')?.className || '';
 
-            const appIdx = appointmentsList.findIndex(a => a.id === id);
-            if (appIdx > -1) {
-                appointmentsList[appIdx].date = formattedDate;
-                appointmentsList[appIdx].time = newTimeVal;
-                localStorage.setItem('techsupport_appointments', JSON.stringify(appointmentsList));
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                const icon = submitBtn.querySelector('i');
+                if (icon) {
+                    icon.className = 'fa-solid fa-spinner fa-spin me-2';
+                }
             }
 
-            closeProfileModal(document.getElementById('rescheduleModal'));
-            renderAppointmentsTimeline();
-            showProfileToast("Yêu cầu thay đổi lịch hẹn đã được gửi thành công!", "success");
+            try {
+                const formData = new FormData(changePasswordForm);
+                const response = await fetch(changePasswordForm.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+
+                const result = await response.json();
+
+                // Remove existing alerts inside the form
+                const existingAlerts = changePasswordForm.querySelectorAll('.alert');
+                existingAlerts.forEach(el => el.remove());
+
+                if (result.success) {
+                    const alertHtml = `
+                        <div class="alert alert-success alert-dismissible fade show mb-3" role="alert">
+                            <i class="bi bi-check-circle-fill me-2"></i> ${result.message}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    `;
+                    changePasswordForm.insertAdjacentHTML('afterbegin', alertHtml);
+
+                    // Clear inputs
+                    if (currentPasswordInput) currentPasswordInput.value = '';
+                    if (newPasswordInput) newPasswordInput.value = '';
+                    if (confirmPasswordInput) confirmPasswordInput.value = '';
+                } else {
+                    const alertHtml = `
+                        <div class="alert alert-danger alert-dismissible fade show mb-3" role="alert">
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i> ${result.message}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    `;
+                    changePasswordForm.insertAdjacentHTML('afterbegin', alertHtml);
+                }
+            } catch (error) {
+                console.error('Lỗi khi đổi mật khẩu:', error);
+                const alertHtml = `
+                    <div class="alert alert-danger alert-dismissible fade show mb-3" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i> Đã xảy ra lỗi kết nối. Vui lòng thử lại sau.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                `;
+                changePasswordForm.insertAdjacentHTML('afterbegin', alertHtml);
+            } finally {
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    const icon = submitBtn.querySelector('i');
+                    if (icon) {
+                        icon.className = originalIconClass || 'bi bi-key';
+                    }
+                }
+            }
         });
     }
+    //
 
-    // Modal details and timeline render helper
-    const openTicketDetailModal = (code) => {
-        const ticket = ticketsList.find(t => t.code === code);
-        if (!ticket) return;
+    // DOM References for UI interactions only
+    const ticketsTableBody = document.getElementById('ticketsTableBody');
+    const appointmentsTimeline = document.getElementById('appointmentsTimeline');
 
-        document.getElementById('modalTicketCode').textContent = ticket.code;
-        document.getElementById('modalTicketService').textContent = ticket.service;
-        document.getElementById('modalTicketCategory').textContent = ticket.category;
-        document.getElementById('modalTicketPriority').textContent = ticket.priority || 'Trung bình';
-        document.getElementById('modalTicketDate').textContent = ticket.date;
-        document.getElementById('modalTicketStatus').textContent = ticket.statusText;
-        
-        const staffNames = {
-            'PT001': 'Nguyễn Hoàng Nam (Mã NV: NV-2291)',
-            'PT002': 'Lê Văn Khải (Mã NV: NV-3184)',
-            'PT003': 'Đỗ Thị Minh (Mã NV: NV-1092)',
-            'PT004': 'Phan Văn Phú (Mã NV: NV-5819)',
-            'PT005': 'Trần Thanh Hằng (Mã NV: NV-4792)',
-            'PT006': 'Nguyễn Hoàng Nam (Mã NV: NV-2291)',
-            'PT007': 'Lê Văn Khải (Mã NV: NV-3184)',
-            'PT008': 'Đỗ Thị Minh (Mã NV: NV-1092)',
-            'PT009': 'Phan Văn Phú (Mã NV: NV-5819)',
-            'PT010': 'Trần Thanh Hằng (Mã NV: NV-4792)',
-            'PT011': 'Vũ Đức Thịnh (Mã NV: NV-8831)',
-            'PT012': 'Nguyễn Hoàng Nam (Mã NV: NV-2291)'
-        };
-        const staffVal = staffNames[ticket.code] || 'Đang phân công';
-        document.getElementById('modalTicketStaff').textContent = staffVal;
+    // ==================== 2. TICKET DETAIL MODAL ====================
+    // Open ticket detail modal with data from Razor-rendered table
+    const openTicketDetailModal = (ticketId) => {
+        // Find the ticket row in the Razor-rendered table
+        const ticketRow = document.querySelector(`button[data-ticket-id="${ticketId}"]`)?.closest('tr');
+        if (!ticketRow) return;
 
-        const ticketDescs = {
-            'PT001': 'Modem mạng Cáp quang gia đình nháy đỏ đèn LOS từ sáng sớm, đã thử khởi động lại thiết bị nhiều lần nhưng vẫn không truy cập được Internet.',
-            'PT002': 'Camera giám sát hành lang chung cư không xem được lịch sử ghi hình trên app Home Camera, báo lỗi thẻ nhớ ngắt kết nối.',
-            'PT003': 'Server VPS Linux chạy website bán hàng bị chậm, CPU thường xuyên quá tải 100%. Cần tư vấn mở rộng dung lượng ổ cứng SSD thêm 50GB.',
-            'PT004': 'Yêu cầu đổi mật khẩu bộ phát Wifi và cấu hình ẩn tên mạng Wifi phụ tại nhà để tăng tính bảo mật.',
-            'PT005': 'Phần mềm xuất hóa đơn điện tử V-Invoice không đồng bộ được dữ liệu thuế khi xuất hóa đơn bán hàng trực tiếp.',
-            'PT006': 'Mạng wifi chính thỉnh thoảng mất kết nối đột ngột khoảng 5 phút rồi tự động có lại, lặp đi lặp lại nhiều lần trong ngày.',
-            'PT007': 'Thiết bị Home Camera ngoài cổng báo ngoại tuyến trên điện thoại, mặc dù đèn nguồn tín hiệu trên camera vẫn sáng xanh.',
-            'PT008': 'CSDL MySQL trên cloud server báo lỗi kết nối quá tải "Too many connections" vào các khung giờ cao điểm.',
-            'PT009': 'Nhánh cáp quang đi vào hiên nhà bị nhánh cây đổ đè trúng gây đứt sợi cáp, cần kỹ thuật kéo lại dây cáp quang mới.',
-            'PT010': 'Cần hỗ trợ kéo thêm 3 đầu dây mạng LAN và bấm hạt mạng mới cho phòng họp công ty mới sửa chữa.',
-            'PT011': 'Yêu cầu di dời vị trí lắp đặt camera từ phòng khách sang sân thượng phía sau nhà để tối ưu hóa góc quan sát.',
-            'PT012': 'Hỗ trợ khởi động lại và kiểm tra logs hệ thống Server vật lý lưu trữ dữ liệu ERP nội bộ.'
-        };
-        const descVal = ticketDescs[ticket.code] || 'Khách hàng yêu cầu hỗ trợ xử lý kỹ thuật đối với dịch vụ đang đăng ký sử dụng.';
-        document.getElementById('modalTicketDesc').textContent = descVal;
+        // Extract data from the table row
+        const cells = ticketRow.querySelectorAll('td');
+        const ticketCode = cells[1]?.textContent?.trim() || '-';
+        const service = cells[2]?.textContent?.trim() || '-';
+        const category = cells[3]?.textContent?.trim() || '-';
+        const date = cells[4]?.textContent?.trim() || '-';
+        const statusBadge = cells[5]?.querySelector('.status-badge')?.textContent?.trim() || '-';
+        const priority = cells[6]?.querySelector('.priority-badge')?.textContent?.trim() || '-';
 
-        const ticketNotes = {
-            'PT001': 'Đang điều động kỹ thuật viên khu vực kiểm tra hộp cáp quang thuê bao ODF ngoài đầu ngõ. Dự kiến khắc phục xong trước 17:00 ngày hôm nay.',
-            'PT002': 'Đã tiếp nhận yêu cầu. Kỹ thuật viên sẽ liên hệ và mang theo thẻ nhớ MicroSD mới để thay thế dự phòng nếu cần thiết.',
-            'PT003': 'Nhân viên Cloud đã liên hệ hướng dẫn khách hàng tạo snapshot và nâng cấp cấu hình trực tuyến trên trang quản trị.',
-            'PT004': 'Kỹ thuật viên đã hỗ trợ điều khiển từ xa cấu hình thành công. Đã bàn giao tài khoản quản trị modem mới cho khách hàng.',
-            'PT005': 'Đã cập nhật phiên bản vá lỗi V-Invoice mới nhất cho khách hàng, hệ thống đã chạy ổn định và đồng bộ hóa đơn bình thường.',
-            'PT006': 'Kỹ thuật đang theo dõi suy hao tín hiệu trên đường dây cáp quang tại trạm phát GPON. Sẽ liên hệ hẹn lịch qua nhà đo kiểm trực tiếp.',
-            'PT007': 'CSKH đã tiếp nhận. Hẹn kỹ thuật viên khảo sát vị trí lắp đặt và dây nối tín hiệu camera vào sáng mai.',
-            'PT008': 'Đã hướng dẫn quản trị viên điều chỉnh cấu hình max_connections và tối ưu hóa câu lệnh query để tránh nghẽn luồng.',
-            'PT009': 'Đang sắp xếp cuộn cáp quang dự phòng và kỹ thuật viên đến hiện trường hàn nối cáp quang trực tiếp tại nhà khách hàng.',
-            'PT010': 'Đã hoàn thành thi công lắp đặt dây LAN âm tường thẩm mỹ, kiểm tra thông mạng 1Gbps ổn định.',
-            'PT011': 'Đã thực hiện di chuyển camera và dây cáp nối, cấu hình lại mạng không dây kết nối camera ổn định trên điện thoại.',
-            'PT012': 'Đã thực hiện reboot cứng tại trung tâm dữ liệu, hệ thống ERP hoạt động bình thường, ghi nhận hoạt động ổn định.'
-        };
-        const notesVal = ticketNotes[ticket.code] || 'Yêu cầu đang được phòng kỹ thuật kiểm tra và xử lý theo đúng quy trình xử lý ticket hỗ trợ.';
-        document.getElementById('modalTicketNotes').textContent = notesVal;
+        document.getElementById('modalTicketCode').textContent = ticketCode;
+        document.getElementById('modalTicketService').textContent = service;
+        document.getElementById('modalTicketCategory').textContent = category;
+        document.getElementById('modalTicketPriority').textContent = priority;
+        document.getElementById('modalTicketDate').textContent = date;
+        document.getElementById('modalTicketStatus').textContent = statusBadge;
+        document.getElementById('modalTicketStaff').textContent = 'Đang phân công';
+        document.getElementById('modalTicketDesc').textContent = 'Chi tiết phiếu hỗ trợ từ hệ thống.';
+        document.getElementById('modalTicketNotes').textContent = 'Ghi chú xử lý từ kỹ thuật viên.';
 
+        // Render timeline based on status
         const timelineWrapper = document.getElementById('modalTicketTimeline');
         if (timelineWrapper) {
             timelineWrapper.innerHTML = '';
             
+            const statusLower = statusBadge.toLowerCase();
             let timelineSteps = [];
-            if (ticket.status === 'completed') {
+            
+            if (statusLower.includes('hoàn thành')) {
                 timelineSteps = [
                     { time: '08:00', title: 'Phiếu được tạo', active: true },
                     { time: '08:15', title: 'Tiếp nhận yêu cầu', active: true },
@@ -793,7 +207,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     { time: '14:00', title: 'Đang tiến hành xử lý', active: true },
                     { time: '16:00', title: 'Hoàn thành khắc phục', active: true }
                 ];
-            } else if (ticket.status === 'processing') {
+            } else if (statusLower.includes('đang xử lý') || statusLower.includes('xử lý')) {
                 timelineSteps = [
                     { time: '08:00', title: 'Phiếu được tạo', active: true },
                     { time: '08:15', title: 'Tiếp nhận yêu cầu', active: true },
@@ -801,7 +215,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     { time: '14:00', title: 'Đang tiến hành xử lý', active: true },
                     { time: '--:--', title: 'Hoàn thành khắc phục', active: false }
                 ];
-            } else if (ticket.status === 'pending') {
+            } else if (statusLower.includes('chờ')) {
                 timelineSteps = [
                     { time: '08:00', title: 'Phiếu được tạo', active: true },
                     { time: '08:15', title: 'Tiếp nhận yêu cầu', active: true },
@@ -809,11 +223,19 @@ document.addEventListener('DOMContentLoaded', () => {
                     { time: '--:--', title: 'Đang tiến hành xử lý', active: false },
                     { time: '--:--', title: 'Hoàn thành khắc phục', active: false }
                 ];
-            } else if (ticket.status === 'cancelled') {
+            } else if (statusLower.includes('hủy')) {
                 timelineSteps = [
                     { time: '08:00', title: 'Phiếu được tạo', active: true },
                     { time: '08:15', title: 'Tiếp nhận yêu cầu', active: true },
                     { time: '10:00', title: 'Yêu cầu bị hủy bỏ', active: true, cancelled: true }
+                ];
+            } else {
+                timelineSteps = [
+                    { time: '08:00', title: 'Phiếu được tạo', active: true },
+                    { time: '08:15', title: 'Tiếp nhận yêu cầu', active: true },
+                    { time: '--:--', title: 'Phân công kỹ thuật viên', active: false },
+                    { time: '--:--', title: 'Đang tiến hành xử lý', active: false },
+                    { time: '--:--', title: 'Hoàn thành khắc phục', active: false }
                 ];
             }
 
@@ -834,6 +256,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
         openProfileModal('ticketDetailModal');
     };
+
+    // Attach event listeners to view buttons in Razor-rendered table
+    if (ticketsTableBody) {
+        const viewButtons = ticketsTableBody.querySelectorAll('.btn-view-ticket');
+        viewButtons.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const ticketId = this.getAttribute('data-ticket-id');
+                openTicketDetailModal(ticketId);
+            });
+        });
+    }
 
     // Star Rating Interactivity
     const starRating = document.getElementById('starRating');
@@ -967,182 +400,96 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Modal Edit Profile and Form Handlers
+    // ==================== 3. EDIT PROFILE FORM (MVC Native POST) ====================
     const editProfileForm = document.getElementById('editProfileForm');
-    const btnEditInline = document.getElementById('btnEditProfileInline');
-    
-    const editFullname = document.getElementById('editFullname');
-    const editPhone = document.getElementById('editPhone');
-    const editEmail = document.getElementById('editEmail');
-    const editIdentity = document.getElementById('editIdentity');
-    const editAddress = document.getElementById('editAddress');
-
-    const modalInputs = [editFullname, editPhone, editEmail, editIdentity, editAddress];
+    const btnEditInline   = document.getElementById('btnEditProfileInline');
 
     if (btnEditInline) {
         btnEditInline.addEventListener('click', (e) => {
             e.preventDefault();
-            // Populate modal inputs with current user data
-            if (editFullname) editFullname.value = currentUser.fullname;
-            if (editPhone) editPhone.value = currentUser.phone;
-            if (editEmail) editEmail.value = currentUser.email || '';
-            if (editIdentity) editIdentity.value = currentUser.identity;
-            if (editAddress) editAddress.value = currentUser.address;
-
-            // Reset validation errors
-            modalInputs.forEach(input => {
-                if (input) {
-                    input.classList.remove('is-invalid');
-                    const errEl = document.getElementById(`${input.id}Error`);
-                    if (errEl) errEl.style.display = 'none';
-                }
-            });
-
-            // Open the edit profile modal
+            // Open the edit profile modal (form already pre-filled via asp-for from Razor)
             openProfileModal('editProfileModal');
         });
     }
 
+    // Auto-open modal when server returns EditError (Razor injected flag)
+    if (window.__editProfileHasError === true) {
+        openProfileModal('editProfileModal');
+    }
+
     if (editProfileForm) {
-        editProfileForm.addEventListener('submit', function(e) {
-            e.preventDefault();
+        editProfileForm.addEventListener('submit', function (e) {
+            // ── Client-side light validation (phone format, required) ──
+            const editFullname = document.getElementById('editFullname');
+            const editPhone    = document.getElementById('editPhone');
+            const editEmail    = document.getElementById('editEmail');
+            let hasError = false;
 
-            let isValid = true;
-            modalInputs.forEach(input => {
-                if (input) {
-                    const val = input.value.trim();
-                    const errEl = document.getElementById(`${input.id}Error`);
-                    
-                    if (input.required && !val) {
-                        input.classList.add('is-invalid');
-                        if (errEl) errEl.style.display = 'block';
-                        isValid = false;
-                    } else if (input.id === 'editPhone') {
-                        const phoneRegex = /^(0[3|5|7|8|9])[0-9]{8}$/;
-                        if (!phoneRegex.test(val)) {
-                            input.classList.add('is-invalid');
-                            if (errEl) errEl.style.display = 'block';
-                            isValid = false;
-                        } else {
-                            input.classList.remove('is-invalid');
-                            if (errEl) errEl.style.display = 'none';
-                        }
-                    } else if (input.id === 'editEmail') {
-                        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                        if (val && !emailRegex.test(val)) {
-                            input.classList.add('is-invalid');
-                            if (errEl) errEl.style.display = 'block';
-                            isValid = false;
-                        } else {
-                            input.classList.remove('is-invalid');
-                            if (errEl) errEl.style.display = 'none';
-                        }
-                    } else if (input.id === 'editIdentity') {
-                        const cccdRegex = /^[0-9]{9}$|^[0-9]{12}$/;
-                        if (!cccdRegex.test(val)) {
-                            input.classList.add('is-invalid');
-                            if (errEl) errEl.style.display = 'block';
-                            isValid = false;
-                        } else {
-                            input.classList.remove('is-invalid');
-                            if (errEl) errEl.style.display = 'none';
-                        }
-                    } else {
-                        input.classList.remove('is-invalid');
-                        if (errEl) errEl.style.display = 'none';
-                    }
+            // Validate Họ và tên
+            if (editFullname) {
+                const val = editFullname.value.trim();
+                const errEl = document.getElementById('editFullnameError');
+                if (!val) {
+                    editFullname.classList.add('is-invalid');
+                    if (errEl) { errEl.textContent = 'Vui lòng nhập họ và tên.'; errEl.style.display = 'block'; }
+                    hasError = true;
+                } else {
+                    editFullname.classList.remove('is-invalid');
+                    if (errEl) errEl.style.display = 'none';
                 }
-            });
-
-            if (isValid) {
-                const formData = new FormData();
-                formData.append("HoTen", editFullname.value.trim());
-                formData.append("SoDienThoai", editPhone.value.trim());
-                formData.append("Email", editEmail.value.trim());
-                formData.append("DiaChi", editAddress.value.trim());
-
-                // Post to ASP.NET Core MVC Action
-                fetch('/Customers/CapNhatThongTin', {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value || ''
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        const origEmail = currentUser.email;
-                        const origPhone = currentUser.phone;
-
-                        currentUser.fullname = editFullname.value.trim();
-                        currentUser.phone = editPhone.value.trim();
-                        currentUser.email = editEmail.value.trim();
-                        currentUser.identity = editIdentity.value.trim();
-                        currentUser.address = editAddress.value.trim();
-
-                        usersDb = JSON.parse(localStorage.getItem('techsupport_users') || '[]');
-                        const idx = usersDb.findIndex(u => u.email === origEmail || u.phone === origPhone);
-                        if (idx > -1) {
-                            usersDb[idx] = currentUser;
-                        } else {
-                            usersDb.push(currentUser);
-                        }
-                        localStorage.setItem('techsupport_users', JSON.stringify(usersDb));
-
-                        const sessionStr = sessionStorage.getItem('techsupport_session');
-                        if (sessionStr) {
-                            try {
-                                const sessionData = JSON.parse(sessionStr);
-                                if (sessionData && sessionData.user) {
-                                    sessionData.user.fullname = currentUser.fullname;
-                                    sessionData.user.email = currentUser.email;
-                                    sessionData.user.phone = currentUser.phone;
-                                    sessionStorage.setItem('techsupport_session', JSON.stringify(sessionData));
-                                }
-                            } catch (err) {
-                                console.error("Error updating session storage:", err);
-                            }
-                        }
-                        sessionStorage.setItem('ts_customer_name', currentUser.fullname);
-
-                        if (window.TechSupportAuth && typeof window.TechSupportAuth.login === 'function') {
-                            window.TechSupportAuth.login(currentUser.fullname, false);
-                        } else {
-                            const navDisplayName = document.getElementById('userDisplayName');
-                            if (navDisplayName) navDisplayName.textContent = currentUser.fullname;
-                        }
-
-                        // Close the modal
-                        closeProfileModal(document.getElementById('editProfileModal'));
-
-                        // Rerender page UI elements
-                        renderUserProfile();
-                        showProfileToast("Cập nhật thông tin cá nhân thành công!", "success");
-
-                        // Reload page after a delay to ensure MVC updates are propagated
-                        setTimeout(() => {
-                            window.location.reload();
-                        }, 1200);
-                    } else {
-                        showProfileToast(data.message || "Cập nhật thất bại!", "danger");
-                    }
-                })
-                .catch(err => {
-                    console.error("Error updating profile:", err);
-                    showProfileToast("Không thể kết nối đến máy chủ!", "danger");
-                });
-            } else {
-                showProfileToast("Vui lòng kiểm tra lại thông tin biểu mẫu nhập!", "danger");
             }
+
+            // Validate Số điện thoại (Vietnam format)
+            if (editPhone) {
+                const val = editPhone.value.trim();
+                const errEl = document.getElementById('editPhoneError');
+                const phoneRegex = /^(0[35789])[0-9]{8}$/;
+                if (!val) {
+                    editPhone.classList.add('is-invalid');
+                    if (errEl) { errEl.textContent = 'Vui lòng nhập số điện thoại.'; errEl.style.display = 'block'; }
+                    hasError = true;
+                } else if (!phoneRegex.test(val)) {
+                    editPhone.classList.add('is-invalid');
+                    if (errEl) { errEl.textContent = 'Số điện thoại phải là định dạng Việt Nam hợp lệ (10 chữ số).'; errEl.style.display = 'block'; }
+                    hasError = true;
+                } else {
+                    editPhone.classList.remove('is-invalid');
+                    if (errEl) errEl.style.display = 'none';
+                }
+            }
+
+            // Validate Email format (optional field)
+            if (editEmail) {
+                const val = editEmail.value.trim();
+                const errEl = document.getElementById('editEmailError');
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (val && !emailRegex.test(val)) {
+                    editEmail.classList.add('is-invalid');
+                    if (errEl) { errEl.textContent = 'Địa chỉ email không đúng định dạng.'; errEl.style.display = 'block'; }
+                    hasError = true;
+                } else {
+                    editEmail.classList.remove('is-invalid');
+                    if (errEl) errEl.style.display = 'none';
+                }
+            }
+
+            if (hasError) {
+                e.preventDefault();
+                return;
+            }
+
+            // ── Loading state ──
+            const submitBtn  = document.getElementById('btnSaveProfile');
+            const submitIcon = document.getElementById('btnSaveProfileIcon');
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                if (submitIcon) submitIcon.className = 'fa-solid fa-spinner fa-spin me-1';
+            }
+            // Let the native MVC form submit proceed
         });
     }
 
-    // Initial renders
-    updateStatsTargets();
-    renderUserProfile();
-    renderTicketsTable();
-    renderAppointmentsTimeline();
+
 
     // ==================== 5. TOAST NOTIFICATION SYSTEM ====================
     const showProfileToast = (message, type = 'success') => {
@@ -1336,7 +683,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // ==================== 8. PASSWORD UPDATE LOGIC ====================
-    const changePasswordForm = document.getElementById('changePasswordForm');
     const currentPassword = document.getElementById('currentPassword');
     const newPassword = document.getElementById('newPassword');
     const confirmPassword = document.getElementById('confirmPassword');
@@ -1369,24 +715,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const validateChangePasswordForm = () => {
         let isValid = true;
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
-        // 1. Current password verification
+        // 1. Current password required
         const currentVal = currentPassword.value;
-        if (!currentVal || currentVal !== currentUser.password) {
+        if (!currentVal) {
             setInputError(currentPassword, true);
             const errEl = document.getElementById('currentPasswordError');
             if (errEl) {
-                errEl.textContent = currentVal ? "Mật khẩu hiện tại không chính xác!" : "Vui lòng nhập mật khẩu hiện tại";
+                errEl.textContent = "Vui lòng nhập mật khẩu hiện tại";
             }
             isValid = false;
         } else {
             setInputError(currentPassword, false);
         }
 
-        // 2. New password validations (min 6 characters)
+        // 2. New password validations
         const newVal = newPassword.value;
-        if (!newVal || newVal.length < 6) {
+        if (!newVal || newVal.length < 8 || !passwordRegex.test(newVal)) {
             setInputError(newPassword, true);
+            const errEl = document.getElementById('newPasswordError');
+            if (errEl) {
+                errEl.textContent = "Mật khẩu mới phải từ 8 ký tự trở lên và chứa ít nhất 1 chữ hoa, 1 chữ thường, 1 chữ số và 1 ký tự đặc biệt.";
+            }
             isValid = false;
         } else {
             setInputError(newPassword, false);
@@ -1396,6 +747,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const confirmVal = confirmPassword.value;
         if (!confirmVal || confirmVal !== newVal) {
             setInputError(confirmPassword, true);
+            const errEl = document.getElementById('confirmPasswordError');
+            if (errEl) {
+                errEl.textContent = "Mật khẩu xác nhận không khớp.";
+            }
             isValid = false;
         } else {
             setInputError(confirmPassword, false);
@@ -1404,50 +759,25 @@ document.addEventListener('DOMContentLoaded', () => {
         return isValid;
     };
 
-    if (changePasswordForm) {
-        changePasswordForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            if (validateChangePasswordForm()) {
-                const newPass = newPassword.value;
-                
-                // Update properties
-                currentUser.password = newPass;
-
-                // Sync users database list
-                usersDb = JSON.parse(localStorage.getItem('techsupport_users') || '[]');
-                const idx = usersDb.findIndex(u => u.email === currentUser.email || u.phone === currentUser.phone);
-                if (idx > -1) {
-                    usersDb[idx].password = newPass;
-                    localStorage.setItem('techsupport_users', JSON.stringify(usersDb));
-                }
-
-                // Alert success
-                showProfileToast("Thay đổi mật khẩu thành công!", "success");
-
-                // Close and clear modal
-                closeProfileModal(document.getElementById('changePasswordModal'));
-                resetPasswordForm();
-            } else {
-                showProfileToast("Đổi mật khẩu thất bại. Vui lòng kiểm tra lại biểu mẫu!", "danger");
-            }
-        });
-    }
+    // Password form is handled by the existing submit handler at the top of the file
 
     // Real-time validations
     if (currentPassword) {
         currentPassword.addEventListener('input', () => {
-            const err = !currentPassword.value || currentPassword.value !== currentUser.password;
-            setInputError(currentPassword, err);
-            if (err) {
-                const errEl = document.getElementById('currentPasswordError');
-                if (errEl) errEl.textContent = currentPassword.value ? "Mật khẩu hiện tại không chính xác!" : "Vui lòng nhập mật khẩu hiện tại";
-            }
+            setInputError(currentPassword, !currentPassword.value);
         });
     }
     if (newPassword) {
         newPassword.addEventListener('input', () => {
-            setInputError(newPassword, !newPassword.value || newPassword.value.length < 6);
+            const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+            const isError = !newPassword.value || newPassword.value.length < 8 || !passwordRegex.test(newPassword.value);
+            setInputError(newPassword, isError);
+            if (isError) {
+                const errEl = document.getElementById('newPasswordError');
+                if (errEl) {
+                    errEl.textContent = "Mật khẩu mới phải từ 8 ký tự trở lên và chứa ít nhất 1 chữ hoa, 1 chữ thường, 1 chữ số và 1 ký tự đặc biệt.";
+                }
+            }
             if (confirmPassword.value) {
                 setInputError(confirmPassword, confirmPassword.value !== newPassword.value);
             }

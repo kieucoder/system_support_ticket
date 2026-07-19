@@ -1,0 +1,88 @@
+@model SupportTicketSysterm.Models.PhanCongNhanVienViewModel
+
+<div class="modal fade" id="assignModal" tabindex="-1" aria-labelledby="assignModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 16px; overflow: hidden;">
+            
+            <!-- Modal Header -->
+            <div class="modal-header border-bottom-0 bg-light p-4">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="fs-4">👤</span>
+                    <div>
+                        <h5 class="modal-title fw-bold text-dark-emphasis" id="assignModalLabel">Phân Công Nhân Viên</h5>
+                        <p class="text-muted small mb-0">Chỉ định kỹ thuật viên phụ trách xử lý sự cố</p>
+                    </div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <!-- Modal Body -->
+            <form asp-controller="Staff" asp-action="PhanCongNhanVien" method="post" onsubmit="return submitAssignForm(this);">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="IdPhieu" />
+
+                <div class="modal-body p-4">
+                    <!-- Ticket Details Card -->
+                    <div class="p-3 bg-light rounded-3 mb-4 border border-light-subtle">
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <span class="text-muted small d-block">Mã phiếu</span>
+                                <span class="fw-bold text-danger">@Model.MaPhieu</span>
+                            </div>
+                            <div class="col-6">
+                                <span class="text-muted small d-block">Trạng thái</span>
+                                <span class="badge bg-warning text-dark fw-semibold">@Model.TrangThaiHienTai</span>
+                            </div>
+                            <div class="col-12 mt-2">
+                                <span class="text-muted small d-block">Tiêu đề phiếu</span>
+                                <span class="fw-semibold text-dark-emphasis">@Model.TieuDe</span>
+                            </div>
+                            <div class="col-6 mt-2">
+                                <span class="text-muted small d-block">Khách hàng</span>
+                                <span class="text-dark">@Model.KhachHang</span>
+                            </div>
+                            <div class="col-6 mt-2">
+                                <span class="text-muted small d-block">Dịch vụ</span>
+                                <span class="text-dark">@Model.DichVu</span>
+                            </div>
+                            @if (!string.IsNullOrEmpty(Model.NhanVienHienTai))
+                            {
+                                <div class="col-12 mt-2 border-top pt-2">
+                                    <span class="text-muted small d-block">Nhân viên hiện tại phụ trách</span>
+                                    <span class="text-primary fw-semibold"><i class="bi bi-person-fill-check"></i> @Model.NhanVienHienTai</span>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- Assignee Select Field -->
+                    <div class="mb-3">
+                        <label asp-for="IdNhanVien" class="form-label fw-bold text-dark-emphasis small text-uppercase">Chọn nhân viên xử lý *</label>
+                        <select asp-for="IdNhanVien" class="form-select border" style="border-radius: 10px; height: 45px;" required>
+                            <option value="">-- Chọn kỹ thuật viên --</option>
+                            @if (ViewBag.NhanViens != null)
+                            {
+                                foreach (var nv in ViewBag.NhanViens)
+                                {
+                                    <option value="@nv.IdNhanVien" selected="@(Model.IdNhanVien == nv.IdNhanVien)">
+                                        @nv.HoTen (@nv.TenDangNhap)
+                                    </option>
+                                }
+                            }
+                        </select>
+                        <span asp-validation-for="IdNhanVien" class="text-danger small mt-1 d-block"></span>
+                    </div>
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="modal-footer border-top-0 p-4 pt-0">
+                    <button type="button" class="btn btn-light fw-semibold px-4 py-2" style="border-radius: 10px;" data-bs-dismiss="modal">Hủy bỏ</button>
+                    <button type="submit" class="btn btn-viettel fw-bold px-4 py-2" style="border-radius: 10px;">
+                        <i class="fa-solid fa-check me-1"></i> Xác nhận phân công
+                    </button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>

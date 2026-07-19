@@ -1,0 +1,867 @@
+@model SupportTicketSysterm.Models.GuiLienHeViewModel
+
+@{
+    ViewData["Title"] = "Liên hệ";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Liên hệ hỗ trợ - TechSupport Viettel</title>
+
+    <!-- SEO Optimization -->
+    <meta name="description"
+          content="Liên hệ trực tiếp với đội ngũ hỗ trợ kỹ thuật TechSupport Viettel Telecom 24/7. Hỗ trợ sự cố mạng Internet, Camera, Wi-Fi và các dịch vụ công nghệ nhanh nhất.">
+    <meta name="keywords"
+          content="liên hệ viettel, báo hỏng kỹ thuật, hỗ trợ wifi, tổng đài mạng viettel, techsupport cần thơ">
+    <meta name="author" content="Viettel Telecom TechSupport">
+    <meta name="robots" content="index, follow">
+
+    <!-- Open Graph Data -->
+    <meta property="og:title" content="Liên hệ hỗ trợ - TechSupport Viettel">
+    <meta property="og:description"
+          content="Đội ngũ kỹ thuật viên Viettel Telecom sẵn sàng tiếp nhận và xử lý mọi sự cố mạng và dịch vụ số 24/7/365.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://techsupport.viettel.vn/pages/contact.html">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="https://viettel.com.vn/favicon.ico">
+
+    <!-- Bootstrap 5.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <!-- Font Awesome 6.6.0 CDN (Enterprise) -->
+    <link rel="stylesheet" id="fa-cdn-link"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+    <!-- FontAwesome Fallback Script -->
+    <script>
+        document.getElementById('fa-cdn-link').addEventListener('error', function () {
+            document.documentElement.classList.add('fa-fallback-active');
+            console.warn("FontAwesome failed to load. Falling back to Bootstrap Icons.");
+        });
+        window.addEventListener('load', function () {
+            setTimeout(function () {
+                if (!document.fonts.check('12px "Font Awesome 6 Free"')) {
+                    document.documentElement.classList.add('fa-fallback-active');
+                }
+            }, 1200);
+        });
+    </script>
+
+    <!-- Google Fonts Inter & Be Vietnam Pro -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&display=swap"
+          rel="stylesheet">
+
+    <!-- Component-Based CSS -->
+    <link rel="stylesheet" href="~/assets/css/style.css">
+    <link rel="stylesheet" href="~/assets/css/responsive.css">
+    <link rel="stylesheet" href="~/assets/css/header.css">
+    <link rel="stylesheet" href="~/assets/css/sidebar.css">
+    <link rel="stylesheet" href="~/assets/css/footer.css"> 
+    <link rel="stylesheet" href="~/assets/css/chatbox.css">
+    <link rel="stylesheet" href="~/assets/css/contact.css">
+    <link rel="stylesheet" href="~/assets/css/page-hero.css" asp-append-version="true">
+    <!-- Custom Premium Hero Redesign -->
+    <style>
+        :root {
+            /* Brand Colors */
+            --viettel-red: #D71920;
+            --viettel-red-light: rgba(215, 25, 32, 0.03);
+            --viettel-red-glow: rgba(215, 25, 32, 0.15);
+            --primary: #D71920;
+            --primary-rgb: 215, 25, 32;
+            --secondary: #B5121B;
+            --bg-body: #F8FAFC;
+            --color-white: #FFFFFF;
+            --border-color: #ECECEC;
+            --text-main: #222222;
+            --text-muted: #6B7280;
+            
+            /* Shadows & Border Radius */
+            --shadow-premium: 0 15px 45px rgba(0, 0, 0, 0.06);
+            --shadow-premium-hover: 0 25px 55px rgba(215, 25, 32, 0.08);
+            --shadow-glass: 0 8px 32px 0 rgba(31, 38, 135, 0.04);
+            --radius-ticket: 22px;
+            --radius-card: 24px;
+            --radius-cta: 32px;
+            --radius-pill: 999px;
+            
+            /* Transitions */
+            --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-bounce: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        /* ==================== 1. HERO SECTION ==================== */
+        .hero-section {
+            background: linear-gradient(120deg, #fff 0%, #fffdfd 45%, #fff5f5 100%);
+            position: relative;
+            padding: 8.5rem 0 2.5rem;
+            overflow: hidden;
+            border-bottom: 1px solid var(--border-color);
+            text-align: left;
+        }
+
+        .hero-section::before, .hero-section::after {
+            content: '';
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
+            pointer-events: none;
+        }
+
+        .hero-section::before {
+            width: 320px;
+            height: 320px;
+            background: rgba(215, 25, 32, 0.08);
+            top: -80px;
+            right: 5%;
+        }
+
+        .hero-section::after {
+            width: 240px;
+            height: 240px;
+            background: rgba(59, 130, 246, 0.05);
+            bottom: -60px;
+            left: 10%;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-text-col {
+            max-width: 600px;
+        }
+
+        .hero-breadcrumb {
+            margin-bottom: 1rem;
+        }
+
+        .hero-breadcrumb .breadcrumb {
+            background: transparent;
+            padding: 0;
+        }
+
+        .hero-breadcrumb .breadcrumb-item {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .hero-breadcrumb .breadcrumb-item a {
+            color: var(--viettel-red);
+            font-weight: 600;
+            transition: var(--transition-smooth);
+        }
+
+        .hero-breadcrumb .breadcrumb-item a:hover {
+            color: var(--secondary);
+            text-decoration: underline;
+        }
+
+        .hero-breadcrumb .breadcrumb-item.active {
+            color: var(--text-main);
+            font-weight: 600;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(215, 25, 32, 0.08);
+            color: var(--viettel-red);
+            padding: 6px 14px;
+            border-radius: 999px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.75rem;
+        }
+
+        .hero-title {
+            font-size: 2.25rem;
+            font-weight: 800;
+            color: var(--text-main);
+            line-height: 1.15;
+            margin-bottom: 0.75rem;
+            letter-spacing: -0.02em;
+        }
+
+        .hero-title .text-primary {
+            color: var(--viettel-red);
+        }
+
+        .hero-desc {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            max-width: 550px;
+        }
+
+        .hero-cta-buttons {
+            margin-bottom: 2rem !important;
+        }
+
+        .btn-hero-create,
+        .btn-hero-contact {
+            border-radius: 999px;
+            padding: 10px 24px !important;
+            font-weight: 700;
+            font-size: 0.9rem;
+            display: inline-flex !important;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition-smooth);
+            text-decoration: none !important;
+        }
+
+        .btn-hero-create {
+            background: linear-gradient(135deg, var(--viettel-red) 0%, #ff4d57 100%);
+            color: #FFFFFF !important;
+            box-shadow: 0 8px 24px rgba(215, 25, 32, 0.25);
+        }
+
+        .btn-hero-create:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 32px rgba(215, 25, 32, 0.35);
+            color: #FFFFFF !important;
+        }
+
+        .btn-hero-contact {
+            background: #FFFFFF;
+            color: var(--text-main) !important;
+            border: 2px solid var(--border-color);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .btn-hero-contact:hover {
+            background: var(--bg-body);
+            border-color: var(--viettel-red);
+            color: var(--viettel-red) !important;
+            transform: translateY(-3px);
+        }
+
+        /* Hero Stats */
+        .lk-hero-stats {
+            display: flex !important;
+            flex-wrap: wrap;
+            gap: 1rem !important;
+            margin-top: 2rem !important;
+        }
+
+        .lk-hero-stat-item {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(18px);
+            border: 1px solid rgba(236, 236, 236, 0.95);
+            border-radius: 12px;
+            padding: 10px 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            transition: var(--transition-smooth);
+        }
+
+        .lk-hero-stat-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .lk-hero-stat-num {
+            display: block;
+            font-size: 1.25rem;
+            font-weight: 800;
+            margin-bottom: 2px;
+        }
+
+        .lk-hero-stat-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .lk-hero-stat-sep {
+            width: 1px;
+            height: 24px;
+            background: rgba(236, 236, 236, 0.5);
+            align-self: center;
+        }
+
+        /* Hero Banner SVG */
+        .hero-banner-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hero-banner-svg {
+            width: 100%;
+            max-width: 380px;
+            height: auto;
+            display: block;
+        }
+
+        /* Responsive: Hero Section */
+        @@media (max-width: 992px) {
+            .hero-section {
+                padding: 7rem 0 2.5rem;
+            }
+
+            .hero-title {
+                font-size: 1.85rem;
+            }
+
+            .hero-desc {
+                font-size: 0.9rem;
+            }
+
+            .hero-cta-buttons {
+                flex-direction: column;
+            }
+
+            .btn-hero-create,
+            .btn-hero-contact {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .hero-banner-svg {
+                max-width: 320px;
+                margin: 2rem auto 0;
+            }
+        }
+
+        @@media (max-width: 768px) {
+            .hero-section {
+                padding: 6.5rem 0 2rem;
+            }
+
+            .hero-title {
+                font-size: 1.65rem;
+            }
+
+            .hero-desc {
+                font-size: 0.88rem;
+            }
+
+            .lk-hero-stats {
+                justify-content: center;
+                gap: 0.75rem !important;
+            }
+
+            .lk-hero-stat-sep {
+                display: none;
+            }
+
+            .hero-banner-svg {
+                max-width: 280px;
+            }
+        }
+
+        @@media (max-width: 576px) {
+            .hero-breadcrumb {
+                font-size: 0.8rem;
+            }
+
+            .hero-title {
+                font-size: 1.4rem;
+            }
+
+            .hero-desc {
+                font-size: 0.85rem;
+                margin-bottom: 1.25rem;
+            }
+
+            .hero-cta-buttons {
+                margin-bottom: 1.5rem !important;
+            }
+
+            .lk-hero-stats {
+                flex-direction: column;
+                gap: 0.5rem !important;
+            }
+
+            .lk-hero-stat-item {
+                width: 100%;
+                padding: 10px 14px;
+            }
+
+            .hero-banner-svg {
+                max-width: 240px;
+                margin: 1.5rem auto 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ==================== HEADER ==================== -->
+    @await Html.PartialAsync("_Header", Context.Session)
+
+    <!-- ==================== SIDEBAR ==================== -->
+    @await Html.PartialAsync("_Sidebar")
+    <!-- ==================== HERO SECTION ==================== -->
+    <section class="hero-section" aria-label="Trang liên hệ hỗ trợ kỹ thuật">
+        <div class="container hero-content">
+            <div class="row align-items-center g-5">
+                <div class="col-lg-7 col-12 text-start hero-text-col animate-fade-up">
+
+                    <!-- Breadcrumb Navigation -->
+                    <nav aria-label="breadcrumb" class="hero-breadcrumb">
+                        <ol class="breadcrumb m-0" itemscope itemtype="https://schema.org/BreadcrumbList">
+                            <li class="breadcrumb-item" itemprop="itemListElement" itemscope
+                                itemtype="https://schema.org/ListItem">
+                                <a href="/" itemprop="item"
+                                   class="text-decoration-none d-inline-flex align-items-center">
+                                    <i class="fa-solid fa-house-door-fill me-1"></i>
+                                    <span itemprop="name">Trang chủ</span>
+                                </a>
+                                <meta itemprop="position" content="1" />
+                            </li>
+                            <li class="breadcrumb-item active" itemprop="itemListElement" itemscope
+                                itemtype="https://schema.org/ListItem" aria-current="page">
+                                <span itemprop="name">Liên hệ hỗ trợ</span>
+                                <meta itemprop="position" content="2" />
+                            </li>
+                        </ol>
+                    </nav>
+
+                    <!-- Badge -->
+                    <span class="hero-badge">
+                        <i class="bi bi-headset me-1"></i> Hỗ trợ kỹ thuật 24/7/365
+                    </span>
+
+                    <!-- Title -->
+                    <h1 class="hero-title text-uppercase">Liên Hệ <span class="text-primary">Hỗ Trợ Kỹ Thuật</span></h1>
+
+                    <!-- Description -->
+                    <p class="hero-desc">
+                        Đội ngũ kỹ thuật viên Viettel Telecom luôn sẵn sàng tiếp nhận và xử lý mọi sự cố mạng,
+                        Internet, Camera và các dịch vụ số của bạn nhanh nhất có thể.
+                    </p>
+
+                    <!-- CTA Buttons -->
+                    <div class="hero-cta-buttons d-flex flex-wrap gap-3 mt-4">
+                        <a href="#contactFormSection" class="btn btn-hero-create px-4 py-2">
+                            <i class="bi bi-envelope me-1"></i> Gửi Tin Nhắn
+                        </a>
+                        <a href="tel:18008119" class="btn btn-hero-contact px-4 py-2">
+                            <i class="bi bi-telephone me-1"></i> Gọi 1800 8119
+                        </a>
+                    </div>
+
+                    <!-- Quick Stats -->
+                    <div class="lk-hero-stats d-flex flex-wrap gap-3 mt-5">
+                        <div class="lk-hero-stat-item">
+                            <span class="lk-hero-stat-num" style="color:#D71920">24/7</span>
+                            <span class="lk-hero-stat-label">Hỗ trợ trực tuyến</span>
+                        </div>
+                        <div class="lk-hero-stat-sep"></div>
+                        <div class="lk-hero-stat-item">
+                            <span class="lk-hero-stat-num" style="color:#3B82F6">&lt;30'</span>
+                            <span class="lk-hero-stat-label">Thời gian phản hồi</span>
+                        </div>
+                        <div class="lk-hero-stat-sep"></div>
+                        <div class="lk-hero-stat-item">
+                            <span class="lk-hero-stat-num" style="color:#10B981">99%</span>
+                            <span class="lk-hero-stat-label">Khách hàng hài lòng</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RIGHT: SVG Illustration -->
+                <div class="col-lg-5 col-12 hero-banner-wrapper animate-fade-up delay-1">
+                    <svg class="hero-banner-svg" viewBox="0 0 500 420" xmlns="http://www.w3.org/2000/svg"
+                         aria-label="Liên hệ hỗ trợ">
+                        <defs>
+                            <linearGradient id="pcGradRed" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#D71920" />
+                                <stop offset="100%" stop-color="#ff4d6d" />
+                            </linearGradient>
+                            <linearGradient id="pcGradDark" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#1f2937" />
+                                <stop offset="100%" stop-color="#111827" />
+                            </linearGradient>
+                            <linearGradient id="pcGradBlue" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#3B82F6" />
+                                <stop offset="100%" stop-color="#2563EB" />
+                            </linearGradient>
+                            <linearGradient id="pcGradGreen" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#10B981" />
+                                <stop offset="100%" stop-color="#059669" />
+                            </linearGradient>
+                        </defs>
+
+                        <!-- Background decorative -->
+                        <circle cx="250" cy="210" r="175" fill="url(#pcGradRed)" opacity="0.04" />
+                        <circle cx="400" cy="80" r="65" fill="url(#pcGradRed)" opacity="0.06" />
+
+                        <!-- Main card -->
+                        <rect x="40" y="50" width="380" height="310" rx="24"
+                              fill="#ffffff" stroke="rgba(15,17,21,0.05)" stroke-width="2"
+                              filter="drop-shadow(0 20px 40px rgba(0,0,0,0.07))" />
+
+                        <!-- Header bar -->
+                        <path d="M40 74 C40 60.85 50.85 50 64 50 L396 50 C409.15 50 420 60.85 420 74 L420 95 L40 95 Z"
+                              fill="url(#pcGradDark)" />
+                        <!-- Traffic lights -->
+                        <circle cx="65" cy="72" r="5" fill="#D71920" />
+                        <circle cx="81" cy="72" r="5" fill="#eab308" />
+                        <circle cx="97" cy="72" r="5" fill="#10b981" />
+
+                        <!-- Ticket cards visualization on screen -->
+                        <!-- Card 1: Processing -->
+                        <rect x="60" y="115" width="150" height="55" rx="8" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1" />
+                        <rect x="72" y="127" width="45" height="8" rx="3" fill="url(#pcGradBlue)" opacity="0.8" />
+                        <rect x="72" y="138" width="80" height="6" rx="2" fill="#CBD5E0" />
+                        <rect x="72" y="146" width="90" height="6" rx="2" fill="#E2E8F0" />
+                        <circle cx="170" cy="142" r="6" fill="url(#pcGradBlue)" />
+
+                        <!-- Card 2: Completed -->
+                        <rect x="230" y="115" width="150" height="55" rx="8" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1" />
+                        <rect x="242" y="127" width="50" height="8" rx="3" fill="url(#pcGradGreen)" opacity="0.8" />
+                        <rect x="242" y="138" width="70" height="6" rx="2" fill="#CBD5E0" />
+                        <rect x="242" y="146" width="100" height="6" rx="2" fill="#E2E8F0" />
+                        <path d="M330 137 L335 143 L343 132" stroke="url(#pcGradGreen)" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+
+                        <!-- Card 3: Pending -->
+                        <rect x="60" y="185" width="150" height="55" rx="8" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1" />
+                        <rect x="72" y="197" width="55" height="8" rx="3" fill="#F59E0B" opacity="0.8" />
+                        <rect x="72" y="208" width="60" height="6" rx="2" fill="#CBD5E0" />
+                        <rect x="72" y="216" width="80" height="6" rx="2" fill="#E2E8F0" />
+                        <circle cx="170" cy="212" r="6" fill="#F59E0B" />
+
+                        <!-- Card 4: In Queue -->
+                        <rect x="230" y="185" width="150" height="55" rx="8" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1" />
+                        <rect x="242" y="197" width="65" height="8" rx="3" fill="url(#pcGradRed)" opacity="0.8" />
+                        <rect x="242" y="208" width="75" height="6" rx="2" fill="#CBD5E0" />
+                        <rect x="242" y="216" width="85" height="6" rx="2" fill="#E2E8F0" />
+                        <circle cx="330" cy="212" r="6" fill="url(#pcGradRed)" />
+
+                        <!-- Search bar -->
+                        <rect x="60" y="255" width="320" height="30" rx="8" fill="#F3F4F6" stroke="#E5E7EB" stroke-width="1.5" />
+                        <circle cx="75" cy="270" r="4.5" fill="#9CA3AF" />
+                        <rect x="85" y="265" width="100" height="10" rx="3" fill="#D1D5DB" />
+
+                        <!-- Floating notification -->
+                        <g transform="translate(320, 285)">
+                            <circle cx="0" cy="0" r="12" fill="url(#pcGradRed)" filter="drop-shadow(0 4px 8px rgba(215,25,32,0.3))" />
+                            <path d="M-2 -2 L2 2 M2 -2 L-2 2" stroke="#fff" stroke-width="2" stroke-linecap="round" />
+                        </g>
+                    </svg>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== MAIN CONTENT ==================== -->
+    <main class="py-5" style="background-color: var(--light-gray);" id="contactFormSection">
+        <div class="container">
+            <!-- Bootstrap 2 Cột Layout -->
+            <div class="row g-4 align-items-stretch">
+
+                <!-- 2. CONTACT INFORMATION SECTION (Left Column) -->
+                <div class="col-lg-5 col-12">
+                    <div class="contact-main-card">
+                        <h2 class="contact-card-title">Thông Tin Liên Hệ</h2>
+
+                        <ul class="contact-info-list">
+
+                            <!-- Address -->
+                            <li class="contact-info-item">
+                                <div class="contact-info-icon">
+                                    <i class="fa-solid fa-map-marker"></i>
+                                </div>
+                                <div class="contact-info-details">
+                                    <span class="contact-info-label">Địa chỉ</span>
+                                    <span class="contact-info-value">
+                                        210 Đường Trần Phú, Cái Khế, Ninh Kiều, Cần Thơ
+                                    </span>
+                                </div>
+                            </li>
+
+                            <!-- Hotline -->
+                            <li class="contact-info-item">
+                                <div class="contact-info-icon">
+                                    <i class="fa-solid fa-phone-volume"></i>
+                                </div>
+                                <div class="contact-info-details">
+                                    <span class="contact-info-label"> Hotline</span>
+                                    <span class="contact-info-value">
+                                        <a href="tel:18008119">1800 8119</a>
+                                    </span>
+                                </div>
+                            </li>
+
+                            <!-- Email -->
+                            <li class="contact-info-item">
+                                <div class="contact-info-icon">
+                                    <i class="fa-solid fa-envelope"></i>
+                                </div>
+                                <div class="contact-info-details">
+                                    <span class="contact-info-label"> Email</span>
+                                    <span class="contact-info-value">
+                                        <a href="mailto:support@viettel.com.vn">support@viettel.com.vn</a>
+                                    </span>
+                                </div>
+                            </li>
+
+                            <!-- Work Hours -->
+                            <li class="contact-info-item">
+                                <div class="contact-info-icon">
+                                    <i class="fa-solid fa-clock"></i>
+                                </div>
+                                <div class="contact-info-details">
+                                    <span class="contact-info-label"> Giờ làm việc</span>
+                                    <span class="contact-info-value">
+                                        07:30 - 17:30<br>
+                                        Thứ 2 - Chủ Nhật
+                                    </span>
+                                </div>
+                            </li>
+
+                            <!-- Website -->
+                            <li class="contact-info-item">
+                                <div class="contact-info-icon">
+                                    <i class="bi bi-globe"></i>
+                                </div>
+                                <div class="contact-info-details">
+                                    <span class="contact-info-label"> Website</span>
+                                    <span class="contact-info-value">
+                                        <a href="https://www.viettel.com.vn"
+                                           target="_blank">www.techsupport-viettel.vn</a>
+                                    </span>
+                                </div>
+                            </li>
+
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- 3. CONTACT FORM SECTION (Right Column) -->
+                <div class="col-lg-7 col-12">
+                    <div class="contact-main-card">
+                        <h2 class="contact-card-title">Gửi Tin Nhắn Cho Chúng Tôi</h2>
+
+                        <form asp-controller="Customers"
+                              asp-action="LienHe"
+                              method="post" id="contactForm" class="needs-validation" novalidate>
+                            @if (TempData["Success"] != null)
+                            {
+                                <div class="alert alert-success alert-dismissible fade show animate-fade-up" role="alert" style="border-radius: 12px; font-size: 14px; margin-bottom: 20px;">
+                                    <i class="bi bi-check-circle-fill me-2"></i> @TempData["Success"]
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            }
+                            @if (TempData["Error"] != null)
+                            {
+                                <div class="alert alert-danger alert-dismissible fade show animate-fade-up" role="alert" style="border-radius: 12px; font-size: 14px; margin-bottom: 20px;">
+                                    <i class="bi bi-exclamation-triangle-fill me-2"></i> @TempData["Error"]
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            }
+                            <div asp-validation-summary="All" class="text-danger mb-3 animate-fade-up" style="font-size: 14px; list-style-type: none; padding-left: 0;"></div>
+                            <div class="row g-3">
+                                @Html.AntiForgeryToken()
+                                <!-- Name -->
+                                <div class="col-md-6 col-12">
+                                    <label asp-for="HoTen" for="contactName" class="form-label form-label-custom">
+                                        Họ và tên *
+                                    </label>
+                                    <input asp-for="HoTen" type="text" class="form-control form-control-custom"
+                                           id="contactName" placeholder="Nhập họ và tên..." required>
+                                    <div class="invalid-feedback">Vui lòng nhập họ và tên của bạn.</div>
+                                    <span asp-validation-for="HoTen" class="text-danger" style="font-size: 13px;"></span>
+                                </div>
+
+                                <!-- Phone -->
+                                <div class="col-md-6 col-12">
+                                    <label asp-for="SoDienThoai" for="contactPhone" class="form-label form-label-custom">
+                                        Số điện thoại *
+                                    </label>
+                                    <input asp-for="SoDienThoai" type="tel" class="form-control form-control-custom"
+                                           id="contactPhone" placeholder="Nhập số điện thoại..." required>
+                                    <div class="invalid-feedback">Vui lòng nhập số điện thoại để chúng tôi liên hệ.</div>
+                                    <span asp-validation-for="SoDienThoai" class="text-danger" style="font-size: 13px;"></span>
+                                </div>
+
+                                <!-- Email -->
+                                <div class="col-12">
+                                    <label asp-for="Email" for="contactEmail" class="form-label form-label-custom">
+                                        Email
+                                    </label>
+                                    <input asp-for="Email" type="email" class="form-control form-control-custom"
+                                           id="contactEmail" placeholder="Nhập địa chỉ email (không bắt buộc)...">
+                                    <div class="invalid-feedback">Vui lòng nhập đúng định dạng email.</div>
+                                    <span asp-validation-for="Email" class="text-danger" style="font-size: 13px;"></span>
+                                </div>
+
+                                <!--Tiêu Đề-->
+                                <div class="col-12">
+                                    <label asp-for="ChuDe" for="contactEmail" class="form-label form-label-custom">
+                                        Tiêu đề
+                                    </label>
+                                    <input asp-for="ChuDe" class="form-control form-control-custom"
+                                           id="contactMessage" placeholder="Nhập nội dung chủ đề của bạn" required>
+                                    <div class="invalid-feedback">Vui lòng nhập đúng định dạng chủ đề.</div>
+                                    <span asp-validation-for="ChuDe" class="text-danger" style="font-size: 13px;"></span>
+                                </div>
+
+                                <!-- Message -->
+                                <div class="col-12">
+                                    <label asp-for="NoiDung" for="contactMessage" class="form-label form-label-custom">
+                                        Nội dung liên hệ *
+                                    </label>
+                                    <textarea asp-for="NoiDung" class="form-control form-control-custom" id="contactMessage"
+                                              placeholder="Nhập nội dung chi tiết yêu cầu hỗ trợ của bạn..." required></textarea>
+                                    <div class="invalid-feedback">Vui lòng nhập nội dung liên hệ.</div>
+                                    <span asp-validation-for="NoiDung" class="text-danger" style="font-size: 13px;"></span>
+                                </div>
+
+                                <!-- Submit Button -->
+                                <div class="col-12 mt-4">
+                                    <button type="submit" class="btn btn-form-submit">
+                                        <i class="fa-solid fa-paper-plane"></i> Gửi Liên Hệ
+                                    </button>
+                                </div>
+
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- 4. GOOGLE MAP SECTION -->
+            <section class="map-section">
+                <div class="text-center mb-4">
+                    <h2 class="fw-bold text-dark" style="font-size: 1.8rem; letter-spacing: -0.5px;">
+                        Vị Trí
+                        Văn Phòng
+                    </h2>
+                    <p class="text-muted">Tìm đường đến trung tâm hỗ trợ TechSupport Viettel.</p>
+                </div>
+
+                <div class="map-wrapper">
+                    <iframe class="map-iframe"
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3928.6038576030796!2d105.78344477479433!3d10.04951099005845!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31a062abc4ee703d%3A0x1fa7659f181fc58d!2zMjEwIMSQLiBUcuG6p24gUGjDuiwgQ8OhaSBLaOG6vywgQ-G6p24gVGjGoSA5MDAwMDAsIFZp4buHdCBOYW0!5e0!3m2!1svi!2s!4v1780919470460!5m2!1svi!2s"
+                            allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
+                </div>
+            </section>
+
+            <!-- 6. CTA SECTION -->
+            <section class="contact-cta-section">
+                <h2 class="contact-cta-title">Bạn Cần Hỗ Trợ Kỹ Thuật Ngay?</h2>
+                <p class="contact-cta-desc">
+                    Tạo phiếu hỗ trợ hoặc liên hệ kỹ thuật viên của chúng tôi ngay hôm nay.
+                </p>
+
+                <div class="contact-cta-buttons">
+                    <a href="create-ticket.html" class="btn-cta-white">
+                        <i class="fa-solid fa-plus-circle me-1"></i> Tạo Phiếu Hỗ Trợ
+                    </a>
+                    <a href="tel:18008119" class="btn-cta-outline">
+                        <i class="fa-solid fa-phone me-1"></i> Liên Hệ Ngay
+                    </a>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- 5. SUPPORT FEATURES SECTION -->
+    <section class="features-section">
+        <div class="container">
+            <div class="row g-4">
+
+                <!-- Card 1 -->
+                <div class="col-lg-3 col-md-6 col-12">
+                    <div class="feature-item-card">
+                        <div class="feature-item-icon">
+                            <i class="fa-solid fa-headset"></i>
+                        </div>
+                        <h4>Hỗ trợ 24/7</h4>
+                        <p>Luôn trực tuyến tiếp nhận sự cố mọi lúc, mọi nơi, kể cả ngày Lễ Tết.</p>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="col-lg-3 col-md-6 col-12">
+                    <div class="feature-item-card">
+                        <div class="feature-item-icon">
+                            <i class="fa-solid fa-user-shield"></i>
+                        </div>
+                        <h4>Kỹ thuật chuyên nghiệp</h4>
+                        <p>Đội ngũ kỹ thuật tay nghề cao, được đào tạo bài bản và chuyên sâu.</p>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="col-lg-3 col-md-6 col-12">
+                    <div class="feature-item-card">
+                        <div class="feature-item-icon">
+                            <i class="bi bi-bolt"></i>
+                        </div>
+                        <h4>Tiếp nhận nhanh chóng</h4>
+                        <p>Cam kết chỉ số phản hồi SLA ngắn nhất để khắc phục sự cố tức thời.</p>
+                    </div>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="col-lg-3 col-md-6 col-12">
+                    <div class="feature-item-card">
+                        <div class="feature-item-icon">
+                            <i class="bi bi-heart-circle-check"></i>
+                        </div>
+                        <h4>Cam kết hài lòng</h4>
+                        <p>Quy trình rõ ràng, minh bạch, đảm bảo khách hàng hoàn toàn hài lòng.</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== FOOTER ==================== -->
+    @await Html.PartialAsync("_Footer")
+
+    <!-- ==================== CHATBOX CONTAINER ==================== -->
+    @await Html.PartialAsync("~/Views/Shared/_ChatBox.cshtml")
+
+    <!-- Toast Notification Container -->
+    <div class="custom-toast-container" id="toastContainer" aria-live="polite" aria-atomic="true"></div>
+
+    <!-- ==================== SCRIPTS ==================== -->
+    <!-- Bootstrap 5.3 JS Bundle (includes Popper) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+            crossorigin="anonymous"></script>
+
+    <!-- Component-Based JS -->
+    @* <script src="~/assets/js/header.js"></script>
+    <script src="~/assets/js/sidebar.js"></script>
+    <script src="~/assets/js/footer.js"></script> *@
+    <script src="~/assets/js/chatbox.js"></script>
+    <script src="~/assets/js/main.js"></script>
+    <script src="~/assets/js/contact.js"></script>
+
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+
+</body>
+
+</html>

@@ -375,20 +375,25 @@ textarea.form-control-custom {
 }
 
 .priority-icon {
-    font-size: 1.4rem;
+    font-size: 1.25rem;
     margin-bottom: 8px;
     transition: var(--transition-fast);
-    width: 36px;
-    height: 36px;
+    width: 42px;
+    height: 42px;
     border-radius: 50%;
-    background: rgba(15, 17, 21, 0.03);
+    background: rgba(15, 17, 21, 0.04);
     display: inline-flex;
     align-items: center;
     justify-content: center;
 }
 
+.priority-card-label.low .priority-icon { background: rgba(34, 197, 94, 0.1); }
+.priority-card-label.medium .priority-icon { background: rgba(245, 158, 11, 0.1); }
+.priority-card-label.high .priority-icon { background: rgba(239, 68, 68, 0.1); }
+.priority-card-label.urgent .priority-icon { background: rgba(225, 27, 30, 0.12); }
+
 .priority-title {
-    font-size: 0.85rem;
+    font-size: 0.88rem;
     font-weight: 700;
     color: var(--dark-blue);
     transition: var(--transition-fast);
@@ -410,7 +415,7 @@ input[type="radio"]:checked + .priority-card-label {
 }
 
 input[type="radio"]:checked + .priority-card-label .priority-icon {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.25) !important;
     color: var(--white) !important;
 }
 
@@ -425,7 +430,7 @@ input[type="radio"]:checked + .priority-card-label .priority-title {
 
 @keyframes urgentPulse {
     0% { transform: scale(1); opacity: 1; }
-    100% { transform: scale(1.15); opacity: 0.8; }
+    100% { transform: scale(1.18); opacity: 0.85; }
 }
 
 .text-dark-danger {
@@ -1282,6 +1287,116 @@ span.flatpickr-weekday {
 
 .custom-confirmation-checkbox .form-check-input:focus {
     box-shadow: 0 0 0 3.5px rgba(238, 0, 51, 0.15);
+}
+
+/* =============================================================
+   SWEETALERT2 MODAL OVERRIDES & ENHANCEMENTS
+   ============================================================= */
+.swal2-container {
+    z-index: 999999 !important;
+}
+
+.swal2-popup {
+    border-radius: 24px !important;
+    padding: 28px 24px !important;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.2) !important;
+    border: 1px solid rgba(15, 17, 21, 0.08) !important;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+    max-width: 480px !important;
+}
+
+.swal2-title {
+    font-size: 1.35rem !important;
+    font-weight: 850 !important;
+    color: #111827 !important;
+    margin-bottom: 16px !important;
+}
+
+.swal2-icon.swal2-question {
+    border-color: #EE0033 !important;
+    color: #EE0033 !important;
+}
+
+.swal2-icon.swal2-question .swal2-icon-content {
+    color: #EE0033 !important;
+}
+
+.swal-confirm-details {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 14px 18px;
+    text-align: left;
+}
+
+.swal-detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 9px 0;
+    border-bottom: 1px dashed #e2e8f0;
+    font-size: 0.88rem;
+}
+
+.swal-detail-row:last-child {
+    border-bottom: none;
+}
+
+.swal-detail-label {
+    color: #6b7280;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+}
+
+.swal-detail-value {
+    color: #111827;
+    font-weight: 700;
+    text-align: right;
+    max-width: 60%;
+    word-break: break-word;
+}
+
+.swal-notice-box {
+    background: rgba(238, 0, 51, 0.05);
+    border: 1px solid rgba(238, 0, 51, 0.15);
+    border-radius: 12px;
+    padding: 10px 14px;
+    font-size: 0.82rem;
+    color: #374151;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.swal2-actions {
+    gap: 12px !important;
+    margin-top: 22px !important;
+}
+
+.swal2-styled.swal2-confirm {
+    background: linear-gradient(135deg, #EE0033 0%, #ff4d6d 100%) !important;
+    border-radius: 12px !important;
+    font-weight: 700 !important;
+    font-size: 0.92rem !important;
+    padding: 11px 24px !important;
+    box-shadow: 0 6px 16px rgba(238, 0, 51, 0.25) !important;
+    border: none !important;
+}
+
+.swal2-styled.swal2-cancel {
+    background-color: #f3f4f6 !important;
+    color: #374151 !important;
+    border-radius: 12px !important;
+    font-weight: 700 !important;
+    font-size: 0.92rem !important;
+    padding: 11px 24px !important;
+    border: 1px solid #e5e7eb !important;
+}
+
+.swal2-styled.swal2-cancel:hover {
+    background-color: #e5e7eb !important;
+    color: #111827 !important;
 }
 
 /* Hide static service dropdown options by default initially */

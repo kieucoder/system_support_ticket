@@ -1,0 +1,66 @@
+@model SupportTicketSysterm.ViewModels.LiveSupportViewModel
+
+<div class="modal fade" id="ticketModal" tabindex="-1" aria-labelledby="ticketModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 16px;">
+            <div class="modal-header bg-danger text-white" style="border-top-left-radius: 16px; border-top-right-radius: 16px;">
+                <h5 class="modal-title fw-bold" id="ticketModalLabel"><i class="bi bi-file-earmark-text me-2"></i> Chi tiết phiếu hỗ trợ</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="table-responsive">
+                    <table class="table table-borderless align-middle m-0">
+                        <tbody>
+                            <tr>
+                                <td class="fw-bold text-dark w-40">Mã phiếu:</td>
+                                <td class="text-secondary fw-bold">@Model.Ticket.MaPhieu</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold text-dark">Danh mục:</td>
+                                <td class="text-secondary">@(Model.Ticket.IdDichVuNavigation?.IdDanhMucNavigation?.TenDanhMuc ?? "Hỗ trợ kỹ thuật")</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold text-dark">Dịch vụ:</td>
+                                <td class="text-secondary">@(Model.Ticket.IdDichVuNavigation?.TenDichVu ?? "Cố định Băng rộng")</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold text-dark">Ngày tạo:</td>
+                                <td class="text-secondary">@Model.Ticket.NgayTao?.ToString("dd/MM/yyyy")</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold text-dark">Ngày cập nhật:</td>
+                                <td class="text-secondary">@(Model.Ticket.NgayCapNhat?.ToString("dd/MM/yyyy") ?? "Chưa cập nhật")</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold text-dark">Trạng thái:</td>
+                                <td>
+                                    <span class="badge bg-warning text-dark">@Model.Ticket.TrangThai</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold text-dark">Mức ưu tiên:</td>
+                                <td>
+                                    @if (Model.Ticket.MucDoUuTien == 1) { <span class="badge bg-secondary">Thấp</span> }
+                                    else if (Model.Ticket.MucDoUuTien == 2) { <span class="badge bg-info text-dark">Trung bình</span> }
+                                    else if (Model.Ticket.MucDoUuTien == 3) { <span class="badge bg-warning text-dark">Cao</span> }
+                                    else if (Model.Ticket.MucDoUuTien == 4) { <span class="badge bg-danger">Khẩn cấp</span> }
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold text-dark">Nhân viên:</td>
+                                <td class="text-secondary">@(Model.Staff?.HoTen ?? "Chưa được phân công")</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold text-dark">Nội dung chi tiết:</td>
+                                <td class="text-secondary" style="white-space: pre-line;">@Model.Ticket.NoiDung</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer" style="border-top: none;">
+                <button type="button" class="btn btn-secondary w-100" data-bs-dismiss="modal" style="border-radius: 8px;">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>

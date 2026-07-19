@@ -1,0 +1,51 @@
+@model IEnumerable<SupportTicketSysterm.Data.LienHe>
+
+<div class="convo-list-scrollable p-2">
+    @if (Model == null || !Model.Any())
+    {
+        <div class="text-center py-5 text-muted">
+            <i class="bi bi-chat-left-text fs-2 mb-2 d-block"></i>
+            <p class="small mb-0">Bạn chưa có cuộc trò chuyện trực tuyến nào.</p>
+        </div>
+    }
+    else
+    {
+        @foreach (var lh in Model)
+        {
+            var latestMsg = lh.TinNhans.OrderByDescending(t => t.ThoiGian).FirstOrDefault();
+            var lastMsgText = latestMsg != null ? (latestMsg.TinNhan1 ?? "[Tệp đính kèm]") : (lh.NoiDung ?? "Không có nội dung");
+            var unreadCount = lh.TinChuaDocKhach ?? 0;
+            var isClosed = lh.TrangThai == "Hoàn thành" || lh.TrangThai == "Đã đóng";
+
+            <div class="convo-row" onclick="window.TechSupportChat.openConversation(@lh.IdLienHe)" data-convo-id="@lh.IdLienHe">
+                <div class="convo-row-header">
+                    <span class="convo-code">
+                        @if (lh.IdPhieuNavigation != null)
+                        {
+                            <i class="bi bi-ticket-detailed me-1"></i>@lh.IdPhieuNavigation.MaPhieu
+                        }
+                        else
+                        {
+                            <i class="bi bi-chat-right-text me-1"></i>@($"LH-{lh.IdLienHe:D4}")
+                        }
+                    </span>
+                    <span class="convo-time">
+                        @(lh.ThoiGianGui?.ToString("HH:mm dd/MM/yyyy") ?? lh.NgayTao?.ToString("dd/MM/yyyy"))
+                    </span>
+                </div>
+                <h6 class="convo-title text-truncate">@lh.TieuDe</h6>
+                <div class="convo-last-msg text-truncate">@lastMsgText</div>
+                <div class="convo-row-footer">
+                    <span class="convo-status @(isClosed ? "completed" : "processing")">
+                        <span class="status-dot" style="background-color: @(isClosed ? "#10B981" : "#e60028");"></span>
+                        @(lh.TrangThai ?? "Đang hỗ trợ")
+                    </span>
+                    @if (unreadCount > 0)
+                    {
+                        <span class="badge bg-danger rounded-pill fw-bold" style="font-size: 0.72rem; padding: 4px 8px;">@unreadCount</span>
+                    }
+                </div>
+            </div>
+        }
+    }
+</div>

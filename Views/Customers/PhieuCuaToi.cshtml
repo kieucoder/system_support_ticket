@@ -1,0 +1,895 @@
+@model SupportTicketSysterm.Models.PhieuHoTroViewModel
+@using System.Globalization
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    ViewData["Title"] = "Phiếu hỗ trợ của tôi";
+    Layout = null; // Standalone layout matching customer pages
+    
+    // Status display configurations
+    var statusOrder = new List<string> { "ChoTiepNhan", "DangXuLy", "ChoKhachHangPhanHoi", "DaHoanThanh", "DaHuy" };
+    
+    var statusMapping = new Dictionary<string, (string Name, string Class, string Icon, string Color)>
+    {
+        { "ChoTiepNhan", ("Chờ tiếp nhận", "badge-status-pending", "bi-clock", "#F59E0B") },
+        { "DangXuLy", ("Đang xử lý", "badge-status-processing", "bi-hourglass-split", "#3B82F6") },
+        { "ChoKhachHangPhanHoi", ("Chờ phản hồi", "badge-status-feedback", "bi-chat-left-dots", "#F97316") },
+        { "DaHoanThanh", ("Hoàn thành", "badge-status-completed", "bi-check-circle", "#10B981") },
+        { "DaHuy", ("Đã hủy", "badge-status-cancelled", "bi-x-circle", "#6B7280") }
+    };
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Phiếu Hỗ Trợ Của Tôi - TechSupport Viettel</title>
+
+    <!-- SEO Optimization -->
+    <meta name="description" content="Quản lý danh sách các phiếu yêu cầu hỗ trợ kỹ thuật của bạn trực tuyến. Theo dõi tiến trình, trao đổi với kỹ thuật viên và kiểm tra thời gian hẹn xử lý.">
+    <meta name="keywords" content="phiếu hỗ trợ viettel, theo dõi ticket viettel, báo lỗi viettel, báo hỏng wifi, techsupport">
+    <meta name="author" content="Viettel Telecom TechSupport">
+    <meta name="robots" content="noindex, nofollow">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="https://viettel.com.vn/favicon.ico">
+
+    <!-- Bootstrap 5.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <!-- Font Awesome 6.6.0 CDN -->
+    <link rel="stylesheet" id="fa-cdn-link" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+    <!-- Google Fonts (Inter & Poppins) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Core Layout Stylesheets -->
+    <link rel="stylesheet" href="~/assets/css/style.css">
+    <link rel="stylesheet" href="~/assets/css/responsive.css">
+    <link rel="stylesheet" href="~/assets/css/header.css">
+    <link rel="stylesheet" href="~/assets/css/sidebar.css">
+    <link rel="stylesheet" href="~/assets/css/footer.css">
+    <link rel="stylesheet" href="~/assets/css/chatbox.css">
+
+    <!-- Custom View Stylesheet (Premium Redesign) -->
+    <link rel="stylesheet" href="~/assets/css/phieu-cuatoi.css" />
+</head>
+
+<body>
+
+    <!-- ==================== HEADER ==================== -->
+    @await Html.PartialAsync("_Header", Context.Session)
+
+    <!-- ==================== SIDEBAR ==================== -->
+    @await Html.PartialAsync("_Sidebar")
+
+    <div class="ticket-dashboard-wrapper">
+        
+        <!-- ==================== HERO SECTION ==================== -->
+        <section class="hero-section">
+            <div class="container hero-content">
+                <div class="row align-items-center g-5">
+                    <div class="col-lg-7 col-12 text-start hero-text-col animate-fade-up">
+
+                        <!-- Breadcrumb Navigation -->
+                        <nav aria-label="breadcrumb" class="hero-breadcrumb">
+                            <ol class="breadcrumb m-0" itemscope itemtype="https://schema.org/BreadcrumbList">
+                                <li class="breadcrumb-item" itemprop="itemListElement" itemscope
+                                    itemtype="https://schema.org/ListItem">
+                                    <a href="@Url.Action("TrangChu", "Customers")" itemprop="item"
+                                       class="text-decoration-none d-inline-flex align-items-center">
+                                        <i class="fa-solid fa-house-door-fill me-1"></i>
+                                        <span itemprop="name">Trang chủ</span>
+                                    </a>
+                                    <meta itemprop="position" content="1" />
+                                </li>
+                                <li class="breadcrumb-item active" itemprop="itemListElement" itemscope
+                                    itemtype="https://schema.org/ListItem" aria-current="page">
+                                    <span itemprop="name">Phiếu của tôi</span>
+                                    <meta itemprop="position" content="2" />
+                                </li>
+                            </ol>
+                        </nav>
+
+                        <!-- Badge -->
+                        <span class="hero-badge">
+                            <i class="bi bi-file-earmark-text me-1"></i> Quản lý phiếu hỗ trợ
+                        </span>
+
+                        <!-- Title -->
+                        <h1 class="hero-title text-uppercase"><span class="text-primary"> Phiếu Hỗ Trợ Của Tôi</span></h1>
+
+                        <!-- Description -->
+                        <p class="hero-desc">
+                            Theo dõi, quản lý và xử lý tất cả các yêu cầu hỗ trợ kỹ thuật của bạn một cách dễ dàng.
+                            Xem tiến trình, liên hệ với kỹ thuật viên và đánh giá dịch vụ.
+                        </p>
+
+                        <!-- CTA Buttons -->
+                        <div class="hero-cta-buttons d-flex flex-wrap gap-3 mt-4">
+                            <a href="@Url.Action("TaoPhieu", "Ticket")" class="btn btn-hero-create px-4 py-2">
+                                <i class="bi bi-plus-circle me-1"></i> Tạo Phiếu Mới
+                            </a>
+                            <a href="@Url.Action("TraCuuPhieu", "Ticket")" class="btn btn-hero-contact px-4 py-2">
+                                <i class="bi bi-search me-1"></i> Tra Cứu Phiếu
+                            </a>
+                        </div>
+
+                        <!-- Quick Stats -->
+                        <div class="lk-hero-stats d-flex flex-wrap gap-3 mt-5">
+                            <div class="lk-hero-stat-item">
+                                <span class="lk-hero-stat-num" style="color:#D71920" data-target="@Model.TongPhieu">0</span>
+                                <span class="lk-hero-stat-label">Tổng phiếu</span>
+                            </div>
+                            <div class="lk-hero-stat-sep"></div>
+                            <div class="lk-hero-stat-item">
+                                <span class="lk-hero-stat-num" style="color:#3B82F6" data-target="@Model.DangXuLy">0</span>
+                                <span class="lk-hero-stat-label">Đang xử lý</span>
+                            </div>
+                            <div class="lk-hero-stat-sep"></div>
+                            <div class="lk-hero-stat-item">
+                                <span class="lk-hero-stat-num" style="color:#10B981" data-target="@Model.DaHoanThanh">0</span>
+                                <span class="lk-hero-stat-label">Hoàn thành</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- RIGHT: SVG Illustration -->
+                    <div class="col-lg-5 col-12 hero-banner-wrapper animate-fade-up delay-1">
+                        <svg class="hero-banner-svg" viewBox="0 0 500 420" xmlns="http://www.w3.org/2000/svg"
+                             aria-label="Quản lý phiếu hỗ trợ">
+                            <defs>
+                                <linearGradient id="pcGradRed" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#D71920" />
+                                    <stop offset="100%" stop-color="#ff4d6d" />
+                                </linearGradient>
+                                <linearGradient id="pcGradDark" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#1f2937" />
+                                    <stop offset="100%" stop-color="#111827" />
+                                </linearGradient>
+                                <linearGradient id="pcGradBlue" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#3B82F6" />
+                                    <stop offset="100%" stop-color="#2563EB" />
+                                </linearGradient>
+                                <linearGradient id="pcGradGreen" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#10B981" />
+                                    <stop offset="100%" stop-color="#059669" />
+                                </linearGradient>
+                            </defs>
+
+                            <!-- Background decorative -->
+                            <circle cx="250" cy="210" r="175" fill="url(#pcGradRed)" opacity="0.04" />
+                            <circle cx="400" cy="80" r="65" fill="url(#pcGradRed)" opacity="0.06" />
+
+                            <!-- Main card -->
+                            <rect x="40" y="50" width="380" height="310" rx="24"
+                                  fill="#ffffff" stroke="rgba(15,17,21,0.05)" stroke-width="2"
+                                  filter="drop-shadow(0 20px 40px rgba(0,0,0,0.07))" />
+
+                            <!-- Header bar -->
+                            <path d="M40 74 C40 60.85 50.85 50 64 50 L396 50 C409.15 50 420 60.85 420 74 L420 95 L40 95 Z"
+                                  fill="url(#pcGradDark)" />
+                            <!-- Traffic lights -->
+                            <circle cx="65" cy="72" r="5" fill="#D71920" />
+                            <circle cx="81" cy="72" r="5" fill="#eab308" />
+                            <circle cx="97" cy="72" r="5" fill="#10b981" />
+
+                            <!-- Ticket cards visualization on screen -->
+                            <!-- Card 1: Processing -->
+                            <rect x="60" y="115" width="150" height="55" rx="8" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1" />
+                            <rect x="72" y="127" width="45" height="8" rx="3" fill="url(#pcGradBlue)" opacity="0.8" />
+                            <rect x="72" y="138" width="80" height="6" rx="2" fill="#CBD5E0" />
+                            <rect x="72" y="146" width="90" height="6" rx="2" fill="#E2E8F0" />
+                            <circle cx="170" cy="142" r="6" fill="url(#pcGradBlue)" />
+
+                            <!-- Card 2: Completed -->
+                            <rect x="230" y="115" width="150" height="55" rx="8" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1" />
+                            <rect x="242" y="127" width="50" height="8" rx="3" fill="url(#pcGradGreen)" opacity="0.8" />
+                            <rect x="242" y="138" width="70" height="6" rx="2" fill="#CBD5E0" />
+                            <rect x="242" y="146" width="100" height="6" rx="2" fill="#E2E8F0" />
+                            <path d="M330 137 L335 143 L343 132" stroke="url(#pcGradGreen)" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+
+                            <!-- Card 3: Pending -->
+                            <rect x="60" y="185" width="150" height="55" rx="8" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1" />
+                            <rect x="72" y="197" width="55" height="8" rx="3" fill="#F59E0B" opacity="0.8" />
+                            <rect x="72" y="208" width="60" height="6" rx="2" fill="#CBD5E0" />
+                            <rect x="72" y="216" width="80" height="6" rx="2" fill="#E2E8F0" />
+                            <circle cx="170" cy="212" r="6" fill="#F59E0B" />
+
+                            <!-- Card 4: In Queue -->
+                            <rect x="230" y="185" width="150" height="55" rx="8" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1" />
+                            <rect x="242" y="197" width="65" height="8" rx="3" fill="#6B7280" opacity="0.8" />
+                            <rect x="242" y="208" width="75" height="6" rx="2" fill="#CBD5E0" />
+                            <rect x="242" y="216" width="85" height="6" rx="2" fill="#E2E8F0" />
+                            <circle cx="330" cy="212" r="6" fill="#6B7280" />
+
+                            <!-- Search bar -->
+                            <rect x="60" y="255" width="320" height="30" rx="8" fill="#F3F4F6" stroke="#E5E7EB" stroke-width="1.5" />
+                            <circle cx="75" cy="270" r="4.5" fill="#9CA3AF" />
+                            <rect x="85" y="265" width="100" height="10" rx="3" fill="#D1D5DB" />
+
+                            <!-- Floating notification -->
+                            <g transform="translate(320, 285)">
+                                <circle cx="0" cy="0" r="12" fill="url(#pcGradRed)" filter="drop-shadow(0 4px 8px rgba(215,25,32,0.3))" />
+                                <path d="M-2 -2 L2 2 M2 -2 L-2 2" stroke="#fff" stroke-width="2" stroke-linecap="round" />
+                            </g>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== QUICK STATISTICS SECTION ==================== -->
+        <section class="stats-section mb-5">
+            <div class="container">
+                <div class="stats-grid-row">
+                    
+                    <!-- Total Tickets -->
+                    <div class="animate-fade-up">
+                        <div class="stat-card-custom stat-theme-total">
+                            <div class="stat-card-custom__header">
+                                <span class="stat-card-custom__label">Tổng số phiếu</span>
+                                <div class="stat-card-custom__icon-circle">
+                                    <i class="bi bi-folder2-open"></i>
+                                </div>
+                            </div>
+                            <div class="stat-card-custom__info">
+                                <h3 class="stat-card-custom__value" data-target="@Model.TongPhieu">0</h3>
+                                <div class="stat-card-custom__progress-wrapper">
+                                    <div class="stat-card-custom__progress-bg">
+                                        <div class="stat-card-custom__progress-bar"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Processing -->
+                    <div class="animate-fade-up delay-1">
+                        <div class="stat-card-custom stat-theme-processing">
+                            <div class="stat-card-custom__header">
+                                <span class="stat-card-custom__label">Đang xử lý</span>
+                                <div class="stat-card-custom__icon-circle">
+                                    <i class="bi bi-gear-wide-connected"></i>
+                                </div>
+                            </div>
+                            <div class="stat-card-custom__info">
+                                <h3 class="stat-card-custom__value" data-target="@Model.DangXuLy">0</h3>
+                                <div class="stat-card-custom__progress-wrapper">
+                                    <div class="stat-card-custom__progress-bg">
+                                        <div class="stat-card-custom__progress-bar"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pending -->
+                    <div class="animate-fade-up delay-2">
+                        <div class="stat-card-custom stat-theme-pending">
+                            <div class="stat-card-custom__header">
+                                <span class="stat-card-custom__label">Chờ tiếp nhận</span>
+                                <div class="stat-card-custom__icon-circle">
+                                    <i class="bi bi-clock-history"></i>
+                                </div>
+                            </div>
+                            <div class="stat-card-custom__info">
+                                <h3 class="stat-card-custom__value" data-target="@Model.ChoTiepNhan">0</h3>
+                                <div class="stat-card-custom__progress-wrapper">
+                                    <div class="stat-card-custom__progress-bg">
+                                        <div class="stat-card-custom__progress-bar"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Completed -->
+                    <div class="animate-fade-up delay-3">
+                        <div class="stat-card-custom stat-theme-completed">
+                            <div class="stat-card-custom__header">
+                                <span class="stat-card-custom__label">Hoàn thành</span>
+                                <div class="stat-card-custom__icon-circle">
+                                    <i class="bi bi-patch-check"></i>
+                                </div>
+                            </div>
+                            <div class="stat-card-custom__info">
+                                <h3 class="stat-card-custom__value" data-target="@Model.DaHoanThanh">0</h3>
+                                <div class="stat-card-custom__progress-wrapper">
+                                    <div class="stat-card-custom__progress-bg">
+                                        <div class="stat-card-custom__progress-bar"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cancelled -->
+                    <div class="animate-fade-up delay-4">
+                        <div class="stat-card-custom stat-theme-cancelled">
+                            <div class="stat-card-custom__header">
+                                <span class="stat-card-custom__label">Đã hủy</span>
+                                <div class="stat-card-custom__icon-circle">
+                                    <i class="bi bi-slash-circle"></i>
+                                </div>
+                            </div>
+                            <div class="stat-card-custom__info">
+                                <h3 class="stat-card-custom__value" data-target="@Model.DaHuy">0</h3>
+                                <div class="stat-card-custom__progress-wrapper">
+                                    <div class="stat-card-custom__progress-bg">
+                                        <div class="stat-card-custom__progress-bar"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Overdue -->
+                    <div class="animate-fade-up delay-5">
+                        <div class="stat-card-custom stat-theme-overdue">
+                            <div class="stat-card-custom__header">
+                                <span class="stat-card-custom__label">Quá hạn</span>
+                                <div class="stat-card-custom__icon-circle">
+                                    <i class="bi bi-exclamation-octagon"></i>
+                                </div>
+                            </div>
+                            <div class="stat-card-custom__info">
+                                <h3 class="stat-card-custom__value" data-target="@Model.QuaHan">0</h3>
+                                <div class="stat-card-custom__progress-wrapper">
+                                    <div class="stat-card-custom__progress-bg">
+                                        <div class="stat-card-custom__progress-bar"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== MAIN CONTENT SECTION ==================== -->
+        <main class="py-3">
+            <div class="container">
+                <div class="row g-4">
+                    
+                    <!-- Left Column: Search, Filter, Tickets List -->
+                    <section class="col-lg-9 col-12">
+                        
+                        <!-- Search Box (Prominent Floating Panel) -->
+                        <div class="search-container-wrap animate-fade-up">
+                            <form action="@Url.Action("PhieuCuaToi", "Customers")" method="get" id="searchForm">
+                                <div class="search-box-custom">
+                                    <input type="text" 
+                                           class="search-box-custom__input" 
+                                           id="searchInput"
+                                           name="search" 
+                                           placeholder="Tìm kiếm mã phiếu, tiêu đề hoặc dịch vụ..."
+                                           value="@ViewBag.SearchQuery">
+                                    <span class="search-box-custom__icon">
+                                        <i class="bi bi-search"></i>
+                                    </span>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Filter Controls Panel -->
+                        <div class="control-panel mb-4 animate-fade-up">
+                            <form action="@Url.Action("PhieuCuaToi", "Customers")" method="get" id="filterForm">
+                                <!-- Pass query text inside filter form so search holds on filtering -->
+                                <input type="hidden" name="search" value="@ViewBag.SearchQuery" />
+                                
+                                <!-- Hidden input for status field filled by Chips -->
+                                <input type="hidden" name="status" id="statusFilterField" value="@ViewBag.SelectedStatus">
+
+                                <div class="d-flex flex-column gap-3">
+                                    
+                                    <!-- Filter Chips for Status -->
+                                    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                                        <div class="filter-chips-wrapper">
+                                            <button type="button" class="filter-chip @(string.IsNullOrEmpty(ViewBag.SelectedStatus) ? "active" : "")" data-status="">
+                                                Tất cả
+                                            </button>
+                                            <button type="button" class="filter-chip @(ViewBag.SelectedStatus == "ChoTiepNhan" ? "active" : "")" data-status="ChoTiepNhan">
+                                                Chờ tiếp nhận
+                                            </button>
+                                            <button type="button" class="filter-chip @(ViewBag.SelectedStatus == "DangXuLy" ? "active" : "")" data-status="DangXuLy">
+                                                Đang xử lý
+                                            </button>
+                                            <button type="button" class="filter-chip @(ViewBag.SelectedStatus == "DaHoanThanh" ? "active" : "")" data-status="DaHoanThanh">
+                                                Hoàn thành
+                                            </button>
+                                            <button type="button" class="filter-chip @(ViewBag.SelectedStatus == "DaHuy" ? "active" : "")" data-status="DaHuy">
+                                                Đã hủy
+                                            </button>
+                                        </div>
+                                        
+                                        <!-- Custom Date Toggle button -->
+                                        <button type="button" class="btn-toggle-date" id="btnDateToggle" onclick="toggleDateRange()">
+                                            <i class="bi bi-calendar-range"></i> Khoảng ngày tạo <i class="bi bi-chevron-down ms-1" style="font-size: 0.7rem;"></i>
+                                        </button>
+                                    </div>
+
+                                    <!-- Date Fields (Collapsible) -->
+                                    <div class="row g-2 d-none" id="dateRangeRow">
+                                        <div class="col-md-6 col-12">
+                                            <label class="small text-muted fw-bold mb-1">Từ ngày</label>
+                                            <input type="date" class="form-control" name="dateFrom" id="dateFrom" value="@ViewBag.DateFrom">
+                                        </div>
+                                        <div class="col-md-6 col-12">
+                                            <label class="small text-muted fw-bold mb-1">Đến ngày</label>
+                                            <input type="date" class="form-control" name="dateTo" id="dateTo" value="@ViewBag.DateTo">
+                                        </div>
+                                    </div>
+
+                                    <!-- Other Filter Selection Inputs -->
+                                    <div class="row g-2 align-items-end">
+                                        
+                                        <!-- Service Dropdown -->
+                                        <div class="col-md-4 col-sm-6 col-12">
+                                            <label class="small text-muted fw-bold mb-1">Dịch vụ liên quan</label>
+                                            <div class="custom-select-wrapper">
+                                                <select class="custom-select" id="serviceFilter" name="service" onchange="this.form.submit()">
+                                                    <option value="">Tất cả dịch vụ</option>
+                                                    @foreach(var service in Model.DanhSachDichVu ?? new List<string>())
+                                                    {
+                                                        <option value="@service" selected="@(ViewBag.SelectedService == service)">@service</option>
+                                                    }
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <!-- Priority Dropdown -->
+                                        <div class="col-md-4 col-sm-6 col-12">
+                                            <label class="small text-muted fw-bold mb-1">Mức độ ưu tiên</label>
+                                            <div class="custom-select-wrapper">
+                                                <select class="custom-select" id="priorityFilter" name="priority" onchange="this.form.submit()">
+                                                    <option value="">Tất cả độ ưu tiên</option>
+                                                    <option value="Low" selected="@(ViewBag.SelectedPriority == "Low")">Thấp (Low)</option>
+                                                    <option value="Medium" selected="@(ViewBag.SelectedPriority == "Medium")">Trung bình (Medium)</option>
+                                                    <option value="High" selected="@(ViewBag.SelectedPriority == "High")">Cao (High)</option>
+                                                    <option value="Critical" selected="@(ViewBag.SelectedPriority == "Critical")">Khẩn cấp (Critical)</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <!-- Sort options -->
+                                        <div class="col-md-4 col-sm-12 col-12">
+                                            <label class="small text-muted fw-bold mb-1">Sắp xếp theo</label>
+                                            <div class="custom-select-wrapper">
+                                                <select class="custom-select" id="sortByFilter" name="sortBy" onchange="this.form.submit()">
+                                                    <option value="" selected="@(string.IsNullOrEmpty(ViewBag.SortBy))">Ngày tạo (Mới nhất)</option>
+                                                    <option value="date_asc" selected="@(ViewBag.SortBy == "date_asc")">Ngày tạo (Cũ nhất)</option>
+                                                    <option value="priority" selected="@(ViewBag.SortBy == "priority")">Mức ưu tiên giảm dần</option>
+                                                    <option value="service" selected="@(ViewBag.SortBy == "service")">Tên dịch vụ (A-Z)</option>
+                                                    <option value="maPhieu" selected="@(ViewBag.SortBy == "maPhieu")">Mã phiếu</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <!-- Filter Button Action Triggers -->
+                                    <div class="d-flex justify-content-between align-items-center border-top pt-3 mt-1">
+                                        <span class="small text-muted">
+                                            Đã tìm thấy <strong class="text-dark">@(Model.DanhSachPhieu?.Count ?? 0)</strong> yêu cầu
+                                        </span>
+                                        <div class="d-flex gap-2">
+                                            <button type="submit" class="btn-control-apply">
+                                                <i class="bi bi-funnel-fill"></i> Áp dụng lọc
+                                            </button>
+                                            <button type="button" class="btn-control-reset" onclick="resetFilters()">
+                                                <i class="bi bi-arrow-counterclockwise"></i> Thiết lập lại
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Tickets List Container -->
+                        <div class="tickets-section">
+                            @if (Model.DanhSachPhieu == null || Model.DanhSachPhieu.Count == 0)
+                            {
+                                <!-- EMPTY STATE (SaaS Standard Layout) -->
+                                <div class="empty-state-custom animate-fade-up">
+                                    <svg class="empty-state-custom__svg" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <circle cx="100" cy="100" r="70" fill="#F0F4F8"/>
+                                        <rect x="75" y="70" width="50" height="60" rx="8" fill="#FFFFFF" stroke="#CBD5E0" stroke-width="2"/>
+                                        <line x1="85" y1="85" x2="115" y2="85" stroke="#E2E8F0" stroke-width="2" stroke-linecap="round"/>
+                                        <line x1="85" y1="95" x2="115" y2="95" stroke="#E2E8F0" stroke-width="2" stroke-linecap="round"/>
+                                        <line x1="85" y1="105" x2="105" y2="105" stroke="#E2E8F0" stroke-width="2" stroke-linecap="round"/>
+                                        <circle cx="125" cy="125" r="20" fill="var(--viettel-red)" opacity="0.1"/>
+                                        <path d="M125 117 L125 133" stroke="var(--viettel-red)" stroke-width="3" stroke-linecap="round"/>
+                                        <path d="M117 125 L133 125" stroke="var(--viettel-red)" stroke-width="3" stroke-linecap="round"/>
+                                    </svg>
+                                    <h4 class="empty-state-custom__title">Bạn chưa có phiếu hỗ trợ.</h4>
+                                    <p class="empty-state-custom__desc">
+                                        Không tìm thấy phiếu hỗ trợ nào phù hợp với bộ lọc đã chọn. Hãy thử thiết lập lại bộ lọc hoặc bắt đầu bằng cách gửi yêu cầu mới.
+                                    </p>
+                                    <a href="@Url.Action("TaoPhieu", "Ticket")" class="btn-hero-primary">
+                                        <i class="bi bi-plus-circle"></i> Tạo phiếu
+                                    </a>
+                                </div>
+                            }
+                            else
+                            {
+                                <!-- SaaS Issue Grouping Layout -->
+                                <div class="tickets-list-view">
+                                    
+                                    @{
+                                        Func<string?, string> normalizeStatus = (status) =>
+                                        {
+                                            if (string.IsNullOrEmpty(status)) return "ChoTiepNhan";
+                                            var lowered = status.ToLower();
+                                            if (lowered.Contains("tiepnhan") || lowered.Contains("tiếp nhận") || lowered.Contains("pending")) return "ChoTiepNhan";
+                                            if (lowered.Contains("xuly") || lowered.Contains("xử lý") || lowered.Contains("processing")) return "DangXuLy";
+                                            if (lowered.Contains("phanhoi") || lowered.Contains("phản hồi")) return "ChoKhachHangPhanHoi";
+                                            if (lowered.Contains("hoanthanh") || lowered.Contains("hoàn thành") || lowered.Contains("completed")) return "DaHoanThanh";
+                                            if (lowered.Contains("huy") || lowered.Contains("hủy") || lowered.Contains("cancelled")) return "DaHuy";
+                                            return "ChoTiepNhan";
+                                        };
+
+                                        // Grouping tickets by status
+                                        var groupedTickets = Model.DanhSachPhieu
+                                            .GroupBy(p => normalizeStatus(p.TrangThai))
+                                            .OrderBy(g => statusOrder.IndexOf(g.Key) >= 0 ? statusOrder.IndexOf(g.Key) : 99)
+                                            .ToList();
+                                    }
+
+                                    @foreach (var group in groupedTickets)
+                                    {
+                                        var key = group.Key;
+                                        var mapping = statusMapping.ContainsKey(key) ? statusMapping[key] : (Name: key, Class: "badge-status-pending", Icon: "bi-question-circle", Color: "#F59E0B");
+                                        
+                                        <div class="ticket-group mb-4 animate-fade-up" id="group-@key">
+                                            
+                                            <!-- Collapsible Group Header -->
+                                            <div class="ticket-group-header">
+                                                <h4 class="ticket-group-header__title">
+                                                    <i class="bi @mapping.Icon" style="color: @mapping.Color;"></i>
+                                                    @mapping.Name
+                                                    <span class="ticket-group-header__count">@group.Count()</span>
+                                                </h4>
+                                                <span class="ticket-group-header__toggle-icon">
+                                                    <i class="bi bi-chevron-down"></i>
+                                                </span>
+                                            </div>
+
+                                            <!-- Group Body (List Rows) -->
+                                            <div class="ticket-group-content">
+                                                @foreach (var phieu in group)
+                                                {
+                                                    var priorityClass = phieu.MucUuTien switch
+                                                    {
+                                                        "Low" => "badge-pri-low",
+                                                        "Medium" => "badge-pri-medium",
+                                                        "High" => "badge-pri-high",
+                                                        "Critical" => "badge-pri-critical",
+                                                        _ => "badge-pri-low"
+                                                    };
+
+                                                    var priorityLabel = phieu.MucUuTien switch
+                                                    {
+                                                        "Low" => "Thấp",
+                                                        "Medium" => "Trung bình",
+                                                        "High" => "Cao",
+                                                        "Critical" => "Khẩn cấp",
+                                                        _ => phieu.MucUuTien
+                                                    };
+
+                                                    var isCompleted = normalizeStatus(phieu.TrangThai) == "DaHoanThanh";
+
+                                                    <div class="ticket-item-row" style="--status-color: @mapping.Color;">
+                                                        
+                                                        <!-- Left Main Details -->
+                                                        <div class="ticket-item-row__main">
+                                                            
+                                                            <!-- Meta Top -->
+                                                            <div class="ticket-item-row__meta-top">
+                                                                <span class="ticket-item-row__id">@phieu.MaPhieu</span>
+                                                                <span class="ticket-item-row__badge-priority @priorityClass">
+                                                                    @priorityLabel
+                                                                </span>
+                                                                <span class="ticket-item-row__badge-status @mapping.Class">
+                                                                    <i class="bi @mapping.Icon"></i> @mapping.Name
+                                                                </span>
+                                                            </div>
+
+                                                            <!-- Title -->
+                                                            <h5 class="ticket-item-row__title">
+                                                                <a asp-controller="Ticket" asp-action="ChiTietPhieu" asp-route-id="@phieu.IdPhieu">@phieu.TieuDe</a>
+                                                            </h5>
+
+                                                            <!-- Meta Bottom (SaaS Layout Details) -->
+                                                            <div class="ticket-item-row__meta-bottom">
+                                                                <div class="ticket-item-row__meta-item">
+                                                                    <i class="bi bi-bookmark-star-fill text-muted"></i>
+                                                                    <span>Dịch vụ: <strong>@phieu.TenDichVu</strong></span>
+                                                                </div>
+                                                                <div class="ticket-item-row__meta-item">
+                                                                    <i class="bi bi-calendar-event text-muted"></i>
+                                                                    <span>Ngày tạo: <strong>@phieu.NgayTao.ToString("dd/MM/yyyy")</strong></span>
+                                                                </div>
+                                                                <div class="ticket-item-row__meta-item flex-column align-items-start">
+                                                                     @if (!string.IsNullOrEmpty(phieu.NhanVienPhuTrach))
+                                                                     {
+                                                                         <span class="ticket-item-row__assignee d-inline-flex align-items-center">
+                                                                             <i class="bi bi-person-fill-check text-primary me-1"></i>
+                                                                             Nhân viên: <strong class="ms-1">@phieu.NhanVienPhuTrach</strong>
+                                                                         </span>
+                                                                         <div class="d-flex flex-wrap gap-2 text-muted mt-1" style="font-size: 0.75rem;">
+                                                                             @if (!string.IsNullOrEmpty(phieu.MaNhanVien))
+                                                                             {
+                                                                                 <span><strong>Mã NV:</strong> @phieu.MaNhanVien</span>
+                                                                             }
+                                                                             <span><strong>SĐT:</strong> <a href="tel:@phieu.SoDienThoaiNV" class="text-danger text-decoration-none fw-semibold">@phieu.SoDienThoaiNV</a></span>
+                                                                             @if (!string.IsNullOrEmpty(phieu.EmailNV))
+                                                                             {
+                                                                                 <span><strong>Email:</strong> @phieu.EmailNV</span>
+                                                                             }
+                                                                             @if (!string.IsNullOrEmpty(phieu.VaiTroNV))
+                                                                             {
+                                                                                 <span><strong>Vai trò:</strong> @phieu.VaiTroNV</span>
+                                                                             }
+                                                                         </div>
+                                                                     }
+                                                                     else
+                                                                     {
+                                                                         <span class="text-muted italic"><i class="bi bi-person-x-fill me-1"></i> Chưa phân công nhân viên</span>
+                                                                     }
+                                                                 </div>
+                                                            </div>
+
+                                                        </div>
+
+                                                        <!-- Right Actions -->
+                                                        <div class="ticket-item-row__actions">
+                                                            
+                                                            <!-- View details -->
+                                                            <a asp-controller="Ticket"
+                                                               asp-action="ChiTietPhieu"
+                                                               asp-route-id="@phieu.IdPhieu"
+                                                               class="btn-item-action"
+                                                               data-tooltip="Xem chi tiết">
+                                                                <i class="bi bi-eye"></i>
+                                                            </a>
+
+                                                            <!-- Direct Chat -->
+                                                             @if (!string.IsNullOrEmpty(phieu.NhanVienPhuTrach))
+                                                             {
+                                                                 <a href="/LiveSupport?maPhieu=@phieu.MaPhieu" 
+                                                                    class="btn-item-action btn-chat-action" 
+                                                                    data-tooltip="Chat hỗ trợ">
+                                                                     <i class="bi bi-chat-dots"></i>
+                                                                 </a>
+                                                             }
+                                                             else
+                                                             {
+                                                                 <a asp-controller="Customers" 
+                                                                    asp-action="LienHe" 
+                                                                    class="btn-item-action" 
+                                                                    data-tooltip="Liên hệ hỗ trợ">
+                                                                     <i class="bi bi-telephone-inbound"></i>
+                                                                 </a>
+                                                             }
+
+                                                            <!-- Rating Form -->
+                                                             @if (isCompleted)
+                                                             {
+                                                                 @if (phieu.DaDanhGia)
+                                                                 {
+                                                                     <span class="badge bg-success text-white px-2 py-1" style="font-size: 0.75rem; border-radius: 50px;">
+                                                                         <i class="bi bi-star-fill text-warning me-1"></i>Đã đánh giá
+                                                                     </span>
+                                                                 }
+                                                                 else
+                                                                 {
+                                                                     <a asp-controller="Ticket"
+                                                                        asp-action="DanhGiaPhieu"
+                                                                        asp-route-id="@phieu.IdPhieu"
+                                                                        class="btn-item-action btn-rate-action"
+                                                                        data-tooltip="Đánh giá dịch vụ">
+                                                                         <i class="bi bi-star"></i>
+                                                                     </a>
+                                                                 }
+                                                             }
+                                                             else
+                                                             {
+                                                                 <button type="button" 
+                                                                         class="btn-item-action btn-rate-action disabled" 
+                                                                         data-tooltip="Chỉ đánh giá khi hoàn thành"
+                                                                         disabled>
+                                                                     <i class="bi bi-star"></i>
+                                                                 </button>
+                                                             }
+                                                        </div>
+
+                                                    </div>
+                                                }
+                                             </div>
+                                        </div>
+                                    }
+
+                                </div>
+                            }
+                        </div>
+
+                        <!-- ==================== PAGINATION ==================== -->
+                        @if (Model.TongTrang > 1)
+                        {
+                            <nav class="custom-pagination-nav animate-fade-up" aria-label="Phân trang">
+                                <ul class="custom-pagination">
+                                    @if (Model.TrangHienTai > 1)
+                                    {
+                                        <li class="page-item">
+                                            <a class="page-link" href="@Url.Action("PhieuCuaToi", "Customers", new { page = Model.TrangHienTai - 1, search = ViewBag.SearchQuery, status = ViewBag.SelectedStatus, service = ViewBag.SelectedService, priority = ViewBag.SelectedPriority, dateFrom = ViewBag.DateFrom, dateTo = ViewBag.DateTo, sortBy = ViewBag.SortBy })">
+                                                <i class="bi bi-chevron-left"></i>
+                                            </a>
+                                        </li>
+                                    }
+
+                                    @for (int i = 1; i <= Model.TongTrang; i++)
+                                    {
+                                        if (i == Model.TrangHienTai)
+                                        {
+                                            <li class="page-item active">
+                                                <span class="page-link">@i</span>
+                                            </li>
+                                        }
+                                        else if (i == 1 || i == Model.TongTrang || (i >= Model.TrangHienTai - 1 && i <= Model.TrangHienTai + 1))
+                                        {
+                                            <li class="page-item">
+                                                <a class="page-link" href="@Url.Action("PhieuCuaToi", "Customers", new { page = i, search = ViewBag.SearchQuery, status = ViewBag.SelectedStatus, service = ViewBag.SelectedService, priority = ViewBag.SelectedPriority, dateFrom = ViewBag.DateFrom, dateTo = ViewBag.DateTo, sortBy = ViewBag.SortBy })">@i</a>
+                                            </li>
+                                        }
+                                        else if (i == 2 || i == Model.TongTrang - 1)
+                                        {
+                                            <li class="page-item disabled">
+                                                <span class="page-link">...</span>
+                                            </li>
+                                        }
+                                    }
+
+                                    @if (Model.TrangHienTai < Model.TongTrang)
+                                    {
+                                        <li class="page-item">
+                                            <a class="page-link" href="@Url.Action("PhieuCuaToi", "Customers", new { page = Model.TrangHienTai + 1, search = ViewBag.SearchQuery, status = ViewBag.SelectedStatus, service = ViewBag.SelectedService, priority = ViewBag.SelectedPriority, dateFrom = ViewBag.DateFrom, dateTo = ViewBag.DateTo, sortBy = ViewBag.SortBy })">
+                                                <i class="bi bi-chevron-right"></i>
+                                            </a>
+                                        </li>
+                                    }
+                                </ul>
+                            </nav>
+                        }
+
+                    </section>
+
+                    <!-- Right Column: Sidebar Widgets -->
+                    <aside class="col-lg-3 col-12 dashboard-sidebar">
+                         <!-- Widget: Lịch hẹn sắp tới -->
+                        <div class="sidebar-widget animate-fade-up delay-1">
+                            <h5 class="sidebar-widget__title">
+                                <i class="bi bi-calendar-check-fill"></i> Lịch hẹn gần nhất
+                            </h5>
+                            <div class="appt-list">
+                                @if (Model.LichHenGanNhat != null && Model.LichHenGanNhat.Count > 0)
+                                {
+                                    @foreach (var appt in Model.LichHenGanNhat.Take(3))
+                                    {
+                                        <div class="appt-item">
+                                            <div class="appt-item__date-card">
+                                                <span class="appt-item__day">@appt.ThoiGian.ToString("dd")</span>
+                                                <span class="appt-item__month">T.@appt.ThoiGian.ToString("MM")</span>
+                                            </div>
+                                            <div class="appt-item__info">
+                                                <h6 class="appt-item__title">@appt.TieuDe</h6>
+                                                <span class="appt-item__time">
+                                                    <i class="bi bi-clock"></i> @appt.ThoiGian.ToString("HH:mm")
+                                                </span>
+                                            </div>
+                                        </div>
+                                    }
+                                }
+                                else
+                                {
+                                    <div class="text-center py-3 text-muted small">
+                                        <i class="bi bi-calendar-x d-block fs-3 mb-2 opacity-50"></i>
+                                        Chưa có lịch hẹn nào sắp tới
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+                        <!-- Widget: Hoạt động gần đây -->
+                        <div class="sidebar-widget animate-fade-up delay-2">
+                            <h5 class="sidebar-widget__title">
+                                <i class="bi bi-clock-history"></i> Hoạt động gần đây
+                            </h5>
+                            <div class="activity-timeline">
+                                @if (Model.HoatDongGanDay != null && Model.HoatDongGanDay.Count > 0)
+                                {
+                                    @foreach (var act in Model.HoatDongGanDay.Take(5))
+                                    {
+                                        <div class="activity-widget-item">
+                                            <div class="activity-widget-item__content">
+                                                <p class="activity-widget-item__text">@act.MoTa</p>
+                                                <span class="activity-widget-item__time">@act.ThoiGian.ToString("dd/MM/yyyy HH:mm")</span>
+                                            </div>
+                                        </div>
+                                    }
+                                }
+                                else
+                                {
+                                    <div class="text-center py-3 text-muted small">
+                                        <i class="bi bi-card-text d-block fs-3 mb-2 opacity-50"></i>
+                                        Chưa có nhật ký hoạt động
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+                    </aside>
+
+                </div>
+            </div>
+        </main>
+        
+        <!-- ==================== CTA SECTION ==================== -->
+        <section class="cta-section-wrap animate-fade-up">
+            <div class="container">
+                <div class="cta-section">
+                    <div class="cta-section__content">
+                        <h2 class="cta-section__title">Cần hỗ trợ khẩn cấp?</h2>
+                        <p class="cta-section__desc">Đội ngũ kỹ thuật viên của chúng tôi luôn sẵn sàng túc trực 24/7 để tiếp nhận, hỗ trợ và xử lý sự cố mạng, Internet, Camera của bạn nhanh nhất.</p>
+                        <div class="cta-section__actions">
+                            <a href="@Url.Action("TaoPhieu", "Ticket")" class="btn-cta-primary">
+                                <i class="bi bi-plus-circle-fill"></i> Tạo phiếu hỗ trợ
+                            </a>
+                            <a href="tel:19008098" class="btn-cta-secondary">
+                                <i class="bi bi-telephone-fill"></i> Hotline 1900 8098
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== FLOATING ACTION BUTTON (FAB) ==================== -->
+        <div class="floating-btn-container">
+            <a href="@Url.Action("TaoPhieu", "Ticket")" class="floating-btn-pulse" title="Gửi yêu cầu hỗ trợ mới">
+                <i class="bi bi-plus-lg"></i>
+            </a>
+        </div>
+
+    </div>
+
+    <!-- ==================== FOOTER ==================== -->
+    @await Html.PartialAsync("_Footer")
+
+    <!-- ==================== CHATBOX CONTAINER ==================== -->
+    <div id="chatbox-container"></div>
+
+    <!-- Toast Notification Container -->
+    <div class="custom-toast-container" id="toastContainer" aria-live="polite" aria-atomic="true"></div>
+
+    <!-- ==================== SCRIPTS ==================== -->
+    <!-- Bootstrap 5.3 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+            crossorigin="anonymous"></script>
+
+    <!-- Component-Based scripts -->
+    <script src="~/assets/js/chatbox.js"></script>
+    <script src="~/assets/js/main.js"></script>
+
+    <!-- Page custom scripts -->
+    <script src="~/js/customers/phieu-cuatoi.js"></script>
+</body>
+</html>

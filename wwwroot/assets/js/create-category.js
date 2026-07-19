@@ -252,7 +252,7 @@ let endTimePicker = null;
  * Handle Appointment Toggle Radio Group Animation and Requirements
  */
 function initAppointmentToggler() {
-    const needAppointmentRadios = document.querySelectorAll('input[name="needAppointment"]');
+    const needAppointmentRadios = document.querySelectorAll('input[name="CanLichHen"]');
     const appointmentContainer = document.getElementById('appointmentContainer');
     const appointmentDate = document.getElementById('appointmentDate');
     const appointmentStartTime = document.getElementById('appointmentStartTime');
@@ -265,7 +265,10 @@ function initAppointmentToggler() {
         if (appointmentDate) {
             datePicker = flatpickr(appointmentDate, {
                 locale: "vn",
-                dateFormat: "d/m/Y",
+                altInput: true,
+                altFormat: "d/m/Y",
+                dateFormat: "Y-m-d",
+                altInputClass: "form-control form-control-custom border-start-0 ps-0 text-dark pointer",
                 minDate: "today",
                 disableMobile: true,
                 placeholder: "Chọn ngày hẹn"
@@ -302,7 +305,11 @@ function initAppointmentToggler() {
                     appointmentContainer.classList.remove('d-none');
                     appointmentContainer.classList.add('animate-slide-down');
                     // Make inputs required when active
-                    if (appointmentDate) appointmentDate.setAttribute('required', 'required');
+                    if (datePicker && datePicker.altInput) {
+                        datePicker.altInput.setAttribute('required', 'required');
+                    } else if (appointmentDate) {
+                        appointmentDate.setAttribute('required', 'required');
+                    }
                     if (appointmentStartTime) appointmentStartTime.setAttribute('required', 'required');
                     if (appointmentEndTime) appointmentEndTime.setAttribute('required', 'required');
                     if (appointmentAddress) appointmentAddress.setAttribute('required', 'required');
@@ -310,7 +317,12 @@ function initAppointmentToggler() {
                     appointmentContainer.classList.add('d-none');
                     appointmentContainer.classList.remove('animate-slide-down');
                     // Remove requirements when inactive
-                    if (appointmentDate) appointmentDate.removeAttribute('required');
+                    if (datePicker && datePicker.altInput) {
+                        datePicker.altInput.removeAttribute('required');
+                    }
+                    if (appointmentDate) {
+                        appointmentDate.removeAttribute('required');
+                    }
                     if (appointmentStartTime) appointmentStartTime.removeAttribute('required');
                     if (appointmentEndTime) appointmentEndTime.removeAttribute('required');
                     if (appointmentAddress) appointmentAddress.removeAttribute('required');
@@ -323,6 +335,20 @@ function initAppointmentToggler() {
                 }
             });
         });
+
+        // Initial setup based on checked radio on load (for reloads/validation failures)
+        const selectedRadio = Array.from(needAppointmentRadios).find(r => r.checked);
+        if (selectedRadio && selectedRadio.value === 'Có') {
+            appointmentContainer.classList.remove('d-none');
+            if (datePicker && datePicker.altInput) {
+                datePicker.altInput.setAttribute('required', 'required');
+            } else if (appointmentDate) {
+                appointmentDate.setAttribute('required', 'required');
+            }
+            if (appointmentStartTime) appointmentStartTime.setAttribute('required', 'required');
+            if (appointmentEndTime) appointmentEndTime.setAttribute('required', 'required');
+            if (appointmentAddress) appointmentAddress.setAttribute('required', 'required');
+        }
     }
 }
 
@@ -330,7 +356,7 @@ function initAppointmentToggler() {
  * Custom click animations and styling updates for Priority Select cards
  */
 function initPriorityCards() {
-    const priorityRadios = document.querySelectorAll('input[name="priority"]');
+    const priorityRadios = document.querySelectorAll('input[name="MucDoUuTien"]');
     priorityRadios.forEach(radio => {
         radio.addEventListener('change', function() {
             // Priority selection highlights
@@ -489,7 +515,7 @@ function initRequestTypeDropdown() {
  * Sync active classes of custom labels on form load/reset
  */
 function syncRadioHighlights() {
-    document.querySelectorAll('input[name="priority"]').forEach(radio => {
+    document.querySelectorAll('input[name="MucDoUuTien"]').forEach(radio => {
         const label = document.querySelector(`label[for="${radio.id}"]`);
         if (label) {
             if (radio.checked) label.classList.add('active');
@@ -540,6 +566,12 @@ function initFileUpload() {
         handleFiles(this.files);
     });
 
+    function syncFileInput() {
+        const dataTransfer = new DataTransfer();
+        uploadedFiles.forEach(file => dataTransfer.items.add(file));
+        fileInput.files = dataTransfer.files;
+    }
+
     function handleFiles(files) {
         const validExtensions = ['jpg', 'jpeg', 'png', 'pdf', 'docx'];
         
@@ -571,6 +603,7 @@ function initFileUpload() {
             uploadedFiles.push(file);
         }
 
+        syncFileInput();
         renderPreviews();
     }
 
@@ -621,6 +654,7 @@ function initFileUpload() {
             removeBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
                 uploadedFiles.splice(index, 1);
+                syncFileInput();
                 renderPreviews();
             });
             col.appendChild(removeBtn);
@@ -662,18 +696,7 @@ function initFormSubmission() {
             const firstInvalid = form.querySelector('.form-control:invalid, .form-select:invalid, .form-check-input:invalid');
             if (firstInvalid) {
                 firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                if (firstInvalid.id === 'loaiYeuCau') {
-                    const trigger = document.getElementById('customDropdownTrigger');
-                    if (trigger) trigger.focus();
-                } else if (firstInvalid.id === 'serviceCategory') {
-                    const trigger = document.getElementById('categoryDropdownTrigger');
-                    if (trigger) trigger.focus();
-                } else if (firstInvalid.id === 'relatedService') {
-                    const trigger = document.getElementById('serviceDropdownTrigger');
-                    if (trigger) trigger.focus();
-                } else {
-                    firstInvalid.focus();
-                }
+                firstInvalid.focus();
             }
             
             Toast.fire({
@@ -686,39 +709,66 @@ function initFormSubmission() {
         form.classList.add('was-validated');
 
         // Extract values for validation preview confirmation
-        const ticketCodeVal = document.getElementById('ticketCode').value;
-        const titleVal = document.getElementById('ticketTitle').value;
+        const ticketCodeVal = document.getElementById('ticketCode')?.value || '';
+        const titleVal = document.getElementById('ticketTitle')?.value || '';
         
-        const categorySelect = document.getElementById('serviceCategory');
-        const categoryName = categorySelect.options[categorySelect.selectedIndex].text;
+        const categorySelect = document.getElementById('IdDanhMuc');
+        const categoryName = categorySelect ? categorySelect.options[categorySelect.selectedIndex]?.text : '';
         
-        const serviceSelect = document.getElementById('relatedService');
-        const serviceName = serviceSelect.options[serviceSelect.selectedIndex].text;
+        const serviceSelect = document.getElementById('IdDichVu');
+        const serviceName = serviceSelect ? serviceSelect.options[serviceSelect.selectedIndex]?.text : '';
         
-        const priorityVal = document.querySelector('input[name="priority"]:checked').value;
+        const priorityEl = document.querySelector('input[name="MucDoUuTien"]:checked');
+        let priorityVal = 'Trung Bình';
+        if (priorityEl) {
+            const val = priorityEl.value;
+            if (val === '1') priorityVal = 'Thấp';
+            else if (val === '2') priorityVal = 'Trung Bình';
+            else if (val === '3') priorityVal = 'Cao';
+            else if (val === '4') priorityVal = 'Khẩn Cấp';
+        }
         
-        const loaiYeuCauSelect = document.getElementById('loaiYeuCau');
+        const loaiYeuCauSelect = document.getElementById('LoaiYeuCau');
         const requestTypeVal = loaiYeuCauSelect ? loaiYeuCauSelect.value : '';
 
         // Trigger SweetAlert2 Dialog
         Swal.fire({
-            title: 'Xác Nhận Gửi Phiếu?',
+            title: 'Xác Nhận Gửi Phiếu Hỗ Trợ?',
             html: `
-                <div class="text-start fs-7 border rounded p-3 bg-light">
-                    <p class="mb-2"><strong>Mã phiếu:</strong> ${ticketCodeVal}</p>
-                    <p class="mb-2"><strong>Tiêu đề sự cố:</strong> ${titleVal}</p>
-                    <p class="mb-2"><strong>Danh mục:</strong> ${categoryName}</p>
-                    <p class="mb-2"><strong>Dịch vụ:</strong> ${serviceName}</p>
-                    <p class="mb-2"><strong>Loại yêu cầu:</strong> ${requestTypeVal}</p>
-                    <p class="mb-0"><strong>Mức độ ưu tiên:</strong> <span class="badge ${getPriorityBadgeClass(priorityVal)}">${priorityVal}</span></p>
+                <div class="swal-confirm-details mb-3">
+                    <div class="swal-detail-row">
+                        <span class="swal-detail-label"><i class="bi bi-hashtag me-1 text-danger"></i> Mã phiếu</span>
+                        <span class="swal-detail-value text-danger font-monospace">${ticketCodeVal}</span>
+                    </div>
+                    <div class="swal-detail-row">
+                        <span class="swal-detail-label"><i class="bi bi-card-heading me-1 text-secondary"></i> Tiêu đề sự cố</span>
+                        <span class="swal-detail-value">${titleVal}</span>
+                    </div>
+                    <div class="swal-detail-row">
+                        <span class="swal-detail-label"><i class="bi bi-grid me-1 text-secondary"></i> Danh mục</span>
+                        <span class="swal-detail-value">${categoryName}</span>
+                    </div>
+                    <div class="swal-detail-row">
+                        <span class="swal-detail-label"><i class="bi bi-gear me-1 text-secondary"></i> Dịch vụ</span>
+                        <span class="swal-detail-value">${serviceName}</span>
+                    </div>
+                    <div class="swal-detail-row">
+                        <span class="swal-detail-label"><i class="bi bi-tag me-1 text-secondary"></i> Loại yêu cầu</span>
+                        <span class="swal-detail-value">${requestTypeVal}</span>
+                    </div>
+                    <div class="swal-detail-row">
+                        <span class="swal-detail-label"><i class="bi bi-shield-exclamation me-1 text-secondary"></i> Mức độ ưu tiên</span>
+                        <span class="swal-detail-value">${getPriorityBadgeHtml(priorityVal)}</span>
+                    </div>
                 </div>
-                <p class="mt-3 mb-0 text-muted fs-7 text-center">Đội ngũ kỹ thuật Viettel sẽ phản hồi phiếu hỗ trợ trong vòng 15-30 phút.</p>
+                <div class="swal-notice-box">
+                    <i class="bi bi-clock-history me-2 text-danger fs-6"></i>
+                    <span>Đội ngũ kỹ thuật Viettel sẽ phản hồi phiếu hỗ trợ trong vòng 15 - 30 phút.</span>
+                </div>
             `,
             icon: 'question',
             showCancelButton: true,
-            confirmButtonColor: '#EE0033',
-            cancelButtonColor: '#6b7280',
-            confirmButtonText: '<i class="fa-solid fa-paper-plane me-1"></i>Xác nhận gửi',
+            confirmButtonText: '<i class="bi bi-send-fill me-1"></i> Xác nhận gửi',
             cancelButtonText: 'Hủy bỏ',
             focusConfirm: false
         }).then((result) => {
@@ -733,89 +783,21 @@ function initFormSubmission() {
                     }
                 });
 
-                // Simulate network latency (1.5 seconds)
-                setTimeout(() => {
-                    // Close loading swal
-                    Swal.close();
-
-                    // Increment sequential ticket counter in localStorage
-                    let currentCounter = parseInt(localStorage.getItem('viettel_ticket_counter'));
-                    localStorage.setItem('viettel_ticket_counter', currentCounter + 1);
-
-                    // Save ticket to local storage
-                    const tickets = JSON.parse(localStorage.getItem('viettel_tickets') || '[]');
-                    const newId = tickets.length > 0 ? Math.max(...tickets.map(t => t.id)) + 1 : 1;
-                    
-                    const newTicket = {
-                        id: newId,
-                        ticketCode: ticketCodeVal,
-                        title: titleVal,
-                        categoryId: categorySelect.value,
-                        serviceId: serviceSelect.value,
-                        requestType: requestTypeVal,   // Compat with older properties
-                        LoaiYeuCau: requestTypeVal,    // Explicitly requested property
-                        priority: priorityVal,
-                        status: 'waiting',
-                        description: document.getElementById('ticketContent').value.trim(),
-                        createdDate: getCurrentDateTimeString(),
-                        customerName: 'Nguyễn Văn A',
-                        customerPhone: '0986789123',
-                        needAppointment: document.querySelector('input[name="needAppointment"]:checked').value === 'Có',
-                        appointmentDate: document.getElementById('appointmentDate')?.value || '',
-                        appointmentTime: document.getElementById('appointmentStartTime') && document.getElementById('appointmentEndTime') 
-                            ? `${document.getElementById('appointmentStartTime').value} - ${document.getElementById('appointmentEndTime').value}`
-                            : '',
-                        appointmentAddress: document.getElementById('appointmentAddress')?.value || '',
-                        appointmentNote: document.getElementById('appointmentNote')?.value || ''
-                    };
-                    
-                    tickets.push(newTicket);
-                    localStorage.setItem('viettel_tickets', JSON.stringify(tickets));
-
-                    // Show successful message and offer redirection or page reset
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Tạo Phiếu Thành Công!',
-                        html: `Phiếu hỗ trợ <strong>${ticketCodeVal}</strong> đã được gửi thành công.<br>Hệ thống kỹ thuật viên đã tiếp nhận yêu cầu.`,
-                        confirmButtonColor: '#EE0033',
-                        confirmButtonText: 'Đồng ý'
-                    }).then(() => {
-                        // Reset forms & status
-                        form.reset();
-                        form.classList.remove('was-validated');
-                        if (datePicker) datePicker.clear();
-                        if (startTimePicker) startTimePicker.clear();
-                        if (endTimePicker) endTimePicker.clear();
-                        
-                        document.getElementById('relatedService').disabled = true;
-                        document.getElementById('serviceDetailsWrapper').classList.add('d-none');
-                        document.getElementById('appointmentContainer').classList.add('d-none');
-                        document.getElementById('filePreviewGrid').classList.add('d-none');
-                        document.getElementById('filePreviewGrid').innerHTML = '';
-                        
-                        // Sync visual highlights for reset radios
-                        syncRadioHighlights();
-                        
-                        // Re-initialize details for new ticket code incremented
-                        initTicketDetails();
-                        
-                        // Scroll to top
-                        window.scrollTo({ top: 0, behavior: 'smooth' });
-                    });
-                }, 1500);
+                // Submit form natively
+                form.submit();
             }
         });
     });
 }
 
 /**
- * Return Bootstrap badge colors matching priorities
+ * Return Bootstrap badge HTML matching priorities
  */
-function getPriorityBadgeClass(priority) {
+function getPriorityBadgeHtml(priority) {
     switch(priority) {
-        case 'Khẩn Cấp': return 'bg-danger';
-        case 'Cao': return 'bg-orange';
-        case 'Trung Bình': return 'bg-warning text-dark';
-        default: return 'bg-success';
+        case 'Khẩn Cấp': return '<span class="badge bg-danger text-white px-2.5 py-1 rounded-pill fw-bold"><i class="bi bi-exclamation-triangle-fill me-1"></i>Khẩn Cấp</span>';
+        case 'Cao': return '<span class="badge bg-danger text-white px-2.5 py-1 rounded-pill fw-bold" style="background-color: #f97316 !important;"><i class="bi bi-lightning-charge-fill me-1"></i>Cao</span>';
+        case 'Trung Bình': return '<span class="badge bg-warning text-dark px-2.5 py-1 rounded-pill fw-bold"><i class="bi bi-dash-circle-fill me-1"></i>Trung Bình</span>';
+        default: return '<span class="badge bg-success text-white px-2.5 py-1 rounded-pill fw-bold"><i class="bi bi-arrow-down-circle-fill me-1"></i>Thấp</span>';
     }
 }

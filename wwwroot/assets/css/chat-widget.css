@@ -757,3 +757,338 @@
         right: 16px;
     }
 }
+
+/* ==========================================================================
+   SUPER CHAT MESSAGE AREA OVERRIDES - ChatGPT + Zendesk + Viettel AI Style
+   ========================================================================== */
+
+/* 1. Containers and Scrollbar Layout */
+.messages-scrollable,
+.chat-messages-pane {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important; /* Gap 10px between avatar + bubble rows */
+    padding: 16px !important; /* padding: 16px */
+    background-color: #F7F8FA !important; /* background: #F7F8FA */
+    overflow-y: auto !important;
+    scrollbar-width: thin !important;
+    scrollbar-color: rgba(215, 25, 32, 0.2) transparent !important;
+}
+
+.messages-scrollable::-webkit-scrollbar,
+.chat-messages-pane::-webkit-scrollbar {
+    width: 4px !important;
+}
+
+.messages-scrollable::-webkit-scrollbar-track,
+.chat-messages-pane::-webkit-scrollbar-track {
+    background: transparent !important;
+}
+
+.messages-scrollable::-webkit-scrollbar-thumb,
+.chat-messages-pane::-webkit-scrollbar-thumb {
+    background-color: rgba(215, 25, 32, 0.2) !important;
+    border-radius: 4px !important;
+}
+
+/* 2. Message Row Styles (Flex containers) */
+.messages-scrollable .msg-row,
+.chat-messages-pane .chat-message-row {
+    display: flex !important;
+    align-items: flex-end !important; /* Bottom-aligned avatar + bubble */
+    gap: 10px !important; /* gap: 10px between avatar and bubble */
+    margin-bottom: 8px !important; /* margin-bottom: 8px */
+    width: 100% !important;
+    max-width: 100% !important;
+    opacity: 0;
+    transform: translateY(8px);
+    animation: bubbleFadeIn 0.25s cubic-bezier(0.25, 1, 0.5, 1) forwards !important; /* Animation 0.25s, translateY(8px) */
+}
+
+@keyframes bubbleFadeIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Chatbox & LiveSupport Alignments */
+.messages-scrollable .user-message,
+.messages-scrollable .msg-row.sent,
+.chat-messages-pane .chat-message-row.client {
+    flex-direction: row !important;
+    justify-content: flex-end !important;
+}
+
+.messages-scrollable .ai-message,
+.messages-scrollable .partner-message,
+.messages-scrollable .msg-row.received,
+.chat-messages-pane .chat-message-row.staff {
+    flex-direction: row !important;
+    justify-content: flex-start !important;
+}
+
+/* 3. Inner Wrapper Constraints */
+.messages-scrollable .message-content,
+.messages-scrollable .msg-bubble-wrapper {
+    display: flex !important;
+    flex-direction: column !important;
+    max-width: 72% !important;
+    min-width: 70px !important;
+    width: auto !important;
+    flex: 0 1 auto !important;
+}
+
+.chat-messages-pane .chat-message-wrapper {
+    display: flex !important;
+    flex-direction: column !important;
+    width: fit-content !important;
+    max-width: 55% !important; /* Desktop limit: 55% */
+    flex: 0 1 auto !important;
+}
+
+@media (max-width: 991.98px) {
+    .chat-messages-pane .chat-message-wrapper {
+        max-width: 70% !important; /* Tablet limit: 70% */
+    }
+}
+
+@media (max-width: 575.98px) {
+    .chat-messages-pane .chat-message-wrapper {
+        max-width: 82% !important; /* Mobile limit: 82% */
+    }
+}
+
+.messages-scrollable .user-message .message-content,
+.messages-scrollable .msg-row.sent .message-content,
+.chat-messages-pane .chat-message-row.client .chat-message-wrapper {
+    align-items: flex-end !important;
+}
+
+.messages-scrollable .ai-message .message-content,
+.messages-scrollable .partner-message .message-content,
+.messages-scrollable .msg-row.received .message-content,
+.chat-messages-pane .chat-message-row.staff .chat-message-wrapper {
+    align-items: flex-start !important;
+}
+
+/* 4. Bubble core styles (Zalo Fit-Content) */
+.messages-scrollable .viettel-bubble,
+.messages-scrollable .msg-bubble,
+.chat-messages-pane .chat-message-item {
+    display: inline-block !important;
+    width: fit-content !important; /* Bubble width = fit-content */
+    height: auto !important;
+    max-width: 100% !important;
+    padding: 12px 18px !important;
+    font-size: 0.92rem !important;
+    line-height: 1.5 !important;
+    font-weight: 400 !important;
+    word-break: break-word !important;
+    overflow-wrap: anywhere !important;
+    white-space: pre-wrap !important;
+    border-radius: 22px !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+}
+
+/* User Message bubble (linear-gradient Viettel, white text) */
+.messages-scrollable .user-message .viettel-bubble,
+.messages-scrollable .user-message .msg-bubble,
+.messages-scrollable .msg-row.sent .msg-bubble,
+.chat-messages-pane .chat-message-row.client .chat-message-item {
+    align-self: flex-end !important;
+    background: linear-gradient(135deg, #D71920, #E53935) !important;
+    color: #FFFFFF !important;
+    border: none !important;
+    border-radius: 22px 22px 4px 22px !important;
+    box-shadow: 0 4px 14px rgba(215, 25, 32, 0.18) !important;
+}
+
+/* AI / Staff Message bubble (white, border, shadow soft) */
+.messages-scrollable .ai-message .viettel-bubble,
+.messages-scrollable .ai-message .msg-bubble,
+.messages-scrollable .partner-message .viettel-bubble,
+.messages-scrollable .partner-message .msg-bubble,
+.messages-scrollable .msg-row.received .msg-bubble,
+.chat-messages-pane .chat-message-row.staff .chat-message-item {
+    align-self: flex-start !important;
+    background-color: #FFFFFF !important;
+    color: #1E293B !important;
+    border: 1px solid #E2E8F0 !important;
+    border-radius: 22px 22px 22px 4px !important;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03) !important;
+}
+
+/* 5. Timestamp alignment */
+.messages-scrollable .time,
+.messages-scrollable .msg-metadata,
+.chat-messages-pane .chat-message-meta {
+    font-size: 11px !important; /* Timestamp 11px */
+    color: #999999 !important; /* color #999 */
+    margin-top: 4px !important; /* đặt sát dưới bubble */
+    display: block !important;
+    font-weight: 400 !important;
+}
+
+.messages-scrollable .user-message .time,
+.messages-scrollable .msg-row.sent .time,
+.chat-messages-pane .chat-message-row.client .chat-message-meta {
+    text-align: right !important;
+    padding-right: 4px !important;
+}
+
+.messages-scrollable .ai-message .time,
+.messages-scrollable .partner-message .time,
+.messages-scrollable .msg-row.received .time,
+.chat-messages-pane .chat-message-row.staff .chat-message-meta {
+    text-align: left !important;
+    padding-left: 4px !important;
+}
+
+/* 6. Avatar sizing & alignment */
+.messages-scrollable .avatar,
+.messages-scrollable .msg-avatar,
+.chat-messages-pane .chat-avatar {
+    border-radius: 50% !important;
+    overflow: hidden !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-shrink: 0 !important;
+}
+
+/* AI / Staff Avatar (40px) */
+.messages-scrollable .robot-avatar,
+.messages-scrollable .ai-message .msg-avatar,
+.messages-scrollable .partner-avatar,
+.messages-scrollable .partner-message .msg-avatar,
+.chat-messages-pane .chat-message-row.staff .chat-avatar {
+    width: 40px !important; /* AI 40px */
+    height: 40px !important;
+    min-width: 40px !important;
+    background-color: rgba(215, 25, 32, 0.08) !important;
+    color: #D71920 !important;
+    border: 1px solid #ECECEC !important;
+    font-size: 16px !important;
+}
+
+.messages-scrollable .robot-avatar img,
+.messages-scrollable .ai-message .msg-avatar img,
+.chat-messages-pane .chat-avatar img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+}
+
+/* User / Client Avatar (36px) */
+.messages-scrollable .user-message .avatar,
+.messages-scrollable .msg-row.sent .avatar,
+.chat-messages-pane .chat-message-row.client .chat-avatar {
+    display: flex !important; /* Show user avatar */
+    width: 36px !important; /* User 36px */
+    height: 36px !important;
+    min-width: 36px !important;
+    background-color: #F1F5F9 !important;
+    color: #475569 !important;
+    border: 1px solid #CBD5E1 !important;
+    font-size: 13px !important;
+}
+
+/* 7. Input and Send Button styles */
+.chatgpt-input-capsule,
+.chat-input-capsule {
+    display: flex !important;
+    align-items: center !important;
+    background-color: #FFFFFF !important;
+    border: 1.5px solid #E2E8F0 !important;
+    border-radius: 28px !important; /* border-radius 28px */
+    height: 52px !important; /* cao 52px */
+    padding: 2px 4px 2px 16px !important;
+    gap: 6px !important;
+    transition: all 0.25s ease !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04) !important;
+}
+
+.chatgpt-input-capsule:focus-within,
+.chat-input-capsule:focus-within {
+    border-color: #D71920 !important;
+    box-shadow: 0 4px 15px rgba(215, 25, 32, 0.12) !important;
+}
+
+.stream-textarea,
+.chat-textarea {
+    flex-grow: 1 !important;
+    height: 36px !important;
+    max-height: 36px !important;
+    border: none !important;
+    background: transparent !important;
+    padding: 6px 0 !important;
+    resize: none !important;
+    font-size: 14.5px !important;
+    outline: none !important;
+    color: #1F2937 !important;
+    line-height: 1.4 !important;
+    overflow-y: hidden !important;
+}
+
+.stream-textarea::placeholder,
+.chat-textarea::placeholder {
+    color: #999999 !important; /* placeholder màu #999 */
+}
+
+/* Centering icons */
+.capsule-icon-btn {
+    background: none !important;
+    border: none !important;
+    color: #94A3B8 !important;
+    width: 36px !important;
+    height: 36px !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important; /* icon nằm giữa */
+    justify-content: center !important;
+    cursor: pointer !important;
+    font-size: 1.15rem !important;
+    transition: all 0.2s ease !important;
+}
+
+.capsule-icon-btn:hover {
+    color: #D71920 !important;
+    background-color: rgba(215, 25, 32, 0.08) !important;
+}
+
+/* Send Button: hình tròn 48x48 màu đỏ Viettel */
+.stream-send-btn,
+.chat-send-btn {
+    width: 48px !important; /* 48x48 */
+    height: 48px !important;
+    border-radius: 50% !important;
+    background: linear-gradient(135deg, #D71920 0%, #C00016 100%) !important;
+    color: #FFFFFF !important;
+    border: none !important;
+    cursor: pointer !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 1.1rem !important;
+    box-shadow: 0 3px 8px rgba(215, 25, 32, 0.25) !important;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    flex-shrink: 0 !important;
+}
+
+.stream-send-btn:hover,
+.chat-send-btn:hover {
+    transform: scale(1.05) !important; /* hover scale 1.05 */
+    background: #F02830 !important;
+    box-shadow: 0 4px 12px rgba(215, 25, 32, 0.35) !important;
+}
+
+.stream-send-btn:disabled,
+.chat-send-btn:disabled {
+    background: #E2E8F0 !important;
+    color: #94A3B8 !important;
+    box-shadow: none !important;
+    cursor: not-allowed !important;
+    transform: none !important;
+}

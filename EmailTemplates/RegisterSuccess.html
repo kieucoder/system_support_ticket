@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Đăng ký tài khoản thành công - TechSupport</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #F8F9FC; color: #222222; margin: 0; padding: 0; }
+        .container { max-width: 600px; margin: 40px auto; background-color: #FFFFFF; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.05); border: 1px solid #E9ECEF; }
+        .header { background: linear-gradient(135deg, #28A745 0%, #218838 100%); padding: 30px; text-align: center; color: #FFFFFF; }
+        .logo { font-size: 24px; font-weight: bold; margin-bottom: 10px; }
+        .content { padding: 40px 30px; line-height: 1.6; }
+        .greeting { font-size: 18px; font-weight: bold; margin-bottom: 20px; }
+        .info-table { width: 100%; border-collapse: collapse; margin: 25px 0; }
+        .info-table td { padding: 10px; border-bottom: 1px solid #E9ECEF; }
+        .info-label { font-weight: bold; color: #495057; width: 35%; }
+        .info-value { color: #212529; }
+        .features { background-color: #F8F9FC; border-radius: 8px; padding: 20px; margin-top: 25px; }
+        .feature-item { margin: 8px 0; font-weight: 500; color: #2E7D32; }
+        .footer { background-color: #F8F9FC; padding: 20px; text-align: center; font-size: 12px; color: #666666; border-top: 1px solid #E9ECEF; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">🟢 TechSupport</div>
+            <div style="font-size: 16px; opacity: 0.9;">Đăng ký tài khoản thành công</div>
+        </div>
+        <div class="content">
+            <div class="greeting">Xin chào {FullName},</div>
+            <p>Chúc mừng bạn đã đăng ký tài khoản khách hàng thành công trên hệ thống TechSupport Viettel.</p>
+            
+            <table class="info-table">
+                <tr>
+                    <td class="info-label">Họ và tên:</td>
+                    <td class="info-value">{FullName}</td>
+                </tr>
+                <tr>
+                    <td class="info-label">Địa chỉ Email:</td>
+                    <td class="info-value">{Email}</td>
+                </tr>
+                <tr>
+                    <td class="info-label">Số điện thoại:</td>
+                    <td class="info-value">{PhoneNumber}</td>
+                </tr>
+                <tr>
+                    <td class="info-label">Ngày đăng ký:</td>
+                    <td class="info-value">{RegisterDate}</td>
+                </tr>
+            </table>
+
+            <div class="features">
+                <div style="font-weight: bold; margin-bottom: 10px; color: #212529;">Các tiện ích hỗ trợ của bạn:</div>
+                <div class="feature-item">✔ Gửi phiếu hỗ trợ kỹ thuật nhanh chóng</div>
+                <div class="feature-item">✔ Theo dõi tiến trình xử lý thời gian thực</div>
+                <div class="feature-item">✔ Đánh giá chất lượng dịch vụ sau xử lý</div>
+                <div class="feature-item">✔ Trò chuyện trực tuyến (Live Support) trực tiếp với kỹ sư</div>
+            </div>
+
+            <p style="margin-top: 30px;">Bây giờ bạn có thể đăng nhập vào hệ thống để bắt đầu trải nghiệm dịch vụ.</p>
+            <p>Trân trọng,<br>Đội ngũ hỗ trợ TechSupport</p>
+        </div>
+        <div class="footer">
+            © 2026 TechSupport Viettel Telecom. All rights reserved.
+        </div>
+    </div>
+</body>
+</html>

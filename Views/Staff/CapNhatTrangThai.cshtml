@@ -1,0 +1,82 @@
+@model SupportTicketSysterm.Data.PhieuHoTro
+@{
+    ViewData["Title"] = "Cập Nhật Trạng Thái - TechSupport Viettel";
+    ViewData["HeaderTitle"] = "Cập Nhật Trạng Thái";
+    ViewData["HeaderSubtitle"] = "Cập nhật tiến trình & ghi chú xử lý phiếu hỗ trợ";
+}
+
+<nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb" style="font-size: 0.82rem;">
+        <li class="breadcrumb-item"><a href="/Staff/QuanLyPhieuHoTro" class="text-danger text-decoration-none">Quản lý phiếu</a></li>
+        <li class="breadcrumb-item active">Cập nhật trạng thái</li>
+    </ol>
+</nav>
+
+<div class="row justify-content-center">
+    <div class="col-md-8 col-12">
+        <div class="card border-0 shadow-sm rounded-4 p-4">
+            <h4 class="fw-bold mb-4 text-dark-emphasis"><i class="fa-solid fa-arrows-spin text-danger me-2"></i>Cập nhật trạng thái phiếu</h4>
+            
+            <div class="row g-3 mb-4">
+                <div class="col-md-6">
+                    <span class="text-muted small d-block">Mã Phiếu</span>
+                    <strong class="text-danger fs-5">@Model.MaPhieu</strong>
+                </div>
+                <div class="col-md-6">
+                    <span class="text-muted small d-block">Trạng thái hiện tại</span>
+                    @if (Model.TrangThai == "Chờ tiếp nhận" || Model.TrangThai == "ChoTiepNhan")
+                    {
+                        <span class="badge bg-warning text-dark">Chờ tiếp nhận</span>
+                    }
+                    else if (Model.TrangThai == "Đang xử lý" || Model.TrangThai == "DangXuLy")
+                    {
+                        <span class="badge bg-primary">Đang xử lý</span>
+                    }
+                    else if (Model.TrangThai == "Chờ phản hồi" || Model.TrangThai == "ChoKhachHangPhanHoi")
+                    {
+                        <span class="badge bg-info text-dark">Chờ phản hồi</span>
+                    }
+                    else if (Model.TrangThai == "Hoàn thành" || Model.TrangThai == "DaHoanThanh" || Model.TrangThai == "Đã hoàn thành")
+                    {
+                        <span class="badge bg-success">Hoàn thành</span>
+                    }
+                    else if (Model.TrangThai == "Đã hủy" || Model.TrangThai == "DaHuy")
+                    {
+                        <span class="badge bg-danger">Đã hủy</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">@Model.TrangThai</span>
+                    }
+                </div>
+                <div class="col-12">
+                    <span class="text-muted small d-block">Tiêu đề</span>
+                    <p class="mb-0 fw-medium">@Model.TieuDe</p>
+                </div>
+            </div>
+
+            <form asp-controller="Staff" asp-action="CapNhatTrangThai" asp-route-id="@Model.IdPhieu" method="post">
+                <div class="mb-3">
+                    <label for="trangThai" class="form-label fw-bold text-dark-emphasis">Chọn trạng thái mới</label>
+                    <select name="trangThai" id="trangThai" class="form-select border rounded-3 p-3" required>
+                        <option value="Chờ tiếp nhận" selected="@(Model.TrangThai == "Chờ tiếp nhận" || Model.TrangThai == "ChoTiepNhan")">Chờ tiếp nhận</option>
+                        <option value="Đang xử lý" selected="@(Model.TrangThai == "Đang xử lý" || Model.TrangThai == "DangXuLy")">Đang xử lý</option>
+                        <option value="Chờ phản hồi" selected="@(Model.TrangThai == "Chờ phản hồi" || Model.TrangThai == "ChoKhachHangPhanHoi")">Chờ khách hàng phản hồi</option>
+                        <option value="Hoàn thành" selected="@(Model.TrangThai == "Hoàn thành" || Model.TrangThai == "DaHoanThanh" || Model.TrangThai == "Đã hoàn thành")">Hoàn thành</option>
+                        <option value="Đã hủy" selected="@(Model.TrangThai == "Đã hủy" || Model.TrangThai == "DaHuy")">Hủy bỏ</option>
+                    </select>
+                </div>
+
+                <div class="mb-4">
+                    <label for="ghiChu" class="form-label fw-bold text-dark-emphasis">Ghi chú / Lý do cập nhật</label>
+                    <textarea name="ghiChu" id="ghiChu" class="form-control border rounded-3" rows="4" placeholder="Nhập chi tiết hoạt động kỹ thuật, lý do thay đổi trạng thái..."></textarea>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-viettel fw-bold px-4 py-2" style="border-radius:10px;">Cập nhật</button>
+                    <a href="/Staff/QuanLyPhieuHoTro" class="btn btn-outline-secondary fw-bold px-4 py-2" style="border-radius:10px;">Quay lại</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

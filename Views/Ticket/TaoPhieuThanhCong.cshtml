@@ -1,0 +1,710 @@
+@using Microsoft.AspNetCore.Http
+@using System.Security.Claims
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    ViewData["Title"] = "Tạo phiếu hỗ trợ thành công";
+    Layout = null;
+    var session = HttpContextAccessor.HttpContext?.Session;
+    var hoTen = session?.GetString("HoTen") ?? User.FindFirstValue("HoTen") ?? User.Identity?.Name;
+    var isAuthenticated = !string.IsNullOrEmpty(hoTen);
+
+    // Helpers for status and priority classes mapping
+    var statusClass = Model.TrangThai switch
+    {
+        "Đang xử lý" => "status-processing",
+        "Đã hoàn thành" => "status-done",
+        "Đã xử lý" => "status-done",
+        "Đã đóng" => "status-cancelled",
+        "Đã hủy" => "status-cancelled",
+        _ => "status-pending"
+    };
+
+    var priorityClass = Model.MucDoUuTien switch
+    {
+        1 => "priority-low",
+        2 => "priority-medium",
+        3 => "priority-high",
+        4 => "priority-urgent",
+        _ => "priority-low"
+    };
+
+    var priorityName = Model.MucDoUuTien switch
+    {
+        1 => "Thấp",
+        2 => "Trung bình",
+        3 => "Cao",
+        4 => "Khẩn cấp",
+        _ => "Thấp"
+    };
+}
+@model SupportTicketSysterm.Data.PhieuHoTro
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Tạo Phiếu Thành Công - TechSupport Viettel</title>
+
+    <!-- SEO -->
+    <meta name="description"
+          content="Phiếu hỗ trợ kỹ thuật đã được tạo thành công. TechSupport Viettel sẽ xử lý yêu cầu của bạn trong thời gian sớm nhất.">
+    <meta name="keywords" content="tao phieu thanh cong, viettel support, ho tro ky thuat, techsupport">
+    <meta name="author" content="Viettel Telecom TechSupport">
+    <meta name="robots" content="noindex, nofollow">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="https://viettel.com.vn/favicon.ico">
+
+    <!-- Bootstrap 5.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <!-- Font Awesome 6.6.0 CDN (Enterprise) -->
+    <link rel="stylesheet" id="fa-cdn-link" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&display=swap"
+          rel="stylesheet">
+
+    <!-- Core Stylesheets -->
+    <link rel="stylesheet" href="~/assets/css/style.css">
+    <link rel="stylesheet" href="~/assets/css/responsive.css">
+    <link rel="stylesheet" href="~/assets/css/header.css">
+    <link rel="stylesheet" href="~/assets/css/sidebar.css">
+    <link rel="stylesheet" href="~/assets/css/footer.css">
+    <link rel="stylesheet" href="~/assets/css/chatbox.css">
+
+    <!-- Custom Page CSS -->
+    <link rel="stylesheet" href="~/assets/css/ticket-success.css">
+    <link rel="stylesheet" href="~/assets/css/page-hero.css" asp-append-version="true">
+</head>
+
+<body>
+
+    <!-- ==================== HEADER ==================== -->
+    @await Html.PartialAsync("_Header", session)
+
+    <!-- ==================== SIDEBAR ==================== -->
+    @await Html.PartialAsync("_Sidebar")
+
+    <!-- ==================== MAIN CONTENT ==================== -->
+    <main class="success-page-main">
+
+    <!-- ==================== PAGE HERO SUCCESS BAR ==================== -->
+    <section class="page-hero-bar success-variant" id="successHeroSection" aria-label="Tạo phiếu hỗ trợ thành công">
+        <!-- Decorative blobs (reuse from ticket-success.css) -->
+        <div class="hero-blob blob-a" aria-hidden="true"></div>
+        <div class="hero-blob blob-b" aria-hidden="true"></div>
+
+        <div class="container">
+            <!-- Breadcrumb pill -->
+            <nav aria-label="breadcrumb" class="phb-breadcrumb mb-4" itemscope
+                 itemtype="https://schema.org/BreadcrumbList">
+                <ol class="breadcrumb m-0" style="font-size:0.82rem;">
+                    <li class="breadcrumb-item" itemprop="itemListElement" itemscope
+                        itemtype="https://schema.org/ListItem">
+                        <a href="/" itemprop="item"
+                           class="text-decoration-none d-inline-flex align-items-center">
+                            <i class="fa-solid fa-house-door-fill me-1"></i>
+                            <span itemprop="name">Trang chủ</span>
+                        </a>
+                        <meta itemprop="position" content="1" />
+                    </li>
+                    <li class="breadcrumb-item" itemprop="itemListElement" itemscope
+                        itemtype="https://schema.org/ListItem">
+                        <a href="/Ticket/TaoPhieu" itemprop="item" class="text-decoration-none">
+                            <span itemprop="name">Tạo phiếu hỗ trợ</span>
+                        </a>
+                        <meta itemprop="position" content="2" />
+                    </li>
+                    <li class="breadcrumb-item active" itemprop="itemListElement" itemscope
+                        itemtype="https://schema.org/ListItem" aria-current="page">
+                        <span itemprop="name">Thành công</span>
+                        <meta itemprop="position" content="3" />
+                    </li>
+                </ol>
+            </nav>
+
+            <div class="success-hero-inner text-center animate-hero-in">
+
+                <!-- Animated success icon -->
+                <div class="icon-wrap" id="successIconWrapper" aria-hidden="true">
+                    <div class="icon-ring"></div>
+                    <div class="icon-ring"></div>
+                    <div class="icon-ring"></div>
+                    <div class="icon-circle">
+                        <i class="fa-solid fa-check"></i>
+                    </div>
+                </div>
+
+                <!-- Badge -->
+                <div class="phb-badge" style="margin: 14px auto; display:inline-flex;">
+                    <i class="bi bi-check-circle-fill"></i> Phiếu hỗ trợ đã được tiếp nhận
+                </div>
+
+                <!-- Title & description -->
+                <div class="success-text-block">
+                    <h1 class="phb-title text-white" style="font-size:1.9rem;">Tạo phiếu hỗ trợ thành công!</h1>
+                    <p class="phb-desc" style="color:rgba(255,255,255,0.6); max-width:540px; margin:0 auto;">
+                        Yêu cầu hỗ trợ của bạn đã được hệ thống tiếp nhận thành công.<br class="d-none d-md-block">Nhân viên kỹ thuật sẽ liên hệ bạn sớm nhất có thể.
+                    </p>
+                </div>
+
+                <!-- Ticket code badge -->
+                <div class="success-code-block">
+                    <span class="success-code-label text-white-50">Mã phiếu hỗ trợ của bạn</span>
+                    <div class="code-box" id="successCodeBox">
+                        <i class="fa-solid fa-ticket-fill text-danger"></i>
+                        <span class="code-val" id="ticketCodeValue">@Model.MaPhieu</span>
+                        <button class="copy-btn" id="btnCopyCode" aria-label="Sao chép mã phiếu"
+                                title="Sao chép mã phiếu">
+                            <i class="bi bi-clipboard" id="copyIcon"></i>
+                        </button>
+                    </div>
+                    <p class="success-code-hint text-white-50">
+                        <i class="bi bi-info-circle me-1"></i>Lưu mã phiếu để tra cứu trạng thái xử lý bất kỳ lúc nào
+                    </p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+        
+        <!-- ========== WORKSPACE ========== -->
+        <div class="pg-workspace">
+            <div class="container">
+                <h2 class="sec-heading animate-fade-up">
+                    <i class="fa-solid fa-file text-danger"></i>Thông tin phiếu hỗ trợ
+                </h2>
+
+                <!-- ========== 3. CARD THÔNG TIN PHIẾU + KHÁCH HÀNG: 2-COL / 3-COL ========== -->
+                <div class="info-cards-grid animate-fade-up delay-1">
+
+                    <!-- TICKET INFO CARD -->
+                    <div class="info-card" id="ticketInfoCard">
+                        <div class="info-card-head">
+                            <div class="card-icon red">
+                                <i class="fa-solid fa-ticket-fill"></i>
+                            </div>
+                            <div>
+                                <h2 class="card-title">Thông tin phiếu vừa tạo</h2>
+                                <p class="card-subtitle">Chi tiết yêu cầu hỗ trợ kỹ thuật</p>
+                            </div>
+                        </div>
+                        <div class="info-card-body">
+                            <div class="td-grid">
+                                <div class="td-item">
+                                    <span class="td-lbl"><i class="bi bi-hash"></i> Mã phiếu</span>
+                                    <span class="td-val code-hi" id="infoTicketCode">@Model.MaPhieu</span>
+                                </div>
+                                <div class="td-item">
+                                    <span class="td-lbl"><i class="bi bi-calendar-plus"></i> Ngày tạo</span>
+                                    <span class="td-val" id="infoCreatedDate">@Model.NgayTao?.ToString("dd/MM/yyyy")</span>
+                                </div>
+                                <div class="td-item td-full">
+                                    <span class="td-lbl"><i class="bi bi-card-text"></i> Tiêu đề</span>
+                                    <span class="td-val fw-semibold" id="infoTicketTitle">@Model.TieuDe</span>
+                                </div>
+                                <div class="td-item">
+                                    <span class="td-lbl"><i class="bi bi-wifi"></i> Dịch vụ</span>
+                                    <span class="td-val" id="infoTicketService">@Model.IdDichVuNavigation?.TenDichVu</span>
+                                </div>
+                                <div class="td-item">
+                                    <span class="td-lbl"><i class="bi bi-folder"></i> Danh mục</span>
+                                    <span class="td-val" id="infoTicketCategory">@Model.IdDichVuNavigation?.IdDanhMucNavigation?.TenDanhMuc</span>
+                                </div>
+                                <div class="td-item">
+                                    <span class="td-lbl"><i class="bi bi-tag"></i> Loại yêu cầu</span>
+                                    <span class="td-val" id="infoTicketType">@Model.LoaiYeuCau</span>
+                                </div>
+                                <div class="td-item">
+                                    <span class="td-lbl"><i class="bi bi-circle-fill"></i> Trạng thái</span>
+                                    <span class="td-val">
+                                        <span class="status-badge @statusClass" id="infoTicketStatus">
+                                            <span class="st-dot"></span> @Model.TrangThai
+                                        </span>
+                                    </span>
+                                </div>
+                                <div class="td-item">
+                                    <span class="td-lbl"><i class="bi bi-exclamation-triangle-fill"></i> Mức ưu tiên</span>
+                                    <span class="td-val">
+                                        <span class="priority-badge @priorityClass" id="infoTicketPriority">@priorityName</span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CUSTOMER INFO CARD -->
+                    <div class="info-card" id="customerInfoCard">
+                        <div class="info-card-head">
+                            <div class="card-icon blue">
+                                <i class="bi bi-person-fill"></i>
+                            </div>
+                            <div>
+                                <h2 class="card-title">Thông tin khách hàng</h2>
+                                <p class="card-subtitle">Người gửi yêu cầu hỗ trợ</p>
+                            </div>
+                        </div>
+                        <div class="info-card-body">
+                            <div class="customer-profile-display d-flex align-items-center gap-4">
+                                <div class="cust-avatar" id="customerAvatarInitials" data-name="@Model.IdKhachHangNavigation?.HoTen">KH</div>
+                                <div class="cust-info">
+                                    <div class="cust-row">
+                                        <i class="bi bi-person-badge-fill text-primary"></i>
+                                        <span id="infoCustomerName" class="fw-bold">@Model.IdKhachHangNavigation?.HoTen</span>
+                                    </div>
+                                    <div class="cust-row">
+                                        <i class="fa-solid fa-phone text-success"></i>
+                                        <a href="tel:@Model.IdKhachHangNavigation?.SoDienThoai" id="infoCustomerPhone">@Model.IdKhachHangNavigation?.SoDienThoai</a>
+                                    </div>
+                                    <div class="cust-row">
+                                        <i class="fa-solid fa-envelope text-danger"></i>
+                                        <a href="mailto:@Model.IdKhachHangNavigation?.Email" id="infoCustomerEmail">@Model.IdKhachHangNavigation?.Email</a>
+                                    </div>
+                                    <div class="cust-row">
+                                        <i class="fa-solid fa-map-marker text-warning"></i>
+                                        <span id="infoCustomerAddress">@Model.IdKhachHangNavigation?.DiaChi</span>
+                                    </div>
+                                    <div class="cust-row">
+                                        <i class="bi bi-calendar-check-fill text-info"></i>
+                                        <span>Ngày gửi phiếu: <strong id="infoSubmitDate">@Model.NgayTao?.ToString("dd/MM/yyyy")</strong></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ASSIGNED TECHNICIAN CARD -->
+                    <div class="info-card" id="technicianInfoCard">
+                        <div class="info-card-head">
+                            <div class="card-icon red">
+                                <i class="bi bi-person-badge-fill"></i>
+                            </div>
+                            <div>
+                                <h2 class="card-title">Kỹ thuật viên phụ trách</h2>
+                                <p class="card-subtitle">Nhân viên tiếp nhận xử lý</p>
+                            </div>
+                        </div>
+                        <div class="info-card-body">
+                            @if (Model.IdNhanVienNavigation != null)
+                            {
+                                <div class="cust-info">
+                                    <div class="cust-row mb-2">
+                                        <i class="bi bi-person-check-fill text-primary"></i>
+                                        <span>Họ tên: <strong class="text-dark">@Model.IdNhanVienNavigation.HoTen</strong></span>
+                                    </div>
+                                    @if (!string.IsNullOrEmpty(Model.IdNhanVienNavigation.TenDangNhap))
+                                    {
+                                        <div class="cust-row mb-2">
+                                            <i class="bi bi-hash text-danger"></i>
+                                            <span>Mã nhân viên: <strong class="text-dark">@Model.IdNhanVienNavigation.TenDangNhap</strong></span>
+                                        </div>
+                                    }
+                                    <div class="cust-row mb-2">
+                                        <i class="fa-solid fa-phone text-success"></i>
+                                        <span>Điện thoại: <a href="tel:@Model.IdNhanVienNavigation.SoDienThoai" class="text-danger fw-bold text-decoration-none">@Model.IdNhanVienNavigation.SoDienThoai</a></span>
+                                    </div>
+                                    @if (!string.IsNullOrEmpty(Model.IdNhanVienNavigation.Email))
+                                    {
+                                        <div class="cust-row mb-2">
+                                            <i class="fa-solid fa-envelope text-danger"></i>
+                                            <span>Email: <a href="mailto:@Model.IdNhanVienNavigation.Email" class="text-dark text-decoration-none">@Model.IdNhanVienNavigation.Email</a></span>
+                                        </div>
+                                    }
+                                    @if (!string.IsNullOrEmpty(Model.IdNhanVienNavigation.VaiTro))
+                                    {
+                                        <div class="cust-row">
+                                            <i class="bi bi-briefcase-fill text-info"></i>
+                                            <span>Vai trò: <strong class="text-dark">@Model.IdNhanVienNavigation.VaiTro</strong></span>
+                                        </div>
+                                    }
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="empty-state-box py-3 bg-light border-0 text-center">
+                                    <i class="bi bi-person-x-fill empty-state-icon text-muted" style="font-size: 2rem;"></i>
+                                    <h4 class="empty-state-title fs-6 text-muted mt-2">Chưa phân công nhân viên</h4>
+                                    <p class="empty-state-desc" style="font-size: 0.75rem;">Yêu cầu hỗ trợ đang được tiếp nhận và điều phối kỹ thuật viên.</p>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- CONDITIONAL APPOINTMENT CARD (LỊCH HẸN) -->
+                    @if (Model.CanLichHen == "Có" && Model.LichHens.Any())
+                    {
+                        var lichHen = Model.LichHens.First();
+                        <div class="info-card" id="appointmentInfoCard">
+                            <div class="info-card-head">
+                                <div class="card-icon orange">
+                                    <i class="bi bi-calendar-check-fill"></i>
+                                </div>
+                                <div>
+                                    <h2 class="card-title">Lịch hẹn hỗ trợ tại nhà</h2>
+                                    <p class="card-subtitle">Chi tiết thời gian đặt hẹn kỹ thuật</p>
+                                </div>
+                            </div>
+                            <div class="info-card-body">
+                                <div class="td-grid">
+                                    <div class="td-item">
+                                        <span class="td-lbl"><i class="bi bi-calendar-event"></i> Ngày hẹn</span>
+                                        <span class="td-val">@lichHen.NgayHen?.ToString("dd/MM/yyyy")</span>
+                                    </div>
+                                    <div class="td-item">
+                                        <span class="td-lbl"><i class="bi bi-clock"></i> Khung giờ</span>
+                                        <span class="td-val">@lichHen.GioBatDau?.ToString(@"hh\:mm") - @lichHen.GioKetThuc?.ToString(@"hh\:mm")</span>
+                                    </div>
+                                    <div class="td-item td-full">
+                                        <span class="td-lbl"><i class="bi bi-geo-alt-fill"></i> Địa chỉ hỗ trợ</span>
+                                        <span class="td-val">@lichHen.DiaChiHoTro</span>
+                                    </div>
+                                    @if (!string.IsNullOrEmpty(lichHen.GhiChu))
+                                    {
+                                        <div class="td-item td-full">
+                                            <span class="td-lbl"><i class="bi bi-chat-left-text-fill"></i> Ghi chú</span>
+                                            <span class="td-val text-muted">@lichHen.GhiChu</span>
+                                        </div>
+                                    }
+                                    <div class="td-item">
+                                        <span class="td-lbl"><i class="bi bi-check-circle"></i> Trạng thái lịch hẹn</span>
+                                        <span class="td-val">
+                                            <span class="status-badge status-pending">
+                                                <span class="st-dot"></span> @lichHen.TrangThai
+                                            </span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                </div>
+
+                <!-- ========== 4. QUY TRÌNH XỬ LÝ (STEPPER) ========== -->
+                <div class="info-card process-card mt-4 animate-fade-up delay-2" id="processCard">
+                    <div class="info-card-head">
+                        <div class="card-icon green">
+                            <i class="bi bi-diagram-3-fill"></i>
+                        </div>
+                        <div>
+                            <h2 class="card-title">Quy trình xử lý phiếu</h2>
+                            <p class="card-subtitle">Các bước tiếp theo sẽ diễn ra</p>
+                        </div>
+                    </div>
+                    <div class="info-card-body">
+                        <!-- HORIZONTAL STEPPER (desktop) / VERTICAL (mobile) -->
+                        <div class="stepper" id="processStepper" role="list">
+
+                            <!-- Step 1: Completed -->
+                            <div class="step done" id="step1" role="listitem">
+                                <div class="step-num">1</div>
+                                <div class="step-lbl">Tiếp nhận yêu cầu</div>
+                                <p class="step-desc">Hệ thống đã ghi nhận và tạo phiếu thành công.</p>
+                                <span class="step-time"><i class="fa-solid fa-clock"></i> @Model.NgayTao?.ToString("dd/MM/yyyy")</span>
+                            </div>
+
+                            <!-- Step 2 -->
+                            <div class="step active" id="step2" role="listitem">
+                                <div class="step-num">2</div>
+                                <div class="step-lbl">Phân công nhân viên</div>
+                                <p class="step-desc">Quản lý phân công kỹ thuật viên phù hợp.</p>
+                                <span class="step-time"><i class="bi bi-hourglass-split"></i> Dự kiến 30 phút</span>
+                            </div>
+
+                            <!-- Step 3 -->
+                            <div class="step" id="step3" role="listitem">
+                                <div class="step-num">3</div>
+                                <div class="step-lbl">Đang xử lý</div>
+                                <p class="step-desc">Kỹ thuật viên kiểm tra và khắc phục sự cố.</p>
+                                <span class="step-time"><i class="fa-solid fa-calendar-days"></i> Theo lịch hẹn</span>
+                            </div>
+
+                            <!-- Step 4 -->
+                            <div class="step last" id="step4" role="listitem">
+                                <div class="step-num">4</div>
+                                <div class="step-lbl">Hoàn thành</div>
+                                <p class="step-desc">Sự cố được khắc phục và bàn giao.</p>
+                                <span class="step-time"><i class="bi bi-check2-all"></i> Sau xử lý xong</span>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ========== 5. THÔNG BÁO + EMAIL/SMS: 2-COL ========== -->
+                <div class="notif-sms-grid mt-4 animate-fade-up delay-2">
+
+                    <!-- NOTIFICATION INFO CARD -->
+                    <div class="info-card" id="notificationInfoCard">
+                        <div class="info-card-head">
+                            <div class="card-icon orange">
+                                <i class="fa-solid fa-circle-info"></i>
+                            </div>
+                            <div>
+                                <h2 class="card-title">Thông tin xử lý phiếu</h2>
+                                <p class="card-subtitle">Chi tiết quy trình phản hồi</p>
+                            </div>
+                        </div>
+                        <div class="info-card-body">
+                            <ul class="notif-list">
+                                <li class="notif-item">
+                                    <div class="n-dot green"><i class="fa-solid fa-circle-check"></i></div>
+                                    <span>Phiếu hỗ trợ đã được <strong>ghi nhận thành công</strong>.</span>
+                                </li>
+                                <li class="notif-item">
+                                    <div class="n-dot blue"><i class="bi bi-person-lines-fill"></i></div>
+                                    <span>Nhân viên kỹ thuật sẽ <strong>tiếp nhận trong thời gian sớm nhất</strong>.</span>
+                                </li>
+                                <li class="notif-item">
+                                    <div class="n-dot purple"><i class="bi bi-eye-fill"></i></div>
+                                    <span>Bạn có thể <strong>theo dõi tiến độ xử lý</strong> trong tài khoản khách hàng.</span>
+                                </li>
+                                <li class="notif-item">
+                                    <div class="n-dot orange"><i class="fa-solid fa-bell-fill"></i></div>
+                                    <span>Hệ thống sẽ <strong>gửi thông báo tự động</strong> khi trạng thái phiếu thay đổi.</span>
+                                </li>
+                                <li class="notif-item">
+                                    <div class="n-dot red"><i class="bi bi-bookmark-fill"></i></div>
+                                    <span>Vui lòng <strong>lưu lại mã phiếu</strong> để tra cứu nhanh.</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- EMAIL & SMS CONFIRMATION CARD -->
+                    <div class="info-card" id="confirmCard">
+                        <div class="info-card-head">
+                            <div class="card-icon green">
+                                <i class="bi bi-send-check-fill"></i>
+                            </div>
+                            <div>
+                                <h2 class="card-title">Thông báo xác nhận</h2>
+                                <p class="card-subtitle">Đã gửi xác nhận qua Email &amp; SMS</p>
+                            </div>
+                        </div>
+                        <div class="info-card-body">
+                            <div class="conf-row">
+                                <div class="conf-icon email">
+                                    <i class="bi bi-envelope-check-fill"></i>
+                                </div>
+                                <div class="cust-info">
+                                    <span class="conf-type">Email xác nhận đã được gửi tới:</span>
+                                    <a href="mailto:@Model.IdKhachHangNavigation?.Email" class="conf-val" id="confirmEmail">@Model.IdKhachHangNavigation?.Email</a>
+                                </div>
+                                <span class="conf-sent"><i class="bi bi-check-all"></i> Đã gửi</span>
+                            </div>
+                            <div class="conf-row">
+                                <div class="conf-icon sms">
+                                    <i class="bi bi-phone-fill"></i>
+                                </div>
+                                <div class="cust-info">
+                                    <span class="conf-type">Tin nhắn SMS xác nhận đã được gửi tới:</span>
+                                    <a href="tel:@Model.IdKhachHangNavigation?.SoDienThoai" class="conf-val" id="confirmPhone">@Model.IdKhachHangNavigation?.SoDienThoai</a>
+                                </div>
+                                <span class="conf-sent"><i class="bi bi-check-all"></i> Đã gửi</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- ========== 6. NÚT HÀNH ĐỘNG CHÍNH ========== -->
+                <div class="action-section mt-4 animate-fade-up delay-3" id="actionButtonsSection">
+                    <h3 class="action-section-title text-center text-md-start mb-3">Bước tiếp theo của bạn</h3>
+                    <div class="actions">
+                        <a href="@Url.Action("ChiTietPhieu", "Ticket", new { id = Model.IdPhieu })" class="btn-act btn-primary-act" id="btnViewTicket">
+                            <div class="action-btn-body">
+                                <span class="d-block fw-bold text-start text-white">Xem chi tiết phiếu</span>
+                                <span class="d-block text-start small opacity-75 text-white">Theo dõi tiến trình &amp; chat kỹ thuật viên</span>
+                            </div>
+                            <i class="bi bi-arrow-right ms-auto text-white"></i>
+                        </a>
+                        <a href="/Customers/ThongTinCaNhan#my-tickets" class="btn-act btn-outline-act" id="btnMyTickets">
+                            <div class="action-btn-body">
+                                <span class="d-block fw-bold text-start">Phiếu hỗ trợ của tôi</span>
+                                <span class="d-block text-start small opacity-75 text-muted">Xem tất cả phiếu đã tạo</span>
+                            </div>
+                            <i class="bi bi-arrow-right ms-auto"></i>
+                        </a>
+                        <a href="/" class="btn-act btn-ghost-act" id="btnGoHome">
+                            <div class="action-btn-body">
+                                <span class="d-block fw-bold text-start">Quay về trang chủ</span>
+                                <span class="d-block text-start small opacity-75 text-muted">Trở về giao diện chính</span>
+                            </div>
+                            <i class="bi bi-arrow-right ms-auto"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- ========== 7. FAQ + HOTLINE: 2-COL ========== -->
+                <div class="faq-hotline-grid mt-4 animate-fade-up delay-3">
+
+                    <!-- FAQ CARD -->
+                    <div class="info-card" id="faqCard">
+                        <div class="info-card-head">
+                            <div class="card-icon orange">
+                                <i class="fa-solid fa-circle-question"></i>
+                            </div>
+                            <div>
+                                <h2 class="card-title">Câu hỏi thường gặp</h2>
+                                <p class="card-subtitle">Giải đáp nhanh cho bạn</p>
+                            </div>
+                        </div>
+                        <div class="info-card-body faq-body">
+                            <div class="faq-accordion" id="faqAccordion">
+                                <div class="faq-item">
+                                    <button class="faq-btn faq-question" aria-expanded="false" id="faq1Btn"
+                                            aria-controls="faq1Answer">
+                                        <i class="bi bi-clock me-2 text-warning"></i>
+                                        Bao lâu nhân viên sẽ liên hệ?
+                                        <i class="fa-solid fa-chevron-down faq-chev"></i>
+                                    </button>
+                                    <div class="faq-ans faq-answer" id="faq1Answer" aria-labelledby="faq1Btn" hidden>
+                                        Với mức ưu tiên <strong>Cao</strong>, nhân viên kỹ thuật sẽ liên hệ trong vòng
+                                        <strong>30 phút đến 1 giờ</strong> kể từ khi tạo phiếu trong giờ hành chính.
+                                        Ngoài giờ hành chính, chúng tôi sẽ phản hồi trong vòng 2 giờ.
+                                    </div>
+                                </div>
+                                <div class="faq-item">
+                                    <button class="faq-btn faq-question" aria-expanded="false" id="faq2Btn"
+                                            aria-controls="faq2Answer">
+                                        <i class="fa-solid fa-search me-2 text-danger"></i>
+                                        Làm sao theo dõi trạng thái phiếu?
+                                        <i class="fa-solid fa-chevron-down faq-chev"></i>
+                                    </button>
+                                    <div class="faq-ans faq-answer" id="faq2Answer" aria-labelledby="faq2Btn" hidden>
+                                        Bạn có thể kiểm tra trạng thái phiếu bằng cách truy cập vào <strong>
+                                            Tài khoản cá nhân → Phiếu hỗ trợ của tôi
+                                        </strong>, hoặc sử dụng mã phiếu
+                                        <strong>@Model.MaPhieu</strong> để tra cứu trực tiếp trên trang Tra cứu phiếu.
+                                    </div>
+                                </div>
+                                <div class="faq-item">
+                                    <button class="faq-btn faq-question" aria-expanded="false" id="faq3Btn"
+                                            aria-controls="faq3Answer">
+                                        <i class="bi bi-calendar2-check me-2 text-primary"></i>
+                                        Làm sao thay đổi lịch hẹn?
+                                        <i class="fa-solid fa-chevron-down faq-chev"></i>
+                                    </button>
+                                    <div class="faq-ans faq-answer" id="faq3Answer" aria-labelledby="faq3Btn" hidden>
+                                        Để thay đổi lịch hẹn, vui lòng truy cập <strong>
+                                            Chi tiết phiếu → Tab Lịch hẹn
+                                        </strong> và chọn hủy lịch hẹn hiện tại rồi đặt lại. Hoặc liên hệ trực
+                                        tiếp hotline <strong>1800 8119</strong> để được hỗ trợ thay đổi lịch nhanh nhất.
+                                    </div>
+                                </div>
+                                <div class="faq-item">
+                                    <button class="faq-btn faq-question" aria-expanded="false" id="faq4Btn"
+                                            aria-controls="faq4Answer">
+                                        <i class="fa-solid fa-paperclip me-2 text-success"></i>
+                                        Làm sao gửi thêm hình ảnh?
+                                        <i class="fa-solid fa-chevron-down faq-chev"></i>
+                                    </button>
+                                    <div class="faq-ans faq-answer" id="faq4Answer" aria-labelledby="faq4Btn" hidden>
+                                        Bạn có thể đính kèm thêm hình ảnh và tài liệu qua <strong>
+                                            Chi tiết phiếu → Tab File đính kèm
+                                        </strong>. Hoặc gửi trực tiếp trong phần chat với kỹ thuật viên.
+                                    </div>
+                                </div>
+                                <div class="faq-item">
+                                    <button class="faq-btn faq-question" aria-expanded="false" id="faq5Btn"
+                                            aria-controls="faq5Answer">
+                                        <i class="fa-solid fa-headset me-2 text-purple"></i>
+                                        Làm sao liên hệ kỹ thuật viên?
+                                        <i class="fa-solid fa-chevron-down faq-chev"></i>
+                                    </button>
+                                    <div class="faq-ans faq-answer" id="faq5Answer" aria-labelledby="faq5Btn" hidden>
+                                        Sau khi phiếu được phân công, bạn có thể liên hệ trực tiếp với kỹ thuật viên qua
+                                        <strong>Chat hỗ trợ trong Chi tiết phiếu</strong>, hoặc gọi vào số điện thoại
+                                        của kỹ thuật viên được cung cấp sau phân công. Ngoài ra, bạn luôn có thể gọi
+                                        <strong>1800 8119</strong>.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- HOTLINE CARD -->
+                    <div class="hotline-card" id="hotlineCard">
+                        <div class="hl-icon">
+                            <i class="fa-solid fa-headset"></i>
+                        </div>
+                        <h3>Hỗ trợ kỹ thuật 24/7</h3>
+                        <p>Đội ngũ chuyên viên sẵn sàng hỗ trợ bạn mọi lúc</p>
+                        <a href="tel:18008119" class="hl-num">1800 8119</a>
+                        <a href="mailto:support@viettel.com.vn" class="hl-email">support@viettel.com.vn</a>
+                        <div class="hl-hours">Phục vụ 24/7/365 (Miễn phí)</div>
+                        <a href="tel:18008119" class="hl-btn-call" id="btnCallNow">
+                            <i class="fa-solid fa-phone me-2"></i>Gọi ngay
+                        </a>
+                    </div>
+
+                </div>
+
+                <!-- ========== 8. GỢI Ý TIẾP THEO ========== -->
+                <div class="suggestion-section mt-5 animate-fade-up delay-4" id="suggestionSection">
+                    <h3 class="suggestion-title">Gợi ý tiếp theo</h3>
+                    <div class="suggestion-grid">
+                        <a href="/Ticket/ChiTietPhieu/@Model.IdPhieu" class="suggestion-card" id="suggestViewTicket">
+                            <div class="suggestion-icon red">
+                                <i class="fa-solid fa-ticket-fill"></i>
+                            </div>
+                            <h4 class="suggestion-card-title">Xem chi tiết phiếu</h4>
+                            <p class="suggestion-card-desc">
+                                Theo dõi tiến trình xử lý và trao đổi với kỹ thuật viên phụ trách.
+                            </p>
+                            <span class="suggestion-link">Xem ngay <i class="bi bi-arrow-right"></i></span>
+                        </a>
+                        <a href="/Customers/ThongTinCaNhan#my-tickets" class="suggestion-card" id="suggestMyTickets">
+                            <div class="suggestion-icon blue">
+                                <i class="bi bi-collection-fill"></i>
+                            </div>
+                            <h4 class="suggestion-card-title">Danh sách phiếu hỗ trợ</h4>
+                            <p class="suggestion-card-desc">
+                                Xem toàn bộ lịch sử phiếu hỗ trợ đã tạo và trạng thái xử lý.
+                            </p>
+                            <span class="suggestion-link">Xem ngay <i class="bi bi-arrow-right"></i></span>
+                        </a>
+                        <a href="/Customers/ChatTrucTuyen" class="suggestion-card" id="suggestContact">
+                            <div class="suggestion-icon green">
+                                <i class="fa-solid fa-comments"></i>
+                            </div>
+                            <h4 class="suggestion-card-title">Chat trực tuyến</h4>
+                            <p class="suggestion-card-desc">
+                                Kết nối ngay với chuyên viên kỹ thuật qua chat hoặc gửi tin nhắn liên hệ.
+                            </p>
+                            <span class="suggestion-link">Chat ngay <i class="bi bi-arrow-right"></i></span>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- ==================== FOOTER ==================== -->
+    @await Html.PartialAsync("_Footer")
+
+    <!-- Toast Notification Container -->
+    <div class="custom-toast-container" id="toastContainer" aria-live="polite" aria-atomic="true"></div>
+
+    <!-- ==================== SCRIPTS ==================== -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+            crossorigin="anonymous"></script>
+    <script src="~/assets/js/header.js"></script>
+    <script src="~/assets/js/sidebar.js"></script>
+    <script src="~/assets/js/footer.js"></script>
+    <script src="~/assets/js/chatbox.js"></script>
+    <script src="~/assets/js/main.js"></script>
+    <script src="~/assets/js/ticket-success.js"></script>
+</body>
+
+</html>

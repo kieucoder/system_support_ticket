@@ -952,23 +952,42 @@ function initFormSubmission() {
 
         // Trigger SweetAlert2 dialog check sequence
         Swal.fire({
-            title: 'Xác Nhận Gửi Phiếu?',
+            title: 'Xác Nhận Gửi Phiếu Hỗ Trợ?',
             html: `
-                <div class="text-start fs-7 border rounded p-3 bg-light">
-                    <p class="mb-2"><strong>Mã phiếu:</strong> ${ticketCodeVal}</p>
-                    <p class="mb-2"><strong>Tiêu đề:</strong> ${titleVal}</p>
-                    <p class="mb-2"><strong>Danh mục:</strong> ${categoryName}</p>
-                    <p class="mb-2"><strong>Dịch vụ:</strong> ${serviceName}</p>
-                    <p class="mb-2"><strong>Loại yêu cầu:</strong> ${requestTypeVal}</p>
-                    <p class="mb-0"><strong>Mức độ ưu tiên:</strong> <span class="badge ${getPriorityAlertBadge(priorityVal)}">${priorityVal}</span></p>
+                <div class="swal-confirm-details mb-3">
+                    <div class="swal-detail-row">
+                        <span class="swal-detail-label"><i class="bi bi-hashtag me-1 text-danger"></i> Mã phiếu</span>
+                        <span class="swal-detail-value text-danger font-monospace">${ticketCodeVal}</span>
+                    </div>
+                    <div class="swal-detail-row">
+                        <span class="swal-detail-label"><i class="bi bi-card-heading me-1 text-secondary"></i> Tiêu đề sự cố</span>
+                        <span class="swal-detail-value">${titleVal}</span>
+                    </div>
+                    <div class="swal-detail-row">
+                        <span class="swal-detail-label"><i class="bi bi-grid me-1 text-secondary"></i> Danh mục</span>
+                        <span class="swal-detail-value">${categoryName}</span>
+                    </div>
+                    <div class="swal-detail-row">
+                        <span class="swal-detail-label"><i class="bi bi-gear me-1 text-secondary"></i> Dịch vụ</span>
+                        <span class="swal-detail-value">${serviceName}</span>
+                    </div>
+                    <div class="swal-detail-row">
+                        <span class="swal-detail-label"><i class="bi bi-tag me-1 text-secondary"></i> Loại yêu cầu</span>
+                        <span class="swal-detail-value">${requestTypeVal}</span>
+                    </div>
+                    <div class="swal-detail-row">
+                        <span class="swal-detail-label"><i class="bi bi-shield-exclamation me-1 text-secondary"></i> Mức độ ưu tiên</span>
+                        <span class="swal-detail-value">${getPriorityAlertBadge(priorityVal)}</span>
+                    </div>
                 </div>
-                <p class="mt-3 mb-0 text-muted fs-7 text-center">Đội ngũ kỹ thuật Viettel sẽ phản hồi phiếu hỗ trợ trong vòng 15-30 phút.</p>
+                <div class="swal-notice-box">
+                    <i class="bi bi-clock-history me-2 text-danger fs-6"></i>
+                    <span>Đội ngũ kỹ thuật Viettel sẽ phản hồi phiếu hỗ trợ trong vòng 15 - 30 phút.</span>
+                </div>
             `,
             icon: 'question',
             showCancelButton: true,
-            confirmButtonColor: '#EE0033',
-            cancelButtonColor: '#6b7280',
-            confirmButtonText: '<i class="fa-solid fa-paper-plane me-1"></i>Xác nhận gửi',
+            confirmButtonText: '<i class="bi bi-send-fill me-1"></i> Xác nhận gửi',
             cancelButtonText: 'Hủy bỏ',
             focusConfirm: false
         }).then((result) => {

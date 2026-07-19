@@ -2,6 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using SupportTicketSysterm.Data;
 using System;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using SupportTicketSysterm.Models;
+using SupportTicketSysterm.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +19,36 @@ builder.Services.AddDbContext<TechSupportContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("SupportTicketSystem")));
 
+// Đăng ký Twilio Service
+builder.Services.AddScoped<ITwilioService, TwilioService>();
+
+// Đăng ký HttpContextAccessor
+builder.Services.AddHttpContextAccessor();
+
+// Đăng ký SpeedSMS Service
+builder.Services.Configure<SpeedSmsOptions>(builder.Configuration.GetSection("SpeedSMS"));
+builder.Services.AddHttpClient<ISmsService, SpeedSmsService>();
+
+// Đăng ký cấu hình EmailSettings Options
+builder.Services.Configure<SupportTicketSysterm.Services.EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
+builder.Services.AddScoped<SupportTicketSysterm.Services.IEmailService, SupportTicketSysterm.Services.EmailService>();
+
+// Đăng ký OTP Service
+builder.Services.AddScoped<IOtpService, OtpService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+
+// Đăng ký Gemini AI Service
+builder.Services.AddHttpClient<IGeminiService, GeminiService>();
+
+// Đăng ký Chat Service
+builder.Services.AddScoped<IChatService, ChatService>();
+builder.Services.AddScoped<PromptBuilderService>();
+builder.Services.AddScoped<ChatHistoryService>();
+
+// Đăng ký Ticket Service
+builder.Services.AddScoped<ITicketService, TicketService>();
+
+
 // Đăng ký Cookie Authentication
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
@@ -28,6 +60,20 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
         options.Cookie.SameSite = SameSiteMode.Lax;
     });
+
+// Đăng ký SignalR
+builder.Services.AddSignalR();
+
+// Đăng ký LiveSupport Services và Repositories
+builder.Services.AddScoped<SupportTicketSysterm.Repositories.ILiveSupportRepository, SupportTicketSysterm.Repositories.LiveSupportRepository>();
+builder.Services.AddScoped<SupportTicketSysterm.Services.ILiveSupportService, SupportTicketSysterm.Services.LiveSupportService>();
+builder.Services.AddScoped<SupportTicketSysterm.Services.IDashboardService, SupportTicketSysterm.Services.DashboardService>();
+builder.Services.AddScoped<SupportTicketSysterm.Services.IChatPermissionService, SupportTicketSysterm.Services.ChatPermissionService>();
+builder.Services.AddScoped<SupportTicketSysterm.Services.ISignalRService, SupportTicketSysterm.Services.SignalRService>();
+builder.Services.AddScoped<SupportTicketSysterm.Services.INotificationService, SupportTicketSysterm.Services.NotificationService>();
+builder.Services.AddScoped<SupportTicketSysterm.Services.IAppointmentService, SupportTicketSysterm.Services.AppointmentService>();
+builder.Services.AddScoped<SupportTicketSysterm.Services.IRatingService, SupportTicketSysterm.Services.RatingService>();
+
 
 // Đăng ký Authorization
 builder.Services.AddAuthorization();
@@ -42,7 +88,7 @@ builder.Services.AddSession(options =>
 });
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.nôn
+// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -58,6 +104,9 @@ app.UseRouting();
 app.UseSession();
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.MapHub<SupportTicketSysterm.Controllers.ChatHub>("/chatHub");
+app.MapHub<SupportTicketSysterm.Controllers.LiveSupportHub>("/liveSupportHub");
 
 app.MapControllerRoute(
     name: "default",

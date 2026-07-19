@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace SupportTicketSysterm.Data;
@@ -13,13 +13,13 @@ public partial class PhieuHoTro
 
     public int? IdDichVu { get; set; }
 
-    public string MaPhieu { get; set; } = null!;
+    public string? MaPhieu { get; set; }
 
     public string? TieuDe { get; set; }
 
     public int? MucDoUuTien { get; set; }
 
-    public string LoaiYeuCau { get; set; } = null!;
+    public string? LoaiYeuCau { get; set; }
 
     public string? NoiDung { get; set; }
 
@@ -27,7 +27,7 @@ public partial class PhieuHoTro
 
     public DateOnly? NgayCapNhat { get; set; }
 
-    public string CanLichHen { get; set; } = null!;
+    public string? CanLichHen { get; set; }
 
     public string? TrangThai { get; set; }
 

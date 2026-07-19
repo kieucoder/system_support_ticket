@@ -15,7 +15,7 @@
     --viettel-gray-light: #F5F5F7;
     --viettel-gray-medium: #E5E7EB;
     --viettel-gray-dark: #86868B;
-    
+
     /* Semantic Colors */
     --primary: var(--viettel-red);
     --primary-hover: var(--viettel-red-dark);
@@ -24,16 +24,16 @@
     --text-main: #1D1D1F;
     --text-muted: #86868B;
     --border-color: #E5E7EB;
-    
+
     /* Gradients */
     --viettel-gradient: linear-gradient(135deg, #EE0033 0%, #C8002A 100%);
     --viettel-gradient-hover: linear-gradient(135deg, #C8002A 0%, #A00021 100%);
-    
+
     /* Shadows */
     --shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
     --shadow-lg: 0 12px 30px rgba(0, 0, 0, 0.06);
     --shadow-red-glow: 0 8px 24px rgba(238, 0, 51, 0.15);
-    
+
     /* Transitions & Corners */
     --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-fast: all 0.15s ease;
@@ -177,9 +177,19 @@ section {
     overflow: hidden;
 }
 
+.hero-section.home-hero-carousel {
+    background: none !important;
+    min-height: 480px !important;
+    max-height: none !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    display: block !important;
+    z-index: 1 !important;
+}
+
 .hero-carousel {
-    height: 100vh;
-    min-height: 600px;
+    height: 65vh;
+    min-height: 480px;
 }
 
 .hero-carousel .carousel-inner {
@@ -205,7 +215,7 @@ section {
 
 .hero-carousel-content {
     position: absolute;
-    top: 55%;
+    top: 50%;
     left: 0;
     transform: translateY(-50%);
     width: 100%;
@@ -213,33 +223,42 @@ section {
     color: #ffffff;
 }
 
-.hero-badge {
-    display: inline-block;
-    background-color: var(--viettel-red);
-    color: #ffffff;
-    font-size: 0.8rem;
-    font-weight: 700;
-    padding: 6px 16px;
-    border-radius: 50px;
-    letter-spacing: 0.05em;
-    margin-bottom: 1.5rem;
+.hero-carousel .hero-badge {
+    display: inline-block !important;
+    background-color: var(--viettel-red) !important;
+    color: #ffffff !important;
+    font-size: 0.8rem !important;
+    font-weight: 700 !important;
+    padding: 6px 16px !important;
+    border-radius: 50px !important;
+    letter-spacing: 0.05em !important;
+    margin-bottom: 1rem !important;
+    border: none !important;
+    box-shadow: 0 4px 12px rgba(230, 0, 18, 0.2) !important;
+    width: auto !important;
+    text-transform: uppercase !important;
 }
 
-.hero-title {
-    font-size: 3.5rem;
-    font-weight: 850;
-    line-height: 1.15;
-    letter-spacing: -0.03em;
-    margin-bottom: 1.5rem;
+.hero-carousel .hero-title {
+    font-size: clamp(2rem, 4vw, 3rem) !important;
+    font-weight: 850 !important;
+    line-height: 1.2 !important;
+    letter-spacing: -0.02em !important;
+    margin-bottom: 1rem !important;
+    color: #ffffff !important;
+    background: none !important;
+    -webkit-text-fill-color: #ffffff !important;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3) !important;
 }
 
-.hero-desc {
-    font-size: 1.15rem;
-    font-weight: 400;
-    color: rgba(255, 255, 255, 0.85);
+.hero-carousel .hero-desc {
+    font-size: clamp(0.95rem, 1.5vw, 1.1rem) !important;
+    font-weight: 400 !important;
+    color: rgba(255, 255, 255, 0.9) !important;
     max-width: 600px;
-    margin-bottom: 2.5rem;
-    line-height: 1.6;
+    margin-bottom: 1.8rem !important;
+    line-height: 1.6 !important;
+    text-shadow: 0 1px 5px rgba(0, 0, 0, 0.3) !important;
 }
 
 .hero-buttons {
@@ -480,6 +499,77 @@ section {
 }
 
 /* 4. ABOUT SYSTEM SECTION */
+#aboutSection {
+    background: linear-gradient(135deg, #b30026 0%, #ee0033 50%, #800016 100%) !important;
+    color: #ffffff !important;
+    padding: 80px 0;
+    position: relative;
+}
+
+#aboutSection .section-title {
+    color: #ffffff !important;
+}
+
+#aboutSection p,
+#aboutSection .text-muted {
+    color: rgba(255, 255, 255, 0.85) !important;
+}
+
+#aboutSection .text-danger {
+    color: rgba(255, 255, 255, 0.9) !important;
+}
+
+#aboutSection .about-list li {
+    color: #ffffff !important;
+}
+
+#aboutSection .about-list li i {
+    color: #ffffff !important;
+}
+
+#aboutSection .bg-danger-subtle {
+    background-color: rgba(255, 255, 255, 0.15) !important;
+    color: #ffffff !important;
+}
+
+#aboutSection .text-dark {
+    color: #ffffff !important;
+}
+
+#aboutSection .about-stats {
+    border-top: 1px solid rgba(255, 255, 255, 0.15) !important;
+}
+
+#aboutSection .about-stat-item h3 {
+    color: #ffffff !important;
+}
+
+#aboutSection .about-stat-item p {
+    color: rgba(255, 255, 255, 0.75) !important;
+}
+
+#aboutSection .btn-viettel {
+    background: #ffffff !important;
+    color: #ee0033 !important;
+    border-color: #ffffff !important;
+    font-weight: 700 !important;
+}
+
+#aboutSection .btn-viettel:hover {
+    background: rgba(255, 255, 255, 0.9) !important;
+    color: #b30026 !important;
+    border-color: rgba(255, 255, 255, 0.9) !important;
+    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2) !important;
+}
+
+#aboutSection .about-floating-badge .text-dark {
+    color: #1f2937 !important;
+}
+
+#aboutSection .about-floating-badge .text-muted {
+    color: #6b7280 !important;
+}
+
 .about-image-wrapper {
     position: relative;
     border-radius: var(--radius-lg);
@@ -597,8 +687,15 @@ section {
 
 /* Float Animations */
 @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
 }
 
 .animate-float {
@@ -647,12 +744,15 @@ section {
 .relative-row:has(.timeline-step:nth-child(2):hover) .process-line-fill {
     width: 0% !important;
 }
+
 .relative-row:has(.timeline-step:nth-child(3):hover) .process-line-fill {
     width: 33.33% !important;
 }
+
 .relative-row:has(.timeline-step:nth-child(4):hover) .process-line-fill {
     width: 66.67% !important;
 }
+
 .relative-row:has(.timeline-step:nth-child(5):hover) .process-line-fill {
     width: 100% !important;
 }
@@ -827,11 +927,11 @@ section {
 
 /* 7. STATISTICS SECTION */
 .stats-section {
-    background: linear-gradient(135deg, #e60012 0%, #aa0015 50%, #73000d 100%);
-    color: #ffffff;
-    padding: 75px 0;
-    position: relative;
-    overflow: hidden;
+    background: linear-gradient(135deg, #b30026 0%, #ee0033 50%, #800016 100%) !important;
+    color: #ffffff !important;
+    padding: 75px 0 !important;
+    position: relative !important;
+    overflow: hidden !important;
 }
 
 .stats-bg-pattern {
@@ -847,49 +947,62 @@ section {
 }
 
 .stat-box {
-    background: rgba(255, 255, 255, 0.07);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: var(--radius-sm);
-    padding: 30px 20px;
-    transition: var(--transition);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    background: rgba(255, 255, 255, 0.07) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: var(--radius-sm) !important;
+    padding: 30px 20px !important;
+    transition: var(--transition) !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15) !important;
 }
 
 .stat-box:hover {
-    transform: translateY(-8px);
-    background: rgba(255, 255, 255, 0.12);
-    border-color: rgba(255, 255, 255, 0.2);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+    transform: translateY(-8px) !important;
+    background: rgba(255, 255, 255, 0.12) !important;
+    border-color: rgba(255, 255, 255, 0.2) !important;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25) !important;
 }
 
 .stat-icon {
-    font-size: 2.5rem;
-    color: #ffe066; /* Gold icon */
-    margin-bottom: 0.88rem;
-    text-shadow: 0 0 15px rgba(255, 224, 102, 0.4);
-    transition: var(--transition);
+    font-size: 2.2rem !important;
+    margin-bottom: 20px !important;
+    color: #ffffff !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 64px !important;
+    height: 64px !important;
+    border-radius: 50% !important;
+    background: rgba(255, 255, 255, 0.15) !important;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.05) !important;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
 .stat-box:hover .stat-icon {
-    transform: scale(1.1) rotate(5deg);
-    color: #ffffff;
-    text-shadow: 0 0 20px rgba(255, 255, 255, 0.6);
+    background: #ffffff !important;
+    color: #ee0033 !important;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.4) !important;
+    transform: scale(1.1) !important;
 }
 
 .stat-number {
-    font-size: 2.75rem;
-    font-weight: 800;
-    margin-bottom: 0.4rem;
-    color: #ffffff;
-    letter-spacing: -0.02em;
+    font-size: 2.8rem !important;
+    font-weight: 900 !important;
+    margin-bottom: 8px !important;
+    color: #ffffff !important;
+    letter-spacing: -1px !important;
+    background: none !important;
+    -webkit-text-fill-color: #ffffff !important;
+    display: block !important;
 }
 
 .stat-title {
-    font-size: 0.95rem;
-    color: rgba(243, 244, 246, 0.9);
-    font-weight: 600;
+    font-size: 0.9rem !important;
+    font-weight: 700 !important;
+    color: rgba(255, 255, 255, 0.75) !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
 }
 
 /* 8. TESTIMONIAL FEEDBACK */
@@ -996,7 +1109,8 @@ section {
 .news-thumb-wrapper {
     position: relative;
     overflow: hidden;
-    padding-top: 56.25%; /* 16:9 Aspect Ratio */
+    padding-top: 56.25%;
+    /* 16:9 Aspect Ratio */
 }
 
 .news-thumb {
@@ -1084,7 +1198,7 @@ section {
     left: -50%;
     width: 200%;
     height: 200%;
-    background: radial-gradient(circle, rgba(255,255,255,0.12) 0%, transparent 60%);
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.12) 0%, transparent 60%);
     pointer-events: none;
     animation: spin 30s linear infinite;
 }
@@ -1099,7 +1213,9 @@ section {
 }
 
 @keyframes spin {
-    100% { transform: rotate(360deg); }
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 /* Offline/CORS Fallback for Top Bar and Main Navigation Icons */
@@ -1119,9 +1235,9 @@ section {
 }
 
 /* Ensure FontAwesome selectors fallback to Bootstrap Icons font family if needed */
-.fa-fallback-active .fa, 
-.fa-fallback-active .fas, 
-.fa-fallback-active .far, 
+.fa-fallback-active .fa,
+.fa-fallback-active .fas,
+.fa-fallback-active .far,
 .fa-fallback-active .fa-solid {
     font-family: "bootstrap-icons" !important;
 }
@@ -1180,7 +1296,7 @@ section {
     font-weight: 600 !important;
 }
 
-.hero-breadcrumb .breadcrumb-item + .breadcrumb-item::before {
+.hero-breadcrumb .breadcrumb-item+.breadcrumb-item::before {
     content: "/" !important;
     font-family: inherit !important;
     color: rgba(15, 17, 21, 0.2) !important;
@@ -1206,7 +1322,7 @@ section {
     gap: 12px !important;
     color: #ffffff !important;
     min-width: 180px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.12) !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12) !important;
     transition: var(--transition-smooth) !important;
 }
 

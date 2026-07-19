@@ -1,0 +1,872 @@
+@{
+    Layout = null;
+    ViewData["Title"] = "Tra cứu phiếu hỗ trợ";
+
+    // Helper functions for badge HTML generation
+    string GetStatusBadgeHtml(string trangThai)
+    {
+        var status = trangThai?.ToLower() ?? "";
+        if (status.Contains("chờ tiếp nhận") || status == "pending")
+        {
+            return "<span class=\"badge-status pending\"><i class=\"bi bi-clock\"></i> Chờ tiếp nhận</span>";
+        }
+        else if (status.Contains("đang xử lý") || status == "processing")
+        {
+            return "<span class=\"badge-status processing\"><i class=\"bi bi-arrow-repeat\"></i> Đang xử lý</span>";
+        }
+        else if (status.Contains("hoàn thành") || status == "completed")
+        {
+            return "<span class=\"badge-status completed\"><i class=\"bi bi-check-circle\"></i> Đã hoàn thành</span>";
+        }
+        return "<span class=\"badge-status cancelled\"><i class=\"bi bi-x-circle\"></i> Đã hủy</span>";
+    }
+
+    string GetPriorityBadgeHtml(int mucDoUuTien)
+    {
+        if (mucDoUuTien == 3 || mucDoUuTien == 4) // High or Urgent
+        {
+            return "<span class=\"badge-priority high\"><i class=\"bi bi-lightning-charge-fill\"></i> Cao</span>";
+        }
+        else if (mucDoUuTien == 2) // Medium
+        {
+            return "<span class=\"badge-priority medium\"><i class=\"bi bi-dash-circle-fill\"></i> Trung bình</span>";
+        }
+        return "<span class=\"badge-priority low\"><i class=\"bi bi-arrow-down-circle-fill\"></i> Thấp</span>";
+    }
+
+    string GetTimelineHtml(string trangThai)
+    {
+        var status = trangThai?.ToLower() ?? "";
+        var steps = new[]
+        {
+            new { key = "created", label = "Đã tạo phiếu", icon = "bi-plus-circle-fill" },
+            new { key = "received", label = "Đã tiếp nhận", icon = "bi-inbox-fill" },
+            new { key = "processing", label = "Đang xử lý", icon = "bi-gear-fill" },
+            new { key = "completed", label = "Hoàn thành", icon = "bi-check-circle-fill" },
+        };
+
+        int doneUpTo = 1;
+        if (status.Contains("chờ tiếp nhận") || status == "pending")
+        {
+            doneUpTo = 1;
+        }
+        else if (status.Contains("đang xử lý") || status == "processing")
+        {
+            doneUpTo = 3;
+        }
+        else if (status.Contains("hoàn thành") || status == "completed")
+        {
+            doneUpTo = 4;
+        }
+        else if (status.Contains("hủy") || status == "cancelled")
+        {
+            doneUpTo = 2;
+        }
+
+        var html = "";
+        for (int i = 0; i < steps.Length; i++)
+        {
+            var step = steps[i];
+            var stepNum = i + 1;
+            string cls = "inactive";
+            if (stepNum < doneUpTo) cls = "done";
+            else if (stepNum == doneUpTo) cls = "active";
+
+            html += $"<div class=\"lk-timeline-item {cls}\">" +
+                    $"<div class=\"lk-tl-dot\"><i class=\"bi {step.icon}\"></i></div>" +
+                    $"<div class=\"lk-tl-content\">" +
+                    $"<p class=\"lk-tl-content-title\">{step.label}</p>" +
+                    $"</div>" +
+                    $"</div>";
+        }
+        return html;
+    }
+}
+
+@model SupportTicketSysterm.Models.TraCuuPhieuViewModel
+
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Tra cứu Phiếu Hỗ trợ - TechSupport Viettel</title>
+
+    <!-- SEO Optimization -->
+    <meta name="description"
+        content="Tra cứu trạng thái phiếu hỗ trợ kỹ thuật TechSupport Viettel Telecom. Kiểm tra tiến trình xử lý sự cố Internet, Camera, Wi-Fi và các dịch vụ khác.">
+    <meta name="keywords" content="tra cuu phieu ho tro, kiem tra su co, báo hỏng kỹ thuật viettel, techsupport">
+    <meta name="author" content="Viettel Telecom TechSupport">
+    <meta name="robots" content="index, follow">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Tra cứu Phiếu Hỗ trợ - TechSupport Viettel">
+    <meta property="og:description" content="Nhập mã phiếu để theo dõi tiến độ xử lý yêu cầu hỗ trợ kỹ thuật của bạn.">
+    <meta property="og:type" content="website">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="https://viettel.com.vn/favicon.ico">
+
+    <!-- Bootstrap 5.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <!-- Font Awesome 6.6.0 CDN (Enterprise) -->
+    <link rel="stylesheet" id="fa-cdn-link" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+    <!-- FontAwesome Fallback Script -->
+    <script>
+        document.getElementById('fa-cdn-link').addEventListener('error', function() {
+            document.documentElement.classList.add('fa-fallback-active');
+            console.warn("FontAwesome failed to load. Falling back to Bootstrap Icons.");
+        });
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                if (!document.fonts.check('12px "Font Awesome 6 Free"')) {
+                    document.documentElement.classList.add('fa-fallback-active');
+                }
+            }, 1200);
+        });
+    </script>
+
+    <!-- Google Fonts Inter & Be Vietnam Pro -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Component-Based CSS -->
+    <link rel="stylesheet" href="~/assets/css/style.css">
+    <link rel="stylesheet" href="~/assets/css/responsive.css">
+    <link rel="stylesheet" href="~/assets/css/header.css">
+    <link rel="stylesheet" href="~/assets/css/sidebar.css">
+    <link rel="stylesheet" href="~/assets/css/footer.css">
+    <link rel="stylesheet" href="~/assets/css/chatbox.css">
+
+    <!-- Page CSS -->
+    <link rel="stylesheet" href="~/css/ticket/tracuuphieu.css">
+</head>
+
+<body>
+
+    <!-- ==================== HEADER ==================== -->
+    @await Html.PartialAsync("_Header", Context.Session)
+
+    <!-- ==================== SIDEBAR ==================== -->
+    <div id="sidebar-container"></div>
+
+    <!-- HERO SECTION -->
+    <section class="hero-section ticket-lookup-hero">
+        <div class="container hero-content">
+            <div class="row align-items-center g-5">
+                <div class="col-lg-7 col-12 text-start hero-text-col animate-fade-up">
+                    <!-- Breadcrumb Navigation -->
+                    <nav aria-label="breadcrumb" class="hero-breadcrumb">
+                        <ol class="breadcrumb m-0" itemscope itemtype="https://schema.org/BreadcrumbList">
+                            <li class="breadcrumb-item" itemprop="itemListElement" itemscope
+                                itemtype="https://schema.org/ListItem">
+                                <a href="../index.html" itemprop="item"
+                                    class="text-decoration-none d-inline-flex align-items-center">
+                                    <i class="fa-solid fa-house-door-fill me-1"></i>
+                                    <span itemprop="name">Trang chủ</span>
+                                </a>
+                                <meta itemprop="position" content="1" />
+                            </li>
+                            <li class="breadcrumb-item" itemprop="itemListElement" itemscope
+                                itemtype="https://schema.org/ListItem">
+                                <a href="../index.html#serviceGridSection" itemprop="item"
+                                    class="text-decoration-none d-inline-flex align-items-center">
+                                    <span itemprop="name">Hỗ trợ kỹ thuật</span>
+                                </a>
+                                <meta itemprop="position" content="2" />
+                            </li>
+                            <li class="breadcrumb-item active" itemprop="itemListElement" itemscope
+                                itemtype="https://schema.org/ListItem" aria-current="page">
+                                <span itemprop="name">Tra cứu phiếu hỗ trợ</span>
+                                <meta itemprop="position" content="3" />
+                            </li>
+                        </ol>
+                    </nav>
+
+                    <!-- Badge -->
+                    <span class="hero-badge">
+                        <i class="bi bi-search me-1"></i> Tra cứu trạng thái xử lý 24/7
+                    </span>
+
+                    <!-- Title -->
+                    <h1 class="hero-title text-uppercase">Tra Cứu <span class="accent">Phiếu Hỗ Trợ</span></h1>
+
+                    <!-- Description -->
+                    <p class="hero-desc">
+                        Theo dõi tiến trình xử lý sự cố dịch vụ của bạn theo thời gian thực. Nhập mã phiếu hỗ trợ hoặc số
+                        điện thoại đăng ký để kiểm tra.
+                    </p>
+
+                    <!-- CTA Buttons -->
+                    <div class="hero-cta-buttons d-flex flex-wrap gap-3 mt-4">
+                        <a href="#lkSearchSection" class="btn btn-hero-create px-4 py-2">
+                            <i class="bi bi-search me-1"></i> Tra Cứu Ngay
+                        </a>
+                        <a href="/Ticket/TaoPhieu" class="btn btn-hero-contact px-4 py-2">
+                            <i class="bi bi-plus-circle me-1"></i> Tạo Phiếu Mới
+                        </a>
+                    </div>
+
+                    <!-- Quick Stats Row (compact, inline) -->
+                    <div class="lk-hero-stats d-flex flex-wrap gap-3 mt-4">
+                        <div class="lk-hero-stat-item">
+                            <span class="lk-hero-stat-num text-danger" data-target="2348">0</span>
+                            <span class="lk-hero-stat-label">Tổng phiếu</span>
+                        </div>
+                        <div class="lk-hero-stat-sep"></div>
+                        <div class="lk-hero-stat-item">
+                            <span class="lk-hero-stat-num" style="color:#3B82F6" data-target="12">0</span>
+                            <span class="lk-hero-stat-label">Đang xử lý</span>
+                        </div>
+                        <div class="lk-hero-stat-sep"></div>
+                        <div class="lk-hero-stat-item">
+                            <span class="lk-hero-stat-num" style="color:#16A34A" data-target="2315">0</span>
+                            <span class="lk-hero-stat-label">Đã hoàn thành</span>
+                        </div>
+                        <div class="lk-hero-stat-sep"></div>
+                        <div class="lk-hero-stat-item">
+                            <span class="lk-hero-stat-num" style="color:#F59E0B" data-target="8">0</span>
+                            <span class="lk-hero-stat-label">Lịch hẹn hôm nay</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RIGHT: SVG Illustration -->
+                <div class="col-lg-5 col-12 hero-banner-wrapper animate-fade-up delay-1">
+                    <svg class="hero-banner-svg" viewBox="0 0 500 420" xmlns="http://www.w3.org/2000/svg"
+                        aria-label="Tra cứu phiếu hỗ trợ kỹ thuật">
+                        <defs>
+                            <linearGradient id="lkGradRed" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#D71920" />
+                                <stop offset="100%" stop-color="#ff4d6d" />
+                            </linearGradient>
+                            <linearGradient id="lkGradDark" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#1f2937" />
+                                <stop offset="100%" stop-color="#111827" />
+                            </linearGradient>
+                        </defs>
+
+                        <!-- Background decorative circles -->
+                        <circle cx="250" cy="210" r="170" fill="url(#lkGradRed)" opacity="0.04" />
+                        <circle cx="420" cy="80" r="60" fill="url(#lkGradRed)" opacity="0.06" />
+
+                        <!-- Main card / screen -->
+                        <rect x="60" y="50" width="360" height="300" rx="22"
+                            fill="#ffffff" stroke="rgba(15,17,21,0.05)" stroke-width="2"
+                            filter="drop-shadow(0 20px 40px rgba(0,0,0,0.07))" />
+
+                        <!-- Header bar -->
+                        <path d="M60 72 C60 59.85 69.85 50 82 50 L418 50 C430.15 50 440 59.85 440 72 L440 90 L60 90 Z"
+                            fill="url(#lkGradDark)" />
+                        <!-- Traffic lights -->
+                        <circle cx="84" cy="70" r="5" fill="#D71920" />
+                        <circle cx="99" cy="70" r="5" fill="#eab308" />
+                        <circle cx="114" cy="70" r="5" fill="#10b981" />
+                        <!-- URL bar -->
+                        <rect x="140" y="63" width="230" height="14" rx="7" fill="rgba(255,255,255,0.12)" />
+                        <!-- Search icon in url bar -->
+                        <circle cx="157" cy="70" r="4" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" />
+                        <line x1="160" y1="73" x2="163" y2="76" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" />
+
+                        <!-- Search form area -->
+                        <!-- Label -->
+                        <rect x="90" y="110" width="90" height="9" rx="3" fill="#D71920" opacity="0.8" />
+                        <!-- Input box -->
+                        <rect x="90" y="127" width="310" height="38" rx="10" fill="#f8fafc"
+                            stroke="#D71920" stroke-width="1.5" />
+                        <!-- Search icon in input -->
+                        <circle cx="115" cy="146" r="7" fill="none" stroke="#D71920" stroke-width="2" />
+                        <line x1="120" y1="151" x2="125" y2="156" stroke="#D71920" stroke-width="2" />
+                        <!-- Typed text simulation -->
+                        <rect x="135" y="142" width="140" height="8" rx="4" fill="#374151" />
+
+                        <!-- Second row label -->
+                        <rect x="90" y="180" width="110" height="9" rx="3" fill="#D71920" opacity="0.8" />
+                        <!-- Second input -->
+                        <rect x="90" y="197" width="310" height="38" rx="10" fill="#f8fafc"
+                            stroke="#e2e8f0" stroke-width="1.5" />
+                        <rect x="112" y="213" width="150" height="8" rx="4" fill="#94a3b8" />
+
+                        <!-- Search button -->
+                        <rect x="90" y="252" width="310" height="44" rx="12" fill="url(#lkGradRed)"
+                            filter="drop-shadow(0 6px 14px rgba(215,25,32,0.28))" />
+                        <!-- Magnifier icon in button -->
+                        <circle cx="226" cy="274" r="9" fill="none" stroke="#fff" stroke-width="2.5" />
+                        <line x1="233" y1="281" x2="240" y2="288" stroke="#fff" stroke-width="2.5" stroke-linecap="round" />
+                        <rect x="252" y="270" width="95" height="8" rx="4" fill="rgba(255,255,255,0.85)" />
+
+                        <!-- Floating result badge -->
+                        <g class="lk-float-card" transform="translate(290, 310)">
+                            <rect x="0" y="0" width="145" height="72" rx="14"
+                                fill="url(#lkGradRed)" filter="drop-shadow(0 8px 16px rgba(215,25,32,0.25))" />
+                            <!-- Checkmark circle -->
+                            <circle cx="30" cy="36" r="16" fill="rgba(255,255,255,0.18)" />
+                            <path d="M23 36 L28 41 L37 31" stroke="#ffffff" stroke-width="2.5"
+                                fill="none" stroke-linecap="round" stroke-linejoin="round" />
+                            <!-- Text lines -->
+                            <rect x="55" y="26" width="72" height="8" rx="4" fill="#ffffff" />
+                            <rect x="55" y="40" width="50" height="6" rx="3" fill="rgba(255,255,255,0.65)" />
+                            <rect x="55" y="52" width="60" height="6" rx="3" fill="rgba(255,255,255,0.45)" />
+                        </g>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== MAIN CONTENT ==================== -->
+    <main class="lk-main">
+
+        <!-- ===== SEARCH SECTION ===== -->
+        <section class="lk-search-section" id="lkSearchSection">
+            <div class="container">
+                <div class="lk-search-card mx-auto reveal">
+                    <div class="lk-search-card-header">
+                        <div class="lk-search-card-icon">
+                            <i class="bi bi-ticket-perforated"></i>
+                        </div>
+                        <div>
+                            <h2 class="lk-search-card-title">Tra cứu thông tin Phiếu hỗ trợ</h2>
+                            <p class="lk-search-card-sub mb-0">Nhập đầy đủ thông tin bên dưới để tìm kiếm phiếu của bạn</p>
+                        </div>
+                    </div>
+                    <div class="lk-search-card-body">
+
+                        <!-- GUEST SEARCH BLOCK -->
+                        <div id="guestSearchBlock">
+                            <form asp-controller="Ticket" asp-action="TraCuuPhieu" method="post" id="guestSearchForm" class="needs-validation" novalidate>
+                                @Html.AntiForgeryToken()
+                                <div class="row g-3">
+                                    <div class="col-md-6 col-12">
+                                        <label for="ticketCodeInput" class="lk-form-label">
+                                            <i class="bi bi-ticket-perforated me-1"></i> Mã phiếu hỗ trợ
+                                            <span class="text-danger">*</span>
+                                        </label>
+                                        <div class="lk-input-wrap">
+                                            <i class="bi bi-hash lk-input-icon"></i>
+                                            <input asp-for="MaPhieu" type="text" class="lk-input" id="ticketCodeInput"
+                                                placeholder="Ví dụ: PT2026000123" required autocomplete="off">
+                                        </div>
+                                        <div class="invalid-feedback">Vui lòng nhập mã phiếu hỗ trợ.</div>
+                                    </div>
+                                    <div class="col-md-6 col-12">
+                                        <label for="contactInput" class="lk-form-label">
+                                            <i class="bi bi-person me-1"></i> Số điện thoại hoặc Email
+                                            <span class="text-danger">*</span>
+                                        </label>
+                                        <div class="lk-input-wrap">
+                                            <i class="bi bi-shield-check lk-input-icon"></i>
+                                            <input asp-for="SoDienThoai" type="text" class="lk-input" id="contactInput"
+                                                placeholder="0909123456 hoặc abc@gmail.com" required
+                                                autocomplete="off">
+                                        </div>
+                                        <div class="invalid-feedback">Vui lòng nhập số điện thoại hoặc email.</div>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-center justify-content-between mt-4 flex-wrap gap-3">
+                                    <span class="lk-form-hint">
+                                        <i class="bi bi-info-circle me-1"></i>
+                                        Thông tin được sử dụng để xác minh danh tính
+                                    </span>
+                                    <button class="lk-btn-search" type="submit" id="btnGuestSearch">
+                                        <i class="bi bi-search me-2"></i> Tra cứu ngay
+                                    </button>
+                                </div>
+                            </form>
+
+                            <!-- Advanced Search Accordion -->
+                            <div class="lk-advanced-accordion mt-4" id="advancedGuestAccordion">
+                                <div class="accordion-item border-0 bg-transparent">
+                                    <h3 class="accordion-header">
+                                        <button
+                                            class="lk-adv-toggle collapsed"
+                                            type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#collapseGuestAdvanced"
+                                            aria-expanded="false" aria-controls="collapseGuestAdvanced">
+                                            <i class="bi bi-sliders me-2"></i>Tìm kiếm nâng cao
+                                            <i class="bi bi-chevron-down lk-adv-chevron ms-auto"></i>
+                                        </button>
+                                    </h3>
+                                    <div id="collapseGuestAdvanced" class="accordion-collapse collapse"
+                                        data-bs-parent="#advancedGuestAccordion">
+                                        <div class="accordion-body pt-3 px-0 pb-0">
+                                            <div class="lk-adv-divider mb-3"></div>
+                                            <form id="advancedGuestForm" asp-controller="Ticket" asp-action="TraCuuPhieu" novalidate>
+                                                <div class="row g-3">
+                                                    <div class="col-md-4 col-12">
+                                                        <label for="advGuestCode" class="lk-form-label">Mã phiếu</label>
+                                                        <div class="lk-input-wrap">
+                                                            <i class="bi bi-hash lk-input-icon"></i>
+                                                            <input asp-for="MaPhieu" type="text" class="lk-input" id="advGuestCode"
+                                                                placeholder="PT...">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4 col-12">
+                                                        <label for="advGuestPhone" class="lk-form-label">Số điện thoại</label>
+                                                        <div class="lk-input-wrap">
+                                                            <i class="bi bi-telephone lk-input-icon"></i>
+                                                            <input asp-for="SoDienThoai" type="tel" class="lk-input" id="advGuestPhone"
+                                                                placeholder="09...">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4 col-12">
+                                                        <label for="advGuestEmail" class="lk-form-label">Email</label>
+                                                        <div class="lk-input-wrap">
+                                                            <i class="bi bi-envelope lk-input-icon"></i>
+                                                            <input asp-action="Email" type="email" class="lk-input" id="advGuestEmail"
+                                                                placeholder="abc...">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4 col-6">
+                                                        <label for="advGuestStart" class="lk-form-label">Từ ngày</label>
+                                                        <div class="lk-input-wrap">
+                                                            <i class="bi bi-calendar-event lk-input-icon"></i>
+                                                            <input asp-for="TuNgay" type="date" class="lk-input lk-input-date" id="advGuestStart">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4 col-6">
+                                                        <label for="advGuestEnd" class="lk-form-label">Đến ngày</label>
+                                                        <div class="lk-input-wrap">
+                                                            <i class="bi bi-calendar-event lk-input-icon"></i>
+                                                            <input asp-for="DenNgay" type="date" class="lk-input lk-input-date" id="advGuestEnd">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4 col-12">
+                                                        <label for="advGuestStatus" class="lk-form-label">Trạng thái</label>
+                                                        <div class="lk-input-wrap">
+                                                            <i class="bi bi-funnel lk-input-icon"></i>
+                                                            <select asp-for="TrangThai" class="lk-input lk-select" id="advGuestStatus">
+
+                                                                <option value="all">Tất cả</option>
+                                                                <option value="pending">Chờ tiếp nhận</option>
+                                                                <option value="processing">Đang xử lý</option>
+                                                                <option value="completed">Đã hoàn thành</option>
+                                                                <option value="cancelled">Đã hủy</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-12 text-end">
+                                                        <button type="submit" class="lk-btn-search">
+                                                            <i class="bi bi-funnel me-2"></i> Tìm kiếm nâng cao
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- MEMBER SEARCH BLOCK (Hidden by default) -->
+                        <div id="memberSearchBlock" class="d-none">
+                            <div class="lk-member-greeting mb-4">
+                                <div class="lk-member-avatar">
+                                    <i class="bi bi-person-circle"></i>
+                                </div>
+                                <div>
+                                    <h3 class="lk-member-name mb-0" id="lblWelcomeUser">Xin chào, Nguyễn Văn An</h3>
+                                    <p class="text-muted mb-0 small">Tra cứu các phiếu hỗ trợ của bạn.</p>
+                                </div>
+                                <span class="lk-badge-logged ms-auto">
+                                    <i class="bi bi-shield-lock me-1"></i>Đã đăng nhập
+                                </span>
+                            </div>
+                            <form id="memberFilterForm" novalidate>
+                                <div class="row g-3">
+                                    <div class="col-md-4 col-12">
+                                        <label for="memberCodeFilter" class="lk-form-label">Mã phiếu</label>
+                                        <div class="lk-input-wrap">
+                                            <i class="bi bi-hash lk-input-icon"></i>
+                                            <input type="text" class="lk-input" id="memberCodeFilter"
+                                                placeholder="Nhập mã phiếu...">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-12">
+                                        <label for="memberStatusFilter" class="lk-form-label">Trạng thái</label>
+                                        <div class="lk-input-wrap">
+                                            <i class="bi bi-funnel lk-input-icon"></i>
+                                            <select class="lk-input lk-select" id="memberStatusFilter">
+                                                <option value="all">Tất cả trạng thái</option>
+                                                <option value="pending">Chờ tiếp nhận</option>
+                                                <option value="processing">Đang xử lý</option>
+                                                <option value="completed">Đã hoàn thành</option>
+                                                <option value="cancelled">Đã hủy</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-12">
+                                        <label for="memberServiceFilter" class="lk-form-label">Dịch vụ</label>
+                                        <div class="lk-input-wrap">
+                                            <i class="bi bi-headset lk-input-icon"></i>
+                                            <select class="lk-input lk-select" id="memberServiceFilter">
+                                                <option value="all">Tất cả dịch vụ</option>
+                                                <option value="Sửa lỗi mất mạng">Sửa lỗi mất mạng</option>
+                                                <option value="Sửa lỗi TV">Sửa lỗi TV</option>
+                                                <option value="Sửa lỗi Camera">Sửa lỗi Camera</option>
+                                                <option value="Cấu hình Router">Cấu hình Router</option>
+                                                <option value="Hỗ trợ kỹ thuật">Hỗ trợ kỹ thuật</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-6">
+                                        <label for="memberStartFilter" class="lk-form-label">Từ ngày</label>
+                                        <div class="lk-input-wrap">
+                                            <i class="bi bi-calendar-event lk-input-icon"></i>
+                                            <input type="date" class="lk-input lk-input-date" id="memberStartFilter">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-6">
+                                        <label for="memberEndFilter" class="lk-form-label">Đến ngày</label>
+                                        <div class="lk-input-wrap">
+                                            <i class="bi bi-calendar-event lk-input-icon"></i>
+                                            <input type="date" class="lk-input lk-input-date" id="memberEndFilter">
+                                        </div>
+                                    </div>
+                                    <div class="col-12 text-end">
+                                        <button class="lk-btn-search" type="submit" id="btnMemberFilter">
+                                            <i class="bi bi-search me-2"></i> Lọc kết quả
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== SKELETON LOADING ===== -->
+        <div class="lk-skeleton-section d-none" id="skeletonLoadingSection">
+            <div class="container">
+                <div class="lk-skeleton-card">
+                    <div class="lk-skeleton-header">
+                        <div class="lk-skel lk-skel-circle"></div>
+                        <div class="flex-grow-1">
+                            <div class="lk-skel lk-skel-line w-50 mb-2"></div>
+                            <div class="lk-skel lk-skel-line w-25"></div>
+                        </div>
+                    </div>
+                    <div class="lk-skeleton-body">
+                        <div class="row g-3">
+                            <div class="col-md-3 col-6" *ngFor="let i of [1,2,3,4]">
+                                <div class="lk-skel lk-skel-line w-75 mb-2"></div>
+                                <div class="lk-skel lk-skel-line"></div>
+                            </div>
+                            <div class="col-md-3 col-6">
+                                <div class="lk-skel lk-skel-line w-75 mb-2"></div>
+                                <div class="lk-skel lk-skel-line"></div>
+                            </div>
+                            <div class="col-md-3 col-6">
+                                <div class="lk-skel lk-skel-line w-75 mb-2"></div>
+                                <div class="lk-skel lk-skel-line"></div>
+                            </div>
+                            <div class="col-md-3 col-6">
+                                <div class="lk-skel lk-skel-line w-75 mb-2"></div>
+                                <div class="lk-skel lk-skel-line"></div>
+                            </div>
+                            <div class="col-md-3 col-6">
+                                <div class="lk-skel lk-skel-line w-75 mb-2"></div>
+                                <div class="lk-skel lk-skel-line"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== RESULTS WORKSPACE ===== -->
+        @if (Model.DanhSachPhieu != null && Model.DanhSachPhieu.Count > 0)
+        {
+            <div class="lk-results-workspace animate-fade-up" id="lookupResultContainer">
+                <div class="container">
+
+
+
+                    <!-- RESULTS LIST CARD -->
+                    <div class="lk-info-card reveal">
+                        <div class="lk-info-card-header">
+                            <div class="lk-info-card-icon red">
+                                <i class="bi bi-collection-fill"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <h2 class="lk-info-card-title">Danh sách phiếu hỗ trợ</h2>
+                                <p class="lk-info-card-sub mb-0">Tìm thấy <strong>@Model.DanhSachPhieu.Count</strong> kết quả phù hợp</p>
+                            </div>
+                        </div>
+
+                        <!-- DESKTOP: Card Grid Layout (≥768px) -->
+                        <div class="lk-info-card-body d-none d-md-block" id="desktopTableContainer">
+                            <div class="row g-4" id="ticketTableBody">
+                                @foreach (var ticket in Model.DanhSachPhieu)
+                                {
+                                    <div class="col-lg-6 col-md-6 col-12">
+                                        <div class="lk-ticket-card">
+                                            <!-- Top Header -->
+                                            <div class="lk-ticket-card-top">
+                                                <div>
+                                                    <span class="lk-ticket-code"><i class="bi bi-hash"></i>@ticket.MaPhieu</span>
+                                                    <h3 class="lk-ticket-title mt-1">@ticket.TieuDe</h3>
+                                                </div>
+                                                <div>
+                                                    @Html.Raw(GetStatusBadgeHtml(ticket.TrangThai))
+                                                </div>
+                                            </div>
+
+                                            <!-- Meta Info Grid -->
+                                            <div class="lk-ticket-meta-grid">
+                                                <div class="lk-ticket-meta-item">
+                                                    <span class="lk-ticket-meta-label"><i class="bi bi-folder2-open me-1"></i>Danh mục</span>
+                                                    <span class="lk-ticket-meta-value">@ticket.TenDanhMuc</span>
+                                                </div>
+                                                <div class="lk-ticket-meta-item">
+                                                    <span class="lk-ticket-meta-label"><i class="bi bi-headset me-1"></i>Dịch vụ</span>
+                                                    <span class="lk-ticket-meta-value">@ticket.TenDichVu</span>
+                                                </div>
+                                                <div class="lk-ticket-meta-item">
+                                                    <span class="lk-ticket-meta-label"><i class="bi bi-calendar3 me-1"></i>Ngày tạo</span>
+                                                    <span class="lk-ticket-meta-value">@ticket.NgayTao</span>
+                                                </div>
+                                                <div class="lk-ticket-meta-item">
+                                                    <span class="lk-ticket-meta-label"><i class="bi bi-shield-exclamation me-1"></i>Ưu tiên</span>
+                                                    <span class="lk-ticket-meta-value">@Html.Raw(GetPriorityBadgeHtml(ticket.MucDoUuTien))</span>
+                                                </div>
+                                            </div>
+
+                                            <!-- Timeline Bar -->
+                                            <div class="lk-ticket-timeline-wrapper">
+                                                <div class="lk-timeline">
+                                                    @Html.Raw(GetTimelineHtml(ticket.TrangThai))
+                                                </div>
+                                            </div>
+
+                                            <!-- Staff Info Card -->
+                                            <div class="lk-staff-card">
+                                                <div class="lk-staff-header">
+                                                    <i class="bi bi-person-badge-fill text-danger me-1"></i>
+                                                    <span class="fw-bold text-dark">Nhân viên phụ trách:</span>
+                                                </div>
+                                                @if (!string.IsNullOrEmpty(ticket.TenNhanVien))
+                                                {
+                                                    <div class="lk-staff-body">
+                                                        <div class="lk-staff-avatar">
+                                                            <i class="bi bi-person-circle"></i>
+                                                        </div>
+                                                        <div class="lk-staff-details">
+                                                            <div class="lk-staff-name font-weight-bold text-dark">
+                                                                @ticket.TenNhanVien
+                                                                @if (!string.IsNullOrEmpty(ticket.MaNhanVien))
+                                                                {
+                                                                    <span class="badge bg-light text-secondary ms-1">@ticket.MaNhanVien</span>
+                                                                }
+                                                            </div>
+                                                            <div class="lk-staff-contacts">
+                                                                <a href="tel:@ticket.SoDienThoaiNV" class="lk-staff-contact-link phone">
+                                                                    <i class="bi bi-telephone-fill me-1"></i>@ticket.SoDienThoaiNV
+                                                                </a>
+                                                                @if (!string.IsNullOrEmpty(ticket.EmailNV))
+                                                                {
+                                                                    <span class="lk-staff-contact-link email ms-2">
+                                                                        <i class="bi bi-envelope-fill me-1"></i>@ticket.EmailNV
+                                                                    </span>
+                                                                }
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    <div class="lk-staff-empty text-muted">
+                                                        <i class="bi bi-hourglass-split me-1"></i> Chưa phân công nhân viên
+                                                    </div>
+                                                }
+                                            </div>
+
+                                            <!-- Card Footer -->
+                                            <div class="lk-ticket-card-footer mt-auto pt-2">
+                                                <a href="/Ticket/ChiTietPhieu/@ticket.IdPhieu" class="lk-btn-detail">
+                                                    <span>Xem chi tiết phiếu</span>
+                                                    <i class="bi bi-arrow-right-short fs-5"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+                        <!-- MOBILE: Cards Stack (<768px) -->
+                        <div class="lk-info-card-body d-block d-md-none p-3" id="mobileCardsContainer">
+                            @foreach (var ticket in Model.DanhSachPhieu)
+                            {
+                                <div class="mobile-ticket-card">
+                                    <div class="mobile-ticket-header">
+                                        <span class="mobile-ticket-code"><i class="bi bi-hash"></i>@ticket.MaPhieu</span>
+                                        @Html.Raw(GetStatusBadgeHtml(ticket.TrangThai))
+                                    </div>
+                                    <h4 class="mobile-ticket-title">@ticket.TieuDe</h4>
+                                    <div class="mobile-ticket-meta">
+                                        <div class="mobile-ticket-meta-item">
+                                            <span class="mobile-ticket-meta-label">Danh mục:</span>
+                                            <span class="mobile-ticket-meta-value">@ticket.TenDanhMuc</span>
+                                        </div>
+                                        <div class="mobile-ticket-meta-item">
+                                            <span class="mobile-ticket-meta-label">Dịch vụ:</span>
+                                            <span class="mobile-ticket-meta-value">@ticket.TenDichVu</span>
+                                        </div>
+                                        <div class="mobile-ticket-meta-item">
+                                            <span class="mobile-ticket-meta-label">Ngày tạo:</span>
+                                            <span class="mobile-ticket-meta-value">@ticket.NgayTao</span>
+                                        </div>
+                                        <div class="mobile-ticket-meta-item">
+                                            <span class="mobile-ticket-meta-label">Ưu tiên:</span>
+                                            <span class="mobile-ticket-meta-value">@Html.Raw(GetPriorityBadgeHtml(ticket.MucDoUuTien))</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="lk-staff-card mb-3">
+                                        <div class="lk-staff-header">
+                                            <i class="bi bi-person-badge-fill text-danger me-1"></i>
+                                            <span class="fw-bold text-dark">Nhân viên phụ trách:</span>
+                                        </div>
+                                        @if (!string.IsNullOrEmpty(ticket.TenNhanVien))
+                                        {
+                                            <div class="lk-staff-body">
+                                                <div class="lk-staff-avatar">
+                                                    <i class="bi bi-person-circle"></i>
+                                                </div>
+                                                <div class="lk-staff-details">
+                                                    <div class="lk-staff-name font-weight-bold text-dark">@ticket.TenNhanVien</div>
+                                                    <div class="lk-staff-contacts">
+                                                        <a href="tel:@ticket.SoDienThoaiNV" class="lk-staff-contact-link phone">
+                                                            <i class="bi bi-telephone-fill me-1"></i>@ticket.SoDienThoaiNV
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="lk-staff-empty text-muted">Chưa phân công nhân viên</div>
+                                        }
+                                    </div>
+
+                                    <div class="mobile-ticket-action">
+                                        <a href="/Ticket/ChiTietPhieu/@ticket.IdPhieu" class="lk-btn-detail w-100 justify-content-center">
+                                            <span>Xem chi tiết phiếu</span>
+                                            <i class="bi bi-arrow-right-short fs-5"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        }
+        else if (Model.DanhSachPhieu != null && Model.DanhSachPhieu.Count == 0)
+        {
+            <!-- ===== EMPTY STATE ===== -->
+            <div class="lk-empty-state animate-fade-up" id="lookupNotFoundContainer">
+                <div class="container">
+                    <div class="lk-empty-card reveal">
+                        <div class="lk-empty-icon-wrap">
+                            <i class="bi bi-search lk-empty-icon"></i>
+                            <div class="lk-empty-icon-ring"></div>
+                        </div>
+                        <h2 class="lk-empty-title">Không tìm thấy Phiếu hỗ trợ</h2>
+                        <p class="lk-empty-desc">
+                            Vui lòng kiểm tra lại mã phiếu hoặc thông tin tra cứu.<br>
+                            Nếu cần trợ giúp thêm, vui lòng liên hệ bộ phận hỗ trợ kỹ thuật.
+                        </p>
+                        <div class="lk-empty-actions">
+                            <button class="lk-btn-outline-red" onclick="window.location.reload()">
+                                <i class="bi bi-arrow-clockwise me-2"></i> Thử lại
+                            </button>
+                            <a href="/Ticket/TaoPhieu" class="lk-btn-search">
+                                <i class="bi bi-plus-circle me-2"></i> Tạo Phiếu mới
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+
+    </main>
+
+    <!-- ==================== FOOTER ==================== -->
+    @await Html.PartialAsync("_Footer")
+
+    <!-- ==================== CHATBOX CONTAINER ==================== -->
+    <div id="chatbox-container"></div>
+
+    <!-- Toast Notification Container -->
+    <div class="custom-toast-container" id="toastContainer" aria-live="polite" aria-atomic="true"></div>
+
+    <!-- ==================== SCRIPTS ==================== -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+    <script src="~/assets/js/header.js"></script>
+    <script src="~/assets/js/sidebar.js"></script>
+    <script src="~/assets/js/footer.js"></script>
+    <script src="~/assets/js/chatbox.js"></script>
+    <script src="~/assets/js/main.js"></script>
+    <script src="~/js/ticket/tracuuphieu.js"></script>
+
+    <!-- Stat Counter Animation & AI Chat Button -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Counter animation
+            const counters = document.querySelectorAll('[data-target]');
+            const speed = 2000;
+            const animateCounter = (el) => {
+                const target = +el.getAttribute('data-target');
+                const increment = target / (speed / 16);
+                let current = 0;
+                const update = () => {
+                    current += increment;
+                    if (current < target) {
+                        el.textContent = Math.floor(current).toLocaleString('vi-VN');
+                        requestAnimationFrame(update);
+                    } else {
+                        el.textContent = target.toLocaleString('vi-VN');
+                    }
+                };
+                update();
+            };
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        animateCounter(entry.target);
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.5 });
+            counters.forEach(c => observer.observe(c));
+
+            // Open AI Chat button
+            const btnOpenChatAI = document.getElementById('btnOpenChatAI');
+            if (btnOpenChatAI) {
+                btnOpenChatAI.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const launcher = document.getElementById('chatbox-launcher');
+                    if (launcher) launcher.click();
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>

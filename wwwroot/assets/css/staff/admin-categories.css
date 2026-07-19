@@ -220,6 +220,38 @@
 .vt-stat-card:nth-child(3):hover .vt-stat-icon-box { background-color: #EF4444; color: var(--vt-white); }
 .vt-stat-card:nth-child(4):hover .vt-stat-icon-box { background-color: #3B82F6; color: var(--vt-white); }
 
+/* ── Filter Action Buttons ── */
+.vt-filter-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.vt-btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 44px;
+    padding: 0 20px;
+    border-radius: var(--vt-border-radius-sm);
+    background-color: var(--vt-red);
+    color: var(--vt-white);
+    border: none;
+    font-size: 0.875rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--vt-transition);
+    box-shadow: 0 4px 10px rgba(238, 0, 51, 0.2);
+    white-space: nowrap;
+}
+
+.vt-btn-primary:hover {
+    background-color: var(--vt-red-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 14px rgba(238, 0, 51, 0.3);
+}
+
 /* ── Filter Toolbar ── */
 .vt-filter-toolbar {
     background: var(--bg-card);

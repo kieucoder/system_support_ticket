@@ -36,6 +36,7 @@ namespace SupportTicketSysterm.Models
 
         public List<PhieuHoTro>? DanhSachPhieu { get; set; }
         public List<LichHen>? DanhSachLichHen { get; set; }
+        public DoiMatKhauViewModel? DoiMatKhau { get; set; }
 
         // --- Computed helpers (safe null-safe) ---
 

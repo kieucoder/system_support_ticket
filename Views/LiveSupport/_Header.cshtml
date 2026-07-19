@@ -1,0 +1,75 @@
+@model SupportTicketSysterm.ViewModels.LiveSupportViewModel
+
+<div class="chat-pane-header d-flex justify-content-between align-items-center px-4 py-3 bg-white border-bottom shadow-xs" style="min-height:72px; border-top-left-radius: 20px; border-top-right-radius: 20px;">
+    <!-- Left Zone: Technician Profile & Ticket Info -->
+    <div class="chat-header-title-area d-flex align-items-center gap-3">
+        <div class="avatar-indicator-wrap position-relative flex-shrink-0">
+            @if (Model.Staff != null && !string.IsNullOrEmpty(Model.Staff.HoTen))
+            {
+                <img src="https://ui-avatars.com/api/?name=@(Uri.EscapeDataString(Model.Staff.HoTen))&background=D71920&color=fff&size=48&font-size=0.4" 
+                     alt="@Model.Staff.HoTen" class="header-avatar rounded-circle border border-2 border-danger shadow-xs" style="width:46px; height:46px; object-fit:cover;" />
+            }
+            else
+            {
+                <div class="header-avatar rounded-circle bg-danger text-white d-grid place-items-center fw-bold shadow-xs" style="width:46px; height:46px; font-size:1.1rem; background: linear-gradient(135deg, #D71920 0%, #E53935 100%);">
+                    VT
+                </div>
+            }
+            <span class="status-dot online position-absolute bottom-0 end-0 border border-2 border-white rounded-circle" style="width:13px; height:13px; background-color:#22C55E; box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.2);"></span>
+        </div>
+
+        <div class="chat-header-details d-flex flex-column justify-content-center">
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+                <h6 class="mb-0 fw-bold text-dark fs-6 lh-1">@(Model.Staff?.HoTen ?? "Kỹ thuật viên Viettel")</h6>
+                <span class="badge rounded-pill px-2.5 py-1 fw-bold" style="font-size:0.7rem; background-color: #FEF2F2; color: #D71920; border: 1px solid #FECACA;">
+                    <i class="bi bi-shield-check me-1"></i>@(Model.Staff?.VaiTro ?? "Kỹ thuật viên Viettel")
+                </span>
+            </div>
+            <div class="d-flex align-items-center gap-2 mt-1.5 flex-wrap" style="font-size:0.78rem; color:#64748B;">
+                <span class="text-success fw-semibold d-inline-flex align-items-center">
+                    <span class="status-pulse-dot me-1.5" style="width:7px; height:7px; background-color:#22C55E; border-radius:50%; display:inline-block;"></span>Đang hoạt động
+                </span>
+                <span class="text-muted opacity-40">•</span>
+                <span>Phản hồi &lt; 2 phút</span>
+                <span class="text-muted opacity-40">•</span>
+                <span>Mã phiếu: <strong class="text-danger fw-bold">@Model.Ticket.MaPhieu</strong></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Zone: Zalo Status Card & Pill Actions -->
+    <div class="chat-header-actions d-flex align-items-center gap-2.5">
+        <!-- Zalo Modern Status Card -->
+        <div class="status-card-badge d-none d-lg-flex align-items-center gap-2 px-3 py-1.5 rounded-pill" 
+             style="background: rgba(34, 197, 94, 0.08); border: 1px solid rgba(34, 197, 94, 0.25);">
+            <span class="status-pulse-dot" style="width:8px; height:8px; background-color:#22C55E; border-radius:50%; display:inline-block; box-shadow:0 0 0 3px rgba(34, 197, 94, 0.2);"></span>
+            <div class="lh-1" style="font-size:0.75rem;">
+                <div class="fw-bold text-success" style="font-size:0.75rem;">Đang trực tuyến</div>
+                <div class="text-muted" style="font-size:0.65rem;">Online 24/7</div>
+            </div>
+        </div>
+
+        <button type="button" class="btn btn-sm btn-outline-danger rounded-pill px-3 py-1.5 fw-bold d-inline-flex align-items-center gap-1.5 shadow-xs" data-bs-toggle="modal" data-bs-target="#ticketModal" style="transition: all 0.2s ease;">
+            <i class="bi bi-file-earmark-text-fill"></i>
+            <span>Chi tiết phiếu</span>
+        </button>
+        
+        @if (Model.CanRate)
+        {
+            <button type="button" class="btn btn-sm btn-warning text-dark rounded-pill px-3 py-1.5 fw-bold shadow-xs d-inline-flex align-items-center gap-1" id="btnHeaderRating">
+                <i class="bi bi-star-fill text-dark me-1"></i> Đánh giá
+            </button>
+        }
+
+        <div class="dropdown">
+            <button class="btn btn-sm btn-light rounded-circle p-2 text-secondary shadow-xs" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Tùy chọn">
+                <i class="bi bi-three-dots-vertical fs-6"></i>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end shadow-md border-0 mt-2 rounded-3" style="min-width:190px;">
+                <li><a class="dropdown-item py-2 small" href="#" onclick="location.reload();"><i class="bi bi-arrow-clockwise me-2 text-danger"></i>Tải lại trò chuyện</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item py-2 small text-danger fw-semibold" href="/Ticket/TraCuuPhieu"><i class="bi bi-door-open me-2"></i>Thoát hội thoại</a></li>
+            </ul>
+        </div>
+    </div>
+</div>

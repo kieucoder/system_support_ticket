@@ -1068,3 +1068,139 @@ textarea.form-control-custom {
     color: #10b981;
     font-size: 1.25rem;
 }
+
+/* ==================== HERO CTA BUTTONS ==================== */
+.btn-hero-create {
+    background: linear-gradient(135deg, #ee0033 0%, #ff4d6d 100%);
+    color: #ffffff !important;
+    border: none;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 20px rgba(238, 0, 51, 0.25);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+}
+
+.btn-hero-create:hover {
+    background: linear-gradient(135deg, #ff4d6d 0%, #ee0033 100%);
+    color: #ffffff !important;
+    transform: translateY(-2px);
+    box-shadow: 0 12px 25px rgba(238, 0, 51, 0.35);
+}
+
+.btn-hero-contact {
+    border: 2px solid rgba(15, 17, 21, 0.15);
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    color: #1f2937 !important;
+    font-weight: 700;
+    font-size: 0.95rem;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+}
+
+.btn-hero-contact:hover {
+    background: #111827;
+    color: #ffffff !important;
+    border-color: #111827;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(17, 25, 39, 0.15);
+}
+
+/* ==================== HERO STATS (shared with lookup-ticket) ==================== */
+.lk-hero-stats {
+    padding-top: 24px;
+    border-top: 1px solid rgba(15, 17, 21, 0.06);
+    margin-top: 4px !important;
+}
+
+.lk-hero-stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+}
+
+.lk-hero-stat-num {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.55rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1;
+}
+
+.lk-hero-stat-label {
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: #6B7280;
+    white-space: nowrap;
+}
+
+.lk-hero-stat-sep {
+    width: 1px;
+    height: 36px;
+    background: rgba(15, 17, 21, 0.1);
+    align-self: center;
+}
+
+/* ==================== FLOATING BADGE (SVG) ==================== */
+.ct-float-badge {
+    animation: ctFloatBadge 6s ease-in-out infinite;
+}
+
+@keyframes ctFloatBadge {
+    0%, 100% { transform: translate(30px, 320px); }
+    50% { transform: translate(30px, 307px); }
+}
+
+/* ==================== ANIMATIONS ==================== */
+.animate-fade-up {
+    animation: ctFadeUp 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.delay-1 {
+    animation-delay: 0.12s;
+}
+
+@keyframes ctFadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(24px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ==================== RESPONSIVE HERO ADJUSTMENTS ==================== */
+@media (max-width: 991.98px) {
+    .hero-cta-buttons {
+        justify-content: flex-start;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .btn-hero-create,
+    .btn-hero-contact {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .hero-cta-buttons {
+        flex-direction: column;
+    }
+
+    .lk-hero-stats {
+        gap: 12px !important;
+    }
+}
