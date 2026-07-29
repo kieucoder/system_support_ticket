@@ -34,7 +34,16 @@ document.addEventListener('DOMContentLoaded', function () {
     if (exportExcelBtn) {
         exportExcelBtn.addEventListener('click', function (e) {
             e.preventDefault();
-            showToast('info', 'Tính năng xuất báo cáo Excel đang được chuẩn bị và sẽ ra mắt trong phiên bản tới!');
+            const filterForm = document.getElementById('adminLichHenFilterForm');
+            let queryParams = '';
+            if (filterForm && typeof $ !== 'undefined') {
+                queryParams = '?' + $(filterForm).serialize();
+            } else if (filterForm) {
+                const formData = new FormData(filterForm);
+                queryParams = '?' + new URLSearchParams(formData).toString();
+            }
+            showToast('info', 'Đang tạo và tải file báo cáo Excel...');
+            window.location.href = '/Admin/LichHen/XuatBaoCao' + queryParams;
         });
     }
 

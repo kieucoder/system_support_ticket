@@ -86,4 +86,9 @@ public interface ILichHenService
     /// Lấy toàn bộ danh sách lịch hẹn (cho Admin) có bộ lọc
     /// </summary>
     Task<List<LichHen>> GetAllAppointmentsAsync(LichHenFilterDto? filter = null);
+
+    /// <summary>
+    /// Xuất danh sách lịch hẹn ra file Excel (.xlsx) theo bộ lọc
+    /// </summary>
+    Task<byte[]> ExportExcelAsync(SupportTicketSysterm.ViewModels.AdminLichHenFilterInput filter);
 }

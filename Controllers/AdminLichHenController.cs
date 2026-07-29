@@ -709,6 +709,26 @@ public class AdminLichHenController : Controller
         });
     }
 
+    /// <summary>
+    /// 9. XUẤT BÁO CÁO EXCEL (XuatBaoCao / ExportExcel - GET)
+    /// </summary>
+    [HttpGet("XuatBaoCao")]
+    [HttpGet("ExportExcel")]
+    public async Task<IActionResult> XuatBaoCao([FromQuery] AdminLichHenFilterInput filter)
+    {
+        try
+        {
+            var excelBytes = await _lichHenService.ExportExcelAsync(filter);
+            string fileName = $"BaoCao_LichHen_Viettel_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
+            return File(excelBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+        }
+        catch (Exception ex)
+        {
+            TempData["ErrorMessage"] = "Có lỗi xảy ra khi xuất báo cáo Excel: " + ex.Message;
+            return RedirectToAction("Index");
+        }
+    }
+
     // Helper kiểm tra mã trạng thái
     private static bool MatchStatus(string? status, string target)
     {

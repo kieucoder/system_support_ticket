@@ -2,10 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.IO;
+using ClosedXML.Excel;
 using Microsoft.EntityFrameworkCore;
 using SupportTicketSysterm.Data;
 using SupportTicketSysterm.Models;
 using SupportTicketSysterm.Repositories.Interfaces;
+using SupportTicketSysterm.ViewModels;
 
 namespace SupportTicketSysterm.Services;
 
@@ -735,5 +738,170 @@ public class LichHenService : ILichHenService
     public async Task<List<LichHen>> GetAllAppointmentsAsync(LichHenFilterDto? filter = null)
     {
         return await _lichHenRepository.GetAllAppointmentsAsync(filter);
+    }
+
+    /// <summary>
+    /// Xuất danh sách lịch hẹn ra file Excel (.xlsx) theo bộ lọc cho Admin
+    /// </summary>
+    public async Task<byte[]> ExportExcelAsync(AdminLichHenFilterInput filter)
+    {
+        filter ??= new AdminLichHenFilterInput();
+
+        var query = _context.LichHens
+            .AsNoTracking()
+            .Include(l => l.IdPhieuNavigation)
+                .ThenInclude(p => p.IdKhachHangNavigation)
+            .Include(l => l.IdPhieuNavigation)
+                .ThenInclude(p => p.IdDichVuNavigation)
+            .Include(l => l.IdNhanVienNavigation)
+            .AsQueryable();
+
+        // 1. Lọc từ khóa
+        if (!string.IsNullOrWhiteSpace(filter.TuKhoa))
+        {
+            string keyword = filter.TuKhoa.Trim().ToLower();
+            query = query.Where(l =>
+                (l.IdPhieuNavigation != null && (
+                    l.IdPhieuNavigation.MaPhieu.ToLower().Contains(keyword) ||
+                    l.IdPhieuNavigation.TieuDe.ToLower().Contains(keyword) ||
+                    (l.IdPhieuNavigation.IdKhachHangNavigation != null && (
+                        l.IdPhieuNavigation.IdKhachHangNavigation.HoTen.ToLower().Contains(keyword) ||
+                        l.IdPhieuNavigation.IdKhachHangNavigation.SoDienThoai.Contains(keyword)
+                    ))
+                )) ||
+                (l.IdNhanVienNavigation != null && l.IdNhanVienNavigation.HoTen.ToLower().Contains(keyword)) ||
+                (l.DiaChiHoTro != null && l.DiaChiHoTro.ToLower().Contains(keyword))
+            );
+        }
+
+        // 2. Lọc trạng thái
+        if (!string.IsNullOrWhiteSpace(filter.TrangThai))
+        {
+            string st = filter.TrangThai.Trim();
+            if (st.Equals("ChoXacNhan", StringComparison.OrdinalIgnoreCase))
+                query = query.Where(l => l.TrangThai == "ChoXacNhan" || l.TrangThai == "Chờ xác nhận");
+            else if (st.Equals("DaXacNhan", StringComparison.OrdinalIgnoreCase))
+                query = query.Where(l => l.TrangThai == "DaXacNhan" || l.TrangThai == "Đã xác nhận");
+            else if (st.Equals("DangThucHien", StringComparison.OrdinalIgnoreCase))
+                query = query.Where(l => l.TrangThai == "DangThucHien" || l.TrangThai == "Đang thực hiện");
+            else if (st.Equals("HoanThanh", StringComparison.OrdinalIgnoreCase))
+                query = query.Where(l => l.TrangThai == "HoanThanh" || l.TrangThai == "Hoàn thành" || l.TrangThai == "DaHoanThanh");
+            else if (st.Equals("DaHuy", StringComparison.OrdinalIgnoreCase))
+                query = query.Where(l => l.TrangThai == "DaHuy" || l.TrangThai == "Đã hủy");
+        }
+
+        // 3. Lọc KTV
+        if (filter.IdNhanVien.HasValue && filter.IdNhanVien.Value > 0)
+        {
+            query = query.Where(l => l.IdNhanVien == filter.IdNhanVien.Value);
+        }
+
+        // 4. Lọc Khoảng ngày
+        if (filter.TuNgay.HasValue)
+        {
+            var tuNgayOnly = DateOnly.FromDateTime(filter.TuNgay.Value);
+            query = query.Where(l => l.NgayHen >= tuNgayOnly);
+        }
+
+        if (filter.DenNgay.HasValue)
+        {
+            var denNgayOnly = DateOnly.FromDateTime(filter.DenNgay.Value);
+            query = query.Where(l => l.NgayHen <= denNgayOnly);
+        }
+
+        var list = await query.OrderByDescending(l => l.IdLichHen).ToListAsync();
+
+        using var workbook = new XLWorkbook();
+        var worksheet = workbook.Worksheets.Add("Lịch Hẹn Kỹ Thuật");
+
+        // Title Header
+        worksheet.Cell(1, 1).Value = "BÁO CÁO DANH SÁCH LỊCH HẸN KỸ THUẬT - VIETTEL TECHSUPPORT";
+        worksheet.Range(1, 1, 1, 12).Merge();
+        worksheet.Cell(1, 1).Style.Font.Bold = true;
+        worksheet.Cell(1, 1).Style.Font.FontSize = 16;
+        worksheet.Cell(1, 1).Style.Font.FontColor = XLColor.FromHtml("#D71920");
+        worksheet.Cell(1, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+
+        worksheet.Cell(2, 1).Value = $"Ngày xuất báo cáo: {DateTime.Now:dd/MM/yyyy HH:mm} | Tổng số bản ghi: {list.Count}";
+        worksheet.Range(2, 1, 2, 12).Merge();
+        worksheet.Cell(2, 1).Style.Font.Italic = true;
+        worksheet.Cell(2, 1).Style.Font.FontSize = 10;
+        worksheet.Cell(2, 1).Style.Font.FontColor = XLColor.DarkGray;
+        worksheet.Cell(2, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+
+        // Table Headers
+        string[] headers = {
+            "STT", "Mã Phiếu", "Tiêu Đề Phiếu", "Tên Khách Hàng", "Số Điện Thoại",
+            "Kỹ Thuật Viên", "Ngày Hẹn", "Khung Giờ", "Hình Thức", "Địa Điểm Hỗ Trợ", "Trạng Thái", "Ghi Chú"
+        };
+
+        for (int i = 0; i < headers.Length; i++)
+        {
+            var cell = worksheet.Cell(4, i + 1);
+            cell.Value = headers[i];
+            cell.Style.Font.Bold = true;
+            cell.Style.Font.FontColor = XLColor.White;
+            cell.Style.Fill.SetBackgroundColor(XLColor.FromHtml("#D71920"));
+            cell.Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+            cell.Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
+        }
+
+        // Rows
+        int row = 5;
+        foreach (var l in list)
+        {
+            string maPhieu = !string.IsNullOrEmpty(l.IdPhieuNavigation?.MaPhieu) ? l.IdPhieuNavigation.MaPhieu : $"PHT{l.IdPhieu:D6}";
+            string tieuDe = l.IdPhieuNavigation?.TieuDe ?? "Hỗ trợ kỹ thuật";
+            string tenKH = l.IdPhieuNavigation?.IdKhachHangNavigation?.HoTen ?? "Khách hàng";
+            string sdtKH = l.IdPhieuNavigation?.IdKhachHangNavigation?.SoDienThoai ?? "";
+            string tenKTV = l.IdNhanVienNavigation?.HoTen ?? "Chưa phân công";
+            string ngayHenStr = l.NgayHen?.ToString("dd/MM/yyyy") ?? "--";
+            string khungGioStr = (l.GioBatDau.HasValue && l.GioKetThuc.HasValue) ? $"{l.GioBatDau:HH:mm} - {l.GioKetThuc:HH:mm}" : "--";
+            string hinhThucStr = l.HinhThuc == "Online" ? "Trực tuyến (Online)" : "Tại chỗ (Trực tiếp)";
+            string diaDiemStr = !string.IsNullOrWhiteSpace(l.DiaChiHoTro) ? l.DiaChiHoTro : (l.IdPhieuNavigation?.IdKhachHangNavigation?.DiaChi ?? "");
+            string trangThaiStr = l.TrangThai switch
+            {
+                "ChoXacNhan" or "Chờ xác nhận" => "Chờ xác nhận",
+                "DaXacNhan" or "Đã xác nhận" => "Đã xác nhận",
+                "DangThucHien" or "Đang thực hiện" => "Đang thực hiện",
+                "HoanThanh" or "Hoàn thành" or "DaHoanThanh" => "Hoàn thành",
+                "DaHuy" or "Đã hủy" => "Đã hủy",
+                _ => l.TrangThai ?? "Chờ xác nhận"
+            };
+
+            worksheet.Cell(row, 1).Value = row - 4;
+            worksheet.Cell(row, 2).Value = maPhieu;
+            worksheet.Cell(row, 3).Value = tieuDe;
+            worksheet.Cell(row, 4).Value = tenKH;
+            worksheet.Cell(row, 5).Value = sdtKH;
+            worksheet.Cell(row, 6).Value = tenKTV;
+            worksheet.Cell(row, 7).Value = ngayHenStr;
+            worksheet.Cell(row, 8).Value = khungGioStr;
+            worksheet.Cell(row, 9).Value = hinhThucStr;
+            worksheet.Cell(row, 10).Value = diaDiemStr;
+            worksheet.Cell(row, 11).Value = trangThaiStr;
+            worksheet.Cell(row, 12).Value = l.GhiChu ?? "";
+
+            // Alignments & Borders
+            worksheet.Cell(row, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+            worksheet.Cell(row, 2).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+            worksheet.Cell(row, 5).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+            worksheet.Cell(row, 7).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+            worksheet.Cell(row, 8).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+            worksheet.Cell(row, 11).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+
+            for (int col = 1; col <= 12; col++)
+            {
+                worksheet.Cell(row, col).Style.Border.SetOutsideBorder(XLBorderStyleValues.Thin);
+                worksheet.Cell(row, col).Style.Border.SetOutsideBorderColor(XLColor.LightGray);
+            }
+
+            row++;
+        }
+
+        worksheet.Columns().AdjustToContents();
+        using var stream = new MemoryStream();
+        workbook.SaveAs(stream);
+        return stream.ToArray();
     }
 }
