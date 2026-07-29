@@ -1,0 +1,533 @@
+/* ==========================================================================
+   VIETTEL TECHSUPPORT - QUẢN LÝ LỊCH HẸN KĨ THUẬT (STAFF MANAGEMENT)
+   Synchronized with QuanLyPhieuHoTro & QuanLyDichVu Design System
+   ========================================================================== */
+
+:root {
+    --vt-primary: #D71920;
+    --vt-primary-hover: #B51218;
+    --vt-primary-light: rgba(215, 25, 32, 0.06);
+    --vt-bg: #F8FAFC;
+    --vt-card: #FFFFFF;
+    --vt-border: #E2E8F0;
+    --vt-text: #0F172A;
+    --vt-text-muted: #64748B;
+    
+    --vt-border-radius: 16px;
+    --vt-border-radius-sm: 10px;
+    
+    --radius-18: 16px;
+    --radius-12: 10px;
+    --radius-8: 8px;
+    
+    --font-sans: 'Inter', 'Be Vietnam Pro', system-ui, -apple-system, sans-serif;
+    
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.03);
+    --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.08);
+    --shadow-drawer: -8px 0 25px rgba(0, 0, 0, 0.12);
+
+    /* Strict Badge & Border Colors */
+    --status-waiting-bg: rgba(245, 158, 11, 0.08); --status-waiting-text: #D97706; --status-waiting-border: #F59E0B;
+    --status-confirmed-bg: rgba(59, 130, 246, 0.08); --status-confirmed-text: #2563EB; --status-confirmed-border: #3B82F6;
+    --status-in-progress-bg: rgba(139, 92, 246, 0.08); --status-in-progress-text: #7C3AED; --status-in-progress-border: #8B5CF6;
+    --status-completed-bg: rgba(16, 185, 129, 0.08); --status-completed-text: #059669; --status-completed-border: #16A34A;
+    --status-cancelled-bg: rgba(239, 68, 68, 0.08); --status-cancelled-text: #DC2626; --status-cancelled-border: #EF4444;
+}
+
+[data-bs-theme="dark"] {
+    --vt-bg: #090D16;
+    --vt-card: #131B2A;
+    --vt-border: #1E293B;
+    --vt-text: #F8FAFC;
+    --vt-text-muted: #94A3B8;
+    
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
+    --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.6);
+    
+    --status-waiting-bg: rgba(245, 158, 11, 0.18); --status-waiting-text: #FBBF24;
+    --status-confirmed-bg: rgba(37, 99, 235, 0.18); --status-confirmed-text: #60A5FA;
+    --status-in-progress-bg: rgba(139, 92, 246, 0.18); --status-in-progress-text: #C084FC;
+    --status-completed-bg: rgba(22, 163, 74, 0.18); --status-completed-text: #4ADE80;
+    --status-cancelled-bg: rgba(239, 68, 68, 0.18); --status-cancelled-text: #FCA5A5;
+
+    --bs-body-bg: #090D16;
+    --bs-body-color: #F8FAFC;
+}
+
+body {
+    font-family: var(--font-sans);
+    background-color: var(--vt-bg);
+    color: var(--vt-text);
+    margin: 0;
+    padding: 0;
+    transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+/* Header Container */
+.vt-header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.vt-header-left h1 {
+    font-size: 1.45rem;
+    font-weight: 800;
+    color: var(--vt-text);
+    margin: 0 0 4px 0;
+    letter-spacing: -0.3px;
+}
+
+.vt-header-left p {
+    font-size: 0.85rem;
+    color: var(--vt-text-muted);
+    margin: 0;
+}
+
+.vt-btn-add {
+    background-color: var(--vt-primary);
+    color: #FFFFFF !important;
+    border: none;
+    border-radius: 999px;
+    padding: 0.6rem 1.4rem;
+    font-weight: 700;
+    font-size: 0.88rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 4px 14px rgba(215, 25, 32, 0.25);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    white-space: nowrap;
+    text-decoration: none !important;
+    cursor: pointer;
+}
+
+.vt-btn-add:hover {
+    background-color: var(--vt-primary-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(215, 25, 32, 0.35);
+}
+
+/* 1. DASHBOARD KPI CARDS (Height: 84px, Radius: 16px) */
+.kpi-80px-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+}
+
+.kpi-card-list {
+    background: var(--vt-card);
+    border: 1px solid var(--vt-border);
+    border-left: 4px solid var(--vt-primary);
+    border-radius: var(--vt-border-radius);
+    padding: 0.85rem 1.1rem;
+    height: 84px;
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.kpi-card-list:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+}
+
+.kpi-card-list.kpi-today { border-left-color: var(--vt-primary); }
+.kpi-card-list.kpi-waiting { border-left-color: var(--status-waiting-border); }
+.kpi-card-list.kpi-confirmed { border-left-color: var(--status-confirmed-border); }
+.kpi-card-list.kpi-in-progress { border-left-color: var(--status-in-progress-border); }
+.kpi-card-list.kpi-completed { border-left-color: var(--status-completed-border); }
+.kpi-card-list.kpi-cancelled { border-left-color: var(--status-cancelled-border); }
+
+.kpi-title-lbl {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--vt-text-muted);
+    margin-bottom: 3px;
+    display: block;
+}
+
+.kpi-value-num {
+    font-size: 1.65rem;
+    font-weight: 800;
+    margin: 0;
+    line-height: 1;
+    color: var(--vt-text);
+}
+
+.kpi-side-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background-color: var(--vt-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    color: var(--vt-text-muted);
+    transition: all 0.25s ease;
+    flex-shrink: 0;
+}
+
+.kpi-card-list:hover .kpi-side-icon {
+    transform: scale(1.1);
+    background-color: var(--vt-primary-light);
+    color: var(--vt-primary);
+}
+
+/* 2. FILTER CARD STYLING */
+.rep-filter-card {
+    border-radius: var(--vt-border-radius);
+    background-color: var(--vt-card);
+    border: 1px solid var(--vt-border) !important;
+}
+
+.form-label-custom {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--vt-text-muted);
+    margin-bottom: 6px;
+    display: block;
+}
+
+.form-control-custom, .form-select-custom {
+    border-radius: var(--vt-border-radius-sm) !important;
+    border: 1px solid var(--vt-border) !important;
+    padding: 8px 12px !important;
+    font-size: 0.85rem !important;
+    color: var(--vt-text) !important;
+    background-color: var(--vt-card) !important;
+    transition: all 0.2s ease !important;
+}
+
+.form-control-custom:focus, .form-select-custom:focus {
+    border-color: var(--vt-primary) !important;
+    box-shadow: 0 0 0 3px rgba(215, 25, 32, 0.12) !important;
+}
+
+/* 3. TABLE STYLING */
+.table-responsive-card {
+    border-radius: var(--vt-border-radius);
+    background: var(--vt-card);
+    border: 1px solid var(--vt-border) !important;
+    overflow: hidden;
+}
+
+.table-custom-management {
+    width: 100%;
+    margin-bottom: 0;
+}
+
+.table-custom-management th {
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--vt-text-muted);
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--vt-border);
+    background-color: #F8FAFC;
+    white-space: nowrap;
+}
+
+[data-bs-theme="dark"] .table-custom-management th {
+    background-color: #111827;
+}
+
+.table-custom-management td {
+    padding: 14px 16px;
+    font-size: 0.85rem;
+    vertical-align: middle;
+    border-bottom: 1px solid var(--vt-border);
+    color: var(--vt-text);
+}
+
+.table-custom-management tbody tr {
+    transition: background-color 0.2s ease;
+    cursor: pointer;
+}
+
+.table-custom-management tbody tr:hover {
+    background-color: var(--vt-primary-light);
+}
+
+.table-custom-management tbody tr.is-selected-row {
+    background-color: rgba(215, 25, 32, 0.08);
+}
+
+/* Status Badges */
+.badge-status-spec {
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 5px 12px;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+    border: 1px solid transparent;
+}
+
+.badge-status-spec.waiting {
+    background-color: var(--status-waiting-bg);
+    color: var(--status-waiting-text);
+    border-color: rgba(245, 158, 11, 0.2);
+}
+
+.badge-status-spec.confirmed {
+    background-color: var(--status-confirmed-bg);
+    color: var(--status-confirmed-text);
+    border-color: rgba(59, 130, 246, 0.2);
+}
+
+.badge-status-spec.in_progress {
+    background-color: var(--status-in-progress-bg);
+    color: var(--status-in-progress-text);
+    border-color: rgba(139, 92, 246, 0.2);
+}
+
+.badge-status-spec.completed {
+    background-color: var(--status-completed-bg);
+    color: var(--status-completed-text);
+    border-color: rgba(16, 185, 129, 0.2);
+}
+
+.badge-status-spec.cancelled {
+    background-color: var(--status-cancelled-bg);
+    color: var(--status-cancelled-text);
+    border-color: rgba(239, 68, 68, 0.2);
+}
+
+/* Action Buttons inside Table */
+.btn-action-custom {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    border: 1px solid var(--vt-border);
+    background-color: var(--vt-card);
+    color: var(--vt-text-muted);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none !important;
+}
+
+.btn-action-custom.view:hover {
+    color: #D71920;
+    border-color: rgba(215, 25, 32, 0.4);
+    background-color: rgba(215, 25, 32, 0.06);
+    transform: translateY(-1px);
+}
+
+.btn-action-custom.more:hover {
+    color: #2563EB;
+    border-color: rgba(37, 99, 235, 0.4);
+    background-color: rgba(37, 99, 235, 0.06);
+    transform: translateY(-1px);
+}
+
+/* REMOVE BUGGY OVERLAY TOOLTIP */
+.table-hover-tooltip {
+    display: none !important;
+}
+
+/* 4. RIGHT SLIDE-OVER DRAWER PANEL (420px Width) */
+.drawer-backdrop-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(4px);
+    z-index: 1040;
+    transition: opacity 0.3s ease;
+}
+
+.drawer-backdrop-overlay.show {
+    display: block;
+}
+
+.drawer-slide-panel {
+    position: fixed;
+    top: 0;
+    right: -450px;
+    width: 420px;
+    height: 100vh;
+    background: var(--vt-card);
+    border-left: 1px solid var(--vt-border);
+    box-shadow: var(--shadow-drawer);
+    z-index: 1050;
+    transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+}
+
+.drawer-slide-panel.show {
+    right: 0;
+}
+
+.drawer-header {
+    padding: 1.1rem 1.25rem;
+    border-bottom: 1px solid var(--vt-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.drawer-body-scroll {
+    padding: 1.25rem;
+    overflow-y: auto;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.drawer-section-card {
+    background: var(--vt-bg);
+    border: 1px solid var(--vt-border);
+    border-radius: var(--vt-border-radius-sm);
+    padding: 12px 14px;
+}
+
+.drawer-sec-title {
+    font-size: 0.82rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--vt-primary);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.drawer-field-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.84rem;
+    margin-bottom: 6px;
+}
+
+.drawer-field-row .lbl {
+    color: var(--vt-text-muted);
+    font-weight: 500;
+}
+
+.drawer-field-row .val {
+    color: var(--vt-text);
+    font-weight: 700;
+    text-align: right;
+}
+
+/* DRAWER ACTION BUTTONS */
+.drawer-act-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: var(--radius-12);
+    font-size: 0.85rem;
+    font-weight: 700;
+    border: 1px solid transparent;
+    transition: all 0.2s ease;
+    text-align: left;
+    margin-bottom: 6px;
+    cursor: pointer;
+}
+
+.drawer-act-btn.confirm { background-color: rgba(37, 99, 235, 0.08); color: var(--status-confirmed-text); border-color: rgba(37, 99, 235, 0.2); }
+.drawer-act-btn.confirm:hover { background-color: rgba(37, 99, 235, 0.16); }
+
+.drawer-act-btn.start { background-color: rgba(139, 92, 246, 0.08); color: var(--status-in-progress-text); border-color: rgba(139, 92, 246, 0.2); }
+.drawer-act-btn.start:hover { background-color: rgba(139, 92, 246, 0.16); }
+
+.drawer-act-btn.complete { background-color: rgba(22, 163, 74, 0.08); color: var(--status-completed-text); border-color: rgba(22, 163, 74, 0.2); }
+.drawer-act-btn.complete:hover { background-color: rgba(22, 163, 74, 0.16); }
+
+.drawer-act-btn.reschedule { background-color: rgba(245, 158, 11, 0.08); color: var(--status-waiting-text); border-color: rgba(245, 158, 11, 0.2); }
+.drawer-act-btn.reschedule:hover { background-color: rgba(245, 158, 11, 0.16); }
+
+.drawer-act-btn.transfer { background-color: rgba(37, 99, 235, 0.08); color: var(--status-confirmed-text); border-color: rgba(37, 99, 235, 0.2); }
+.drawer-act-btn.transfer:hover { background-color: rgba(37, 99, 235, 0.16); }
+
+.drawer-act-btn.cancel { background-color: rgba(239, 68, 68, 0.08); color: var(--status-cancelled-text); border-color: rgba(239, 68, 68, 0.2); }
+.drawer-act-btn.cancel:hover { background-color: rgba(239, 68, 68, 0.16); }
+
+/* 5. OUTLOOK TIMELINE BANNER */
+.timeline-outlook-banner {
+    background: var(--vt-card);
+    border: 1px solid var(--vt-border);
+    border-radius: var(--vt-border-radius);
+    padding: 1.25rem;
+    box-shadow: var(--shadow-sm);
+}
+
+.timeline-track-flex {
+    display: flex;
+    overflow-x: auto;
+    padding-top: 10px;
+    min-width: 900px;
+}
+
+.timeline-hour-step {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    cursor: pointer;
+}
+
+.hour-dot-bullet {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 2px solid var(--vt-border);
+    background: var(--vt-card);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 4px;
+}
+
+.timeline-hour-step.has-appt .hour-dot-bullet {
+    border-color: var(--vt-primary);
+    background-color: var(--vt-primary-light);
+}
+
+/* RESPONSIVE LAYOUT */
+@media (max-width: 1200px) {
+    .kpi-80px-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .kpi-80px-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .drawer-slide-panel {
+        width: 100vw;
+        right: -100vw;
+    }
+}
+

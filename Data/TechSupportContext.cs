@@ -41,8 +41,6 @@ public partial class TechSupportContext : DbContext
 
     public virtual DbSet<SupportTicketSysterm.Models.ChatMessage> ChatMessages { get; set; }
 
-    public virtual DbSet<XacThucOtp> XacThucOtps { get; set; }
-
 
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -146,6 +144,7 @@ public partial class TechSupportContext : DbContext
                 .IsUnicode(false);
             entity.Property(e => e.SoDienThoai).HasMaxLength(15);
             entity.Property(e => e.TrangThai).HasMaxLength(100);
+            entity.Property(e => e.DaXacThucEmail).HasDefaultValue(false);
         });
 
         modelBuilder.Entity<LichHen>(entity =>
@@ -262,21 +261,23 @@ public partial class TechSupportContext : DbContext
 
         modelBuilder.Entity<TaiKhoanOtp>(entity =>
         {
-            entity.HasKey(e => e.IdOtp).HasName("PK__TaiKhoan__2A0AD5FD0DE7C3F3");
+            entity.HasKey(e => e.IdOtp).HasName("PK_TaiKhoan_OTP");
 
             entity.ToTable("TaiKhoan_OTP");
 
             entity.Property(e => e.IdOtp).HasColumnName("IdOTP");
-            entity.Property(e => e.HanSuDung).HasColumnType("datetime");
+            entity.Property(e => e.IdKhachHang).HasColumnName("IdKhachHang");
             entity.Property(e => e.Otp)
-                .HasMaxLength(6)
+                .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("OTP");
+            entity.Property(e => e.ThoiGianTao).HasColumnType("datetime").HasColumnName("ThoiGianTao");
+            entity.Property(e => e.HanSuDung).HasColumnType("datetime").HasColumnName("HanSuDung");
 
             entity.HasOne(d => d.IdKhachHangNavigation).WithMany(p => p.TaiKhoanOtps)
                 .HasForeignKey(d => d.IdKhachHang)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_OTP_KhachHang");
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_TaiKhoan_OTP_KhachHang");
         });
 
         modelBuilder.Entity<TinNhan>(entity =>
@@ -295,10 +296,7 @@ public partial class TechSupportContext : DbContext
                 .HasConstraintName("FK__TinNhan__IdLienH__5AEE82B9");
         });
 
-        modelBuilder.Entity<XacThucOtp>(entity =>
-        {
-            entity.ToTable("XacThucOtp");
-        });
+
 
 
 

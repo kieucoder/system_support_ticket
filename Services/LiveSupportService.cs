@@ -23,12 +23,24 @@ namespace SupportTicketSysterm.Services
             return await _repository.GetTicketByCodeAsync(maPhieu);
         }
 
+        public async Task<PhieuHoTro?> GetTicketByIdAsync(int idPhieu)
+        {
+            return await _repository.GetTicketByIdAsync(idPhieu);
+        }
+
         public async Task<LienHe?> GetOrCreateLienHeAsync(string maPhieu)
         {
             var ticket = await _repository.GetTicketByCodeAsync(maPhieu);
             if (ticket == null) return null;
+            return await GetOrCreateLienHeByTicketIdAsync(ticket.IdPhieu);
+        }
 
-            var lienHe = await _repository.GetLienHeByTicketIdAsync(ticket.IdPhieu);
+        public async Task<LienHe?> GetOrCreateLienHeByTicketIdAsync(int idPhieu)
+        {
+            var ticket = await _repository.GetTicketByIdAsync(idPhieu);
+            if (ticket == null) return null;
+
+            var lienHe = await _repository.GetLienHeByTicketIdAsync(idPhieu);
             if (lienHe == null)
             {
                 lienHe = new LienHe
@@ -36,7 +48,7 @@ namespace SupportTicketSysterm.Services
                     IdPhieu = ticket.IdPhieu,
                     IdKhachHang = ticket.IdKhachHang,
                     IdNhanVien = ticket.IdNhanVien,
-                    TieuDe = $"Hỗ trợ chat trực tuyến - {ticket.MaPhieu}",
+                    TieuDe = $"Hỗ trợ chat trực tuyến - {ticket.MaPhieu ?? "PH" + ticket.IdPhieu}",
                     ThoiGianGui = DateTime.Now,
                     TrangThai = "Đang hỗ trợ",
                     NgayTao = DateOnly.FromDateTime(DateTime.Now),
@@ -57,14 +69,34 @@ namespace SupportTicketSysterm.Services
             return list.Select(MapToViewModel).ToList();
         }
 
+        public async Task<List<MessageViewModel>> GetMessagesByTicketIdAsync(int idPhieu)
+        {
+            var lienHe = await GetOrCreateLienHeByTicketIdAsync(idPhieu);
+            if (lienHe == null) return new List<MessageViewModel>();
+
+            var list = await _repository.GetMessagesByLienHeIdAsync(lienHe.IdLienHe);
+            return list.Select(MapToViewModel).ToList();
+        }
+
         public async Task<MessageViewModel> SaveMessageAsync(string maPhieu, string content, string senderRole)
         {
             var lienHe = await GetOrCreateLienHeAsync(maPhieu);
             if (lienHe == null) throw new ArgumentException("Mã phiếu không tồn tại.");
 
-            // Standardize senderRole as stored in db
-            // "KhachHang" for Customer, "NhanVien" for Staff
-            string loaiNguoiGui = senderRole == "Customer" ? "KhachHang" : "NhanVien";
+            return await SaveMessageInternalAsync(lienHe, content, senderRole);
+        }
+
+        public async Task<MessageViewModel> SaveMessageByTicketIdAsync(int idPhieu, string content, string senderRole)
+        {
+            var lienHe = await GetOrCreateLienHeByTicketIdAsync(idPhieu);
+            if (lienHe == null) throw new ArgumentException("Phiếu hỗ trợ không tồn tại.");
+
+            return await SaveMessageInternalAsync(lienHe, content, senderRole);
+        }
+
+        private async Task<MessageViewModel> SaveMessageInternalAsync(LienHe lienHe, string content, string senderRole)
+        {
+            string loaiNguoiGui = (senderRole == "Customer" || senderRole == "KhachHang") ? "KhachHang" : "NhanVien";
 
             var msg = new TinNhan
             {
@@ -119,6 +151,15 @@ namespace SupportTicketSysterm.Services
         public async Task MarkAsReadAsync(string maPhieu, string readerRole)
         {
             var lienHe = await GetOrCreateLienHeAsync(maPhieu);
+            if (lienHe != null)
+            {
+                await _repository.MarkAsReadAsync(lienHe.IdLienHe, readerRole);
+            }
+        }
+
+        public async Task MarkAsReadByTicketIdAsync(int idPhieu, string readerRole)
+        {
+            var lienHe = await GetOrCreateLienHeByTicketIdAsync(idPhieu);
             if (lienHe != null)
             {
                 await _repository.MarkAsReadAsync(lienHe.IdLienHe, readerRole);

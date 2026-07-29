@@ -48,6 +48,17 @@ builder.Services.AddScoped<ChatHistoryService>();
 // Đăng ký Ticket Service
 builder.Services.AddScoped<ITicketService, TicketService>();
 
+// Đăng ký Backend Tra Cứu Phiếu AI (Repository Layer, Service Layer, Gemini Helpers)
+builder.Services.AddScoped<SupportTicketSysterm.Repositories.Interfaces.ITicketRepository, SupportTicketSysterm.Repositories.Implementations.TicketRepository>();
+builder.Services.AddScoped<SupportTicketSysterm.Services.Interfaces.ITicketLookupService, SupportTicketSysterm.Services.Implementations.TicketLookupService>();
+builder.Services.AddScoped<SupportTicketSysterm.Services.Interfaces.IAIChatService, SupportTicketSysterm.Services.Implementations.AIChatService>();
+builder.Services.AddScoped<SupportTicketSysterm.Gemini.IntentDetector>();
+builder.Services.AddScoped<SupportTicketSysterm.Gemini.PromptBuilder>();
+
+// Đăng ký Phản hồi Đánh giá (Repository & Service)
+builder.Services.AddScoped<SupportTicketSysterm.Repositories.Interfaces.IDanhGiaRepository, SupportTicketSysterm.Repositories.Implementations.DanhGiaRepository>();
+builder.Services.AddScoped<SupportTicketSysterm.Services.IDanhGiaService, SupportTicketSysterm.Services.DanhGiaService>();
+
 
 // Đăng ký Cookie Authentication
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -59,6 +70,36 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.Cookie.HttpOnly = true;
         options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
         options.Cookie.SameSite = SameSiteMode.Lax;
+        options.Events.OnRedirectToLogin = context =>
+        {
+            var redirectUri = context.RedirectUri;
+            if (!string.IsNullOrEmpty(redirectUri))
+            {
+                var cleanUri = System.Text.RegularExpressions.Regex.Replace(
+                    redirectUri,
+                    @"[^\x00-\x7F]",
+                    m => Uri.EscapeDataString(m.Value)
+                );
+                context.Response.Redirect(cleanUri);
+                return Task.CompletedTask;
+            }
+            return Task.CompletedTask;
+        };
+        options.Events.OnRedirectToAccessDenied = context =>
+        {
+            var redirectUri = context.RedirectUri;
+            if (!string.IsNullOrEmpty(redirectUri))
+            {
+                var cleanUri = System.Text.RegularExpressions.Regex.Replace(
+                    redirectUri,
+                    @"[^\x00-\x7F]",
+                    m => Uri.EscapeDataString(m.Value)
+                );
+                context.Response.Redirect(cleanUri);
+                return Task.CompletedTask;
+            }
+            return Task.CompletedTask;
+        };
     });
 
 // Đăng ký SignalR
@@ -70,8 +111,13 @@ builder.Services.AddScoped<SupportTicketSysterm.Services.ILiveSupportService, Su
 builder.Services.AddScoped<SupportTicketSysterm.Services.IDashboardService, SupportTicketSysterm.Services.DashboardService>();
 builder.Services.AddScoped<SupportTicketSysterm.Services.IChatPermissionService, SupportTicketSysterm.Services.ChatPermissionService>();
 builder.Services.AddScoped<SupportTicketSysterm.Services.ISignalRService, SupportTicketSysterm.Services.SignalRService>();
+// Đăng ký Notification Repository và Service
+builder.Services.AddScoped<SupportTicketSysterm.Repositories.Interfaces.INotificationRepository, SupportTicketSysterm.Repositories.Implementations.NotificationRepository>();
 builder.Services.AddScoped<SupportTicketSysterm.Services.INotificationService, SupportTicketSysterm.Services.NotificationService>();
 builder.Services.AddScoped<SupportTicketSysterm.Services.IAppointmentService, SupportTicketSysterm.Services.AppointmentService>();
+builder.Services.AddScoped<SupportTicketSysterm.Services.IAvailabilityService, SupportTicketSysterm.Services.AvailabilityService>();
+builder.Services.AddScoped<SupportTicketSysterm.Repositories.Interfaces.ILichHenRepository, SupportTicketSysterm.Repositories.Implementations.LichHenRepository>();
+builder.Services.AddScoped<SupportTicketSysterm.Services.ILichHenService, SupportTicketSysterm.Services.LichHenService>();
 builder.Services.AddScoped<SupportTicketSysterm.Services.IRatingService, SupportTicketSysterm.Services.RatingService>();
 
 
@@ -107,6 +153,7 @@ app.UseAuthorization();
 
 app.MapHub<SupportTicketSysterm.Controllers.ChatHub>("/chatHub");
 app.MapHub<SupportTicketSysterm.Controllers.LiveSupportHub>("/liveSupportHub");
+app.MapHub<SupportTicketSysterm.Hubs.NotificationHub>("/notificationHub");
 
 app.MapControllerRoute(
     name: "default",

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace SupportTicketSysterm.Data;
@@ -12,6 +12,9 @@ public partial class DichVu
     public string TenDichVu { get; set; } = null!;
 
     public string? MoTa { get; set; }
+
+    [System.ComponentModel.DataAnnotations.Schema.NotMapped]
+    public string? HinhAnh { get; set; }
 
     public string TrangThai { get; set; } = null!;
 

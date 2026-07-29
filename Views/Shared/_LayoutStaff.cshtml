@@ -1,13 +1,37 @@
 @using Microsoft.AspNetCore.Http
 @using System.Security.Claims
+@using SupportTicketSysterm.Data
+@inject TechSupportContext DbContext
 @{
-    var hoTen = Context.Session?.GetString("HoTen") ?? User.FindFirstValue("HoTen") ?? User.Identity?.Name ?? "Nhân viên";
-    var vaiTro = Context.Session?.GetString("Role") ?? User.FindFirstValue(ClaimTypes.Role) ?? "NhanVien";
-    var vaiTroVn = vaiTro == "Admin" ? "Quản trị viên" : "Nhân viên hỗ trợ";
-    var avatar = Context.Session?.GetString("Avatar");
+    var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier) 
+                    ?? User.FindFirstValue("UserId") 
+                    ?? Context.Session?.GetInt32("UserId")?.ToString();
+                    
+    string hoTen = Context.Session?.GetString("HoTen") ?? User.FindFirstValue("HoTen") ?? User.FindFirstValue(ClaimTypes.Name) ?? User.Identity?.Name ?? "";
+    string vaiTro = Context.Session?.GetString("Role") ?? Context.Session?.GetString("VaiTro") ?? User.FindFirstValue(ClaimTypes.Role) ?? User.FindFirstValue("VaiTro") ?? "";
+    string? avatar = Context.Session?.GetString("Avatar") ?? User.FindFirstValue("Avatar");
+
+    if (int.TryParse(userIdStr, out int nhanVienId) && nhanVienId > 0)
+    {
+        var staffDb = DbContext.NhanViens.FirstOrDefault(x => x.IdNhanVien == nhanVienId);
+        if (staffDb != null)
+        {
+            if (string.IsNullOrEmpty(hoTen)) hoTen = staffDb.HoTen?.Trim() ?? "";
+            if (string.IsNullOrEmpty(vaiTro)) vaiTro = staffDb.VaiTro?.Trim() ?? "";
+            if (string.IsNullOrEmpty(avatar)) avatar = staffDb.Avatar?.Trim();
+        }
+    }
+
+    if (string.IsNullOrEmpty(hoTen)) hoTen = "Nhân viên";
+    if (string.IsNullOrEmpty(vaiTro)) vaiTro = "NhanVien";
+
+    var vaiTroVn = (vaiTro.Equals("Admin", StringComparison.OrdinalIgnoreCase) || vaiTro.Equals("Quản trị viên", StringComparison.OrdinalIgnoreCase)) 
+        ? "Quản trị viên" 
+        : ((vaiTro.Equals("KyThuat", StringComparison.OrdinalIgnoreCase) || vaiTro.Equals("Kỹ thuật viên", StringComparison.OrdinalIgnoreCase) || vaiTro.Equals("NhanVien", StringComparison.OrdinalIgnoreCase) || vaiTro.Equals("Nhân viên hỗ trợ", StringComparison.OrdinalIgnoreCase)) ? "Nhân viên hỗ trợ" : vaiTro);
+
     var avatarUrl = !string.IsNullOrEmpty(avatar) 
-        ? "/uploads/avatar/" + avatar 
-        : "https://ui-avatars.com/api/?name=" + System.Net.WebUtility.UrlEncode(hoTen) + "&background=EE0033&color=fff&size=38";
+        ? (avatar.StartsWith("http") || avatar.StartsWith("/") ? avatar : "/uploads/avatar/" + avatar) 
+        : "https://ui-avatars.com/api/?name=" + System.Net.WebUtility.UrlEncode(hoTen) + "&background=D71920&color=fff&size=38&font-size=0.4";
 }
 <!DOCTYPE html>
 <html lang="vi" data-bs-theme="light">
@@ -84,12 +108,6 @@
                         <i class="bi bi-moon"></i>
                     </button>
 
-                    <!-- Notification Bell -->
-                    <button class="topbar-action-btn" title="Thông báo hệ thống" aria-label="Notifications">
-                        <i class="fa-solid fa-bell"></i>
-                        <span class="notification-badge" aria-label="5 thông báo mới">5</span>
-                    </button>
-
                     <!-- User Avatar Dropdown -->
                     <div class="dropdown">
                         <a class="user-profile-dropdown" href="#" role="button" data-bs-toggle="dropdown"
@@ -138,6 +156,8 @@
 
     </div>
     <!-- END ADMIN LAYOUT -->
+    <!-- jQuery -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <!-- Bootstrap 5 JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Chart.js CDN -->

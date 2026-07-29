@@ -726,12 +726,15 @@ body {
     background: #F1F5F9;
     border: 1px solid transparent;
     color: var(--text-muted);
-    padding: 8px 20px;
+    padding: 8px 16px;
     font-weight: 600;
-    font-size: 0.9rem;
+    font-size: 0.88rem;
     border-radius: var(--radius-pill);
     transition: var(--transition-smooth);
     cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
 }
 
 .filter-chip:hover {
@@ -743,6 +746,39 @@ body {
     background: var(--viettel-gradient, linear-gradient(135deg, #EE0033 0%, #C8002A 100%));
     color: #FFFFFF !important;
     box-shadow: 0 4px 12px rgba(215, 25, 32, 0.2);
+}
+
+.chip-count {
+    background: rgba(0, 0, 0, 0.07);
+    color: var(--text-muted);
+    font-size: 0.76rem;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 12px;
+    transition: var(--transition-smooth);
+    min-width: 20px;
+    text-align: center;
+}
+
+.filter-chip:hover .chip-count {
+    background: rgba(0, 0, 0, 0.12);
+    color: var(--text-main);
+}
+
+.filter-chip.active .chip-count {
+    background: rgba(255, 255, 255, 0.25);
+    color: #FFFFFF;
+}
+
+/* Stat Card custom cursor & hover effect for filtering */
+.stat-card-custom[data-status] {
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.stat-card-custom[data-status]:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
 }
 
 /* Toggle Date Button */

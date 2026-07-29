@@ -231,7 +231,7 @@
                     
                     <!-- Total Tickets -->
                     <div class="animate-fade-up">
-                        <div class="stat-card-custom stat-theme-total">
+                        <div class="stat-card-custom stat-theme-total" data-status="">
                             <div class="stat-card-custom__header">
                                 <span class="stat-card-custom__label">Tổng số phiếu</span>
                                 <div class="stat-card-custom__icon-circle">
@@ -251,7 +251,7 @@
 
                     <!-- Processing -->
                     <div class="animate-fade-up delay-1">
-                        <div class="stat-card-custom stat-theme-processing">
+                        <div class="stat-card-custom stat-theme-processing" data-status="DangXuLy">
                             <div class="stat-card-custom__header">
                                 <span class="stat-card-custom__label">Đang xử lý</span>
                                 <div class="stat-card-custom__icon-circle">
@@ -271,7 +271,7 @@
 
                     <!-- Pending -->
                     <div class="animate-fade-up delay-2">
-                        <div class="stat-card-custom stat-theme-pending">
+                        <div class="stat-card-custom stat-theme-pending" data-status="ChoTiepNhan">
                             <div class="stat-card-custom__header">
                                 <span class="stat-card-custom__label">Chờ tiếp nhận</span>
                                 <div class="stat-card-custom__icon-circle">
@@ -291,7 +291,7 @@
 
                     <!-- Completed -->
                     <div class="animate-fade-up delay-3">
-                        <div class="stat-card-custom stat-theme-completed">
+                        <div class="stat-card-custom stat-theme-completed" data-status="DaHoanThanh">
                             <div class="stat-card-custom__header">
                                 <span class="stat-card-custom__label">Hoàn thành</span>
                                 <div class="stat-card-custom__icon-circle">
@@ -311,7 +311,7 @@
 
                     <!-- Cancelled -->
                     <div class="animate-fade-up delay-4">
-                        <div class="stat-card-custom stat-theme-cancelled">
+                        <div class="stat-card-custom stat-theme-cancelled" data-status="DaHuy">
                             <div class="stat-card-custom__header">
                                 <span class="stat-card-custom__label">Đã hủy</span>
                                 <div class="stat-card-custom__icon-circle">
@@ -331,7 +331,7 @@
 
                     <!-- Overdue -->
                     <div class="animate-fade-up delay-5">
-                        <div class="stat-card-custom stat-theme-overdue">
+                        <div class="stat-card-custom stat-theme-overdue" data-status="QuaHan">
                             <div class="stat-card-custom__header">
                                 <span class="stat-card-custom__label">Quá hạn</span>
                                 <div class="stat-card-custom__icon-circle">
@@ -393,19 +393,22 @@
                                     <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
                                         <div class="filter-chips-wrapper">
                                             <button type="button" class="filter-chip @(string.IsNullOrEmpty(ViewBag.SelectedStatus) ? "active" : "")" data-status="">
-                                                Tất cả
+                                                Tất cả <span class="chip-count chip-count-total">@Model.TongPhieu</span>
                                             </button>
                                             <button type="button" class="filter-chip @(ViewBag.SelectedStatus == "ChoTiepNhan" ? "active" : "")" data-status="ChoTiepNhan">
-                                                Chờ tiếp nhận
+                                                Chờ tiếp nhận <span class="chip-count chip-count-pending">@Model.ChoTiepNhan</span>
                                             </button>
                                             <button type="button" class="filter-chip @(ViewBag.SelectedStatus == "DangXuLy" ? "active" : "")" data-status="DangXuLy">
-                                                Đang xử lý
+                                                Đang xử lý <span class="chip-count chip-count-processing">@Model.DangXuLy</span>
                                             </button>
                                             <button type="button" class="filter-chip @(ViewBag.SelectedStatus == "DaHoanThanh" ? "active" : "")" data-status="DaHoanThanh">
-                                                Hoàn thành
+                                                Hoàn thành <span class="chip-count chip-count-completed">@Model.DaHoanThanh</span>
                                             </button>
                                             <button type="button" class="filter-chip @(ViewBag.SelectedStatus == "DaHuy" ? "active" : "")" data-status="DaHuy">
-                                                Đã hủy
+                                                Đã hủy <span class="chip-count chip-count-cancelled">@Model.DaHuy</span>
+                                            </button>
+                                            <button type="button" class="filter-chip @(ViewBag.SelectedStatus == "QuaHan" ? "active" : "")" data-status="QuaHan">
+                                                Quá hạn <span class="chip-count chip-count-overdue">@Model.QuaHan</span>
                                             </button>
                                         </div>
                                         
@@ -513,8 +516,8 @@
                                     <p class="empty-state-custom__desc">
                                         Không tìm thấy phiếu hỗ trợ nào phù hợp với bộ lọc đã chọn. Hãy thử thiết lập lại bộ lọc hoặc bắt đầu bằng cách gửi yêu cầu mới.
                                     </p>
-                                    <a href="@Url.Action("TaoPhieu", "Ticket")" class="btn-hero-primary">
-                                        <i class="bi bi-plus-circle"></i> Tạo phiếu
+                                    <a href="@Url.Action("TaoPhieu", "Ticket")" class="btn btn-danger rounded-pill fw-bold px-4 py-2.5 shadow-sm mt-3 text-white d-inline-flex align-items-center gap-2" style="background: linear-gradient(135deg, #D71920 0%, #E53935 100%); border: none; font-size: 0.9rem;">
+                                        <i class="bi bi-plus-circle-fill"></i> Tạo phiếu hỗ trợ mới
                                     </a>
                                 </div>
                             }
@@ -841,25 +844,7 @@
             </div>
         </main>
         
-        <!-- ==================== CTA SECTION ==================== -->
-        <section class="cta-section-wrap animate-fade-up">
-            <div class="container">
-                <div class="cta-section">
-                    <div class="cta-section__content">
-                        <h2 class="cta-section__title">Cần hỗ trợ khẩn cấp?</h2>
-                        <p class="cta-section__desc">Đội ngũ kỹ thuật viên của chúng tôi luôn sẵn sàng túc trực 24/7 để tiếp nhận, hỗ trợ và xử lý sự cố mạng, Internet, Camera của bạn nhanh nhất.</p>
-                        <div class="cta-section__actions">
-                            <a href="@Url.Action("TaoPhieu", "Ticket")" class="btn-cta-primary">
-                                <i class="bi bi-plus-circle-fill"></i> Tạo phiếu hỗ trợ
-                            </a>
-                            <a href="tel:19008098" class="btn-cta-secondary">
-                                <i class="bi bi-telephone-fill"></i> Hotline 1900 8098
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+        
 
         <!-- ==================== FLOATING ACTION BUTTON (FAB) ==================== -->
         <div class="floating-btn-container">

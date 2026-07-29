@@ -267,12 +267,91 @@ namespace SupportTicketSysterm.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error processing AI Response in ChatService");
-                var errorMsg = "Xin lỗi, hiện tại hệ thống AI đang gặp trục trặc kỹ thuật. Tôi sẽ phản hồi lại cho bạn sớm nhất.";
+                var errorMsg = $"⚠️ [Lỗi hệ thống Chat AI]: {ex.Message}. Vui lòng kiểm tra lại kết nối API Gemini trong appsettings.json.";
                 if (idLienHe > 0)
                 {
                     await SaveAiMessageAsync(idLienHe, errorMsg);
                 }
                 await _chatHistory.SaveMessageAsync(idKhachHang, errorMsg, "model");
+                return errorMsg;
+            }
+        }
+
+        public async Task<string> GetAiMultimodalResponseAsync(int idLienHe, string userMessage, byte[] fileBytes, string mimeType, int? idKhachHang)
+        {
+            if (fileBytes == null || fileBytes.Length == 0)
+            {
+                return await GetAiResponseAndProcessActionsAsync(idLienHe, userMessage, idKhachHang);
+            }
+
+            try
+            {
+                await _chatHistory.SaveMessageAsync(idKhachHang, $"[Gửi tệp {mimeType}]: {userMessage}", "user");
+
+                var activeServices = await _context.DichVus.Where(d => d.TrangThai == "Hoạt động" || d.TrangThai == "Hoạt Động").ToListAsync();
+                var activeCategories = await _context.DanhMucs.ToListAsync();
+
+                bool isLoggedIn = idKhachHang.HasValue;
+                string customerName = "";
+                List<PhieuHoTro> customerTickets = new List<PhieuHoTro>();
+                List<LichHen> customerAppointments = new List<LichHen>();
+
+                if (isLoggedIn)
+                {
+                    var kh = await _context.KhachHangs.FindAsync(idKhachHang.Value);
+                    if (kh != null) customerName = kh.HoTen ?? "";
+
+                    customerTickets = await _context.PhieuHoTros
+                        .Include(p => p.IdDichVuNavigation)
+                        .Include(p => p.IdNhanVienNavigation)
+                        .Where(p => p.IdKhachHang == idKhachHang.Value)
+                        .OrderByDescending(p => p.NgayTao)
+                        .ToListAsync();
+
+                    customerAppointments = await _context.LichHens
+                        .Include(lh => lh.IdNhanVienNavigation)
+                        .Where(lh => lh.IdPhieuNavigation != null && lh.IdPhieuNavigation.IdKhachHang == idKhachHang.Value)
+                        .OrderByDescending(lh => lh.NgayHen)
+                        .ToListAsync();
+                }
+
+                var systemInstruction = _promptBuilder.BuildSystemInstruction(
+                    activeServices,
+                    activeCategories,
+                    isLoggedIn,
+                    customerName,
+                    customerTickets,
+                    customerAppointments
+                );
+
+                List<TinNhan> history = new List<TinNhan>();
+                if (idLienHe > 0)
+                {
+                    history = await GetConversationMessagesAsync(idLienHe);
+                }
+                var historyText = string.Join("\n", history.TakeLast(10).Select(h => $"{h.LoaiNguoiGui}: {h.TinNhan1}"));
+
+                var promptText = $"{historyText}\nKhachHang: (Đính kèm tệp {mimeType}) {userMessage}\nAI:";
+                var response = await _geminiService.SendMultimodalPromptAsync(systemInstruction, promptText, fileBytes, mimeType);
+
+                response = CleanAiResponse(response);
+
+                if (idLienHe > 0)
+                {
+                    await SaveAiMessageAsync(idLienHe, response);
+                }
+                await _chatHistory.SaveMessageAsync(idKhachHang, response, "model");
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error processing Multimodal AI Response in ChatService");
+                var errorMsg = $"⚠️ [Lỗi phân tích tệp Multimodal]: {ex.Message}";
+                if (idLienHe > 0)
+                {
+                    await SaveAiMessageAsync(idLienHe, errorMsg);
+                }
                 return errorMsg;
             }
         }

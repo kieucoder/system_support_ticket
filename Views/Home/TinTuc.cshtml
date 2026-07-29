@@ -1,0 +1,570 @@
+@{
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+    ViewData["Title"] = "Tin Tức & Thông Báo - Hệ Thống Quản Lý Phiếu Hỗ Trợ Kỹ Thuật Viettel Telecom";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/assets/css/news.css" asp-append-version="true" />
+}
+
+<div class="news-page-wrapper">
+
+    <!-- ==========================================
+       1. HERO BANNER SECTION
+       ========================================== -->
+    <section class="news-hero">
+        <div class="news-hero-overlay"></div>
+        <div class="news-hero-particles"></div>
+        <div class="news-hero-content">
+           
+            <h1 class="news-hero-title">
+                TIN TỨC & <span>THÔNG BÁO KỸ THUẬT</span>
+            </h1>
+            <p class="news-hero-desc">
+                Cập nhật nhanh nhất các thông tin nâng cấp hệ thống, lịch bảo trì hạ tầng, hướng dẫn khắc phục sự cố và tin tức chuyển đổi số viễn thông mới nhất.
+            </p>
+            <div class="news-breadcrumb">
+                <a asp-controller="Customers" asp-action="TrangChu">
+                    <i class="bi bi-house-door-fill me-1"></i> Trang chủ
+                </a>
+                <span class="separator">></span>
+                <span class="current">Tin tức</span>
+            </div>
+        </div>
+    </section>
+
+   
+    <!-- ==========================================
+       4. FEATURED POST (TIN NỔI BẬT) & MAIN CONTENT
+       ========================================== -->
+    <section class="news-section">
+        <div class="container">
+            <!-- Featured Post Card -->
+            <div class="featured-post-card news-reveal mb-5">
+                <div class="row g-0 align-items-center">
+                    <div class="col-lg-6 col-12">
+                        <a asp-controller="Home" asp-action="ChiTietTin4" class="d-block featured-img-box">
+                            <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&q=80&w=1000" alt="Featured News Image" />
+                            <span class="featured-cat-tag">Tiên Phong Công Nghệ</span>
+                        </a>
+                    </div>
+                    <div class="col-lg-6 col-12">
+                        <div class="featured-content">
+                            <div class="featured-meta">
+                                <span><i class="bi bi-calendar3 me-1 text-danger"></i> 21/07/2026</span>
+                                <span><i class="bi bi-eye me-1 text-danger"></i> 3,420 Lượt xem</span>
+                                <span><i class="bi bi-person me-1 text-danger"></i> Ban Kỹ Thuật Viettel</span>
+                            </div>
+                            <h2 class="featured-title">
+                                <a asp-controller="Home" asp-action="ChiTietTin4" class="text-decoration-none text-dark">
+                                    Viettel Cần Thơ Tích Hợp Trợ Lý Ảo Gemini AI Về Quản Lý & Chẩn Đoán Phiếu Hỗ Trợ Kỹ Thuật 24/7
+                                </a>
+                            </h2>
+                            <p class="featured-excerpt">
+                                Bước tiến vượt bậc trong công tác chuyển đổi số dịch vụ khách hàng: Trợ lý trí tuệ nhân tạo Gemini AI giúp tự động phân loại sự cố, chẩn đoán lỗi đường truyền ONT cám quang và rút ngắn 60% thời gian xử lý ticket.
+                            </p>
+                            <a asp-controller="Home" asp-action="ChiTietTin4" class="btn-cta-white text-danger border border-danger">
+                                Đọc Tiếp Bài Viết <i class="bi bi-arrow-right ms-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Layout: Left News Grid (Col 8) + Right Sidebar (Col 4) -->
+            <div class="row g-4" id="newsGridSection">
+
+                <!-- LEFT COLUMN: 12 NEWS CARDS GRID (Col 8) -->
+                <div class="col-lg-8 col-12">
+                    <div class="row g-4" id="newsCardsContainer">
+
+                        <!-- Card 1: Hướng dẫn tạo phiếu -->
+                        <div class="col-md-6 col-12 news-card-col news-reveal" data-category="huong-dan">
+                            <div class="news-card">
+                                <a asp-controller="Home" asp-action="ChiTietTin1" class="d-block news-card-img-box">
+                                    <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=600" alt="Hướng dẫn tạo phiếu" />
+                                    <span class="news-card-category">Hướng Dẫn</span>
+                                </a>
+                                <div class="news-card-body">
+                                    <div class="news-card-meta">
+                                        <span><i class="bi bi-calendar3"></i> 20/07/2026</span>
+                                        <span><i class="bi bi-clock"></i> 5 phút đọc</span>
+                                    </div>
+                                    <h3 class="news-card-title">
+                                        <a asp-controller="Home" asp-action="ChiTietTin1" class="text-decoration-none text-dark">
+                                            Hướng Dẫn Tạo Phiếu Báo Sự Cố Nhanh Trên Website TechSupport
+                                        </a>
+                                    </h3>
+                                    <p class="news-card-desc">
+                                        Các bước đơn giản để tạo phiếu hỗ trợ kỹ thuật trực tuyến chỉ trong 1 phút, đính kèm hình ảnh lỗi và chọn mốc giờ hẹn kỹ thuật viên tận nhà.
+                                    </p>
+                                    <a asp-controller="Home" asp-action="ChiTietTin1" class="news-card-link">
+                                        Đọc tiếp <i class="bi bi-arrow-right"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 2: Cách tra cứu phiếu -->
+                        <div class="col-md-6 col-12 news-card-col news-reveal" data-category="huong-dan">
+                            <div class="news-card">
+                                <a asp-controller="Home" asp-action="ChiTietTin2" class="d-block news-card-img-box">
+                                    <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=600" alt="Cách tra cứu phiếu" />
+                                    <span class="news-card-category">Hướng Dẫn</span>
+                                </a>
+                                <div class="news-card-body">
+                                    <div class="news-card-meta">
+                                        <span><i class="bi bi-calendar3"></i> 19/07/2026</span>
+                                        <span><i class="bi bi-clock"></i> 4 phút đọc</span>
+                                    </div>
+                                    <h3 class="news-card-title">
+                                        <a asp-controller="Home" asp-action="ChiTietTin2" class="text-decoration-none text-dark">
+                                            Hướng Dẫn Tra Cứu Tiến Độ Xử Lý Phiếu Báo Hỏng Trực Tuyến
+                                        </a>
+                                    </h3>
+                                    <p class="news-card-desc">
+                                        Theo dõi trạng thái tiếp nhận, tiến độ kỹ thuật viên di chuyển và kết quả nghiệm Thu phiếu kỹ thuật dễ dàng bằng số điện thoại hoặc mã ticket.
+                                    </p>
+                                    <a asp-controller="Home" asp-action="ChiTietTin2" class="news-card-link">
+                                        Đọc tiếp <i class="bi bi-arrow-right"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 3: Thông báo nâng cấp hệ thống -->
+                        <div class="col-md-6 col-12 news-card-col news-reveal" data-category="bao-tri">
+                            <div class="news-card">
+                                <a asp-controller="Home" asp-action="ChiTietTin3" class="d-block news-card-img-box">
+                                    <img src="https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&q=80&w=600" alt="Thông báo bảo trì" />
+                                    <span class="news-card-category">Bảo Trì</span>
+                                </a>
+                                <div class="news-card-body">
+                                    <div class="news-card-meta">
+                                        <span><i class="bi bi-calendar3"></i> 18/07/2026</span>
+                                        <span><i class="bi bi-clock"></i> 3 phút đọc</span>
+                                    </div>
+                                    <h3 class="news-card-title">
+                                        <a asp-controller="Home" asp-action="ChiTietTin3" class="text-decoration-none text-dark">
+                                            Thông Báo Lịch Nâng Cấp Hạ Tầng Mạng Cáp Quang GPON Khu Vực Ninh Kiều
+                                        </a>
+                                    </h3>
+                                    <p class="news-card-desc">
+                                        Viettel Telecom tiến hành nâng cấp tuyến cáp quang trục chính đêm ngày 23/07 nhằm bảo đảm chất lượng kết nối băng thông rộng mượt mà nhất.
+                                    </p>
+                                    <a asp-controller="Home" asp-action="ChiTietTin3" class="news-card-link">
+                                        Đọc tiếp <i class="bi bi-arrow-right"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 4: AI trong hỗ trợ khách hàng -->
+                        <div class="col-md-6 col-12 news-card-col news-reveal" data-category="cong-nghe">
+                            <div class="news-card">
+                                <a asp-controller="Home" asp-action="ChiTietTin4" class="d-block news-card-img-box">
+                                    <img src="https://images.unsplash.com/photo-1677442136019-21780efad99a?auto=format&fit=crop&q=80&w=600" alt="AI Chatbox" />
+                                    <span class="news-card-category">Công Nghệ</span>
+                                </a>
+                                <div class="news-card-body">
+                                    <div class="news-card-meta">
+                                        <span><i class="bi bi-calendar3"></i> 17/07/2026</span>
+                                        <span><i class="bi bi-clock"></i> 7 phút đọc</span>
+                                    </div>
+                                    <h3 class="news-card-title">
+                                        <a asp-controller="Home" asp-action="ChiTietTin4" class="text-decoration-none text-dark">
+                                            Ứng Dụng Mô Hình AI Gemini Trí Tuệ Nhân Tạo Phân Loại Ticket Tự Động
+                                        </a>
+                                    </h3>
+                                    <p class="news-card-desc">
+                                        Khám phá cách ChatBox AI tự động phân tích độ khẩn cấp, nhận diện nhóm dịch vụ gặp sự cố và phân công đúng kỹ thuật viên chuyên trách.
+                                    </p>
+                                    <a asp-controller="Home" asp-action="ChiTietTin4" class="news-card-link">
+                                        Đọc tiếp <i class="bi bi-arrow-right"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 5: Các lỗi Internet thường gặp -->
+                        <div class="col-md-6 col-12 news-card-col news-reveal" data-category="huong-dan">
+                            <div class="news-card">
+                                <a asp-controller="Home" asp-action="ChiTietTin5" class="d-block news-card-img-box">
+                                    <img src="https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&q=80&w=600" alt="Lỗi Internet" />
+                                    <span class="news-card-category">Hướng Dẫn</span>
+                                </a>
+                                <div class="news-card-body">
+                                    <div class="news-card-meta">
+                                        <span><i class="bi bi-calendar3"></i> 16/07/2026</span>
+                                        <span><i class="bi bi-clock"></i> 6 phút đọc</span>
+                                    </div>
+                                    <h3 class="news-card-title">
+                                        <a asp-controller="Home" asp-action="ChiTietTin5" class="text-decoration-none text-dark">
+                                            Top 5 Sự Cố Mạng Internet Cáp Quang Thường Gặp Vài Cách Tự Khắc Phục
+                                        </a>
+                                    </h3>
+                                    <p class="news-card-desc">
+                                        Tổng hợp 5 thao tác đơn giản giúp khởi động lại thiết bị Modem ONT, kiểm tra dây cắm quang và đổi băng tần Mesh Wifi hiệu quả.
+                                    </p>
+                                    <a asp-controller="Home" asp-action="ChiTietTin5" class="news-card-link">
+                                        Đọc tiếp <i class="bi bi-arrow-right"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 6: Mẹo sử dụng Website -->
+                        <div class="col-md-6 col-12 news-card-col news-reveal" data-category="huong-dan">
+                            <div class="news-card">
+                                <a asp-controller="Home" asp-action="ChiTietTin6" class="d-block news-card-img-box">
+                                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=600" alt="Mẹo Website" />
+                                    <span class="news-card-category">Hướng Dẫn</span>
+                                </a>
+                                <div class="news-card-body">
+                                    <div class="news-card-meta">
+                                        <span><i class="bi bi-calendar3"></i> 15/07/2026</span>
+                                        <span><i class="bi bi-clock"></i> 5 phút đọc</span>
+                                    </div>
+                                    <h3 class="news-card-title">
+                                        <a asp-controller="Home" asp-action="ChiTietTin6" class="text-decoration-none text-dark">
+                                            Mẹo Sử Dụng Website TechSupport Hiệu Quả Cho Khách Hàng Doanh Nghiệp
+                                        </a>
+                                    </h3>
+                                    <p class="news-card-desc">
+                                        Tận dụng các công cụ quản lý phiếu tập trung, phân quyền tài khoản quản trị và tra cứu báo cáo sự cố hàng tháng tiện lợi.
+                                    </p>
+                                    <a asp-controller="Home" asp-action="ChiTietTin6" class="news-card-link">
+                                        Đọc tiếp <i class="bi bi-arrow-right"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 7: Bảo mật tài khoản -->
+                        <div class="col-md-6 col-12 news-card-col news-reveal" data-category="tin-he-thong">
+                            <div class="news-card">
+                                <a asp-controller="Home" asp-action="ChiTietTin7" class="d-block news-card-img-box">
+                                    <img src="https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&q=80&w=600" alt="Bảo mật tài khoản" />
+                                    <span class="news-card-category">Hệ Thống</span>
+                                </a>
+                                <div class="news-card-body">
+                                    <div class="news-card-meta">
+                                        <span><i class="bi bi-calendar3"></i> 14/07/2026</span>
+                                        <span><i class="bi bi-clock"></i> 5 phút đọc</span>
+                                    </div>
+                                    <h3 class="news-card-title">
+                                        <a asp-controller="Home" asp-action="ChiTietTin7" class="text-decoration-none text-dark">
+                                            Hướng Dẫn Bảo Mật Tài Khoản Với Xác Thực Mã OTP Email Chuẩn ISO
+                                        </a>
+                                    </h3>
+                                    <p class="news-card-desc">
+                                        Cập nhật quy trình xác thực mã OTP gửi về Email cá nhân khi đăng ký và theo dõi trạng thái tài khoản khách hàng chuẩn ISO/IEC 27001.
+                                    </p>
+                                    <a asp-controller="Home" asp-action="ChiTietTin7" class="news-card-link">
+                                        Đọc tiếp <i class="bi bi-arrow-right"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 8: Kinh nghiệm xử lý sự cố -->
+                        <div class="col-md-6 col-12 news-card-col news-reveal" data-category="huong-dan">
+                            <div class="news-card">
+                                <a asp-controller="Home" asp-action="ChiTietTin8" class="d-block news-card-img-box">
+                                    <img src="https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&q=80&w=600" alt="Kinh nghiệm xử lý sự cố" />
+                                    <span class="news-card-category">Hướng Dẫn</span>
+                                </a>
+                                <div class="news-card-body">
+                                    <div class="news-card-meta">
+                                        <span><i class="bi bi-calendar3"></i> 13/07/2026</span>
+                                        <span><i class="bi bi-clock"></i> 6 phút đọc</span>
+                                    </div>
+                                    <h3 class="news-card-title">
+                                        <a asp-controller="Home" asp-action="ChiTietTin8" class="text-decoration-none text-dark">
+                                            Kinh Nghiệm Xử Lý Sự Cố Suy Hao Tín Hiệu Quang & Tối Ưu Mesh Wifi 6
+                                        </a>
+                                    </h3>
+                                    <p class="news-card-desc">
+                                        Phương pháp đo kiểm mức suy hao tín hiệu cáp quang dBm, cách sắp xếp vị trí Node Wifi Mesh trong nhà nhiều tầng để phủ sóng cực mạnh.
+                                    </p>
+                                    <a asp-controller="Home" asp-action="ChiTietTin8" class="news-card-link">
+                                        Đọc tiếp <i class="bi bi-arrow-right"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 9: Dịch vụ hỗ trợ trực tuyến -->
+                        <div class="col-md-6 col-12 news-card-col news-reveal" data-category="thong-bao">
+                            <div class="news-card">
+                                <a asp-controller="Home" asp-action="ChiTietTin9" class="d-block news-card-img-box">
+                                    <img src="https://images.unsplash.com/photo-1521791136064-7986c2920216?auto=format&fit=crop&q=80&w=600" alt="Dịch vụ hỗ trợ trực tuyến" />
+                                    <span class="news-card-category">Thông Báo</span>
+                                </a>
+                                <div class="news-card-body">
+                                    <div class="news-card-meta">
+                                        <span><i class="bi bi-calendar3"></i> 12/07/2026</span>
+                                        <span><i class="bi bi-clock"></i> 4 phút đọc</span>
+                                    </div>
+                                    <h3 class="news-card-title">
+                                        <a asp-controller="Home" asp-action="ChiTietTin9" class="text-decoration-none text-dark">
+                                            Giới Thiệu Dịch Vụ Tư Vấn Và Hỗ Trợ Kỹ Thuật Trực Tuyến 24/7
+                                        </a>
+                                    </h3>
+                                    <p class="news-card-desc">
+                                        Cam kết chỉ số phản hồi SLA dưới 15 phút, tư vấn viên thường trực giải đáp mọi thắc mắc về đường truyền và thiết bị CNTT Viettel.
+                                    </p>
+                                    <a asp-controller="Home" asp-action="ChiTietTin9" class="news-card-link">
+                                        Đọc tiếp <i class="bi bi-arrow-right"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 10: Thông báo bảo trì -->
+                        <div class="col-md-6 col-12 news-card-col news-reveal" data-category="bao-tri">
+                            <div class="news-card">
+                                <a asp-controller="Home" asp-action="ChiTietTin10" class="d-block news-card-img-box">
+                                    <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&q=80&w=600" alt="Thông báo bảo trì" />
+                                    <span class="news-card-category">Bảo Trì</span>
+                                </a>
+                                <div class="news-card-body">
+                                    <div class="news-card-meta">
+                                        <span><i class="bi bi-calendar3"></i> 11/07/2026</span>
+                                        <span><i class="bi bi-clock"></i> 4 phút đọc</span>
+                                    </div>
+                                    <h3 class="news-card-title">
+                                        <a asp-controller="Home" asp-action="ChiTietTin10" class="text-decoration-none text-dark">
+                                            Thông Báo Lịch Bảo Trì Hệ Thống Máy Chủ Tổng Đài & Cloud Server
+                                        </a>
+                                    </h3>
+                                    <p class="news-card-desc">
+                                        Lịch bảo trì định kỳ hệ thống máy chủ dữ liệu nhằm nâng cao tính ổn định và tốc độ xử lý dữ liệu ticket cho khu vực Tây Nam Bộ.
+                                    </p>
+                                    <a asp-controller="Home" asp-action="ChiTietTin10" class="news-card-link">
+                                        Đọc tiếp <i class="bi bi-arrow-right"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 11: Giới thiệu tính năng mới -->
+                        <div class="col-md-6 col-12 news-card-col news-reveal" data-category="tin-he-thong">
+                            <div class="news-card">
+                                <a asp-controller="Home" asp-action="ChiTietTin11" class="d-block news-card-img-box">
+                                    <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=600" alt="Giới thiệu tính năng mới" />
+                                    <span class="news-card-category">Hệ Thống</span>
+                                </a>
+                                <div class="news-card-body">
+                                    <div class="news-card-meta">
+                                        <span><i class="bi bi-calendar3"></i> 10/07/2026</span>
+                                        <span><i class="bi bi-clock"></i> 5 phút đọc</span>
+                                    </div>
+                                    <h3 class="news-card-title">
+                                        <a asp-controller="Home" asp-action="ChiTietTin11" class="text-decoration-none text-dark">
+                                            Giới Thiệu Các Tính Năng Mới Sắp Ra Mắt Trên Phiên Bản TechSupport 2026
+                                        </a>
+                                    </h3>
+                                    <p class="news-card-desc">
+                                        Đón chờ giao diện bản đồ vị trí kỹ thuật viên thời gian thực, tính năng đánh giá chất lượng phiếu 5 sao và live chat trực tiếp.
+                                    </p>
+                                    <a asp-controller="Home" asp-action="ChiTietTin11" class="news-card-link">
+                                        Đọc tiếp <i class="bi bi-arrow-right"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 12: Tin tức công nghệ -->
+                        <div class="col-md-6 col-12 news-card-col news-reveal" data-category="cong-nghe">
+                            <div class="news-card">
+                                <a asp-controller="Home" asp-action="ChiTietTin12" class="d-block news-card-img-box">
+                                    <img src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&q=80&w=600" alt="Tin tức công nghệ" />
+                                    <span class="news-card-category">Công Nghệ</span>
+                                </a>
+                                <div class="news-card-body">
+                                    <div class="news-card-meta">
+                                        <span><i class="bi bi-calendar3"></i> 09/07/2026</span>
+                                        <span><i class="bi bi-clock"></i> 6 phút đọc</span>
+                                    </div>
+                                    <h3 class="news-card-title">
+                                        <a asp-controller="Home" asp-action="ChiTietTin12" class="text-decoration-none text-dark">
+                                            Tổng Quan Xu Hướng Công Nghệ Viễn Thông 5G & Hạ Tầng Số Doanh Nghiệp
+                                        </a>
+                                    </h3>
+                                    <p class="news-card-desc">
+                                        Phân tích tác động của mạng viễn thông 5G thế hệ mới đối với khả năng vận hành tự động hóa và hạ tầng công nghệ thông tin.
+                                    </p>
+                                    <a asp-controller="Home" asp-action="ChiTietTin12" class="news-card-link">
+                                        Đọc tiếp <i class="bi bi-arrow-right"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- No Search Results Box -->
+                    <div id="noResultsBox" class="no-results-box" style="display: none;">
+                        <i class="bi bi-search-heart no-results-icon"></i>
+                        <h4 class="fw-bold">Không Tìm Thấy Bài Viết Phù Hợp</h4>
+                        <p class="text-muted mb-0">Rất tiếc, không tìm thấy bài viết nào khớp với từ khóa hoặc danh mục bạn vừa chọn. Vui lòng thử từ khóa khác!</p>
+                    </div>
+
+                    <!-- 7. PAGINATION -->
+                    <div class="news-pagination news-reveal">
+                        <a href="#" class="page-link-custom"><i class="bi bi-chevron-left"></i></a>
+                        <a href="#" class="page-link-custom active">1</a>
+                        <a href="#" class="page-link-custom">2</a>
+                        <a href="#" class="page-link-custom">3</a>
+                        <a href="#" class="page-link-custom">4</a>
+                        <a href="#" class="page-link-custom"><i class="bi bi-chevron-right"></i></a>
+                    </div>
+                </div>
+
+                <!-- RIGHT COLUMN: 6. SIDEBAR (Col 4) -->
+                <div class="col-lg-4 col-12">
+                    <div class="news-sidebar">
+
+                        <!-- Widget 1: Danh Mục Bài Viết -->
+                        <div class="sidebar-widget news-reveal">
+                            <h4 class="widget-title"><i class="bi bi-folder2-open text-danger me-2"></i> Danh Mục Bài Viết</h4>
+                            <ul class="sidebar-cat-list">
+                                <li class="sidebar-cat-item" data-category="all">
+                                    <span>Tất cả tin tức</span>
+                                    <span class="sidebar-cat-count">12</span>
+                                </li>
+                                <li class="sidebar-cat-item" data-category="huong-dan">
+                                    <span>Hướng dẫn sử dụng</span>
+                                    <span class="sidebar-cat-count">5</span>
+                                </li>
+                                <li class="sidebar-cat-item" data-category="cong-nghe">
+                                    <span>Công nghệ & AI</span>
+                                    <span class="sidebar-cat-count">4</span>
+                                </li>
+                                <li class="sidebar-cat-item" data-category="bao-tri">
+                                    <span>Thông báo bảo trì</span>
+                                    <span class="sidebar-cat-count">2</span>
+                                </li>
+                                <li class="sidebar-cat-item" data-category="tin-he-thong">
+                                    <span>Cập nhật hệ thống</span>
+                                    <span class="sidebar-cat-count">2</span>
+                                </li>
+                                <li class="sidebar-cat-item" data-category="thong-bao">
+                                    <span>Hoạt động CSKH</span>
+                                    <span class="sidebar-cat-count">1</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Widget 2: Bài Viết Xem Nhiều -->
+                        <div class="sidebar-widget news-reveal">
+                            <h4 class="widget-title"><i class="bi bi-fire text-danger me-2"></i> Bài Viết Nổi Bật</h4>
+                            
+                            <a asp-controller="Home" asp-action="ChiTietTin4" class="text-decoration-none text-dark d-block">
+                                <div class="mini-post-item">
+                                    <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&q=80&w=200" class="mini-post-img" alt="Post 1" />
+                                    <div>
+                                        <h5 class="mini-post-title">Tích Hợp Trợ Lý Ảo Gemini AI Về Quản Lý Phiếu Hỗ Trợ 24/7</h5>
+                                        <span class="mini-post-date"><i class="bi bi-calendar3"></i> 21/07/2026</span>
+                                    </div>
+                                </div>
+                            </a>
+
+                            <a asp-controller="Home" asp-action="ChiTietTin1" class="text-decoration-none text-dark d-block">
+                                <div class="mini-post-item">
+                                    <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=200" class="mini-post-img" alt="Post 2" />
+                                    <div>
+                                        <h5 class="mini-post-title">Hướng Dẫn Tạo Phiếu Báo Sự Cố Nhanh Trên Website TechSupport</h5>
+                                        <span class="mini-post-date"><i class="bi bi-calendar3"></i> 20/07/2026</span>
+                                    </div>
+                                </div>
+                            </a>
+
+                            <a asp-controller="Home" asp-action="ChiTietTin5" class="text-decoration-none text-dark d-block">
+                                <div class="mini-post-item">
+                                    <img src="https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&q=80&w=200" class="mini-post-img" alt="Post 3" />
+                                    <div>
+                                        <h5 class="mini-post-title">Top 5 Sự Cố Mạng Internet Cáp Quang Thường Gặp Vài Cách Tự Khắc Phục</h5>
+                                        <span class="mini-post-date"><i class="bi bi-calendar3"></i> 16/07/2026</span>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+
+                        <!-- Widget 3: Từ Khóa Phổ Biến (Tags) -->
+                        <div class="sidebar-widget news-reveal">
+                            <h4 class="widget-title"><i class="bi bi-tags text-danger me-2"></i> Từ Khóa Phổ Biến</h4>
+                            <div class="tags-cloud">
+                                <span class="tag-item">#ViettelTelecom</span>
+                                <span class="tag-item">#TechSupport</span>
+                                <span class="tag-item">#TaoPhieu</span>
+                                <span class="tag-item">#GeminiAI</span>
+                                <span class="tag-item">#CapQuangGPON</span>
+                                <span class="tag-item">#MeshWifi</span>
+                                <span class="tag-item">#BaoTriHaTang</span>
+                                <span class="tag-item">#ChuyenDoiSo</span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================
+       8. NEWSLETTER BANNER
+       ========================================== -->
+    <section class="news-section py-4">
+        <div class="container">
+            <div class="newsletter-banner news-reveal">
+                <div class="newsletter-content text-center">
+                    <h2 class="newsletter-title"><i class="bi bi-envelope-open-heart me-2"></i> Đăng Ký Nhận Tin Tức Mới Nhất</h2>
+                    <p class="newsletter-desc">
+                        Nhận ngay các thông báo bảo trì định kỳ, cập nhật tính năng mới và kinh nghiệm khắc phục sự cố kỹ thuật trực tiếp qua email của bạn.
+                    </p>
+                    <form id="newsletterForm" class="newsletter-form">
+                        <input type="email" id="newsletterEmail" class="newsletter-input" placeholder="Nhập địa chỉ email của bạn..." required />
+                        <button type="submit" class="btn-newsletter">
+                            <i class="bi bi-send-fill me-1"></i> Đăng Ký Ngay
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================
+       9. CTA SECTION
+       ========================================== -->
+    <section class="news-section py-5">
+        <div class="container">
+            <div class="cta-banner-wrapper news-reveal">
+                <h2 class="cta-title">Bạn Đang Gặp Sự Cố Kỹ Thuật?</h2>
+                <p class="cta-subtitle">
+                    Đừng lo lắng! Hãy gửi ngay phiếu hỗ trợ kỹ thuật hoặc tra cứu tiến độ xử lý ticket của bạn chỉ trong vài thao tác đơn giản.
+                </p>
+                <div class="cta-buttons">
+                    <a asp-controller="Ticket" asp-action="ChonDMDichVu" class="btn-cta-white">
+                        <i class="bi bi-plus-circle-fill me-1"></i> Tạo Phiếu Hỗ Trợ
+                    </a>
+                    <a asp-controller="Ticket" asp-action="TraCuuPhieu" class="btn-cta-outline">
+                        <i class="bi bi-search me-1"></i> Tra Cứu Tiến Độ
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</div>
+
+<!-- ==========================================
+   10. FOOTER SECTION
+   ========================================== -->
+<partial name="~/Views/Shared/_Footer.cshtml" />
+
+@section Scripts {
+    <script src="~/assets/js/news.js" asp-append-version="true"></script>
+}

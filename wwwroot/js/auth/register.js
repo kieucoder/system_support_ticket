@@ -51,26 +51,58 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // --- 2. Toggle Password Visibility ---
-    const togglePasswordButtons = document.querySelectorAll('.btn-toggle-password');
+    const togglePasswordButtons = document.querySelectorAll('.toggle-password, .btn-toggle-password');
     togglePasswordButtons.forEach(btn => {
-        btn.addEventListener('click', () => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
             const targetId = btn.getAttribute('data-target');
             const targetInput = document.getElementById(targetId);
             const icon = btn.querySelector('i');
 
-            if (targetInput && icon) {
-                if (targetInput.type === 'password') {
-                    targetInput.type = 'text';
-                    icon.classList.remove('bi-eye-slash');
-                    icon.classList.add('bi-eye');
-                } else {
-                    targetInput.type = 'password';
-                    icon.classList.remove('bi-eye');
-                    icon.classList.add('bi-eye-slash');
+            if (targetInput) {
+                const isPassword = targetInput.type === 'password';
+                targetInput.type = isPassword ? 'text' : 'password';
+
+                if (icon) {
+                    if (isPassword) {
+                        // Switch to text mode -> Open Eye Icon
+                        icon.className = 'fa-solid fa-eye text-danger';
+                        btn.classList.add('active');
+                        btn.setAttribute('title', 'Ẩn mật khẩu');
+                    } else {
+                        // Switch to password mode -> Slashed Eye Icon
+                        icon.className = 'fa-solid fa-eye-slash text-secondary';
+                        btn.classList.remove('active');
+                        btn.setAttribute('title', 'Hiển thị mật khẩu');
+                    }
                 }
             }
         });
     });
+
+    // --- 2.5 Date Picker Enhancements ---
+    const birthdateInput = document.getElementById('birthdate');
+    if (birthdateInput) {
+        // Set maximum date to today so users cannot select a future date of birth
+        const todayStr = new Date().toISOString().split('T')[0];
+        birthdateInput.setAttribute('max', todayStr);
+
+        const dateInputGroup = birthdateInput.closest('.input-group');
+        if (dateInputGroup) {
+            const calendarIcon = dateInputGroup.querySelector('.input-group-text');
+            if (calendarIcon) {
+                calendarIcon.style.cursor = 'pointer';
+                calendarIcon.title = 'Bấm để chọn ngày sinh';
+                calendarIcon.addEventListener('click', () => {
+                    birthdateInput.focus();
+                    if (typeof birthdateInput.showPicker === 'function') {
+                        try { birthdateInput.showPicker(); } catch (_) {}
+                    }
+                });
+            }
+        }
+    }
 
     // --- 3. Toast Notifications ---
     const showToast = (message, type = 'success') => {

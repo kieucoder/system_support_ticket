@@ -19,10 +19,23 @@
     }
     else
     {
-        <div class="chat-empty-state">
-            <span class="empty-state-icon">💬</span>
-            <h3>Chưa có tin nhắn nào</h3>
-            <p class="text-muted">Bắt đầu cuộc trò chuyện bằng cách nhập tin nhắn bên dưới.</p>
+        <div class="chat-empty-state py-5 text-center my-auto">
+            @if (Model.CanChat)
+            {
+                <div class="empty-icon-wrap mx-auto mb-3 d-flex align-items-center justify-content-center rounded-circle shadow-xs" style="width: 64px; height: 64px; background: rgba(215, 25, 32, 0.08); color: #D71920;">
+                    <i class="bi bi-chat-dots-fill fs-2"></i>
+                </div>
+                <h5 class="fw-bold text-dark mb-1">Chưa có tin nhắn nào</h5>
+                <p class="text-muted small mb-0">Bắt đầu cuộc trò chuyện bằng cách nhập nội dung tin nhắn bên dưới.</p>
+            }
+            else
+            {
+                <div class="empty-icon-wrap mx-auto mb-3 d-flex align-items-center justify-content-center rounded-circle shadow-xs" style="width: 64px; height: 64px; background: rgba(16, 185, 129, 0.1); color: #10B981;">
+                    <i class="bi bi-chat-check-fill fs-2"></i>
+                </div>
+                <h5 class="fw-bold text-dark mb-1">Chưa có lịch sử tin nhắn</h5>
+                <p class="text-muted small mb-0">Phiếu hỗ trợ này đã được hoàn tất trước đó.</p>
+            }
         </div>
     }
 

@@ -17,6 +17,7 @@ namespace SupportTicketSysterm.Services
     public interface IGeminiService
     {
         Task<string> SendPromptAsync(string systemInstruction, string userPrompt);
+        Task<string> SendMultimodalPromptAsync(string systemInstruction, string userPrompt, byte[] fileBytes, string mimeType);
         Task<GeminiDiagnosticResult> TestConnectionAsync(string testPrompt);
     }
 }

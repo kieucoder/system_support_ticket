@@ -78,28 +78,12 @@ namespace SupportTicketSysterm.Services
                     NoiDung = model.NoiDung,
                     NgayTao = DateOnly.FromDateTime(DateTime.Now),
                     NgayCapNhat = null,
-                    CanLichHen = model.CanLichHen ?? "Không",
+                    CanLichHen = "Không",
                     TrangThai = "Chờ tiếp nhận"
                 };
 
                 _context.PhieuHoTros.Add(phieu);
                 await _context.SaveChangesAsync(); // Generates phieu.IdPhieu
-
-                // Save schedule appointment if applicable
-                if (model.CanLichHen == "Có")
-                {
-                    var lichHen = new LichHen
-                    {
-                        IdPhieu = phieu.IdPhieu,
-                        NgayHen = model.NgayHen,
-                        GioBatDau = model.GioBatDau,
-                        GioKetThuc = model.GioKetThuc,
-                        DiaChiHoTro = model.DiaChiHen,
-                        GhiChu = model.GhiChuHen,
-                        TrangThai = "Chờ xác nhận"
-                    };
-                    _context.LichHens.Add(lichHen);
-                }
 
                 // Log support history
                 var lichSu = new LichSuHoTro
@@ -156,6 +140,72 @@ namespace SupportTicketSysterm.Services
                 await transaction.RollbackAsync();
                 return (false, 0, ex.Message, null);
             }
+        }
+
+        public async Task<bool> CanUserAccessTicketAsync(int idPhieu, int userId, string role)
+        {
+            if (role == "Admin") return true;
+
+            var ticket = await _context.PhieuHoTros.AsNoTracking().FirstOrDefaultAsync(p => p.IdPhieu == idPhieu);
+            if (ticket == null) return false;
+
+            if (role == "NhanVien" || role == "Nhân viên" || role == "Nhân viên hỗ trợ")
+            {
+                return ticket.IdNhanVien == userId;
+            }
+
+            if (role == "KhachHang")
+            {
+                return ticket.IdKhachHang == userId;
+            }
+
+            return false;
+        }
+
+        public async Task<PhieuHoTro?> GetTicketDetailForUserAsync(int idPhieu, int userId, string role)
+        {
+            var ticket = await _context.PhieuHoTros
+                .AsNoTracking()
+                .Include(p => p.IdDichVuNavigation)
+                    .ThenInclude(d => d!.IdDanhMucNavigation)
+                .Include(p => p.IdKhachHangNavigation)
+                .Include(p => p.IdNhanVienNavigation)
+                .Include(p => p.LichHens)
+                .Include(p => p.FileDinhKems)
+                .Include(p => p.DanhGium)
+                .FirstOrDefaultAsync(p => p.IdPhieu == idPhieu);
+
+            if (ticket == null) return null;
+
+            if (role == "Admin") return ticket;
+            if ((role == "NhanVien" || role == "Nhân viên" || role == "Nhân viên hỗ trợ") && ticket.IdNhanVien == userId) return ticket;
+            if (role == "KhachHang" && ticket.IdKhachHang == userId) return ticket;
+
+            return null;
+        }
+
+        public async Task<System.Collections.Generic.List<PhieuHoTro>> GetTicketsForUserAsync(int userId, string role)
+        {
+            var query = _context.PhieuHoTros
+                .AsNoTracking()
+                .Include(p => p.IdDichVuNavigation)
+                    .ThenInclude(d => d!.IdDanhMucNavigation)
+                .Include(p => p.IdKhachHangNavigation)
+                .Include(p => p.IdNhanVienNavigation)
+                .Include(p => p.LichHens)
+                .Include(p => p.DanhGium)
+                .AsQueryable();
+
+            if (role == "NhanVien" || role == "Nhân viên" || role == "Nhân viên hỗ trợ")
+            {
+                query = query.Where(p => p.IdNhanVien == userId);
+            }
+            else if (role == "KhachHang")
+            {
+                query = query.Where(p => p.IdKhachHang == userId);
+            }
+
+            return await query.OrderByDescending(p => p.NgayTao).ThenByDescending(p => p.IdPhieu).ToListAsync();
         }
     }
 }

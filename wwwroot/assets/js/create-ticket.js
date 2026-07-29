@@ -575,59 +575,7 @@ function formatDateTime(date) {
  * Handle Appointment Collapsible Toggler logic & constraints
  */
 function initAppointmentToggler() {
-    const needAppointment = document.getElementById('needAppointment');
-    const appointmentContainer = document.getElementById('appointmentContainer');
-    const appointmentDate = document.getElementById('appointmentDate');
-    const appointmentTime = document.getElementById('appointmentTime');
-    const appointmentNote = document.getElementById('appointmentNote');
-
-    if (needAppointment && appointmentContainer) {
-        // Initialize Flatpickr for Date
-        if (appointmentDate) {
-            datePicker = flatpickr(appointmentDate, {
-                locale: "vn",
-                dateFormat: "d/m/Y",
-                minDate: "today",
-                disableMobile: true,
-                placeholder: "Chọn ngày hẹn"
-            });
-        }
-
-        // Initialize Flatpickr for Time
-        if (appointmentTime) {
-            timePicker = flatpickr(appointmentTime, {
-                enableTime: true,
-                noCalendar: true,
-                dateFormat: "H:i",
-                time_24hr: true,
-                disableMobile: true,
-                placeholder: "Chọn giờ hẹn"
-            });
-        }
-
-        needAppointment.addEventListener('change', function () {
-            if (this.checked) {
-                appointmentContainer.classList.remove('d-none');
-                appointmentContainer.classList.add('animate-slide-down');
-
-                // Inputs become required
-                if (appointmentDate) appointmentDate.setAttribute('required', 'required');
-                if (appointmentTime) appointmentTime.setAttribute('required', 'required');
-            } else {
-                appointmentContainer.classList.add('d-none');
-                appointmentContainer.classList.remove('animate-slide-down');
-
-                // Remove fields requirements
-                if (appointmentDate) appointmentDate.removeAttribute('required');
-                if (appointmentTime) appointmentTime.removeAttribute('required');
-
-                // Clear values
-                if (datePicker) datePicker.clear();
-                if (timePicker) timePicker.clear();
-                if (appointmentNote) appointmentNote.value = '';
-            }
-        });
-    }
+    // Appointment section removed from create ticket workflow per business rule
 }
 
 /**

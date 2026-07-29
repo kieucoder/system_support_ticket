@@ -100,10 +100,11 @@ namespace SupportTicketSysterm.Controllers
         }
 
         [HttpPost]
+        [Route("CapNhatThongTinCaNhan")]
         [Route("CapNhatThongTin")]
         [Authorize(Roles = "KhachHang")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CapNhatThongTin(KhachHangViewModel model)
+        public async Task<IActionResult> CapNhatThongTinCaNhan(KhachHangViewModel model)
         {
             try
             {
@@ -131,7 +132,7 @@ namespace SupportTicketSysterm.Controllers
                 var customer = await _context.KhachHangs.FirstOrDefaultAsync(x => x.IdKhachHang == userId);
                 if (customer == null)
                 {
-                    return Json(new { success = false, message = "Không tìm thấy thông tin khách hàng." });
+                    return Json(new { success = false, message = "Không tìm thấy thông tin tài khoản khách hàng." });
                 }
 
                 // Check duplicate Email
@@ -141,7 +142,7 @@ namespace SupportTicketSysterm.Controllers
                     var duplicateEmail = await _context.KhachHangs.AnyAsync(x => x.IdKhachHang != userId && x.Email != null && x.Email.ToLower() == emailLower);
                     if (duplicateEmail)
                     {
-                        return Json(new { success = false, message = "Email này đã được sử dụng bởi một tài khoản khác." });
+                        return Json(new { success = false, message = "Địa chỉ Email này đã được sử dụng bởi tài khoản khác." });
                     }
                 }
 
@@ -150,26 +151,51 @@ namespace SupportTicketSysterm.Controllers
                 var duplicatePhone = await _context.KhachHangs.AnyAsync(x => x.IdKhachHang != userId && x.SoDienThoai == phoneTrimmed);
                 if (duplicatePhone)
                 {
-                    return Json(new { success = false, message = "Số điện thoại này đã được sử dụng bởi một tài khoản khác." });
+                    return Json(new { success = false, message = "Số điện thoại này đã được sử dụng bởi tài khoản khác." });
                 }
 
-                // Update only allowed fields
+                // Update allowed fields only (MaKh and NgayTao remain unchanged)
                 customer.HoTen = model.HoTen.Trim();
                 customer.SoDienThoai = phoneTrimmed;
                 customer.Email = model.Email?.Trim();
                 customer.DiaChi = model.DiaChi?.Trim();
+                if (model.NgaySinh.HasValue)
+                {
+                    customer.NgaySinh = model.NgaySinh;
+                }
 
                 _context.KhachHangs.Update(customer);
                 await _context.SaveChangesAsync();
 
                 // Update session info
                 HttpContext.Session.SetString("HoTen", customer.HoTen);
+                HttpContext.Session.SetString("FullName", customer.HoTen);
 
-                return Json(new { success = true, message = "Cập nhật thông tin thành công." });
+                // Calculate initials
+                var nameParts = customer.HoTen.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                var initials = nameParts.Length > 1 
+                    ? (nameParts[0][0].ToString() + nameParts[nameParts.Length - 1][0].ToString()).ToUpper()
+                    : nameParts[0].Substring(0, Math.Min(2, nameParts[0].Length)).ToUpper();
+
+                return Json(new {
+                    success = true,
+                    message = "Cập nhật thông tin cá nhân thành công.",
+                    data = new {
+                        idKhachHang = customer.IdKhachHang,
+                        maKh = customer.MaKh,
+                        hoTen = customer.HoTen,
+                        soDienThoai = customer.SoDienThoai,
+                        email = customer.Email ?? "",
+                        diaChi = customer.DiaChi ?? "Chưa cập nhật",
+                        ngaySinh = customer.NgaySinh?.ToString("dd/MM/yyyy") ?? "Chưa cập nhật",
+                        ngaySinhRaw = customer.NgaySinh?.ToString("yyyy-MM-dd") ?? "",
+                        initials = initials
+                    }
+                });
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, message = ex.Message });
+                return Json(new { success = false, message = "Lỗi xử lý server: " + ex.Message });
             }
         }
 
@@ -442,7 +468,18 @@ namespace SupportTicketSysterm.Controllers
 
                 // 7a. Trạng thái
                 if (!string.IsNullOrWhiteSpace(status))
-                    baseQuery = baseQuery.Where(p => p.TrangThai == status);
+                {
+                    if (status == "QuaHan")
+                    {
+                        baseQuery = baseQuery.Where(p =>
+                            p.TrangThai != "DaHoanThanh"
+                         && p.LichHens.OrderByDescending(lh => lh.NgayHen).Select(lh => (DateOnly?)lh.NgayHen).FirstOrDefault() < today);
+                    }
+                    else
+                    {
+                        baseQuery = baseQuery.Where(p => p.TrangThai == status);
+                    }
+                }
 
                 // 7b. Mức ưu tiên — PhieuHoTro lưu MucDoUuTien (int?),
                 //     view dùng giá trị chuỗi Low/Medium/High/Critical

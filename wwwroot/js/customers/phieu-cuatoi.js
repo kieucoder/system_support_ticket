@@ -119,6 +119,22 @@ function triggerAjaxFilter(pageUrl = null) {
                 }
             });
 
+            // 4b. Synchronize filter chip counts
+            const newChips = doc.querySelectorAll('.filter-chip');
+            if (newChips.length) {
+                newChips.forEach(newChip => {
+                    const statusAttr = newChip.getAttribute('data-status');
+                    const targetChip = document.querySelector(`.filter-chip[data-status="${statusAttr}"]`);
+                    if (targetChip) {
+                        const newCount = newChip.querySelector('.chip-count');
+                        const targetCount = targetChip.querySelector('.chip-count');
+                        if (newCount && targetCount) {
+                            targetCount.innerHTML = newCount.innerHTML;
+                        }
+                    }
+                });
+            }
+
             // 5. Re-run interactive bindings
             initCounterAnimation();
             initCollapsibleGroups();
@@ -301,10 +317,13 @@ function initSearchDebounce() {
 function initFilterChips() {
     const chips = document.querySelectorAll('.filter-chip');
     const statusField = document.getElementById('statusFilterField');
+    const statCards = document.querySelectorAll('.stat-card-custom[data-status]');
 
     if (chips && statusField) {
         chips.forEach(chip => {
             chip.addEventListener('click', function () {
+                const statusValue = this.getAttribute('data-status') || '';
+                
                 // Remove active class from all chips
                 chips.forEach(c => c.classList.remove('active'));
                 
@@ -312,10 +331,35 @@ function initFilterChips() {
                 this.classList.add('active');
                 
                 // Set hidden input value
-                const statusValue = this.getAttribute('data-status');
                 statusField.value = statusValue;
                 
                 // Trigger AJAX
+                triggerAjaxFilter();
+            });
+        });
+    }
+
+    if (statCards && statusField) {
+        statCards.forEach(card => {
+            card.style.cursor = 'pointer';
+            card.addEventListener('click', function () {
+                const statusValue = this.getAttribute('data-status') || '';
+                
+                // Set status input
+                statusField.value = statusValue;
+                
+                // Update active state on chips
+                if (chips) {
+                    chips.forEach(c => {
+                        if (c.getAttribute('data-status') === statusValue) {
+                            c.classList.add('active');
+                        } else {
+                            c.classList.remove('active');
+                        }
+                    });
+                }
+                
+                // Trigger AJAX filter
                 triggerAjaxFilter();
             });
         });

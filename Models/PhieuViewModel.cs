@@ -34,7 +34,7 @@ namespace SupportTicketSysterm.Models
 
         public DateOnly? NgayCapNhat { get; set; }
 
-        public string CanLichHen { get; set; } = null!;
+        public string CanLichHen { get; set; } = "Không";
 
         public string? TrangThai { get; set; }
 
@@ -99,6 +99,14 @@ namespace SupportTicketSysterm.Models
 
         [Display(Name = "Dịch vụ")]
         public int? IdDichVu { get; set; }
+
+        // ==========================
+        // Thống kê thực tế từ CSDL
+        // ==========================
+        public int TongSoPhieu { get; set; }
+        public int DangXuLyCount { get; set; }
+        public int DaHoanThanhCount { get; set; }
+        public int LichHenHomNayCount { get; set; }
 
         // ==========================
         // Kết quả tìm kiếm

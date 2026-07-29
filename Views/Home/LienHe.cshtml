@@ -1,245 +1,379 @@
+@model SupportTicketSysterm.Models.GuiLienHeViewModel
+
 @{
-    Layout = "~/Views/Shared/_LayoutMain.cshtml";
-    ViewData["Title"] = "Liên hệ hỗ trợ - TechSupport Viettel";
+    ViewData["Title"] = "Liên hệ hỗ trợ";
+    Layout = null;
 }
 
-@section Styles {
-    <link rel="stylesheet" href="~/assets/css/contact.css" />
-}
+<!DOCTYPE html>
+<html lang="vi">
 
-<!-- Main Content -->
-<main class="py-5" style="background-color: var(--light-gray);">
-    <div class="container">
-        <!-- Bootstrap 2 Cột Layout -->
-        <div class="row g-4 align-items-stretch">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Liên hệ hỗ trợ - TechSupport Viettel</title>
 
-            <!-- 2. CONTACT INFORMATION SECTION (Left Column) -->
-            <div class="col-lg-5 col-12">
-                <div class="contact-main-card">
-                    <h2 class="contact-card-title">Thông Tin Liên Hệ</h2>
+    <!-- SEO Optimization -->
+    <meta name="description" content="Liên hệ trực tiếp với đội ngũ hỗ trợ kỹ thuật TechSupport Viettel Telecom 24/7. Hỗ trợ sự cố mạng Internet, Camera, Wi-Fi và các dịch vụ công nghệ nhanh nhất.">
+    <meta name="keywords" content="liên hệ viettel, báo hỏng kỹ thuật, hỗ trợ wifi, tổng đài mạng viettel, techsupport cần thơ">
+    <meta name="author" content="Viettel Telecom TechSupport">
+    <meta name="robots" content="index, follow">
 
-                    <ul class="contact-info-list">
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="https://viettel.com.vn/favicon.ico">
 
-                        <!-- Address -->
-                        <li class="contact-info-item">
-                            <div class="contact-info-icon">
-                                <i class="fa-solid fa-map-marker"></i>
-                            </div>
-                            <div class="contact-info-details">
-                                <span class="contact-info-label">Địa chỉ</span>
-                                <span class="contact-info-value">
-                                    210 Đường Trần Phú, Cái Khế, Ninh Kiều, Cần Thơ
-                                </span>
-                            </div>
-                        </li>
+    <!-- Bootstrap 5.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 
-                        <!-- Hotline -->
-                        <li class="contact-info-item">
-                            <div class="contact-info-icon">
-                                <i class="fa-solid fa-phone-volume"></i>
-                            </div>
-                            <div class="contact-info-details">
-                                <span class="contact-info-label"> Hotline</span>
-                                <span class="contact-info-value">
-                                    <a href="tel:18008119">1800 8119</a>
-                                </span>
-                            </div>
-                        </li>
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-                        <!-- Email -->
-                        <li class="contact-info-item">
-                            <div class="contact-info-icon">
-                                <i class="fa-solid fa-envelope"></i>
-                            </div>
-                            <div class="contact-info-details">
-                                <span class="contact-info-label"> Email</span>
-                                <span class="contact-info-value">
-                                    <a href="mailto:support@viettel.com.vn">support@viettel.com.vn</a>
-                                </span>
-                            </div>
-                        </li>
+    <!-- Font Awesome 6.6.0 CDN -->
+    <link rel="stylesheet" id="fa-cdn-link" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 
-                        <!-- Work Hours -->
-                        <li class="contact-info-item">
-                            <div class="contact-info-icon">
-                                <i class="fa-solid fa-clock"></i>
-                            </div>
-                            <div class="contact-info-details">
-                                <span class="contact-info-label"> Giờ làm việc</span>
-                                <span class="contact-info-value">
-                                    07:30 - 17:30<br>
-                                    Thứ 2 - Chủ Nhật
-                                </span>
-                            </div>
-                        </li>
+    <!-- Google Fonts Inter & Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
-                        <!-- Website -->
-                        <li class="contact-info-item">
-                            <div class="contact-info-icon">
-                                <i class="bi bi-globe"></i>
-                            </div>
-                            <div class="contact-info-details">
-                                <span class="contact-info-label"> Website</span>
-                                <span class="contact-info-value">
-                                    <a href="https://www.viettel.com.vn"
-                                        target="_blank">www.techsupport-viettel.vn</a>
-                                </span>
-                            </div>
-                        </li>
+    <!-- Core Layout Stylesheets -->
+    <link rel="stylesheet" href="~/assets/css/style.css">
+    <link rel="stylesheet" href="~/assets/css/responsive.css">
+    <link rel="stylesheet" href="~/assets/css/header.css">
+    <link rel="stylesheet" href="~/assets/css/sidebar.css">
+    <link rel="stylesheet" href="~/assets/css/footer.css">
+    <link rel="stylesheet" href="~/assets/css/chatbox.css">
+    <link rel="stylesheet" href="~/assets/css/contact.css">
+    <link rel="stylesheet" href="~/assets/css/phieu-cuatoi.css" />
 
-                    </ul>
-                </div>
-            </div>
+    <!-- Custom Hero Typography Override -->
+    <style>
+        .hero-title {
+            font-family: 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, sans-serif !important;
+            letter-spacing: 0.02em !important;
+        }
+    </style>
+</head>
 
-            <!-- 3. CONTACT FORM SECTION (Right Column) -->
-            <div class="col-lg-7 col-12">
-                <div class="contact-main-card">
-                    <h2 class="contact-card-title">Gửi Tin Nhắn Cho Chúng Tôi</h2>
+<body>
 
-                    <form id="contactForm" class="needs-validation" novalidate>
-                        <div class="row g-3">
+    <!-- ==================== HEADER ==================== -->
+    @await Html.PartialAsync("_Header", Context.Session)
 
-                            <!-- Name -->
-                            <div class="col-md-6 col-12">
-                                <label for="contactName" class="form-label form-label-custom">Họ và tên *</label>
-                                <input type="text" class="form-control form-control-custom"
-                                    id="contactName" placeholder="Nhập họ và tên..." required>
-                                <div class="invalid-feedback">Vui lòng nhập họ và tên của bạn.</div>
-                            </div>
+    <!-- ==================== SIDEBAR ==================== -->
+    @await Html.PartialAsync("_Sidebar")
 
-                            <!-- Phone -->
-                            <div class="col-md-6 col-12">
-                                <label for="contactPhone" class="form-label form-label-custom">Số điện thoại *</label>
-                                <input type="tel" class="form-control form-control-custom"
-                                    id="contactPhone" placeholder="Nhập số điện thoại..." required>
-                                <div class="invalid-feedback">Vui lòng nhập số điện thoại để chúng tôi liên hệ.</div>
-                            </div>
+    <div class="contact-page-wrapper">
 
-                            <!-- Email -->
-                            <div class="col-12">
-                                <label for="contactEmail" class="form-label form-label-custom">Email</label>
-                                <input type="email" class="form-control form-control-custom"
-                                    id="contactEmail" placeholder="Nhập địa chỉ email (không bắt buộc)...">
-                                <div class="invalid-feedback">Vui lòng nhập đúng định dạng email.</div>
-                            </div>
+        <!-- ==================== HERO SECTION (ĐỒNG BỘ GIỐNG PHIẾU CỦA TÔI) ==================== -->
+        <section class="hero-section" aria-label="Trang liên hệ hỗ trợ kỹ thuật">
+            <div class="container hero-content">
+                <div class="row align-items-center g-4 g-lg-5">
 
-                            <!-- Subject -->
-                            <div class="col-12">
-                                <label for="contactSubject" class="form-label form-label-custom">Chủ đề</label>
-                                <input type="text" class="form-control form-control-custom"
-                                    id="contactSubject" placeholder="Nhập chủ đề cần liên hệ...">
-                            </div>
+                    <!-- Left Column (Text & CTAs) -->
+                    <div class="col-lg-7 col-12 text-start hero-text-col animate-fade-up">
 
-                            <!-- Message -->
-                            <div class="col-12">
-                                <label for="contactMessage" class="form-label form-label-custom">Nội dung liên hệ *</label>
-                                <textarea class="form-control form-control-custom" id="contactMessage"
-                                    placeholder="Nhập nội dung chi tiết yêu cầu hỗ trợ của bạn..." required></textarea>
-                                <div class="invalid-feedback">Vui lòng nhập nội dung liên hệ.</div>
-                            </div>
+                        <!-- Breadcrumb Navigation -->
+                        <nav aria-label="breadcrumb" class="hero-breadcrumb">
+                            <ol class="breadcrumb m-0" itemscope itemtype="https://schema.org/BreadcrumbList">
+                                <li class="breadcrumb-item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                                    <a href="@Url.Action("TrangChu", "Customers")" itemprop="item" class="text-decoration-none d-inline-flex align-items-center">
+                                        <i class="fa-solid fa-house-door-fill me-1"></i>
+                                        <span itemprop="name">Trang chủ</span>
+                                    </a>
+                                    <meta itemprop="position" content="1" />
+                                </li>
+                                <li class="breadcrumb-item active" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem" aria-current="page">
+                                    <span itemprop="name">Liên hệ hỗ trợ</span>
+                                    <meta itemprop="position" content="2" />
+                                </li>
+                            </ol>
+                        </nav>
 
-                            <!-- Submit Button -->
-                            <div class="col-12 mt-4">
-                                <button type="submit" class="btn btn-form-submit">
-                                    <i class="fa-solid fa-paper-plane"></i> Gửi Liên Hệ
-                                </button>
-                            </div>
+                        <!-- Badge -->
+                        <span class="hero-badge">
+                            <i class="bi bi-headset me-1"></i> Hỗ trợ kỹ thuật 24/7/365
+                        </span>
 
+                        <!-- Title -->
+                        <h1 class="hero-title text-uppercase">LIÊN HỆ <span class="text-primary">HỖ TRỢ KỸ THUẬT</span></h1>
+
+                        <!-- Description -->
+                        <p class="hero-desc">
+                            Đội ngũ kỹ thuật viên Viettel Telecom luôn sẵn sàng tiếp nhận và hỗ trợ xử lý sự cố mạng,
+                            Internet, Wi-Fi, Camera và các dịch vụ công nghệ của bạn 24/7/365.
+                        </p>
+
+                        <!-- CTA Buttons -->
+                        <div class="hero-cta-buttons d-flex flex-wrap gap-3 mt-4">
+                            <a href="#contactFormSection" class="btn btn-hero-create px-4 py-2">
+                                <i class="bi bi-envelope-fill me-1"></i> Gửi Tin Nhắn
+                            </a>
+                            <a href="tel:18008119" class="btn btn-hero-contact px-4 py-2">
+                                <i class="bi bi-telephone-fill me-1"></i> Hotline 1800 8119
+                            </a>
                         </div>
-                    </form>
+
+                        <!-- Quick Stats -->
+                        <div class="lk-hero-stats d-flex flex-wrap gap-3 mt-4 pt-2">
+                            <div class="lk-hero-stat-item">
+                                <span class="lk-hero-stat-num" style="color:#ee0033">24/7</span>
+                                <span class="lk-hero-stat-label">Hỗ trợ trực tuyến</span>
+                            </div>
+                            <div class="lk-hero-stat-sep"></div>
+                            <div class="lk-hero-stat-item">
+                                <span class="lk-hero-stat-num" style="color:#3B82F6">&lt;30'</span>
+                                <span class="lk-hero-stat-label">Thời gian phản hồi</span>
+                            </div>
+                            <div class="lk-hero-stat-sep"></div>
+                            <div class="lk-hero-stat-item">
+                                <span class="lk-hero-stat-num" style="color:#10B981">99%</span>
+                                <span class="lk-hero-stat-label">Khách hàng hài lòng</span>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Right Column (SVG Illustration) -->
+                    <div class="col-lg-5 col-12 hero-banner-wrapper animate-fade-up delay-1 text-center">
+                        <svg class="hero-banner-svg" viewBox="0 0 500 420" xmlns="http://www.w3.org/2000/svg" aria-label="Liên hệ hỗ trợ kỹ thuật">
+                            <defs>
+                                <linearGradient id="ctGradRed" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#ee0033" />
+                                    <stop offset="100%" stop-color="#ff4d6d" />
+                                </linearGradient>
+                                <linearGradient id="ctGradDark" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#1f2937" />
+                                    <stop offset="100%" stop-color="#111827" />
+                                </linearGradient>
+                            </defs>
+
+                            <circle cx="250" cy="210" r="175" fill="url(#ctGradRed)" opacity="0.05" />
+                            <rect x="50" y="60" width="400" height="300" rx="20" fill="#ffffff" stroke="#e2e8f0" stroke-width="2" filter="drop-shadow(0 15px 35px rgba(0,0,0,0.06))" />
+                            <path d="M50 80 C50 68.95 58.95 60 70 60 L430 60 C441.05 60 450 68.95 450 80 L450 100 L50 100 Z" fill="url(#ctGradDark)" />
+                            <circle cx="75" cy="80" r="5" fill="#ee0033" />
+                            <circle cx="91" cy="80" r="5" fill="#f59e0b" />
+                            <circle cx="107" cy="80" r="5" fill="#10b981" />
+
+                            <!-- Contact Form Illustration Inside Screen -->
+                            <rect x="80" y="125" width="160" height="12" rx="4" fill="#ee0033" opacity="0.85" />
+                            <rect x="80" y="150" width="340" height="35" rx="8" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1" />
+                            <rect x="95" y="163" width="120" height="9" rx="3" fill="#94a3b8" />
+
+                            <rect x="80" y="198" width="340" height="35" rx="8" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1" />
+                            <rect x="95" y="211" width="180" height="9" rx="3" fill="#94a3b8" />
+
+                            <rect x="80" y="246" width="340" height="55" rx="8" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1" />
+                            <rect x="95" y="258" width="220" height="8" rx="3" fill="#cbd5e1" />
+                            <rect x="95" y="272" width="140" height="8" rx="3" fill="#e2e8f0" />
+
+                            <rect x="80" y="315" width="130" height="32" rx="16" fill="url(#ctGradRed)" />
+                            <rect x="110" y="326" width="70" height="10" rx="3" fill="#ffffff" />
+                        </svg>
+                    </div>
+
                 </div>
-            </div>
-
-        </div>
-
-        <!-- 4. GOOGLE MAP SECTION -->
-        <section class="map-section">
-            <div class="text-center mb-4">
-                <h2 class="fw-bold text-dark" style="font-size: 1.8rem; letter-spacing: -0.5px;">Vị Trí Văn Phòng</h2>
-                <p class="text-muted">Tìm đường đến trung tâm hỗ trợ TechSupport Viettel.</p>
-            </div>
-
-            <div class="map-wrapper">
-                <iframe class="map-iframe"
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3928.6038576030796!2d105.78344477479433!3d10.04951099005845!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31a062abc4ee703d%3A0x1fa7659f181fc58d!2zMjEwIMSQLiBUcuG6p24gUGjDuiwgQ8OhaSBLaOG6vywgQ-G6p24gVGjGoSA5MDAwMDAsIFZp4buHdCBOYW0!5e0!3m2!1svi!2s!4v1780919470460!5m2!1svi!2s"
-                    allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
-                </iframe>
             </div>
         </section>
 
-        <!-- 6. CTA SECTION -->
-        <section class="contact-cta-section">
-            <h2 class="contact-cta-title">Bạn Cần Hỗ Trợ Kỹ Thuật Ngay?</h2>
-            <p class="contact-cta-desc">
-                Tạo phiếu hỗ trợ hoặc liên hệ kỹ thuật viên của chúng tôi ngay hôm nay.
-            </p>
+        <!-- ==================== MAIN CONTENT SECTION ==================== -->
+        <main class="py-5" style="background-color: var(--light-gray);" id="contactFormSection">
+            <div class="container">
 
-            <div class="contact-cta-buttons">
-                <a asp-controller="Ticket" asp-action="TaoPhieu" class="btn-cta-white">
-                    <i class="fa-solid fa-plus-circle me-1"></i> Tạo Phiếu Hỗ Trợ
-                </a>
-                <a href="tel:18008119" class="btn-cta-outline">
-                    <i class="fa-solid fa-phone me-1"></i> Liên Hệ Ngay
-                </a>
+                <div class="row g-4 align-items-stretch mb-5">
+
+                    <!-- Left Column: Contact Information Card -->
+                    <div class="col-lg-5 col-12">
+                        <div class="contact-main-card">
+                            <h2 class="contact-card-title">Thông Tin Liên Hệ</h2>
+
+                            <ul class="contact-info-list">
+                                <!-- Address -->
+                                <li class="contact-info-item">
+                                    <div class="contact-info-icon">
+                                        <i class="fa-solid fa-map-marker"></i>
+                                    </div>
+                                    <div class="contact-info-details">
+                                        <span class="contact-info-label">Địa chỉ</span>
+                                        <span class="contact-info-value">
+                                            210 Đường Trần Phú, Cái Khế, Ninh Kiều, Cần Thơ
+                                        </span>
+                                    </div>
+                                </li>
+
+                                <!-- Hotline -->
+                                <li class="contact-info-item">
+                                    <div class="contact-info-icon">
+                                        <i class="fa-solid fa-phone-volume"></i>
+                                    </div>
+                                    <div class="contact-info-details">
+                                        <span class="contact-info-label">Hotline</span>
+                                        <span class="contact-info-value">
+                                            <a href="tel:18008119">1800 8119</a>
+                                        </span>
+                                    </div>
+                                </li>
+
+                                <!-- Email -->
+                                <li class="contact-info-item">
+                                    <div class="contact-info-icon">
+                                        <i class="fa-solid fa-envelope"></i>
+                                    </div>
+                                    <div class="contact-info-details">
+                                        <span class="contact-info-label">Email</span>
+                                        <span class="contact-info-value">
+                                            <a href="mailto:support@viettel.com.vn">support@viettel.com.vn</a>
+                                        </span>
+                                    </div>
+                                </li>
+
+                                <!-- Work Hours -->
+                                <li class="contact-info-item">
+                                    <div class="contact-info-icon">
+                                        <i class="fa-solid fa-clock"></i>
+                                    </div>
+                                    <div class="contact-info-details">
+                                        <span class="contact-info-label">Giờ làm việc</span>
+                                        <span class="contact-info-value">
+                                            07:30 - 17:30<br>
+                                            Thứ 2 - Chủ Nhật (kể cả ngày lễ)
+                                        </span>
+                                    </div>
+                                </li>
+
+                                <!-- Website -->
+                                <li class="contact-info-item">
+                                    <div class="contact-info-icon">
+                                        <i class="bi bi-globe"></i>
+                                    </div>
+                                    <div class="contact-info-details">
+                                        <span class="contact-info-label">Website</span>
+                                        <span class="contact-info-value">
+                                            <a href="https://www.viettel.com.vn" target="_blank">www.techsupport-viettel.vn</a>
+                                        </span>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Contact Form Box -->
+                    <div class="col-lg-7 col-12">
+                        <div class="contact-main-card">
+                            <h2 class="contact-card-title">Gửi Yêu Cầu Cho Chúng Tôi</h2>
+                            <p class="text-muted small mb-4">Vui lòng điền thông tin bên dưới, kỹ thuật viên sẽ phản hồi bạn trong thời gian sớm nhất.</p>
+
+                            <form asp-controller="Customers" asp-action="LienHe" method="post" id="contactForm" novalidate>
+                                @Html.AntiForgeryToken()
+
+                                @if (TempData["Success"] != null)
+                                {
+                                    <div class="alert alert-success alert-dismissible fade show rounded-3 mb-3" role="alert">
+                                        <i class="bi bi-check-circle-fill me-2"></i> @TempData["Success"]
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    </div>
+                                }
+                                @if (TempData["Error"] != null)
+                                {
+                                    <div class="alert alert-danger alert-dismissible fade show rounded-3 mb-3" role="alert">
+                                        <i class="bi bi-exclamation-triangle-fill me-2"></i> @TempData["Error"]
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    </div>
+                                }
+
+                                <div class="row g-3">
+                                    <!-- Name -->
+                                    <div class="col-md-6 col-12">
+                                        <label asp-for="HoTen" class="form-label form-label-custom">
+                                            Họ và tên <span class="text-danger">*</span>
+                                        </label>
+                                        <input asp-for="HoTen" type="text" class="form-control form-control-custom" placeholder="Nhập họ và tên..." required>
+                                        <span asp-validation-for="HoTen" class="text-danger small"></span>
+                                    </div>
+
+                                    <!-- Phone -->
+                                    <div class="col-md-6 col-12">
+                                        <label asp-for="SoDienThoai" class="form-label form-label-custom">
+                                            Số điện thoại liên hệ <span class="text-danger">*</span>
+                                        </label>
+                                        <input asp-for="SoDienThoai" type="tel" class="form-control form-control-custom" placeholder="Nhập số điện thoại..." required>
+                                        <span asp-validation-for="SoDienThoai" class="text-danger small"></span>
+                                    </div>
+
+                                    <!-- Email -->
+                                    <div class="col-md-6 col-12">
+                                        <label asp-for="Email" class="form-label form-label-custom">Địa chỉ Email</label>
+                                        <input asp-for="Email" type="email" class="form-control form-control-custom" placeholder="Nhập địa chỉ email...">
+                                        <span asp-validation-for="Email" class="text-danger small"></span>
+                                    </div>
+
+                                    <!-- Subject -->
+                                    <div class="col-md-6 col-12">
+                                        <label asp-for="ChuDe" class="form-label form-label-custom">
+                                            Chủ đề cần hỗ trợ <span class="text-danger">*</span>
+                                        </label>
+                                        <input asp-for="ChuDe" type="text" class="form-control form-control-custom" placeholder="Nhập chủ đề..." required>
+                                        <span asp-validation-for="ChuDe" class="text-danger small"></span>
+                                    </div>
+
+                                    <!-- Message -->
+                                    <div class="col-12">
+                                        <label asp-for="NoiDung" class="form-label form-label-custom">
+                                            Nội dung liên hệ <span class="text-danger">*</span>
+                                        </label>
+                                        <textarea asp-for="NoiDung" class="form-control form-control-custom" placeholder="Nhập nội dung chi tiết yêu cầu hỗ trợ của bạn..." required></textarea>
+                                        <span asp-validation-for="NoiDung" class="text-danger small"></span>
+                                    </div>
+
+                                    <!-- Submit Button -->
+                                    <div class="col-12 mt-4 text-end">
+                                        <button type="submit" class="btn btn-form-submit">
+                                            <i class="fa-solid fa-paper-plane me-1"></i> Gửi Liên Hệ
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Google Map Section -->
+                <section class="map-section mt-5" id="mapSection">
+                    <div class="text-center mb-4">
+                        <h3 class="fw-bold text-dark" style="font-size: 1.6rem; letter-spacing: -0.5px;">Vị Trí Văn Phòng Hỗ Trợ</h3>
+                        <p class="text-muted">Bản đồ hướng dẫn di chuyển tới trung tâm kỹ thuật TechSupport Viettel</p>
+                    </div>
+
+                    <div class="map-wrapper" style="border-radius: 20px; overflow: hidden; border: 1px solid #e2e8f0; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
+                        <iframe class="w-100" style="height: 380px; border: 0;"
+                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3928.6038576030796!2d105.78344477479433!3d10.04951099005845!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31a062abc4ee703d%3A0x1fa7659f181fc58d!2zMjEwIMSQLiBUcuG6p24gUGjDuiwgQ8OhaSBLaOG6vywgQ-G6p24gVGjGoSA5MDAwMDAsIFZp4buHdCBOYW0!5e0!3m2!1svi!2s!4v1780919470460!5m2!1svi!2s"
+                                allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+                        </iframe>
+                    </div>
+                </section>
+
             </div>
-        </section>
-
+        </main>
     </div>
-</main>
 
-<!-- 5. SUPPORT FEATURES SECTION -->
-<section class="features-section">
-    <div class="container">
-        <div class="row g-4">
+    <!-- ==================== REUSING SHARED FOOTER ==================== -->
+    <partial name="~/Views/Shared/_Footer.cshtml" />
 
-            <!-- Card 1 -->
-            <div class="col-lg-3 col-md-6 col-12">
-                <div class="feature-item-card">
-                    <div class="feature-item-icon">
-                        <i class="fa-solid fa-headset"></i>
-                    </div>
-                    <h4>Hỗ trợ 24/7</h4>
-                    <p>Luôn trực tuyến tiếp nhận sự cố mọi lúc, mọi nơi, kể cả ngày Lễ Tết.</p>
-                </div>
-            </div>
 
-            <!-- Card 2 -->
-            <div class="col-lg-3 col-md-6 col-12">
-                <div class="feature-item-card">
-                    <div class="feature-item-icon">
-                        <i class="fa-solid fa-user-shield"></i>
-                    </div>
-                    <h4>Kỹ thuật chuyên nghiệp</h4>
-                    <p>Đội ngũ kỹ thuật tay nghề cao, được đào tạo bài bản và chuyên sâu.</p>
-                </div>
-            </div>
 
-            <!-- Card 3 -->
-            <div class="col-lg-3 col-md-6 col-12">
-                <div class="feature-item-card">
-                    <div class="feature-item-icon">
-                        <i class="bi bi-bolt"></i>
-                    </div>
-                    <h4>Tiếp nhận nhanh chóng</h4>
-                    <p>Cam kết chỉ số phản hồi SLA ngắn nhất để khắc phục sự cố tức thời.</p>
-                </div>
-            </div>
-
-            <!-- Card 4 -->
-            <div class="col-lg-3 col-md-6 col-12">
-                <div class="feature-item-card">
-                    <div class="feature-item-icon">
-                        <i class="bi bi-heart-circle-check"></i>
-                    </div>
-                    <h4>Cam kết hài lòng</h4>
-                    <p>Quy trình rõ ràng, minh bạch, đảm bảo khách hàng hoàn toàn hài lòng.</p>
-                </div>
-            </div>
-
-        </div>
-    </div>
-</section>
-
-@section Scripts {
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+            crossorigin="anonymous"></script>
+    <script src="~/assets/js/header.js"></script>
+    <script src="~/assets/js/sidebar.js"></script>
+    <script src="~/assets/js/footer.js" asp-append-version="true"></script>
+    <script src="~/assets/js/chatbox.js"></script>
+    <script src="~/assets/js/main.js"></script>
     <script src="~/assets/js/contact.js"></script>
-}
+
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+
+</body>
+</html>

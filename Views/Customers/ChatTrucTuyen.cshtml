@@ -115,8 +115,8 @@
 @await Html.PartialAsync("~/Views/LiveSupport/_ModalAppointment.cshtml", Model)
 
 <!-- Lightbox Zoom Image Modal -->
-<div class="chat-lightbox" id="chatLightboxModal">
-    <button class="lightbox-close" id="lightboxClose" aria-label="Đóng">&times;</button>
+<div class="chat-lightbox" id="chatLightboxModal" style="display: none;">
+    <button type="button" class="lightbox-close" id="lightboxClose" aria-label="Đóng">&times;</button>
     <img src="" alt="Zoomed view" class="lightbox-content" id="lightboxImg" />
 </div>
 

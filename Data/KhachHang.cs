@@ -29,6 +29,8 @@ public partial class KhachHang
 
     public DateOnly? NgayTao { get; set; }
 
+    public bool DaXacThucEmail { get; set; } = false;
+
     public virtual ICollection<LienHe> LienHes { get; set; } = new List<LienHe>();
 
     public virtual ICollection<PhieuHoTro> PhieuHoTros { get; set; } = new List<PhieuHoTro>();

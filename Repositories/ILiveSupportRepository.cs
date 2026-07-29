@@ -7,6 +7,7 @@ namespace SupportTicketSysterm.Repositories
     public interface ILiveSupportRepository
     {
         Task<PhieuHoTro?> GetTicketByCodeAsync(string maPhieu);
+        Task<PhieuHoTro?> GetTicketByIdAsync(int idPhieu);
         Task<LienHe?> GetLienHeByTicketIdAsync(int idPhieu);
         Task<LienHe> CreateLienHeAsync(LienHe lienHe);
         Task<List<TinNhan>> GetMessagesByLienHeIdAsync(int idLienHe);

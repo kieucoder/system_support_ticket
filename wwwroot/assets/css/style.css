@@ -1351,3 +1351,16 @@ section {
     color: #ffffff !important;
     font-weight: 600 !important;
 }
+
+/* Purple Status Badge Utility for DangThucHien Status */
+.bg-purple, .badge-purple {
+    background-color: #8b5cf6 !important;
+    color: #ffffff !important;
+}
+.text-purple {
+    color: #8b5cf6 !important;
+}
+.bg-purple-soft {
+    background-color: #f3e8ff !important;
+    color: #8b5cf6 !important;
+}

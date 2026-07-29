@@ -236,17 +236,26 @@
                                 }
                             </td>
                             <td class="text-center">
-                                @if (item.IsResponded)
+                                @if (item.CanReply)
                                 {
-                                    <a href="/Staff/PhanHoiDanhGia/@item.IdDanhGia" class="btn btn-sm btn-success fw-bold px-2 py-1 w-100" style="font-size: 0.72rem; border-radius: 6px;">
-                                        <i class="fa-solid fa-pen-to-square me-1"></i> Cập nhật
-                                    </a>
+                                    @if (item.IsResponded)
+                                    {
+                                        <a href="/Staff/PhanHoiDanhGia/@item.IdDanhGia" class="btn btn-sm btn-success fw-bold px-2 py-1 w-100" style="font-size: 0.72rem; border-radius: 6px;">
+                                            <i class="fa-solid fa-pen-to-square me-1"></i> Cập nhật
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <a href="/Staff/PhanHoiDanhGia/@item.IdDanhGia" class="btn btn-sm btn-primary fw-bold px-2 py-1 w-100" style="font-size: 0.72rem; border-radius: 6px;">
+                                            <i class="fa-solid fa-reply me-1"></i> Phản hồi
+                                        </a>
+                                    }
                                 }
                                 else
                                 {
-                                    <a href="/Staff/PhanHoiDanhGia/@item.IdDanhGia" class="btn btn-sm btn-primary fw-bold px-2 py-1 w-100" style="font-size: 0.72rem; border-radius: 6px;">
-                                        <i class="fa-solid fa-reply me-1"></i> Phản hồi
-                                    </a>
+                                    <button class="btn btn-sm btn-light text-muted border fw-normal px-2 py-1 w-100" style="font-size: 0.72rem; border-radius: 6px; cursor: not-allowed;" disabled title="Bạn không có quyền phản hồi đánh giá này.">
+                                        <i class="fa-solid fa-lock me-1"></i> Không có quyền
+                                    </button>
                                 }
                             </td>
                         </tr>
@@ -362,17 +371,26 @@
                             }
                         </div>
                         <div>
-                            @if (item.IsResponded)
+                            @if (item.CanReply)
                             {
-                                <a href="/Staff/PhanHoiDanhGia/@item.IdDanhGia" class="mobile-card-action-link">
-                                    <i class="fa-solid fa-pen-to-square"></i> Cập nhật phản hồi
-                                </a>
+                                @if (item.IsResponded)
+                                {
+                                    <a href="/Staff/PhanHoiDanhGia/@item.IdDanhGia" class="mobile-card-action-link">
+                                        <i class="fa-solid fa-pen-to-square"></i> Cập nhật phản hồi
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a href="/Staff/PhanHoiDanhGia/@item.IdDanhGia" class="mobile-card-action-link">
+                                        <i class="fa-solid fa-reply"></i> Gửi phản hồi
+                                    </a>
+                                }
                             }
                             else
                             {
-                                <a href="/Staff/PhanHoiDanhGia/@item.IdDanhGia" class="mobile-card-action-link">
-                                    <i class="fa-solid fa-reply"></i> Gửi phản hồi
-                                </a>
+                                <span class="text-muted small" style="font-size: 0.75rem;" title="Bạn không có quyền phản hồi đánh giá này.">
+                                    <i class="fa-solid fa-lock me-1"></i> Không có quyền
+                                </span>
                             }
                         </div>
                     </div>

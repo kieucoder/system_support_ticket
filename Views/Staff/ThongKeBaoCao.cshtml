@@ -1,0 +1,545 @@
+@model SupportTicketSysterm.ViewModels.ThongKeBaoCaoViewModel
+@using System.Text.Json
+@{
+    ViewData["Title"] = "Báo Cáo & Thống Kê — TechSupport Viettel";
+    ViewData["HeaderTitle"] = "Báo Cáo & Thống Kê";
+    ViewData["HeaderSubtitle"] = "Dữ liệu thực thời gian thực từ hệ thống";
+
+    var jsonOpts = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+
+    // Chuẩn bị dữ liệu chart JSON
+    var chartData = new {
+        thangLabels = Model.PhieuTheoThang.Select(x => x.Label).ToArray(),
+        thangData   = Model.PhieuTheoThang.Select(x => x.Value).ToArray(),
+        choXuLy     = Model.PhieuChoXuLy,
+        dangXuLy    = Model.PhieuDangXuLy,
+        hoanThanh   = Model.PhieuHoanThanh,
+        daHuy       = Model.PhieuDaHuy,
+        dvLabels    = Model.TopDichVuChart.Select(x => x.Label).ToArray(),
+        dvData      = Model.TopDichVuChart.Select(x => x.Value).ToArray(),
+        dmLabels    = Model.PhieuTheoDanhMuc.Select(x => x.Label).ToArray(),
+        dmData      = Model.PhieuTheoDanhMuc.Select(x => x.Value).ToArray(),
+        ngayLabels  = Model.PhieuTheoNgay.Select(x => x.Label).ToArray(),
+        ngayData    = Model.PhieuTheoNgay.Select(x => x.Value).ToArray(),
+        radarLabels = Model.RadarNhanVienLabels.ToArray(),
+        radarTong   = Model.RadarTongPhieu.ToArray(),
+        radarHoan   = Model.RadarHoanThanh.ToArray(),
+        radarDang   = Model.RadarDangXuLy.ToArray(),
+    };
+
+    // Tạo icon sao từ điểm
+    double diemTB = Model.DiemDanhGiaTrungBinh;
+    int fullStars = (int)Math.Floor(diemTB);
+    bool halfStar = (diemTB - fullStars) >= 0.3;
+}
+
+@section Styles {
+    <!-- Page CSS -->
+    <link rel="stylesheet" href="~/assets/css/staff/thong-ke-bao-cao.css">
+}
+
+<div class="container-fluid tk-page py-3" id="tkMainContent">
+
+            <!-- Breadcrumb -->
+            <nav aria-label="breadcrumb" class="mb-3">
+                <ol class="breadcrumb" style="font-size:.82rem;margin:0;padding:0;">
+                    <li class="breadcrumb-item">
+                        <a asp-controller="Staff" asp-action="Dashboard" class="text-danger text-decoration-none">
+                            <i class="fa-solid fa-gauge-high me-1"></i>Dashboard
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item active fw-semibold" style="color:var(--text-main);">Báo cáo & Thống kê</li>
+                </ol>
+            </nav>
+
+            <!-- Page Header -->
+            <div class="tk-page-header">
+                <div>
+                    <h1 class="tk-page-title">
+                        <i class="fa-solid fa-chart-mixed me-2" style="color:var(--vt-red);font-size:1.2rem;"></i>
+                        Báo Cáo & Thống Kê
+                    </h1>
+                    <p class="tk-page-subtitle">Tổng hợp hiệu suất xử lý phiếu, chất lượng dịch vụ và hiệu quả vận hành</p>
+                </div>
+                <div class="tk-export-bar">
+                    <button class="btn-export btn-export-excel" onclick="exportExcel()" title="Xuất Excel">
+                        <i class="fa-solid fa-file-excel"></i> Excel
+                    </button>
+                    <button class="btn-export btn-export-pdf" onclick="exportPDF()" title="Xuất PDF">
+                        <i class="fa-solid fa-file-pdf"></i> PDF
+                    </button>
+                    <button class="btn-export btn-export-print" onclick="printReport()" title="In báo cáo">
+                        <i class="fa-solid fa-print"></i> In
+                    </button>
+                </div>
+            </div>
+
+            <!-- ============================================================
+                 BỘ LỌC
+                 ============================================================ -->
+            <div class="tk-filter-card">
+                <div class="tk-filter-header">
+                    <i class="fa-solid fa-sliders"></i>
+                    Bộ lọc thống kê
+                </div>
+                <div class="tk-filter-body">
+                    <form id="filterForm" method="get" asp-controller="Staff" asp-action="ThongKeBaoCao">
+                        <div class="row g-3 align-items-end">
+                            <div class="col-6 col-md-4 col-lg-2">
+                                <label class="tk-filter-label" for="tuNgay">Từ ngày</label>
+                                <input type="date" id="tuNgay" name="tuNgay" class="form-control"
+                                       value="@(Model.Filter.TuNgay?.ToString("yyyy-MM-dd") ?? "")">
+                            </div>
+                            <div class="col-6 col-md-4 col-lg-2">
+                                <label class="tk-filter-label" for="denNgay">Đến ngày</label>
+                                <input type="date" id="denNgay" name="denNgay" class="form-control"
+                                       value="@(Model.Filter.DenNgay?.ToString("yyyy-MM-dd") ?? "")">
+                            </div>
+                            <div class="col-6 col-md-4 col-lg-2">
+                                <label class="tk-filter-label" for="idDanhMuc">Danh mục</label>
+                                <select id="idDanhMuc" name="idDanhMuc" class="form-select">
+                                    <option value="">-- Tất cả --</option>
+                                    @foreach (var dm in Model.DanhSachDanhMuc)
+                                    {
+                                        <option value="@dm.Id" selected="@(Model.Filter.IdDanhMuc == dm.Id)">@dm.Ten</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-6 col-md-4 col-lg-2">
+                                <label class="tk-filter-label" for="idDichVu">Dịch vụ</label>
+                                <select id="idDichVu" name="idDichVu" class="form-select">
+                                    <option value="">-- Tất cả --</option>
+                                    @foreach (var dv in Model.DanhSachDichVu)
+                                    {
+                                        <option value="@dv.Id" selected="@(Model.Filter.IdDichVu == dv.Id)">@dv.Ten</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-6 col-md-4 col-lg-2">
+                                <label class="tk-filter-label" for="idNhanVien">Nhân viên</label>
+                                <select id="idNhanVien" name="idNhanVien" class="form-select">
+                                    <option value="">-- Tất cả --</option>
+                                    @foreach (var nv in Model.DanhSachNhanVien)
+                                    {
+                                        <option value="@nv.Id" selected="@(Model.Filter.IdNhanVien == nv.Id)">@nv.Ten</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-6 col-md-4 col-lg-2">
+                                <label class="tk-filter-label" for="trangThai">Trạng thái</label>
+                                <select id="trangThai" name="trangThai" class="form-select">
+                                    <option value="">-- Tất cả --</option>
+                                    @foreach (var tt in new[] {"Chờ tiếp nhận","Đang xử lý","Đã hoàn thành","Đã hủy"})
+                                    {
+                                        <option value="@tt" selected="@(Model.Filter.TrangThai == tt)">@tt</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-12 d-flex gap-2 justify-content-end">
+                                <button type="submit" class="btn-tk-primary">
+                                    <i class="fa-solid fa-magnifying-glass me-1"></i> Thống kê
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary btn-tk-secondary" onclick="resetFilter()">
+                                    <i class="bi bi-arrow-counterclockwise me-1"></i> Làm mới
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- ============================================================
+                 KPI CARDS
+                 ============================================================ -->
+            <div class="tk-kpi-grid">
+                <!-- Tổng phiếu -->
+                <div class="tk-kpi-card tk-kpi-red">
+                    <div class="tk-kpi-icon tk-icon-red"><i class="fa-solid fa-ticket"></i></div>
+                    <div class="tk-kpi-body">
+                        <div class="tk-kpi-label">Tổng phiếu hỗ trợ</div>
+                        <div class="tk-kpi-value"><span class="tk-counter" data-counter="@Model.TongPhieuHoTro.GiaTriHienTai">0</span></div>
+                        @if (Model.TongPhieuHoTro.GiaTriThangTruoc > 0)
+                        {
+                            <div class="tk-kpi-trend @(Model.TongPhieuHoTro.TangSoVoiThangTruoc ? "tk-trend-up" : "tk-trend-down")">
+                                <i class="fa-solid @(Model.TongPhieuHoTro.TangSoVoiThangTruoc ? "fa-arrow-up" : "fa-arrow-down")"></i>
+                                @Math.Abs(Model.TongPhieuHoTro.PhanTramThayDoi)% so tháng trước
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="tk-kpi-trend tk-trend-flat"><i class="fa-solid fa-minus"></i> Chưa có dữ liệu trước</div>
+                        }
+                    </div>
+                </div>
+
+                <!-- Chờ xử lý -->
+                <div class="tk-kpi-card tk-kpi-orange">
+                    <div class="tk-kpi-icon tk-icon-orange"><i class="fa-solid fa-clock"></i></div>
+                    <div class="tk-kpi-body">
+                        <div class="tk-kpi-label">Chờ xử lý</div>
+                        <div class="tk-kpi-value"><span class="tk-counter" data-counter="@Model.ChoXuLy.GiaTriHienTai">0</span></div>
+                        @if (Model.ChoXuLy.GiaTriThangTruoc > 0)
+                        {
+                            <div class="tk-kpi-trend @(Model.ChoXuLy.TangSoVoiThangTruoc ? "tk-trend-up" : "tk-trend-down")">
+                                <i class="fa-solid @(Model.ChoXuLy.TangSoVoiThangTruoc ? "fa-arrow-up" : "fa-arrow-down")"></i>
+                                @Math.Abs(Model.ChoXuLy.PhanTramThayDoi)% so tháng trước
+                            </div>
+                        }
+                        else { <div class="tk-kpi-trend tk-trend-flat">—</div> }
+                    </div>
+                </div>
+
+                <!-- Đang xử lý -->
+                <div class="tk-kpi-card tk-kpi-blue">
+                    <div class="tk-kpi-icon tk-icon-blue"><i class="fa-solid fa-spinner"></i></div>
+                    <div class="tk-kpi-body">
+                        <div class="tk-kpi-label">Đang xử lý</div>
+                        <div class="tk-kpi-value"><span class="tk-counter" data-counter="@Model.DangXuLy.GiaTriHienTai">0</span></div>
+                        @if (Model.DangXuLy.GiaTriThangTruoc > 0)
+                        {
+                            <div class="tk-kpi-trend @(Model.DangXuLy.TangSoVoiThangTruoc ? "tk-trend-up" : "tk-trend-down")">
+                                <i class="fa-solid @(Model.DangXuLy.TangSoVoiThangTruoc ? "fa-arrow-up" : "fa-arrow-down")"></i>
+                                @Math.Abs(Model.DangXuLy.PhanTramThayDoi)% so tháng trước
+                            </div>
+                        }
+                        else { <div class="tk-kpi-trend tk-trend-flat">—</div> }
+                    </div>
+                </div>
+
+                <!-- Hoàn thành -->
+                <div class="tk-kpi-card tk-kpi-green">
+                    <div class="tk-kpi-icon tk-icon-green"><i class="fa-solid fa-circle-check"></i></div>
+                    <div class="tk-kpi-body">
+                        <div class="tk-kpi-label">Hoàn thành</div>
+                        <div class="tk-kpi-value"><span class="tk-counter" data-counter="@Model.HoanThanh.GiaTriHienTai">0</span></div>
+                        @if (Model.HoanThanh.GiaTriThangTruoc > 0)
+                        {
+                            <div class="tk-kpi-trend @(Model.HoanThanh.TangSoVoiThangTruoc ? "tk-trend-up" : "tk-trend-down")">
+                                <i class="fa-solid @(Model.HoanThanh.TangSoVoiThangTruoc ? "fa-arrow-up" : "fa-arrow-down")"></i>
+                                @Math.Abs(Model.HoanThanh.PhanTramThayDoi)% so tháng trước
+                            </div>
+                        }
+                        else { <div class="tk-kpi-trend tk-trend-flat">—</div> }
+                    </div>
+                </div>
+
+                <!-- Đã hủy -->
+                <div class="tk-kpi-card tk-kpi-gray">
+                    <div class="tk-kpi-icon tk-icon-gray"><i class="fa-solid fa-ban"></i></div>
+                    <div class="tk-kpi-body">
+                        <div class="tk-kpi-label">Đã hủy</div>
+                        <div class="tk-kpi-value"><span class="tk-counter" data-counter="@Model.DaHuy.GiaTriHienTai">0</span></div>
+                        @if (Model.DaHuy.GiaTriThangTruoc > 0)
+                        {
+                            <div class="tk-kpi-trend @(Model.DaHuy.TangSoVoiThangTruoc ? "tk-trend-up" : "tk-trend-down")">
+                                <i class="fa-solid @(Model.DaHuy.TangSoVoiThangTruoc ? "fa-arrow-up" : "fa-arrow-down")"></i>
+                                @Math.Abs(Model.DaHuy.PhanTramThayDoi)% so tháng trước
+                            </div>
+                        }
+                        else { <div class="tk-kpi-trend tk-trend-flat">—</div> }
+                    </div>
+                </div>
+
+                <!-- Tổng KH -->
+                <div class="tk-kpi-card tk-kpi-teal">
+                    <div class="tk-kpi-icon tk-icon-teal"><i class="fa-solid fa-users"></i></div>
+                    <div class="tk-kpi-body">
+                        <div class="tk-kpi-label">Tổng khách hàng</div>
+                        <div class="tk-kpi-value"><span class="tk-counter" data-counter="@Model.TongKhachHang.GiaTriHienTai">0</span></div>
+                        <div class="tk-kpi-trend tk-trend-flat"><i class="fa-solid fa-user-plus"></i> Đang hoạt động</div>
+                    </div>
+                </div>
+
+                <!-- Tổng NV -->
+                <div class="tk-kpi-card tk-kpi-purple">
+                    <div class="tk-kpi-icon tk-icon-purple"><i class="fa-solid fa-user-tie"></i></div>
+                    <div class="tk-kpi-body">
+                        <div class="tk-kpi-label">Tổng nhân viên</div>
+                        <div class="tk-kpi-value"><span class="tk-counter" data-counter="@Model.TongNhanVien.GiaTriHienTai">0</span></div>
+                        <div class="tk-kpi-trend tk-trend-flat"><i class="fa-solid fa-briefcase"></i> Đang làm việc</div>
+                    </div>
+                </div>
+
+                <!-- Tổng DV -->
+                <div class="tk-kpi-card tk-kpi-indigo">
+                    <div class="tk-kpi-icon tk-icon-indigo"><i class="fa-solid fa-network-wired"></i></div>
+                    <div class="tk-kpi-body">
+                        <div class="tk-kpi-label">Tổng dịch vụ</div>
+                        <div class="tk-kpi-value"><span class="tk-counter" data-counter="@Model.TongDichVu.GiaTriHienTai">0</span></div>
+                        <div class="tk-kpi-trend tk-trend-flat"><i class="fa-solid fa-layer-group"></i> @Model.TongDanhMuc.GiaTriHienTai danh mục</div>
+                    </div>
+                </div>
+
+                <!-- Tổng DM -->
+                <div class="tk-kpi-card tk-kpi-pink">
+                    <div class="tk-kpi-icon tk-icon-pink"><i class="fa-solid fa-layer-group"></i></div>
+                    <div class="tk-kpi-body">
+                        <div class="tk-kpi-label">Tổng danh mục</div>
+                        <div class="tk-kpi-value"><span class="tk-counter" data-counter="@Model.TongDanhMuc.GiaTriHienTai">0</span></div>
+                        <div class="tk-kpi-trend tk-trend-flat"><i class="fa-solid fa-folder-open"></i> Danh mục sự cố</div>
+                    </div>
+                </div>
+
+                <!-- Điểm đánh giá -->
+                <div class="tk-kpi-card tk-kpi-amber">
+                    <div class="tk-kpi-icon tk-icon-amber"><i class="fa-solid fa-star"></i></div>
+                    <div class="tk-kpi-body">
+                        <div class="tk-kpi-label">Điểm đánh giá TB</div>
+                        <div class="tk-kpi-rating"><span class="tk-counter" data-counter="@Model.DiemDanhGiaTrungBinh">0</span><span style="font-size:1rem;color:var(--text-muted);">/5</span></div>
+                        <div class="tk-stars">
+                            @for (int i = 1; i <= 5; i++)
+                            {
+                                if (i <= fullStars)
+                                { <i class="fa-solid fa-star"></i> }
+                                else if (i == fullStars + 1 && halfStar)
+                                { <i class="fa-solid fa-star-half-stroke"></i> }
+                                else
+                                { <i class="fa-regular fa-star empty"></i> }
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================================
+                 BIỂU ĐỒ ROW 1: Theo Tháng + Trạng thái
+                 ============================================================ -->
+            <div class="row g-3 mb-3">
+                <div class="col-12 col-lg-8">
+                    <div class="tk-chart-card">
+                        <div class="tk-chart-header">
+                            <h6><i class="fa-solid fa-chart-column"></i> Phiếu hỗ trợ theo tháng (12 tháng gần nhất)</h6>
+                        </div>
+                        <div class="tk-chart-body">
+                            <div class="tk-chart-wrapper">
+                                <canvas id="chartThang" role="img" aria-label="Biểu đồ phiếu theo tháng"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-lg-4">
+                    <div class="tk-chart-card">
+                        <div class="tk-chart-header">
+                            <h6><i class="fa-solid fa-circle-half-stroke"></i> Tỷ lệ trạng thái phiếu</h6>
+                        </div>
+                        <div class="tk-chart-body">
+                            <div class="tk-chart-wrapper">
+                                <canvas id="chartTrangThai" role="img" aria-label="Biểu đồ trạng thái"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BIỂU ĐỒ ROW 2: Top DV + Danh mục -->
+            <div class="row g-3 mb-3">
+                <div class="col-12 col-lg-6">
+                    <div class="tk-chart-card">
+                        <div class="tk-chart-header">
+                            <h6><i class="fa-solid fa-chart-bar"></i> Top 10 dịch vụ nhiều phiếu nhất</h6>
+                        </div>
+                        <div class="tk-chart-body">
+                            <div class="tk-chart-wrapper" style="height:300px;">
+                                <canvas id="chartDichVu" role="img" aria-label="Top dịch vụ"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-lg-6">
+                    <div class="tk-chart-card">
+                        <div class="tk-chart-header">
+                            <h6><i class="fa-solid fa-chart-pie"></i> Phiếu theo danh mục</h6>
+                        </div>
+                        <div class="tk-chart-body">
+                            <div class="tk-chart-wrapper" style="height:300px;">
+                                <canvas id="chartDanhMuc" role="img" aria-label="Phiếu theo danh mục"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================================
+                 BẢNG TOP NHÂN VIÊN
+                 ============================================================ -->
+            <div class="tk-table-card">
+                <div class="tk-table-header">
+                    <h6 class="tk-table-title"><i class="fa-solid fa-user-shield"></i>  Nhân viên xử lý nhiều phiếu nhất</h6>
+                    <span class="badge" style="background:var(--vt-red-subtle);color:var(--vt-red);font-size:.75rem;border-radius:8px;padding:.35rem .75rem;font-weight:600;">
+                        @Model.TopNhanVien.Count nhân viên
+                    </span>
+                </div>
+                <div class="table-responsive">
+                    <table class="tk-table" id="tableTopNhanVien">
+                        <thead>
+                            <tr>
+                                <th style="width:50px;padding-left:1.25rem;">#</th>
+                                <th>Nhân viên</th>
+                                <th>Vai trò</th>
+                                <th class="text-center">Tổng phiếu</th>
+                                <th class="text-center">Đang xử lý</th>
+                                <th class="text-center">Hoàn thành</th>
+                                <th style="width:180px;">Tỷ lệ hoàn thành</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (!Model.TopNhanVien.Any())
+                            {
+                                <tr><td colspan="7" class="text-center py-4 text-muted">Chưa có dữ liệu</td></tr>
+                            }
+                            @for (int i = 0; i < Model.TopNhanVien.Count; i++)
+                            {
+                                var nv = Model.TopNhanVien[i];
+                                var rankClass = i == 0 ? "tk-rank-1" : i == 1 ? "tk-rank-2" : i == 2 ? "tk-rank-3" : "tk-rank-n";
+                                <tr>
+                                    <td style="padding-left:1.25rem;">
+                                        <span class="tk-rank @rankClass">@(i + 1)</span>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            @if (!string.IsNullOrEmpty(nv.Avatar))
+                                            {
+                                                <img src="@nv.Avatar" class="tk-avatar" alt="@nv.HoTen">
+                                            }
+                                            else
+                                            {
+                                                <div class="tk-avatar-placeholder">@(nv.HoTen.Length > 0 ? nv.HoTen[0].ToString().ToUpper() : "?")</div>
+                                            }
+                                            <div>
+                                                <div class="fw-600" style="font-weight:600;font-size:.875rem;">@nv.HoTen</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><span class="badge bg-primary-subtle text-primary" style="border-radius:6px;font-size:.72rem;">@nv.VaiTro</span></td>
+                                    <td class="text-center fw-700" style="font-weight:700;">@nv.TongPhieu</td>
+                                    <td class="text-center">
+                                        <span class="badge" style="background:rgba(59,130,246,.12);color:#3b82f6;border-radius:6px;">@nv.DangXuLy</span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge" style="background:rgba(34,197,94,.12);color:#16a34a;border-radius:6px;">@nv.HoanThanh</span>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="tk-progress flex-grow-1">
+                                                <div class="tk-progress-bar" data-progress="@nv.TyLeHoanThanh" style="width:0%"></div>
+                                            </div>
+                                            <span style="font-size:.78rem;font-weight:700;color:var(--vt-red);min-width:40px;">@nv.TyLeHoanThanh%</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ============================================================
+                 BẢNG DỊCH VỤ + KHÁCH HÀNG
+                 ============================================================ -->
+            <div class="row g-3 mb-3">
+                <!-- Top Dịch vụ -->
+                <div class="col-12 col-lg-6">
+                    <div class="tk-table-card">
+                        <div class="tk-table-header">
+                            <h6 class="tk-table-title"><i class="fa-solid fa-network-wired"></i> Dịch vụ sử dụng nhiều</h6>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="tk-table" id="tableTopDichVu">
+                                <thead>
+                                    <tr>
+                                        <th style="width:40px;padding-left:1.25rem;">#</th>
+                                        <th>Dịch vụ</th>
+                                        <th>Danh mục</th>
+                                        <th class="text-center">Phiếu</th>
+                                        <th class="text-end" style="padding-right:1.25rem;">%</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (!Model.TopDichVu.Any())
+                                    {
+                                        <tr><td colspan="5" class="text-center py-4 text-muted">Chưa có dữ liệu</td></tr>
+                                    }
+                                    @for (int i = 0; i < Model.TopDichVu.Count; i++)
+                                    {
+                                        var dv = Model.TopDichVu[i];
+                                        var rankClass = i == 0 ? "tk-rank-1" : i == 1 ? "tk-rank-2" : i == 2 ? "tk-rank-3" : "tk-rank-n";
+                                        <tr>
+                                            <td style="padding-left:1.25rem;"><span class="tk-rank @rankClass">@(i+1)</span></td>
+                                            <td style="font-weight:600;font-size:.875rem;">@dv.TenDichVu</td>
+                                            <td style="font-size:.8rem;color:var(--text-muted);">@dv.TenDanhMuc</td>
+                                            <td class="text-center fw-700">@dv.SoPhieu</td>
+                                            <td class="text-end" style="padding-right:1.25rem;">
+                                                <span style="font-size:.8rem;font-weight:700;color:var(--vt-red);">@dv.PhanTram%</span>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Top Khách hàng -->
+                <div class="col-12 col-lg-6">
+                    <div class="tk-table-card">
+                        <div class="tk-table-header">
+                            <h6 class="tk-table-title"><i class="fa-solid fa-users"></i> Top 10 Khách hàng gửi nhiều phiếu</h6>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="tk-table" id="tableTopKhachHang">
+                                <thead>
+                                    <tr>
+                                        <th style="width:40px;padding-left:1.25rem;">#</th>
+                                        <th>Khách hàng</th>
+                                        <th>SĐT</th>
+                                        <th class="text-center">Phiếu</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (!Model.TopKhachHang.Any())
+                                    {
+                                        <tr><td colspan="4" class="text-center py-4 text-muted">Chưa có dữ liệu</td></tr>
+                                    }
+                                    @for (int i = 0; i < Model.TopKhachHang.Count; i++)
+                                    {
+                                        var kh = Model.TopKhachHang[i];
+                                        var rankClass = i == 0 ? "tk-rank-1" : i == 1 ? "tk-rank-2" : i == 2 ? "tk-rank-3" : "tk-rank-n";
+                                        <tr>
+                                            <td style="padding-left:1.25rem;"><span class="tk-rank @rankClass">@(i+1)</span></td>
+                                            <td>
+                                                <div style="font-weight:600;font-size:.875rem;">@kh.HoTen</div>
+                                                <div style="font-size:.75rem;color:var(--text-muted);">@kh.Email</div>
+                                            </td>
+                                            <td style="font-size:.85rem;">@(kh.SoDienThoai ?? "—")</td>
+                                            <td class="text-center fw-700" style="font-weight:700;color:var(--vt-red);">@kh.SoPhieu</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+</div><!-- /#tkMainContent -->
+
+<!-- LOADING OVERLAY -->
+<div id="tkLoading" class="tk-loading">
+    <div class="tk-spinner"></div>
+    <p style="font-size:.9rem;font-weight:600;color:#1a1a2e;">Đang xử lý...</p>
+</div>
+
+<!-- CHART DATA (embedded JSON) -->
+<script id="chartData" type="application/json">
+    @Html.Raw(JsonSerializer.Serialize(chartData, jsonOpts))
+</script>
+
+@section Scripts {
+    <!-- SheetJS (Excel) -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <!-- html2canvas + jsPDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- Page JS -->
+    <script src="~/assets/js/staff/thong-ke-bao-cao.js"></script>
+}

@@ -400,92 +400,206 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // ==================== 3. EDIT PROFILE FORM (MVC Native POST) ====================
+    // ==================== 3. EDIT PROFILE POPUP MODAL LOGIC ====================
+    const btnEditInline = document.getElementById('btnEditProfileInline');
+    const btnOpenEditModal = document.getElementById('btnOpenEditProfileModal');
     const editProfileForm = document.getElementById('editProfileForm');
-    const btnEditInline   = document.getElementById('btnEditProfileInline');
+
+    const getEditProfileModalInstance = () => {
+        const modalEl = document.getElementById('editProfileModal');
+        if (!modalEl) return null;
+        if (window.bootstrap && bootstrap.Modal) {
+            return bootstrap.Modal.getOrCreateInstance(modalEl);
+        }
+        return null;
+    };
+
+    const populateEditModal = () => {
+        const editFullname = document.getElementById('editFullname');
+        const editPhone = document.getElementById('editPhone');
+        const editEmail = document.getElementById('editEmail');
+        const editAddress = document.getElementById('editAddress');
+        const editNgaySinh = document.getElementById('editNgaySinh');
+
+        const profileFullname = document.getElementById('profileFullname');
+        const profilePhone = document.getElementById('profilePhone');
+        const profileEmail = document.getElementById('profileEmail');
+        const profileAddress = document.getElementById('profileAddress');
+        const profileBirthdate = document.getElementById('profileBirthdate');
+
+        if (editFullname && profileFullname) editFullname.value = profileFullname.value;
+        if (editPhone && profilePhone) editPhone.value = profilePhone.value;
+        if (editEmail && profileEmail) editEmail.value = profileEmail.value;
+        if (editAddress && profileAddress) editAddress.value = (profileAddress.value !== 'Chưa cập nhật') ? profileAddress.value : '';
+
+        if (editNgaySinh && profileBirthdate) {
+            const rawVal = profileBirthdate.value;
+            if (rawVal && rawVal.includes('-')) {
+                editNgaySinh.value = rawVal;
+            } else if (profileBirthdate.getAttribute('data-display-value')) {
+                const parts = profileBirthdate.getAttribute('data-display-value').split('/');
+                if (parts.length === 3) {
+                    editNgaySinh.value = `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
+                }
+            }
+        }
+
+        // Clear previous alert errors in modal
+        const alertContainer = document.getElementById('modalAlertContainer');
+        if (alertContainer) alertContainer.innerHTML = '';
+    };
+
+    const handleOpenEditProfileModal = (e) => {
+        if (e) e.preventDefault();
+        populateEditModal();
+        openProfileModal('editProfileModal');
+    };
 
     if (btnEditInline) {
-        btnEditInline.addEventListener('click', (e) => {
-            e.preventDefault();
-            // Open the edit profile modal (form already pre-filled via asp-for from Razor)
-            openProfileModal('editProfileModal');
-        });
+        btnEditInline.addEventListener('click', handleOpenEditProfileModal);
     }
 
-    // Auto-open modal when server returns EditError (Razor injected flag)
-    if (window.__editProfileHasError === true) {
-        openProfileModal('editProfileModal');
+    if (btnOpenEditModal) {
+        btnOpenEditModal.addEventListener('click', handleOpenEditProfileModal);
     }
 
     if (editProfileForm) {
-        editProfileForm.addEventListener('submit', function (e) {
-            // ── Client-side light validation (phone format, required) ──
-            const editFullname = document.getElementById('editFullname');
-            const editPhone    = document.getElementById('editPhone');
-            const editEmail    = document.getElementById('editEmail');
+        editProfileForm.addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const fullnameInput = document.getElementById('editFullname');
+            const phoneInput    = document.getElementById('editPhone');
+            const emailInput    = document.getElementById('editEmail');
+            const alertContainer = document.getElementById('modalAlertContainer');
+            if (alertContainer) alertContainer.innerHTML = '';
+
             let hasError = false;
 
-            // Validate Họ và tên
-            if (editFullname) {
-                const val = editFullname.value.trim();
+            if (fullnameInput && !fullnameInput.value.trim()) {
+                setInputError(fullnameInput, true);
                 const errEl = document.getElementById('editFullnameError');
-                if (!val) {
-                    editFullname.classList.add('is-invalid');
-                    if (errEl) { errEl.textContent = 'Vui lòng nhập họ và tên.'; errEl.style.display = 'block'; }
-                    hasError = true;
-                } else {
-                    editFullname.classList.remove('is-invalid');
-                    if (errEl) errEl.style.display = 'none';
-                }
+                if (errEl) { errEl.textContent = 'Vui lòng nhập họ và tên.'; errEl.style.display = 'block'; }
+                hasError = true;
+            } else if (fullnameInput) {
+                setInputError(fullnameInput, false);
             }
 
-            // Validate Số điện thoại (Vietnam format)
-            if (editPhone) {
-                const val = editPhone.value.trim();
+            const phoneRegex = /^(0[35789])[0-9]{8}$/;
+            if (phoneInput && (!phoneInput.value.trim() || !phoneRegex.test(phoneInput.value.trim()))) {
+                setInputError(phoneInput, true);
                 const errEl = document.getElementById('editPhoneError');
-                const phoneRegex = /^(0[35789])[0-9]{8}$/;
-                if (!val) {
-                    editPhone.classList.add('is-invalid');
-                    if (errEl) { errEl.textContent = 'Vui lòng nhập số điện thoại.'; errEl.style.display = 'block'; }
-                    hasError = true;
-                } else if (!phoneRegex.test(val)) {
-                    editPhone.classList.add('is-invalid');
-                    if (errEl) { errEl.textContent = 'Số điện thoại phải là định dạng Việt Nam hợp lệ (10 chữ số).'; errEl.style.display = 'block'; }
-                    hasError = true;
-                } else {
-                    editPhone.classList.remove('is-invalid');
-                    if (errEl) errEl.style.display = 'none';
-                }
+                if (errEl) { errEl.textContent = 'Số điện thoại phải gồm 10 chữ số hợp lệ (VD: 0981234567).'; errEl.style.display = 'block'; }
+                hasError = true;
+            } else if (phoneInput) {
+                setInputError(phoneInput, false);
             }
 
-            // Validate Email format (optional field)
-            if (editEmail) {
-                const val = editEmail.value.trim();
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (emailInput && (!emailInput.value.trim() || !emailRegex.test(emailInput.value.trim()))) {
+                setInputError(emailInput, true);
                 const errEl = document.getElementById('editEmailError');
-                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                if (val && !emailRegex.test(val)) {
-                    editEmail.classList.add('is-invalid');
-                    if (errEl) { errEl.textContent = 'Địa chỉ email không đúng định dạng.'; errEl.style.display = 'block'; }
-                    hasError = true;
+                if (errEl) { errEl.textContent = 'Địa chỉ Email không hợp lệ.'; errEl.style.display = 'block'; }
+                hasError = true;
+            } else if (emailInput) {
+                setInputError(emailInput, false);
+            }
+
+            if (hasError) return;
+
+            const saveBtn = document.getElementById('btnSaveProfile');
+            const saveIcon = document.getElementById('btnSaveProfileIcon');
+            const originalBtnText = saveBtn ? saveBtn.innerHTML : '';
+
+            if (saveBtn) {
+                saveBtn.disabled = true;
+                saveBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i> Đang lưu...';
+            }
+
+            try {
+                const formData = new FormData(editProfileForm);
+                const response = await fetch(editProfileForm.action || '/Customers/CapNhatThongTinCaNhan', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    closeProfileModal(document.getElementById('editProfileModal'));
+                    showProfileToast(result.message || '✓ Cập nhật thông tin thành công.', 'success');
+
+                    // Realtime DOM updates on current page without reload
+                    const profileFullname = document.getElementById('profileFullname');
+                    const profilePhone = document.getElementById('profilePhone');
+                    const profileEmail = document.getElementById('profileEmail');
+                    const profileAddress = document.getElementById('profileAddress');
+                    const profileBirthdate = document.getElementById('profileBirthdate');
+                    const sidebarUserFullname = document.getElementById('sidebarUserFullname');
+                    const profileInitials = document.getElementById('profileInitials');
+                    const headerUserName = document.querySelector('.user-name-display');
+                    const heroUserName = document.getElementById('heroUserName');
+
+                    if (result.data) {
+                        if (result.data.hoTen) {
+                            if (profileFullname) profileFullname.value = result.data.hoTen;
+                            if (sidebarUserFullname) sidebarUserFullname.textContent = result.data.hoTen;
+                            if (headerUserName) headerUserName.textContent = result.data.hoTen;
+                            if (heroUserName) heroUserName.textContent = result.data.hoTen;
+
+                            // Update Avatar Initials
+                            if (profileInitials) {
+                                const nameParts = result.data.hoTen.trim().split(' ');
+                                const initials = nameParts.length > 1 
+                                    ? (nameParts[0][0] + nameParts[nameParts.length - 1][0]).toUpperCase() 
+                                    : nameParts[0].substring(0, 2).toUpperCase();
+                                profileInitials.textContent = result.data.initials || initials;
+                            }
+                        }
+                        if (result.data.soDienThoai && profilePhone) {
+                            profilePhone.value = result.data.soDienThoai;
+                        }
+                        if (result.data.email !== undefined && profileEmail) {
+                            profileEmail.value = result.data.email || '';
+                        }
+                        if (result.data.diaChi !== undefined && profileAddress) {
+                            profileAddress.value = result.data.diaChi || 'Chưa cập nhật';
+                        }
+                        if (result.data.ngaySinh !== undefined && profileBirthdate) {
+                            profileBirthdate.value = result.data.ngaySinh || 'Chưa cập nhật';
+                        }
+                    }
                 } else {
-                    editEmail.classList.remove('is-invalid');
-                    if (errEl) errEl.style.display = 'none';
+                    // Show error inside Modal alert AND trigger danger toast. Modal stays OPEN!
+                    if (alertContainer) {
+                        alertContainer.innerHTML = `
+                            <div class="alert alert-danger alert-dismissible fade show mb-3" role="alert">
+                                <i class="bi bi-exclamation-triangle-fill me-2"></i> ${result.message || 'Không thể cập nhật thông tin.'}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        `;
+                    }
+                    showProfileToast(result.message || '✗ Không thể cập nhật thông tin.', 'danger');
+                }
+            } catch (err) {
+                console.error('Lỗi cập nhật thông tin:', err);
+                if (alertContainer) {
+                    alertContainer.innerHTML = `
+                        <div class="alert alert-danger alert-dismissible fade show mb-3" role="alert">
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i> Đã xảy ra lỗi kết nối. Vui lòng thử lại sau.
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    `;
+                }
+                showProfileToast('✗ Không thể cập nhật thông tin.', 'danger');
+            } finally {
+                if (saveBtn) {
+                    saveBtn.disabled = false;
+                    saveBtn.innerHTML = originalBtnText || '<i class="bi bi-save me-1"></i> Lưu thay đổi';
                 }
             }
-
-            if (hasError) {
-                e.preventDefault();
-                return;
-            }
-
-            // ── Loading state ──
-            const submitBtn  = document.getElementById('btnSaveProfile');
-            const submitIcon = document.getElementById('btnSaveProfileIcon');
-            if (submitBtn) {
-                submitBtn.disabled = true;
-                if (submitIcon) submitIcon.className = 'fa-solid fa-spinner fa-spin me-1';
-            }
-            // Let the native MVC form submit proceed
         });
     }
 

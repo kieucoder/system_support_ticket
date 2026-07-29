@@ -1,0 +1,117 @@
+@{
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+    ViewData["Title"] = "Mẹo Sử Dụng Website TechSupport Cho Doanh Nghiệp - Viettel Cần Thơ";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/assets/css/news-detail.css" asp-append-version="true" />
+}
+
+<div class="reading-progress-bar"></div>
+
+<div class="news-detail-wrapper">
+
+    <section class="detail-header-section">
+        <div class="container">
+            <div class="detail-breadcrumb">
+                <a asp-controller="Customers" asp-action="TrangChu"><i class="bi bi-house-door-fill me-1"></i> Trang chủ</a>
+                <span>></span>
+                <a asp-controller="Home" asp-action="TinTuc">Tin tức</a>
+                <span>></span>
+                <span class="text-dark">Mẹo sử dụng website</span>
+            </div>
+
+            <h1 class="detail-article-title">
+                Mẹo Tận Dụng Tối Đa Tính Năng Quản Lý Phiếu Kỹ Thuật Tập Trung Cho Khách Hàng Doanh Nghiệp
+            </h1>
+
+            <div class="detail-meta-bar">
+                <span class="detail-author-badge">
+                    <i class="bi bi-building"></i> Khối Giải Pháp Doanh Nghiệp Viettel
+                </span>
+                <span class="detail-meta-item"><i class="bi bi-calendar3 text-danger"></i> 15/07/2026</span>
+                <span class="detail-meta-item"><i class="bi bi-clock text-danger"></i> 5 phút đọc</span>
+                <span class="detail-meta-item"><i class="bi bi-eye text-danger"></i> 1,640 lượt xem</span>
+                <span class="badge bg-danger">Hướng Dẫn</span>
+            </div>
+        </div>
+    </section>
+
+    <div class="container py-5">
+        <div class="row g-4">
+
+            <div class="col-lg-8 col-12">
+                <article class="article-content">
+
+                    <div class="detail-cover-container">
+                        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=1200" alt="Mẹo sử dụng website cho doanh nghiệp" />
+                    </div>
+                    <p class="detail-cover-caption">Hệ thống quản lý sự cố mạng Leased Line & Cloud Server chuyên biệt cho khách hàng doanh nghiệp</p>
+
+                    <p class="lead fw-bold text-dark mb-4">
+                        Đối với các doanh nghiệp, tổ chức tài chính hay chuỗi bán lẻ, sự cố gián đoạn đường truyền cáp quang Leased Line hay máy chủ Cloud Server có thể gây thiệt hại lớn về kinh tế. Cổng portal <span class="text-highlight">TechSupport Viettel</span> cung cấp bộ công cụ ưu tiên dành riêng cho tài khoản doanh nghiệp.
+                    </p>
+
+                    <h2>1. Đăng Ký Tài Khoản Doanh Nghiệp Để Kích Hoạt Quyền Ưu Tiên SLA VIP</h2>
+                    <p>
+                        Khi đăng ký tài khoản hỗ trợ với mã số thuế doanh nghiệp, hệ thống tự động gán nhãn ưu tiên VIP. Mọi phiếu báo hỏng được khởi tạo từ tài khoản này sẽ được chuyển trực tiếp tới Trưởng phòng kỹ thuật điều hành.
+                    </p>
+
+                    <h2>2. Tính Năng Gửi Phiếu Theo Nhóm Dịch Vụ Chuyên Sâu</h2>
+                    <p>
+                        Doanh nghiệp có thể phân loại chính xác nhóm hạ tầng gặp sự cố:
+                    </p>
+                    <ul>
+                        <li><strong>Mạng Truyền Dẫn Leased Line:</strong> Kiểm tra mức độ suy hao kênh thuê riêng 24/7.</li>
+                        <li><strong>Dịch Vụ Cloud Server & Tổng Đài VContact:</strong> Hỗ trợ kỹ thuật phần mềm và cấu hình SIP Trunking.</li>
+                        <li><strong>Hóa Đơn Điện Tử S-Invoice & Chữ Ký Số vCA:</strong> Tiếp nhận xử lý lỗi ký số và phát hành hóa đơn.</li>
+                    </ul>
+
+                    <h2>3. Xuất Báo Cáo Thống Kê Tiến Độ Xử Lý Hàng Tháng</h2>
+                    <p>
+                        Tính năng lịch sử ticket cho phép Quản trị viên IT của doanh nghiệp tải xuống báo cáo định dạng Excel/PDF về tổng số lần báo sự cố, thời gian khắc phục trung bình và đánh giá tuân thủ SLA của Viettel.
+                    </p>
+
+                    <!-- Share Section -->
+                    <div class="article-share-section">
+                        <span class="share-title"><i class="bi bi-share-fill me-2 text-danger"></i> Chia sẻ bài viết:</span>
+                        <div class="share-buttons-list">
+                            <a href="#" class="btn-share btn-share-facebook"><i class="bi bi-facebook"></i></a>
+                            <a href="#" class="btn-share btn-share-linkedin"><i class="bi bi-linkedin"></i></a>
+                            <a href="#" class="btn-share btn-share-email"><i class="bi bi-envelope-fill"></i></a>
+                        </div>
+                    </div>
+
+                </article>
+            </div>
+
+            <!-- SIDEBAR -->
+            <div class="col-lg-4 col-12">
+                <aside class="news-sidebar">
+                    <div class="sidebar-widget">
+                        <h4 class="widget-title"><i class="bi bi-fire text-danger me-2"></i> Bài Viết Nổi Bật</h4>
+                        <a asp-controller="Home" asp-action="ChiTietTin1" class="text-decoration-none text-dark d-block">
+                            <div class="mini-post-item">
+                                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=200" class="mini-post-img" alt="Tạo phiếu" />
+                                <div>
+                                    <h5 class="mini-post-title">Hướng Dẫn Tạo Phiếu Báo Sự Cố Nhanh</h5>
+                                    <span class="mini-post-date"><i class="bi bi-calendar3"></i> 20/07/2026</span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </aside>
+            </div>
+
+        </div>
+    </div>
+
+    
+
+</div>
+
+<partial name="~/Views/Shared/_Footer.cshtml" />
+
+@section Scripts {
+    <script src="~/assets/js/news-detail.js" asp-append-version="true"></script>
+}

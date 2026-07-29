@@ -627,11 +627,13 @@ document.addEventListener("DOMContentLoaded", () => {
     if (lightboxClose && lightboxModal) {
         lightboxClose.addEventListener("click", () => {
             lightboxModal.classList.remove("active");
+            lightboxModal.style.display = "none";
         });
 
         lightboxModal.addEventListener("click", (e) => {
             if (e.target === lightboxModal) {
                 lightboxModal.classList.remove("active");
+                lightboxModal.style.display = "none";
             }
         });
     }

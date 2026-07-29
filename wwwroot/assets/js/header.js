@@ -1,227 +1,268 @@
-/* -------------------------------------------------------------
- * FILE: assets/js/header.js
- * AUTHOR: Antigravity
- * DESCRIPTION: Sticky header transitions and navigation handlers
- * ------------------------------------------------------------- */
+/* ==========================================================================
+   FILE: wwwroot/assets/js/header.js
+   DESCRIPTION: Pure Vanilla JavaScript logic for Header Component.
+                Handles Sticky Navigation, Frontend Search Popup, User Account Dropdown,
+                Mobile Slide-in Drawer, Active Menu detection, and Ripple Effects.
+   ========================================================================== */
 
-window.initHeader = () => {
-    const navbar = document.querySelector('.custom-header');
-    if (!navbar) return;
+document.addEventListener('DOMContentLoaded', () => {
+    'use strict';
 
-    const handleHeaderScroll = () => {
-        if (window.scrollY > 36) {
-            navbar.classList.add('navbar-scrolled');
-        } else {
-            navbar.classList.remove('navbar-scrolled');
-        }
+    // -------------------------------------------------------------
+    // 1. STICKY HEADER ON SCROLL
+    // -------------------------------------------------------------
+    const mainHeader = document.getElementById('mainHeader');
+    if (mainHeader) {
+        const handleScroll = () => {
+            if (window.scrollY > 30) {
+                mainHeader.classList.add('scrolled');
+            } else {
+                mainHeader.classList.remove('scrolled');
+            }
+        };
+
+        handleScroll(); // Initial check
+        window.addEventListener('scroll', handleScroll, { passive: true });
+    }
+
+    // -------------------------------------------------------------
+    // 2. FRONTEND SEARCH POPUP OVERLAY
+    // -------------------------------------------------------------
+    const searchTriggerBtn = document.getElementById('searchTriggerBtn');
+    const searchModalOverlay = document.getElementById('searchModalOverlay');
+    const searchModalCloseBtn = document.getElementById('searchModalCloseBtn');
+    const searchInputField = document.getElementById('searchInputField');
+    const searchClearBtn = document.getElementById('searchClearBtn');
+    const searchResultsContainer = document.getElementById('searchResultsContainer');
+    const searchTagChips = document.querySelectorAll('.search-tag-chip');
+
+    // Searchable items for frontend filtering
+    const searchDatabase = [
+        { title: 'Tạo phiếu báo hỏng kỹ thuật mới', category: 'Phiếu hỗ trợ', icon: 'bi-file-earmark-plus', url: '/Ticket/TaoPhieu' },
+        { title: 'Chọn danh mục dịch vụ Internet, TV, Camera', category: 'Dịch vụ', icon: 'bi-grid-fill', url: '/Ticket/ChonDMDichVu' },
+        { title: 'Tra cứu trạng thái phiếu sự cố realtime', category: 'Tra cứu', icon: 'bi-search', url: '/Ticket/TraCuuPhieu' },
+        { title: 'Đặt lịch hẹn kỹ thuật viên tận nhà', category: 'Lịch hẹn', icon: 'bi-calendar-check', url: '/Home/HuongDan#guide-appointment' },
+        { title: 'Chat trực tiếp với kỹ thuật viên phụ trách', category: 'Live Chat', icon: 'bi-chat-dots-fill', url: '/Customers/ChatTrucTuyen' },
+        { title: 'Hướng dẫn quy trình gửi ticket hỗ trợ', category: 'Hướng dẫn', icon: 'bi-book-half', url: '/Home/HuongDan' },
+        { title: 'Câu hỏi thường gặp về Wifi & Modem Viettel', category: 'FAQ', icon: 'bi-patch-question-fill', url: '/Home/FAQ' },
+        { title: 'Liên hệ hotline tổng đài kỹ thuật Viettel Cần Thơ', category: 'Liên hệ', icon: 'bi-telephone-fill', url: '/Home/LienHe' },
+        { title: 'Quản lý phiếu hỗ trợ kỹ thuật của tôi', category: 'Tài khoản', icon: 'bi-ticket-perforated', url: '/Customers/PhieuCuaToi' },
+        { title: 'Giới thiệu về hệ thống TechSupport Viettel', category: 'Thông tin', icon: 'bi-building', url: '/Home/GioiThieu' },
+        { title: 'Tin tức công nghệ & thông báo bảo trì', category: 'Tin tức', icon: 'bi-newspaper', url: '/Home/TinTuc' }
+    ];
+
+    const openSearchModal = () => {
+        if (!searchModalOverlay) return;
+        searchModalOverlay.classList.add('active');
+        searchModalOverlay.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+        setTimeout(() => {
+            if (searchInputField) searchInputField.focus();
+        }, 150);
     };
 
-    handleHeaderScroll();
-    window.addEventListener('scroll', handleHeaderScroll);
+    const closeSearchModal = () => {
+        if (!searchModalOverlay) return;
+        searchModalOverlay.classList.remove('active');
+        searchModalOverlay.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+        if (searchInputField) searchInputField.value = '';
+        if (searchClearBtn) searchClearBtn.style.display = 'none';
+        if (searchResultsContainer) searchResultsContainer.innerHTML = '';
+    };
 
-    // Dynamic anchor prefixing for non-homepage files
-    const isHomePage = window.location.pathname.endsWith('index.html') || 
-                       window.location.pathname === '/' || 
-                       window.location.pathname.endsWith('/') ||
-                       (!window.location.pathname.includes('.html'));
-                       
-    if (!isHomePage) {
-        const headerLinks = navbar.querySelectorAll('a[href^="#"]');
-        const prefix = window.location.pathname.includes('/pages/') ? '../index.html' : 'index.html';
-        headerLinks.forEach(link => {
-            const href = link.getAttribute('href');
-            if (href && href.startsWith('#') && href !== '#') {
-                link.setAttribute('href', prefix + href);
+    const renderSearchResults = (query) => {
+        if (!searchResultsContainer) return;
+        const cleanQuery = query.trim().toLowerCase();
+        
+        if (!cleanQuery) {
+            searchResultsContainer.innerHTML = '';
+            return;
+        }
+
+        const filtered = searchDatabase.filter(item => 
+            item.title.toLowerCase().includes(cleanQuery) || 
+            item.category.toLowerCase().includes(cleanQuery)
+        );
+
+        if (filtered.length === 0) {
+            searchResultsContainer.innerHTML = `
+                <div class="text-center py-4 text-muted">
+                    <i class="bi bi-emoji-frown fs-3 d-block mb-2 text-danger"></i>
+                    <span>Không tìm thấy kết quả phù hợp với "${query}"</span>
+                </div>
+            `;
+            return;
+        }
+
+        searchResultsContainer.innerHTML = filtered.map(item => `
+            <a href="${item.url}" class="search-result-item">
+                <div class="search-result-icon">
+                    <i class="bi ${item.icon}"></i>
+                </div>
+                <div class="search-result-info">
+                    <span class="search-result-title">${item.title}</span>
+                    <span class="search-result-category">${item.category}</span>
+                </div>
+            </a>
+        `).join('');
+    };
+
+    if (searchTriggerBtn) {
+        searchTriggerBtn.addEventListener('click', openSearchModal);
+    }
+
+    if (searchModalCloseBtn) {
+        searchModalCloseBtn.addEventListener('click', closeSearchModal);
+    }
+
+    if (searchModalOverlay) {
+        searchModalOverlay.addEventListener('click', (e) => {
+            if (e.target === searchModalOverlay) closeSearchModal();
+        });
+    }
+
+    if (searchInputField) {
+        searchInputField.addEventListener('input', (e) => {
+            const val = e.target.value;
+            if (searchClearBtn) {
+                searchClearBtn.style.display = val.length > 0 ? 'block' : 'none';
+            }
+            renderSearchResults(val);
+        });
+    }
+
+    if (searchClearBtn) {
+        searchClearBtn.addEventListener('click', () => {
+            if (searchInputField) {
+                searchInputField.value = '';
+                searchInputField.focus();
+            }
+            searchClearBtn.style.display = 'none';
+            renderSearchResults('');
+        });
+    }
+
+    searchTagChips.forEach(chip => {
+        chip.addEventListener('click', (e) => {
+            e.preventDefault();
+            const tagQuery = chip.getAttribute('data-query') || chip.textContent.trim();
+            if (searchInputField) {
+                searchInputField.value = tagQuery;
+                if (searchClearBtn) searchClearBtn.style.display = 'block';
+                renderSearchResults(tagQuery);
+            }
+        });
+    });
+
+    // Close search modal on Escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && searchModalOverlay && searchModalOverlay.classList.contains('active')) {
+            closeSearchModal();
+        }
+    });
+
+    // -------------------------------------------------------------
+    // 3. USER ACCOUNT DROPDOWN
+    // -------------------------------------------------------------
+    const userDropdownTrigger = document.getElementById('userDropdownTrigger');
+    const userDropdownMenu = document.getElementById('userDropdownMenu');
+
+    if (userDropdownTrigger && userDropdownMenu) {
+        userDropdownTrigger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isOpen = userDropdownMenu.classList.contains('show');
+            if (isOpen) {
+                userDropdownMenu.classList.remove('show');
+                userDropdownTrigger.classList.remove('active');
+                userDropdownTrigger.setAttribute('aria-expanded', 'false');
+            } else {
+                userDropdownMenu.classList.add('show');
+                userDropdownTrigger.classList.add('active');
+                userDropdownTrigger.setAttribute('aria-expanded', 'true');
+            }
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!userDropdownTrigger.contains(e.target) && !userDropdownMenu.contains(e.target)) {
+                userDropdownMenu.classList.remove('show');
+                userDropdownTrigger.classList.remove('active');
+                userDropdownTrigger.setAttribute('aria-expanded', 'false');
             }
         });
     }
 
-    // Dynamic document path resolution for subfolders
-    const isSubdir = window.location.pathname.includes('/pages/');
-    if (isSubdir) {
-        const docLinks = navbar.querySelectorAll('a:not([href^="http"]):not([href^="tel"]):not([href^="mailto"]):not([href^="javascript"])');
-        docLinks.forEach(link => {
-            const href = link.getAttribute('href');
-            if (href && !href.startsWith('#') && !href.startsWith('../')) {
-                link.setAttribute('href', '../' + href);
+    // -------------------------------------------------------------
+    // 4. MOBILE SLIDE-IN DRAWER
+    // -------------------------------------------------------------
+    const mobileDrawerTrigger = document.getElementById('mobileDrawerTrigger');
+    const mobileDrawer = document.getElementById('mobileDrawer');
+    const drawerBackdrop = document.getElementById('drawerBackdrop');
+    const drawerCloseBtn = document.getElementById('drawerCloseBtn');
+    const drawerInfoToggle = document.getElementById('drawerInfoToggle');
+    const drawerInfoSubmenu = document.getElementById('drawerInfoSubmenu');
+
+    const openMobileDrawer = () => {
+        if (mobileDrawer) mobileDrawer.classList.add('active');
+        if (drawerBackdrop) drawerBackdrop.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    };
+
+    const closeMobileDrawer = () => {
+        if (mobileDrawer) mobileDrawer.classList.remove('active');
+        if (drawerBackdrop) drawerBackdrop.classList.remove('active');
+        document.body.style.overflow = '';
+    };
+
+    if (mobileDrawerTrigger) mobileDrawerTrigger.addEventListener('click', openMobileDrawer);
+    if (drawerCloseBtn) drawerCloseBtn.addEventListener('click', closeMobileDrawer);
+    if (drawerBackdrop) drawerBackdrop.addEventListener('click', closeMobileDrawer);
+
+    const drawerSupportToggle = document.getElementById('drawerSupportToggle');
+    const drawerSupportSubmenu = document.getElementById('drawerSupportSubmenu');
+
+    if (drawerSupportToggle && drawerSupportSubmenu) {
+        drawerSupportToggle.addEventListener('click', () => {
+            const isOpen = drawerSupportSubmenu.classList.contains('show');
+            if (isOpen) {
+                drawerSupportSubmenu.classList.remove('show');
+                drawerSupportToggle.classList.remove('open');
+            } else {
+                drawerSupportSubmenu.classList.add('show');
+                drawerSupportToggle.classList.add('open');
             }
         });
     }
 
-    // Active menu link highlighting
-    const currentPath = window.location.pathname;
+    if (drawerInfoToggle && drawerInfoSubmenu) {
+        drawerInfoToggle.addEventListener('click', () => {
+            const isOpen = drawerInfoSubmenu.classList.contains('show');
+            if (isOpen) {
+                drawerInfoSubmenu.classList.remove('show');
+                drawerInfoToggle.classList.remove('open');
+            } else {
+                drawerInfoSubmenu.classList.add('show');
+                drawerInfoToggle.classList.add('open');
+            }
+        });
+    }
 
+    // -------------------------------------------------------------
+    // 5. ACTIVE MENU LINK HIGHLIGHTING
+    // -------------------------------------------------------------
+    const currentPath = window.location.pathname.toLowerCase();
+    const navLinks = document.querySelectorAll('.nav-link, .drawer-menu-link');
 
-
-    const navLinks = navbar.querySelectorAll('.nav-link');
     navLinks.forEach(link => {
         const href = link.getAttribute('href');
-        if (href) {
-            if (href.startsWith('#')) {
-                if (isHomePage) {
-                    // Highlights active section on home page based on scroll or default
-                    // In a simple setup, default Trang chu active works
-                }
-            } else if (currentPath.includes(href)) {
+        if (href && href !== '#' && href !== 'javascript:void(0)') {
+            const cleanHref = href.toLowerCase();
+            if (currentPath === cleanHref || (cleanHref !== '/' && currentPath.includes(cleanHref))) {
                 link.classList.add('active');
-            } else {
-                link.classList.remove('active');
             }
         }
     });
 
-    // --- Authentication & User Dropdown Initialization ---
-    const authButtons = document.getElementById('authButtons');
-    const userDropdownWrapper = document.getElementById('userDropdownWrapper');
-    const btnCreateTicket = document.getElementById('btnCreateTicket');
-    const userNameEl = document.getElementById('userDisplayName');
-
-    const isProfilePage = window.location.pathname.includes('customer-profile.html');
-
-    const showGlobalToast = (message) => {
-        let container = document.getElementById('globalToastContainer');
-        if (!container) {
-            container = document.createElement('div');
-            container.id = 'globalToastContainer';
-            document.body.appendChild(container);
-        }
-        const toast = document.createElement('div');
-        toast.className = 'global-toast';
-        toast.innerHTML = `<span>${message}</span>`;
-        container.appendChild(toast);
-        setTimeout(() => toast.classList.add('show'), 10);
-        setTimeout(() => {
-            toast.classList.remove('show');
-            toast.addEventListener('transitionend', () => {
-                toast.remove();
-                if (container.children.length === 0) container.remove();
-            });
-        }, 3500);
-    };
-
-    const updateAuthHeader = (customerName) => {
-        if (!userDropdownWrapper || !userNameEl) return;
-        
-        const buttonsGroup = navbar.querySelector('.header-buttons-group');
-        
-        // On profile page, we ALWAYS show the logged-in dropdown and hide the create ticket button
-        if (isProfilePage || customerName) {
-            userNameEl.textContent = customerName || "Nguyễn Văn An";
-            if (authButtons) authButtons.classList.add('d-none');
-            userDropdownWrapper.classList.remove('d-none');
-            if (btnCreateTicket) btnCreateTicket.classList.add('d-none');
-            if (buttonsGroup) buttonsGroup.classList.add('d-none');
-        } else {
-            userDropdownWrapper.classList.add('d-none');
-            if (authButtons) authButtons.classList.remove('d-none');
-            if (btnCreateTicket) btnCreateTicket.classList.remove('d-none');
-            if (buttonsGroup) buttonsGroup.classList.remove('d-none');
-        }
-    };
-
-    const loadAuthState = () => {
-        let name = null;
-        const sessionStr = sessionStorage.getItem('techsupport_session');
-        if (sessionStr) {
-            try {
-                const sessionData = JSON.parse(sessionStr);
-                if (sessionData && sessionData.isLoggedIn && sessionData.user && sessionData.user.fullname) {
-                    name = sessionData.user.fullname;
-                }
-            } catch (e) {
-                console.error('Error parsing session storage:', e);
-            }
-        }
-        if (!name) {
-            name = sessionStorage.getItem('ts_customer_name') || localStorage.getItem('ts_customer_name') || null;
-        }
-        updateAuthHeader(name);
-    };
-
-    const checkLogoutToast = () => {
-        if (sessionStorage.getItem('logout_success_toast') === 'true') {
-            sessionStorage.removeItem('logout_success_toast');
-            showGlobalToast('✅ Đăng xuất thành công');
-        }
-    };
-
-    const bindDropdownEvents = () => {
-        if (!userDropdownWrapper) return;
-        const trigger = userDropdownWrapper.querySelector('.btn-user-dropdown');
-        const menu = userDropdownWrapper.querySelector('.user-profile-dropdown-menu');
-        const logoutBtn = userDropdownWrapper.querySelector('#btnLogoutBtn');
-
-        if (trigger && menu) {
-            const newTrigger = trigger.cloneNode(true);
-            trigger.parentNode.replaceChild(newTrigger, trigger);
-
-            newTrigger.addEventListener('click', function (e) {
-                e.stopPropagation();
-                const isShown = menu.classList.contains('show');
-                if (isShown) {
-                    menu.classList.remove('show');
-                    newTrigger.classList.remove('active');
-                } else {
-                    menu.classList.add('show');
-                    newTrigger.classList.add('active');
-                }
-            });
-
-            document.addEventListener('click', function (e) {
-                if (!userDropdownWrapper.contains(e.target)) {
-                    menu.classList.remove('show');
-                    newTrigger.classList.remove('active');
-                }
-            });
-        }
-
-        if (logoutBtn) {
-            const newLogout = logoutBtn.cloneNode(true);
-            logoutBtn.parentNode.replaceChild(newLogout, logoutBtn);
-
-            newLogout.addEventListener('click', function (e) {
-                e.preventDefault();
-                window.TechSupportAuth.logout();
-            });
-        }
-
-        const headerLogoutBtn = userDropdownWrapper.querySelector('#btnHeaderLogout');
-        if (headerLogoutBtn) {
-            const newHeaderLogout = headerLogoutBtn.cloneNode(true);
-            headerLogoutBtn.parentNode.replaceChild(newHeaderLogout, headerLogoutBtn);
-
-            newHeaderLogout.addEventListener('click', function (e) {
-                e.preventDefault();
-                window.TechSupportAuth.logout();
-            });
-        }
-    };
-
-    // Initialize state
-    loadAuthState();
-    checkLogoutToast();
-    bindDropdownEvents();
-
-    // Export globally
-    window.TechSupportAuth = {
-        login: function (name, remember) {
-            if (remember) {
-                localStorage.setItem('ts_customer_name', name);
-            } else {
-                sessionStorage.setItem('ts_customer_name', name);
-            }
-            loadAuthState();
-            bindDropdownEvents();
-        },
-        logout: function () {
-            sessionStorage.removeItem('ts_customer_name');
-            sessionStorage.removeItem('techsupport_session');
-            localStorage.removeItem('ts_customer_name');
-            
-            sessionStorage.setItem('logout_success_toast', 'true');
-            
-            const redirectPath = window.location.pathname.includes('/pages/') ? '../index.html' : 'index.html';
-            window.location.href = redirectPath;
-        }
-    };
-};
+    console.log('Header component scripts loaded successfully.');
+});

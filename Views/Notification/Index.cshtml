@@ -1,0 +1,185 @@
+@model List<SupportTicketSysterm.Models.NotificationViewModel>
+@{
+    ViewData["Title"] = "Trung Tâm Thông Báo - TechSupport Viettel";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+    string searchKeyword = (string)(ViewData["SearchKeyword"] ?? "");
+    string selectedType = (string)(ViewData["SelectedType"] ?? "All");
+    int totalCount = (int)(ViewData["TotalCount"] ?? 0);
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/assets/css/notification.css" asp-append-version="true" />
+}
+
+<div class="notification-page-wrapper py-4 bg-light min-vh-100">
+    <div class="container">
+        
+        <!-- Page Title & Header Card -->
+        <div class="notif-hero-card rounded-4 p-4 mb-4 text-white shadow-sm" style="background: linear-gradient(135deg, #D71920 0%, #B91C1C 100%);">
+            <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
+                <div>
+                    <div class="d-flex align-items-center gap-2 mb-1">
+                        <span class="badge bg-white text-danger px-3 py-1.5 rounded-pill fw-bold fs-8">
+                            <i class="bi bi-bell-fill me-1"></i> Notification Center
+                        </span>
+                        <span class="text-white-50 fs-8">• Cập nhật tự động</span>
+                    </div>
+                    <h3 class="fw-bold mb-1 text-white" style="font-family: 'Inter', sans-serif;">Trung Tâm Thông Báo</h3>
+                    <p class="mb-0 text-white-50 small">Theo dõi toàn bộ cập nhật về phiếu hỗ trợ, lịch hẹn kỹ thuật và tin nhắn trực tuyến của bạn.</p>
+                </div>
+                <div class="text-md-end">
+                    <div class="notif-stat-pill px-4 py-2 bg-white bg-opacity-20 rounded-4 border border-white border-opacity-25 d-inline-block">
+                        <span class="d-block small text-white-50">Tổng số thông báo</span>
+                        <strong class="fs-4 text-white">@totalCount</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter & Search Toolbar -->
+        <div class="card border-0 rounded-4 shadow-sm mb-4">
+            <div class="card-body p-3">
+                <form method="get" asp-controller="Notification" asp-action="Index" id="notifFilterForm" class="row g-3 align-items-center">
+                    <!-- Search Input -->
+                    <div class="col-12 col-md-5 col-lg-6">
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0 rounded-start-pill ps-3 text-secondary">
+                                <i class="bi bi-search"></i>
+                            </span>
+                            <input type="text" name="search" class="form-control bg-light border-start-0 rounded-end-pill py-2 text-dark" 
+                                   placeholder="Tìm kiếm theo tiêu đề hoặc nội dung thông báo..." value="@searchKeyword" />
+                        </div>
+                    </div>
+
+                    <!-- Type Filter Chips / Dropdown -->
+                    <div class="col-12 col-md-7 col-lg-6">
+                        <div class="d-flex flex-wrap align-items-center justify-content-md-end gap-1.5">
+                            <a href="@Url.Action("Index", "Notification", new { search = searchKeyword, type = "All" })" 
+                               class="filter-chip btn btn-sm rounded-pill px-3 py-1.5 fw-semibold @(selectedType == "All" ? "btn-danger text-white" : "btn-outline-secondary")">
+                                Tất cả (@totalCount)
+                            </a>
+                            <a href="@Url.Action("Index", "Notification", new { search = searchKeyword, type = "TicketCreated" })" 
+                               class="filter-chip btn btn-sm rounded-pill px-3 py-1.5 fw-semibold @(selectedType == "TicketCreated" ? "btn-danger text-white" : "btn-outline-secondary")">
+                                <i class="bi bi-file-earmark-plus me-1"></i> Tạo phiếu
+                            </a>
+                            <a href="@Url.Action("Index", "Notification", new { search = searchKeyword, type = "TicketStatusChanged" })" 
+                               class="filter-chip btn btn-sm rounded-pill px-3 py-1.5 fw-semibold @(selectedType == "TicketStatusChanged" ? "btn-danger text-white" : "btn-outline-secondary")">
+                                <i class="bi bi-gear-wide-connected me-1"></i> Trạng thái
+                            </a>
+                            <a href="@Url.Action("Index", "Notification", new { search = searchKeyword, type = "AppointmentCreated" })" 
+                               class="filter-chip btn btn-sm rounded-pill px-3 py-1.5 fw-semibold @(selectedType == "AppointmentCreated" ? "btn-danger text-white" : "btn-outline-secondary")">
+                                <i class="bi bi-calendar-check me-1"></i> Lịch hẹn
+                            </a>
+                            <a href="@Url.Action("Index", "Notification", new { search = searchKeyword, type = "ChatMessage" })" 
+                               class="filter-chip btn btn-sm rounded-pill px-3 py-1.5 fw-semibold @(selectedType == "ChatMessage" ? "btn-danger text-white" : "btn-outline-secondary")">
+                                <i class="bi bi-chat-dots me-1"></i> Tin nhắn
+                            </a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Notification Cards List -->
+        <div class="notif-feed-container">
+            @if (Model == null || !Model.Any())
+            {
+                <div class="card border-0 rounded-4 shadow-sm p-5 text-center my-4">
+                    <div class="empty-notif-icon mb-3 mx-auto grid-center" style="width: 80px; height: 80px; border-radius: 50%; background: #FEE2E2; color: #D71920;">
+                        <i class="bi bi-bell-slash-fill display-6"></i>
+                    </div>
+                    <h5 class="fw-bold text-dark mb-2">Chưa Có Thông Báo Nào</h5>
+                    <p class="text-muted small mb-4 mx-auto" style="max-width: 420px;">
+                        Hệ thống tự động cập nhật thông báo về tiến độ phiếu hỗ trợ, lịch hẹn và tin nhắn tại đây khi có phát sinh.
+                    </p>
+                    <div>
+                        <a asp-controller="Customers" asp-action="PhieuCuaToi" class="btn btn-danger btn-sm rounded-pill px-4 py-2 fw-bold text-white shadow-sm">
+                            <i class="bi bi-ticket-perforated me-1"></i> Xem danh sách phiếu của tôi
+                        </a>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="d-flex flex-column gap-3">
+                    @foreach (var item in Model)
+                    {
+                        string borderClass = item.Type switch
+                        {
+                            "TicketCreated" => "border-start border-4 border-danger",
+                            "TicketAssigned" => "border-start border-4 border-primary",
+                            "TicketStatusChanged" => "border-start border-4 border-success",
+                            "AppointmentCreated" or "AppointmentUpdated" => "border-start border-4 border-info",
+                            "AppointmentCancelled" => "border-start border-4 border-secondary",
+                            "ChatMessage" => "border-start border-4 border-danger",
+                            "RatingRequest" => "border-start border-4 border-warning",
+                            _ => "border-start border-4 border-danger"
+                        };
+
+                        string iconBg = item.Type switch
+                        {
+                            "TicketCreated" => "bg-danger-subtle text-danger",
+                            "TicketAssigned" => "bg-primary-subtle text-primary",
+                            "TicketStatusChanged" => "bg-success-subtle text-success",
+                            "AppointmentCreated" or "AppointmentUpdated" => "bg-info-subtle text-info",
+                            "AppointmentCancelled" => "bg-secondary-subtle text-secondary",
+                            "ChatMessage" => "bg-danger-subtle text-danger",
+                            "RatingRequest" => "bg-warning-subtle text-warning",
+                            _ => "bg-danger-subtle text-danger"
+                        };
+
+                        <div class="card notif-item-card border-0 rounded-4 shadow-sm @borderClass position-relative transition-all hover-lift">
+                            <div class="card-body p-3.5">
+                                <div class="d-flex align-items-start gap-3">
+                                    
+                                    <!-- Type Icon Box -->
+                                    <div class="notif-icon-box rounded-circle p-2.5 d-flex align-items-center justify-content-center flex-shrink-0 @iconBg" 
+                                         style="width: 46px; height: 46px; font-size: 1.25rem;">
+                                        <i class="bi @item.Icon"></i>
+                                    </div>
+
+                                    <!-- Content Info -->
+                                    <div class="flex-grow-1 min-w-0">
+                                        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-1">
+                                            <h6 class="fw-bold text-dark mb-0 fs-7">@item.Title</h6>
+                                            <span class="badge bg-light text-secondary border rounded-pill fs-8 fw-normal">
+                                                <i class="bi bi-clock me-1"></i>@item.TimeAgo
+                                            </span>
+                                        </div>
+
+                                        <p class="text-secondary small mb-2 text-break" style="line-height: 1.45;">@item.Content</p>
+
+                                        <div class="d-flex align-items-center justify-content-between pt-1">
+                                            <span class="badge bg-light text-dark border fs-8">
+                                                Nguồn: <strong>@item.Source</strong>
+                                            </span>
+
+                                            @if (item.Url == "#openChat")
+                                            {
+                                                <button type="button" class="btn btn-link text-danger fw-bold fs-8 p-0 text-decoration-none" onclick="triggerChatWidgetOpen()">
+                                                    Mở khung Chat <i class="bi bi-arrow-right ms-1"></i>
+                                                </button>
+                                            }
+                                            else if (!string.IsNullOrEmpty(item.Url))
+                                            {
+                                                <a href="@item.Url" class="btn btn-link text-danger fw-bold fs-8 p-0 text-decoration-none">
+                                                    Xem chi tiết <i class="bi bi-arrow-right ms-1"></i>
+                                                </a>
+                                            }
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/assets/js/notification.js" asp-append-version="true"></script>
+}

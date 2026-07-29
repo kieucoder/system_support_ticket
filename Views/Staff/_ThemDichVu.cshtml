@@ -1,6 +1,5 @@
 @model SupportTicketSysterm.Data.DichVu
-<div class="modal fade" id="addServiceModal" tabindex="-1" aria-labelledby="addServiceModalLabel"
-     aria-hidden="true">
+<div class="modal fade" id="addServiceModal" tabindex="-1" aria-labelledby="addServiceModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0">
             <div class="modal-header">
@@ -17,10 +16,7 @@
                     <i class="fa-solid fa-times"></i>
                 </button>
             </div>
-            <form asp-action="ThemDichVu"
-                  asp-controller="Staff"
-                  method="post"
-                  id="addServiceForm">
+            <form asp-action="ThemDichVu" asp-controller="Staff" method="post" id="addServiceForm">
                 @Html.AntiForgeryToken()
                 <div class="modal-body p-4">
                     <!-- Service Name -->
@@ -28,30 +24,22 @@
                         <label for="addServiceName" class="vt-form-label">Tên dịch vụ <span>*</span></label>
                         <input asp-for="TenDichVu" type="text" id="addServiceName" class="vt-form-input" placeholder="Nhập tên dịch vụ hỗ trợ..." required>
                         <div class="invalid-feedback">Vui lòng nhập tên dịch vụ.</div>
-@*                         cái này mới thêm 
- *@                        <span asp-validation-for="TenDichVu"
-                              class="text-danger"></span>
+                        <span asp-validation-for="TenDichVu" class="text-danger" style="font-size: 0.78rem;"></span>
                     </div>
                     <!-- Linked Category -->
                     <div class="vt-form-group">
                         <label for="addServiceCategory" class="vt-form-label">Danh mục sự cố <span>*</span></label>
-                        <select asp-for="IdDanhMuc"
-                                id="addServiceCategory"
-                                class="vt-form-select">
-
+                        <select asp-for="IdDanhMuc" id="addServiceCategory" class="vt-form-select" required>
                             <option value="">-- Chọn danh mục --</option>
-
-                            @foreach (var item in ViewBag.DanhMucs)
-
+                            @if (ViewBag.DanhMucs != null)
                             {
-                                <option value="@item.IdDanhMuc">
-                                    @item.TenDanhMuc
-                                </option>
+                                foreach (var item in (IEnumerable<SupportTicketSysterm.Data.DanhMuc>)ViewBag.DanhMucs)
+                                {
+                                    <option value="@item.IdDanhMuc">@item.TenDanhMuc</option>
+                                }
                             }
-
                         </select>
-                        <span asp-validation-for="IdDanhMuc"
-                              class="text-danger"></span>
+                        <span asp-validation-for="IdDanhMuc" class="text-danger" style="font-size: 0.78rem;"></span>
                         <div class="invalid-feedback">Vui lòng chọn danh mục sự cố.</div>
                     </div>
                     <!-- Description -->
@@ -62,18 +50,9 @@
                     <!-- Status -->
                     <div class="vt-form-group">
                         <label for="addServiceStatus" class="vt-form-label">Trạng thái</label>
-                        <select asp-for="TrangThai"
-                                id="addServiceStatus"
-                                class="vt-form-select">
-
-                            <option value="Hoạt động">
-                                Hoạt động
-                            </option>
-
-                            <option value="Tạm khóa">
-                                Tạm khóa
-                            </option>
-
+                        <select asp-for="TrangThai" id="addServiceStatus" class="vt-form-select">
+                            <option value="Hoạt động">Hoạt động</option>
+                            <option value="Tạm khóa">Tạm khóa</option>
                         </select>
                     </div>
                 </div>

@@ -1,0 +1,142 @@
+@{
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+    ViewData["Title"] = "Top 5 Sự Cố Mạng Internet Cáp Quang Thường Gặp - Viettel Cần Thơ";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/assets/css/news-detail.css" asp-append-version="true" />
+}
+
+<div class="reading-progress-bar"></div>
+
+<div class="news-detail-wrapper">
+
+    <section class="detail-header-section">
+        <div class="container">
+            <div class="detail-breadcrumb">
+                <a asp-controller="Customers" asp-action="TrangChu"><i class="bi bi-house-door-fill me-1"></i> Trang chủ</a>
+                <span>></span>
+                <a asp-controller="Home" asp-action="TinTuc">Tin tức</a>
+                <span>></span>
+                <span class="text-dark">Kinh nghiệm xử lý sự cố</span>
+            </div>
+
+            <h1 class="detail-article-title">
+                Top 5 Sự Cố Mạng Internet Cáp Quang Thường Gặp Vài Thao Tác Tự Khắc Phục Tại Nhà 5 Phút
+            </h1>
+
+            <div class="detail-meta-bar">
+                <span class="detail-author-badge">
+                    <i class="bi bi-tools"></i> Chuyên Gia Kỹ Thuật Viettel
+                </span>
+                <span class="detail-meta-item"><i class="bi bi-calendar3 text-danger"></i> 16/07/2026</span>
+                <span class="detail-meta-item"><i class="bi bi-clock text-danger"></i> 6 phút đọc</span>
+                <span class="detail-meta-item"><i class="bi bi-eye text-danger"></i> 2,910 lượt xem</span>
+                <span class="badge bg-danger">Hướng Dẫn</span>
+            </div>
+        </div>
+    </section>
+
+    <div class="container py-5">
+        <div class="row g-4">
+
+            <div class="col-lg-8 col-12">
+                <article class="article-content">
+
+                    <div class="detail-cover-container">
+                        <img src="https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&q=80&w=1200" alt="Sự cố đường truyền mạng internet" />
+                    </div>
+                    <p class="detail-cover-caption">Hướng dẫn thao tác kiểm tra thiết bị Modem ONT cáp quang tại nhà</p>
+
+                    <p class="lead fw-bold text-dark mb-4">
+                        Trong quá trình sử dụng mạng cáp quang FTTH, đôi khi đường truyền bị chậm, gián đoạn hoặc mất tín hiệu. Trước khi phải tốn thời gian liên hệ kỹ thuật viên, quý khách hoàn toàn có thể tự xử lý 80% trường hợp nhờ các mẹo đơn giản dưới đây.
+                    </p>
+
+                    <h2>1. Sự Cố 1: Modem Báo Đèn Đỏ (Đèn LOS Báo Đỏ)</h2>
+                    <p>
+                        <strong>Hiện tượng:</strong> Đèn LOS trên Modem ONT nhấp nháy màu đỏ, các thiết bị điện thoại, máy tính mất hoàn toàn kết nối Internet.
+                    </p>
+                    <p>
+                        <strong>Nguyên nhân:</strong> Suy hao tín hiệu quang vượt mức cho phép hoặc đường dây cáp quang kéo từ cột điện vào nhà bị gập đứt, đứt sợi quang.
+                    </p>
+                    <p>
+                        <strong>Cách khắc phục:</strong> Kiểm tra dây nhảy cáp quang (dây cáp vàng nhỏ) cắm vào cổng quang Modem. Đảm bảo đầu cắm không bị lỏng hoặc bụi bẩn. Nếu dây bị đứt hoặc gập gãy mạnh, hãy tạo ngay ticket hỗ trợ trên website để kỹ thuật mang dây hàn quang đến thay thế.
+                    </p>
+
+                    <h2>2. Sự Cố 2: Mạng Wifi Chậm, Chập Chờn Vào Giờ Cao Điểm</h2>
+                    <p>
+                        <strong>Hiện tượng:</strong> Vẫn bắt được sóng Wifi nhưng tải trang web rất chậm, xem video bị giật lag vào khoảng 19h - 22h tối.
+                    </p>
+                    <p>
+                        <strong>Nguyên nhân:</strong> Xung đột kênh sóng (Channel Interference) với Wifi nhà xóm hoặc có quá nhiều thiết bị truy cập cùng lúc vào băng tần 2.4GHz.
+                    </p>
+                    <div class="callout-box">
+                        <h5><i class="bi bi-wifi me-2"></i> Giải Pháp Tối Ưu Băng Tần Wifi</h5>
+                        <p>
+                            • Chuyển sang kết nối với tên Wifi có đuôi <strong>_5G</strong> (Băng tần 5GHz) để có tốc độ nhanh gấp 3 lần.<br />
+                            • Khởi động lại (Reboot) Modem ONT 1 lần/tuần để thiết bị tự chọn kênh sóng ít nhiễu nhất.<br />
+                            • Đổi mật khẩu Wifi nếu nghi ngờ có thiết bị lạ dùng chùa băng thông.
+                        </p>
+                    </div>
+
+                    <h2>3. Sự Cố 3: Chỉ Có 1 Thiết Bị Không Vào Được Mạng</h2>
+                    <p>
+                        <strong>Hiện tượng:</strong> Điện thoại khác vẫn lướt web bình thường nhưng máy tính của bạn báo lỗi <em>"No Internet Access"</em> hoặc <em>"DNS_PROBE_FINISHED_NXDOMAIN"</em>.
+                    </p>
+                    <p>
+                        <strong>Cách khắc phục:</strong> Tắt và bật lại tính năng Wi-Fi trên máy tính. Nếu không được, hãy cấu hình lại DNS Google mặc định cho máy tính: <code>8.8.8.8</code> và <code>8.8.4.4</code>.
+                    </p>
+
+                    <h2>4. Sự Cố 4: Đèn PON Mất Hoặc Nhấp Nháy Màu Xanh</h2>
+                    <p>
+                        <strong>Cách khắc phục:</strong> Tắt nguồn Modem ONT, chờ 2 phút cho thiết bị giải phóng nhiệt rồi bật lại. Nếu sau 5 phút đèn PON không sáng đứng xanh, hãy gửi yêu cầu báo hỏng.
+                    </p>
+
+                    <h2>5. Sự Cố 5: Dịch Vụ Truyền Hình Viettel Bị Đứng Hình</h2>
+                    <p>
+                        <strong>Cách khắc phục:</strong> Rút dây cáp mạng LAN kết nối giữa Android TV Box và Modem ONT, cắm chặt lại vào đúng cổng LAN 1 hoặc LAN 2.
+                    </p>
+
+                    <!-- Share Section -->
+                    <div class="article-share-section">
+                        <span class="share-title"><i class="bi bi-share-fill me-2 text-danger"></i> Chia sẻ mẹo hay này:</span>
+                        <div class="share-buttons-list">
+                            <a href="#" class="btn-share btn-share-facebook"><i class="bi bi-facebook"></i></a>
+                            <a href="#" class="btn-share btn-share-zalo"><i class="bi bi-chat-quote-fill"></i></a>
+                            <a href="#" class="btn-share btn-share-email"><i class="bi bi-envelope-fill"></i></a>
+                        </div>
+                    </div>
+
+                </article>
+            </div>
+
+            <!-- SIDEBAR -->
+            <div class="col-lg-4 col-12">
+                <aside class="news-sidebar">
+                    <div class="sidebar-widget">
+                        <h4 class="widget-title"><i class="bi bi-fire text-danger me-2"></i> Bài Viết Nổi Bật</h4>
+                        <a asp-controller="Home" asp-action="ChiTietTin1" class="text-decoration-none text-dark d-block">
+                            <div class="mini-post-item">
+                                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=200" class="mini-post-img" alt="Tạo phiếu" />
+                                <div>
+                                    <h5 class="mini-post-title">Hướng Dẫn Tạo Phiếu Báo Sự Cố Nhanh</h5>
+                                    <span class="mini-post-date"><i class="bi bi-calendar3"></i> 20/07/2026</span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </aside>
+            </div>
+
+        </div>
+    </div>
+
+    
+
+</div>
+
+<partial name="~/Views/Shared/_Footer.cshtml" />
+
+@section Scripts {
+    <script src="~/assets/js/news-detail.js" asp-append-version="true"></script>
+}

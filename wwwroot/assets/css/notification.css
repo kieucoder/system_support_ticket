@@ -1,0 +1,167 @@
+/* ==========================================================================
+   FILE: wwwroot/assets/css/notification.css
+   DESCRIPTION: Dynamic Customer Notification Center Styles (Viettel Telecom)
+   ========================================================================== */
+
+/* 1. Header Notification Center Dropdown */
+.notification-center-wrapper {
+    position: relative;
+}
+
+.notif-bell-btn {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #475569;
+    font-size: 1.25rem;
+    padding: 8px 10px;
+    border-radius: 50%;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.25s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.notif-bell-btn:hover {
+    color: #D71920;
+    background-color: rgba(215, 25, 32, 0.08);
+}
+
+.notif-badge-counter {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    background: linear-gradient(135deg, #D71920 0%, #E53935 100%);
+    color: #FFFFFF;
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 2px 5px;
+    min-width: 18px;
+    height: 18px;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #FFFFFF;
+    box-shadow: 0 2px 6px rgba(215, 25, 32, 0.3);
+    animation: badgePulse 2s infinite;
+}
+
+@keyframes badgePulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+.notif-dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: 360px;
+    max-width: 90vw;
+    background: #FFFFFF;
+    border: 1px solid rgba(226, 232, 240, 0.9);
+    border-radius: 16px;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(215, 25, 32, 0.05);
+    display: none;
+    z-index: 1050;
+    overflow: hidden;
+    animation: notifSlideDown 0.25s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.notif-dropdown-menu.show {
+    display: block;
+}
+
+@keyframes notifSlideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Dropdown Items */
+.notif-dropdown-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 14px;
+    border-bottom: 1px solid #F1F5F9;
+    text-decoration: none;
+    transition: background 0.2s ease;
+}
+
+.notif-dropdown-item:last-child {
+    border-bottom: none;
+}
+
+.notif-dropdown-item:hover {
+    background-color: #FEF2F2;
+}
+
+.notif-dd-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 0.95rem;
+}
+
+.notif-dd-title {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #1E293B;
+    margin-bottom: 2px;
+    line-height: 1.3;
+}
+
+.notif-dd-text {
+    font-size: 0.76rem;
+    color: #64748B;
+    margin-bottom: 3px;
+    line-height: 1.35;
+}
+
+.notif-dd-time {
+    font-size: 0.7rem;
+    color: #94A3B8;
+}
+
+/* 2. Notification Page Layout (/Notification/Index) */
+.notif-feed-container {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.notif-item-card {
+    transition: all 0.25s ease;
+}
+
+.notif-item-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08) !important;
+}
+
+.grid-center {
+    display: grid;
+    place-items: center;
+}
+
+.fs-7 { font-size: 0.88rem !important; }
+.fs-8 { font-size: 0.78rem !important; }
+
+@media (max-width: 575.98px) {
+    .notif-dropdown-menu {
+        width: 320px;
+        right: -40px;
+    }
+}

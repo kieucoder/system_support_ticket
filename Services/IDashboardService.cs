@@ -5,6 +5,6 @@ namespace SupportTicketSysterm.Services
 {
     public interface IDashboardService
     {
-        Task<DashboardViewModel> GetDashboardDataAsync();
+        Task<DashboardViewModel> GetDashboardDataAsync(int? idNhanVien = null, string? role = null);
     }
 }

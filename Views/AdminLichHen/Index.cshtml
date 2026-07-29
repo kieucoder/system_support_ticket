@@ -1,0 +1,531 @@
+@model SupportTicketSysterm.ViewModels.AdminLichHenListViewModel
+@{
+    ViewData["Title"] = "Quản lý Lịch hẹn Kỹ thuật - Viettel TechSupport";
+    Layout = "~/Views/Shared/_LayoutStaff.cshtml";
+    var todayDate = DateOnly.FromDateTime(DateTime.Today);
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/assets/css/admin/lichhen.css" asp-append-version="true" />
+}
+
+<div class="container-fluid py-3">
+    <!-- ==========================================
+       1. HEADER SECTION
+       ========================================== -->
+    <div class="vt-admin-header d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
+        <div>
+            <h1 class="vt-admin-header-title">
+                <i class="bi bi-calendar-event"></i> Quản lý lịch hẹn kỹ thuật
+            </h1>
+            <p class="vt-admin-header-subtitle">
+                Quản lý, điều phối và theo dõi lịch hẹn hỗ trợ kỹ thuật của khách hàng.
+            </p>
+        </div>
+        <div class="d-flex align-items-center flex-wrap gap-2">
+            <a href="@Url.Action("TaoYeuCau", "LichHen")" class="vt-btn-primary">
+                <i class="fa-solid fa-plus"></i> Tạo lịch hẹn
+            </a>
+            <a href="@Url.Action("Index", "AdminLichHen")" class="vt-btn-secondary">
+                <i class="fa-solid fa-rotate me-1"></i> Làm mới
+            </a>
+            <button type="button" id="btnExportExcel" class="vt-btn-secondary">
+                <i class="fa-solid fa-file-excel text-success me-1"></i> Xuất Excel
+            </button>
+        </div>
+    </div>
+
+    <!-- ALERT NOTIFICATIONS -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show border-0 rounded-4 shadow-sm mb-4" role="alert" style="background-color: #F0FDF4; border-left: 4px solid #10B981 !important;">
+            <i class="fa-solid fa-circle-check me-2 fs-5 align-middle text-success"></i>
+            <span class="fw-semibold text-dark">@TempData["SuccessMessage"]</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show border-0 rounded-4 shadow-sm mb-4" role="alert" style="background-color: #FEF2F2; border-left: 4px solid #EF4444 !important;">
+            <i class="fa-solid fa-triangle-exclamation me-2 fs-5 align-middle text-danger"></i>
+            <span class="fw-semibold text-dark">@TempData["ErrorMessage"]</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <!-- ==========================================
+       2. KPI METRIC CARDS (6 RESPONSIVE GRID CARDS)
+       ========================================== -->
+    <div class="kpi-grid-6">
+        <!-- Tổng Lịch Hẹn -->
+        <a href="@Url.Action("Index", "AdminLichHen")" class="vt-kpi-card vt-kpi-total @(string.IsNullOrEmpty(Model.Filter.TrangThai) ? "active" : "")">
+            <div>
+                <div class="vt-kpi-info-title">Tổng lịch hẹn</div>
+                <div class="vt-kpi-info-val">@Model.TotalAppointments</div>
+            </div>
+            <div class="vt-kpi-icon">
+                <i class="fa-solid fa-calendar-days"></i>
+            </div>
+        </a>
+
+        <!-- Chờ Xác Nhận -->
+        <a href="@Url.Action("Index", "AdminLichHen", new { TrangThai = "ChoXacNhan" })" class="vt-kpi-card vt-kpi-pending @(Model.Filter.TrangThai == "ChoXacNhan" ? "active" : "")">
+            <div>
+                <div class="vt-kpi-info-title">Chờ xác nhận</div>
+                <div class="vt-kpi-info-val">@Model.PendingCount</div>
+            </div>
+            <div class="vt-kpi-icon">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+            </div>
+        </a>
+
+        <!-- Đã Xác Nhận -->
+        <a href="@Url.Action("Index", "AdminLichHen", new { TrangThai = "DaXacNhan" })" class="vt-kpi-card vt-kpi-confirmed @(Model.Filter.TrangThai == "DaXacNhan" ? "active" : "")">
+            <div>
+                <div class="vt-kpi-info-title">Đã xác nhận</div>
+                <div class="vt-kpi-info-val">@Model.ConfirmedCount</div>
+            </div>
+            <div class="vt-kpi-icon">
+                <i class="fa-solid fa-user-check"></i>
+            </div>
+        </a>
+
+        <!-- Đang Thực Hiện -->
+        <a href="@Url.Action("Index", "AdminLichHen", new { TrangThai = "DangThucHien" })" class="vt-kpi-card vt-kpi-in-progress @(Model.Filter.TrangThai == "DangThucHien" ? "active" : "")">
+            <div>
+                <div class="vt-kpi-info-title">Đang thực hiện</div>
+                <div class="vt-kpi-info-val">@Model.Items.Count(i => i.TrangThaiCode == "DangThucHien" || i.TrangThaiTitle == "Đang thực hiện")</div>
+            </div>
+            <div class="vt-kpi-icon">
+                <i class="fa-solid fa-screwdriver-wrench"></i>
+            </div>
+        </a>
+
+        <!-- Hoàn Thành -->
+        <a href="@Url.Action("Index", "AdminLichHen", new { TrangThai = "HoanThanh" })" class="vt-kpi-card vt-kpi-completed @(Model.Filter.TrangThai == "HoanThanh" ? "active" : "")">
+            <div>
+                <div class="vt-kpi-info-title">Hoàn thành</div>
+                <div class="vt-kpi-info-val">@Model.CompletedCount</div>
+            </div>
+            <div class="vt-kpi-icon">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+        </a>
+
+        <!-- Đã Hủy / Từ Chối -->
+        <a href="@Url.Action("Index", "AdminLichHen", new { TrangThai = "DaHuy" })" class="vt-kpi-card vt-kpi-cancelled @(Model.Filter.TrangThai == "DaHuy" ? "active" : "")">
+            <div>
+                <div class="vt-kpi-info-title">Đã hủy</div>
+                <div class="vt-kpi-info-val">@Model.CancelledCount</div>
+            </div>
+            <div class="vt-kpi-icon">
+                <i class="fa-solid fa-calendar-xmark"></i>
+            </div>
+        </a>
+    </div>
+
+    <!-- ==========================================
+       3. FILTER & SEARCH PANEL
+       ========================================== -->
+    <div class="vt-filter-card">
+        <form method="get" asp-controller="AdminLichHen" asp-action="Index" id="adminLichHenFilterForm" class="row g-3 align-items-end">
+            <!-- Tìm kiếm từ khóa -->
+            <div class="col-md-3">
+                <label class="vt-filter-label" for="txtTuKhoa">Tìm kiếm từ khóa</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-light border-end-0" style="border-radius: 10px 0 0 10px;"><i class="fa-solid fa-magnifying-glass text-muted"></i></span>
+                    <input type="text" id="txtTuKhoa" name="TuKhoa" value="@Model.Filter.TuKhoa" class="form-control vt-form-control border-start-0" placeholder="Mã phiếu, tên KH, KTV..." style="border-radius: 0 10px 10px 0 !important;" />
+                </div>
+            </div>
+
+            <!-- Trạng thái -->
+            <div class="col-md-2 col-6">
+                <label class="vt-filter-label" for="selectTrangThai">Trạng thái</label>
+                <select id="selectTrangThai" name="TrangThai" class="form-select vt-form-select">
+                    <option value="">-- Tất cả --</option>
+                    <option value="ChoXacNhan" selected="@(Model.Filter.TrangThai == "ChoXacNhan")">Chờ xác nhận</option>
+                    <option value="DaXacNhan" selected="@(Model.Filter.TrangThai == "DaXacNhan")">Đã xác nhận</option>
+                    <option value="DangThucHien" selected="@(Model.Filter.TrangThai == "DangThucHien")">Đang thực hiện</option>
+                    <option value="HoanThanh" selected="@(Model.Filter.TrangThai == "HoanThanh")">Hoàn thành</option>
+                    <option value="DaHuy" selected="@(Model.Filter.TrangThai == "DaHuy")">Đã hủy</option>
+                </select>
+            </div>
+
+            <!-- Kỹ thuật viên -->
+            <div class="col-md-3 col-6">
+                <label class="vt-filter-label" for="selectNhanVien">Kỹ thuật viên</label>
+                <select id="selectNhanVien" name="IdNhanVien" class="form-select vt-form-select" asp-items="@Model.NhanVienList">
+                    <option value="">-- Tất cả KTV --</option>
+                </select>
+            </div>
+
+            <!-- Từ ngày -->
+            <div class="col-md-2 col-6">
+                <label class="vt-filter-label" for="txtTuNgay">Từ ngày</label>
+                <input type="date" id="txtTuNgay" name="TuNgay" value="@(Model.Filter.TuNgay?.ToString("yyyy-MM-dd"))" class="form-control vt-form-control" />
+            </div>
+
+            <!-- Đến ngày -->
+            <div class="col-md-2 col-6">
+                <label class="vt-filter-label" for="txtDenNgay">Đến ngày</label>
+                <input type="date" id="txtDenNgay" name="DenNgay" value="@(Model.Filter.DenNgay?.ToString("yyyy-MM-dd"))" class="form-control vt-form-control" />
+            </div>
+
+            <!-- Buttons Action -->
+            <div class="col-12 d-flex justify-content-end gap-2 mt-3">
+                <button type="submit" class="vt-btn-primary">
+                    <i class="fa-solid fa-filter"></i> Lọc
+                </button>
+                <button type="button" id="btnResetFilter" class="vt-btn-secondary">
+                    <i class="fa-solid fa-xmark"></i> Đặt lại
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- ==========================================
+       4. DATATABLE LIST
+       ========================================== -->
+    <div class="vt-table-card">
+        <div class="vt-table-header-title">
+            <h6 class="fw-bold">
+                <i class="bi bi-list-task text-danger me-2"></i>Danh sách lịch hẹn (@Model.TotalItems kết quả)
+            </h6>
+        </div>
+
+        @if (!Model.Items.Any())
+        {
+            <!-- 5. EMPTY STATE -->
+            <div class="vt-empty-state">
+                <div class="vt-empty-illustration">
+                    <i class="bi bi-calendar-x"></i>
+                </div>
+                <h5 class="vt-empty-title">Chưa có lịch hẹn nào</h5>
+                <p class="vt-empty-desc">Không tìm thấy dữ liệu lịch hẹn phù hợp với điều kiện tìm kiếm hoặc hệ thống chưa ghi nhận lịch hẹn mới.</p>
+                <a href="@Url.Action("TaoYeuCau", "LichHen")" class="vt-btn-primary">
+                    <i class="fa-solid fa-plus me-1"></i> Tạo lịch hẹn
+                </a>
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="vt-datatable">
+                    <thead>
+                        <tr>
+                            <th class="ps-4">Mã Phiếu & Dịch Vụ</th>
+                            <th>Khách Hàng</th>
+                            <th>Kỹ Thuật Viên</th>
+                            <th>Thời Gian Hẹn</th>
+                            <th class="text-center">Trạng Thái</th>
+                            <th class="text-center pe-4" style="min-width: 170px;">Thao Tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Items)
+                        {
+                            bool isToday = item.NgayHen.HasValue && item.NgayHen.Value == todayDate;
+                            <tr>
+                                <!-- Mã phiếu & Dịch vụ -->
+                                <td class="ps-4">
+                                    <a href="@Url.Action("Details", "AdminLichHen", new { id = item.IdLichHen })" class="vt-ticket-code">
+                                        @item.MaPhieu
+                                    </a>
+                                    <div class="vt-ticket-title" title="@item.TieuDePhieu">@item.TieuDePhieu</div>
+                                </td>
+
+                                <!-- Khách hàng -->
+                                <td>
+                                    <div class="vt-user-cell">
+                                        <div>
+                                            <div class="vt-user-name">@item.TenKhachHang</div>
+                                            @if (!string.IsNullOrEmpty(item.SoDienThoaiKhachHang))
+                                            {
+                                                <div class="vt-user-sub"><i class="fa-solid fa-phone me-1 font-size-xs"></i>@item.SoDienThoaiKhachHang</div>
+                                            }
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <!-- Kỹ thuật viên -->
+                                <td>
+                                    @if (item.IdNhanVien.HasValue)
+                                    {
+                                        <div class="vt-user-cell">
+                                            <img src="https://ui-avatars.com/api/?name=@Uri.EscapeDataString(item.TenNhanVien)&background=D71920&color=fff&bold=true&size=36" class="vt-avatar" alt="KTV Avatar" />
+                                            <div>
+                                                <div class="vt-user-name">@item.TenNhanVien</div>
+                                                <span class="badge bg-light text-success border font-weight-normal font-size-xs" style="font-size: 0.72rem;"><i class="fa-solid fa-check me-1"></i>Đã phân công</span>
+                                            </div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-warning text-dark px-2 py-1" style="font-size: 0.75rem;"><i class="fa-solid fa-circle-exclamation me-1"></i>Chưa phân công</span>
+                                    }
+                                </td>
+
+                                <!-- Thời gian hẹn -->
+                                <td>
+                                    <div class="vt-time-badge">
+                                        <i class="bi bi-calendar-event text-danger"></i>
+                                        <span>@(item.NgayHen?.ToString("dd/MM/yyyy") ?? "—")</span>
+                                        
+                                    </div>
+                                    <div class="small text-muted mt-1">
+                                        <i class="bi bi-clock me-1"></i>@(item.GioBatDau?.ToString(@"hh\:mm") ?? "--") - @(item.GioKetThuc?.ToString(@"hh\:mm") ?? "--")
+                                    </div>
+                                </td>
+
+                               
+
+                                <!-- Trạng thái -->
+                                <td class="text-center">
+                                    <span class="vt-status-pill @item.TrangThaiCode">
+                                        @item.TrangThaiTitle
+                                    </span>
+                                </td>
+
+                                <!-- Thao tác -->
+                                 <td class="text-center pe-4">
+                                     <div class="d-flex align-items-center justify-content-center gap-1">
+                                         <!-- 1. Xem chi tiết -->
+                                         <a href="@Url.Action("Details", "AdminLichHen", new { id = item.IdLichHen })" class="btn-action-custom view" title="Xem chi tiết phiếu & lịch hẹn" data-bs-toggle="tooltip">
+                                             <i class="fa-solid fa-eye"></i>
+                                         </a>
+
+                                         @if (item.TrangThaiCode == "ChoXacNhan" || item.TrangThaiCode == "Chờ xác nhận")
+                                         {
+                                             <!-- 2. Button Phân công KTV & Duyệt -->
+                                             <button type="button" class="btn-action-custom confirm" onclick="openConfirmModal(@item.IdLichHen, '@item.MaPhieu', @(item.IdNhanVien ?? 0))" title="Xác nhận & Phân công KTV" data-bs-toggle="tooltip">
+                                                 <i class="fa-solid fa-user-plus"></i>
+                                             </button>
+                                         }
+                                         else if (item.TrangThaiCode == "DaXacNhan" || item.TrangThaiCode == "Đã xác nhận" || item.TrangThaiCode == "DangThucHien")
+                                         {
+                                             bool canComplete = !item.NgayHen.HasValue || item.NgayHen.Value <= todayDate;
+                                             if (canComplete)
+                                             {
+                                                 <!-- 2. Button Hoàn thành -->
+                                                 <button type="button" class="btn-action-custom complete" onclick="openCompleteModal(@item.IdLichHen, '@item.MaPhieu')" title="Đánh dấu hoàn thành lịch hẹn" data-bs-toggle="tooltip">
+                                                     <i class="fa-solid fa-check"></i>
+                                                 </button>
+                                             }
+                                             else
+                                             {
+                                                 <!-- 2. Button Hoàn thành (Bị khóa vì chưa đến ngày hẹn) -->
+                                                 <button type="button" class="btn-action-custom text-muted opacity-50 bg-light border-0" style="cursor: not-allowed;" title="Chưa đến ngày hẹn (@(item.NgayHen?.ToString("dd/MM/yyyy"))), không thể hoàn thành trước!" data-bs-toggle="tooltip" disabled>
+                                                     <i class="fa-solid fa-lock"></i>
+                                                 </button>
+                                             }
+                                         }
+
+                                         <!-- 3. Menu Thao Tác Khác (Dropdown) -->
+                                         <div class="dropdown d-inline-block">
+                                             <button type="button" class="btn-action-custom edit" data-bs-toggle="dropdown" aria-expanded="false" title="Thao tác khác" data-bs-toggle="tooltip">
+                                                 <i class="fa-solid fa-ellipsis-vertical"></i>
+                                             </button>
+                                             <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 font-size-sm" style="border-radius: 12px; font-size: 0.85rem; min-width: 180px; z-index: 1050;">
+                                                 <li>
+                                                     <a class="dropdown-item py-2" href="@Url.Action("Edit", "AdminLichHen", new { id = item.IdLichHen })">
+                                                         <i class="fa-solid fa-pen-to-square text-primary me-2"></i>Chỉnh sửa / Dời lịch
+                                                     </a>
+                                                 </li>
+                                                 <li>
+                                                     <a class="dropdown-item py-2" href="@Url.Action("Details", "AdminLichHen", new { id = item.IdLichHen })">
+                                                         <i class="fa-solid fa-circle-info text-info me-2"></i>Xem thông tin chi tiết
+                                                     </a>
+                                                 </li>
+                                                 @if (item.TrangThaiCode == "ChoXacNhan" || item.TrangThaiCode == "Chờ xác nhận")
+                                                 {
+                                                     <li><hr class="dropdown-divider"></li>
+                                                     <li>
+                                                         <a class="dropdown-item py-2 text-danger" href="javascript:void(0);" onclick="openRejectModal(@item.IdLichHen, '@item.MaPhieu')">
+                                                             <i class="fa-solid fa-xmark me-2"></i>Từ chối lịch hẹn
+                                                         </a>
+                                                     </li>
+                                                 }
+                                                 else if (item.TrangThaiCode == "DaXacNhan" || item.TrangThaiCode == "Đã xác nhận" || item.TrangThaiCode == "DangThucHien")
+                                                 {
+                                                     <li><hr class="dropdown-divider"></li>
+                                                     <li>
+                                                         <a class="dropdown-item py-2 text-danger" href="javascript:void(0);" onclick="openCancelModal(@item.IdLichHen, '@item.MaPhieu')">
+                                                             <i class="fa-solid fa-ban me-2"></i>Hủy lịch hẹn
+                                                         </a>
+                                                     </li>
+                                                 }
+                                             </ul>
+                                         </div>
+                                     </div>
+                                 </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- PAGINATION FOOTER -->
+            @if (Model.TotalPages > 1)
+            {
+                <div class="p-3 bg-light d-flex align-items-center justify-content-between border-top">
+                    <div class="small text-muted">
+                        Hiển thị <b>@((Model.PageIndex - 1) * Model.PageSize + 1)</b> - <b>@(Math.Min(Model.PageIndex * Model.PageSize, Model.TotalItems))</b> trên tổng số <b>@Model.TotalItems</b> lịch hẹn
+                    </div>
+                    <nav aria-label="Điều hướng phân trang">
+                        <ul class="pagination pagination-sm m-0">
+                            <li class="page-item @(Model.PageIndex <= 1 ? "disabled" : "")">
+                                <a class="page-link" href="@Url.Action("Index", "AdminLichHen", new { Page = Model.PageIndex - 1, TuKhoa = Model.Filter.TuKhoa, TrangThai = Model.Filter.TrangThai, IdNhanVien = Model.Filter.IdNhanVien })">
+                                    <i class="fa-solid fa-chevron-left"></i>
+                                </a>
+                            </li>
+                            @for (int p = 1; p <= Model.TotalPages; p++)
+                            {
+                                <li class="page-item @(p == Model.PageIndex ? "active" : "")">
+                                    <a class="page-link" href="@Url.Action("Index", "AdminLichHen", new { Page = p, TuKhoa = Model.Filter.TuKhoa, TrangThai = Model.Filter.TrangThai, IdNhanVien = Model.Filter.IdNhanVien })">@p</a>
+                                </li>
+                            }
+                            <li class="page-item @(Model.PageIndex >= Model.TotalPages ? "disabled" : "")">
+                                <a class="page-link" href="@Url.Action("Index", "AdminLichHen", new { Page = Model.PageIndex + 1, TuKhoa = Model.Filter.TuKhoa, TrangThai = Model.Filter.TrangThai, IdNhanVien = Model.Filter.IdNhanVien })">
+                                    <i class="fa-solid fa-chevron-right"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            }
+        }
+    </div>
+</div>
+
+<!-- ==========================================
+   MODAL POPUPS
+   ========================================== -->
+<!-- MODAL 1: XÁC NHẬN & PHÂN CÔNG -->
+<div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content vt-modal-content">
+            <form asp-controller="AdminLichHen" asp-action="Confirm" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="IdLichHen" id="confirmIdLichHen" />
+
+                <div class="modal-header bg-success text-white border-0 p-4">
+                    <h5 class="modal-title fw-bold m-0" id="confirmModalLabel">
+                        <i class="fa-solid fa-user-check me-2"></i>Xác nhận & Phân công KTV
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <p class="text-muted small mb-3">Phân công kỹ thuật viên phụ trách lịch hẹn cho phiếu <strong id="confirmMaPhieu" class="text-primary"></strong>.</p>
+                    
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-dark small">Chọn kỹ thuật viên <span class="text-danger">*</span></label>
+                        <select name="IdNhanVien" id="confirmIdNhanVien" class="form-select vt-form-select" required asp-items="@Model.NhanVienList">
+                            <option value="">-- Chọn kỹ thuật viên --</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-dark small">Ghi chú phân công (nếu có)</label>
+                        <textarea name="GhiChu" class="form-control rounded-3" rows="2" placeholder="Nhập ghi chú cho KTV..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer vt-modal-footer">
+                    <button type="button" class="vt-btn-secondary" data-bs-dismiss="modal">Hủy bỏ</button>
+                    <button type="submit" class="vt-btn-primary bg-success"><i class="fa-solid fa-check me-1"></i> Xác nhận & Phân công</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL 2: TỪ CHỐI -->
+<div class="modal fade" id="rejectModal" tabindex="-1" aria-labelledby="rejectModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content vt-modal-content">
+            <form asp-controller="AdminLichHen" asp-action="Reject" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="IdLichHen" id="rejectIdLichHen" />
+
+                <div class="modal-header bg-danger text-white border-0 p-4">
+                    <h5 class="modal-title fw-bold m-0" id="rejectModalLabel">
+                        <i class="fa-solid fa-xmark me-2"></i>Từ chối lịch hẹn
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <p class="text-muted small mb-3">Vui lòng nhập lý do từ chối lịch hẹn cho phiếu <strong id="rejectMaPhieu" class="text-danger"></strong>.</p>
+                    
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-dark small">Lý do từ chối <span class="text-danger">*</span></label>
+                        <textarea name="LyDoHuy" class="form-control rounded-3" rows="3" required placeholder="Nhập lý do từ chối..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer vt-modal-footer">
+                    <button type="button" class="vt-btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    <button type="submit" class="vt-btn-primary"><i class="fa-solid fa-ban me-1"></i> Xác nhận từ chối</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL 3: HỦY LỊCH HẸN -->
+<div class="modal fade" id="cancelModal" tabindex="-1" aria-labelledby="cancelModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content vt-modal-content">
+            <form asp-controller="AdminLichHen" asp-action="Cancel" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="IdLichHen" id="cancelIdLichHen" />
+
+                <div class="modal-header bg-danger text-white border-0 p-4">
+                    <h5 class="modal-title fw-bold m-0" id="cancelModalLabel">
+                        <i class="fa-solid fa-ban me-2"></i>Hủy lịch hẹn đã xác nhận
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <p class="text-muted small mb-3">Bạn có chắc chắn muốn hủy lịch hẹn của phiếu <strong id="cancelMaPhieu" class="text-danger"></strong> không?</p>
+                    
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-dark small">Lý do hủy lịch <span class="text-danger">*</span></label>
+                        <textarea name="LyDoHuy" class="form-control rounded-3" rows="3" required placeholder="Nhập lý do hủy..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer vt-modal-footer">
+                    <button type="button" class="vt-btn-secondary" data-bs-dismiss="modal">Hủy bỏ</button>
+                    <button type="submit" class="vt-btn-primary"><i class="fa-solid fa-trash me-1"></i> Xác nhận hủy</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL 4: HOÀN THÀNH LỊCH HẸN -->
+<div class="modal fade" id="completeModal" tabindex="-1" aria-labelledby="completeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content vt-modal-content">
+            <form asp-controller="AdminLichHen" asp-action="Complete" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="idLichHen" id="completeIdLichHen" />
+
+                <div class="modal-header bg-success text-white border-0 p-4 text-center d-flex flex-column align-items-center">
+                    <div class="rounded-circle bg-white text-success d-flex align-items-center justify-content-center shadow mb-2" style="width: 56px; height: 56px;">
+                        <i class="fa-solid fa-circle-check fs-2"></i>
+                    </div>
+                    <h5 class="modal-title fw-bold m-0" id="completeModalLabel">Hoàn thành buổi lịch hẹn</h5>
+                </div>
+                <div class="modal-body p-4 text-center bg-light">
+                    <p class="text-muted small mb-0">Buổi hỗ trợ kỹ thuật cho phiếu <strong id="completeMaPhieu" class="text-primary"></strong> sẽ được đánh dấu hoàn thành và đồng bộ trạng thái phiếu.</p>
+                </div>
+                <div class="modal-footer vt-modal-footer justify-content-center gap-2">
+                    <button type="button" class="vt-btn-secondary" data-bs-dismiss="modal">Hủy bỏ</button>
+                    <button type="submit" class="vt-btn-primary bg-success"><i class="fa-solid fa-check me-1"></i> Đã hoàn thành</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/assets/js/admin/lichhen.js" asp-append-version="true"></script>
+}

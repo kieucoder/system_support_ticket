@@ -1,0 +1,391 @@
+@model SupportTicketSysterm.ViewModels.TaoLichHenViewModel
+@{
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+    ViewData["Title"] = "Đặt Lịch Hỗ Trợ Kỹ Thuật - Viettel Telecom";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/assets/css/appointment.css" asp-append-version="true" />
+}
+
+<div class="appointment-page-wrapper">
+
+    <!-- ==========================================
+       1. HERO BANNER SECTION
+       ========================================== -->
+    <section class="apt-hero">
+        <div class="apt-hero-overlay"></div>
+        <div class="apt-hero-particles"></div>
+        <div class="apt-hero-content">
+            <span class="apt-hero-subtitle">
+                <i class="bi bi-calendar-check-fill me-1"></i> VIETTEL TELECOM CẦN THƠ
+            </span>
+            <h1 class="apt-hero-title">
+                ĐẶT LỊCH HỖ TRỢ <span>KỸ THUẬT</span>
+            </h1>
+            <p class="apt-hero-desc">
+                Khách hàng chủ động lựa chọn phiếu hỗ trợ, chọn ngày và khung giờ kỹ thuật viên đến kiểm tra tận nơi phù hợp với thời gian biểu của bạn.
+            </p>
+            <div class="apt-hero-breadcrumb">
+                <a asp-controller="Customers" asp-action="TrangChu">
+                    <i class="bi bi-house-door-fill me-1"></i> Trang chủ
+                </a>
+                <span class="separator">></span>
+                <a asp-controller="Customers" asp-action="PhieuCuaToi">Phiếu của tôi</a>
+                <span class="separator">></span>
+                <span class="current">Đặt lịch hẹn</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================
+       2. MAIN CONTENT AREA (2 COLUMNS)
+       ========================================== -->
+    <section class="apt-main-section py-4">
+        <div class="container-fluid px-lg-5">
+
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+                    <i class="bi bi-exclamation-octagon-fill me-2"></i> @TempData["ErrorMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+
+            <div class="row g-4">
+
+                <!-- =========================================================
+                   COL 1 (LEFT): DANH SÁCH PHIẾU HỖ TRỢ ĐỦ ĐIỀU KIỆN
+                   ========================================================= -->
+                <div class="col-lg-5 col-12">
+                    <div class="apt-card p-4 h-100" data-aos="fade-up">
+                        <div class="apt-card-header d-flex align-items-center justify-content-between mb-3 pb-3 border-bottom">
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="apt-icon-circle bg-red-soft">
+                                    <i class="bi bi-ticket-perforated-fill text-danger fs-4"></i>
+                                </div>
+                                <div>
+                                    <h2 class="apt-card-title fs-5 fw-bold m-0 text-dark">Danh Sách Phiếu Hỗ Trợ</h2>
+                                    <span class="apt-card-subtitle text-muted fs-8">Chọn phiếu sự cố bạn muốn đăng ký lịch hẹn</span>
+                                </div>
+                            </div>
+                            <span class="badge bg-danger rounded-pill px-3 py-2 fs-8">
+                                @(Model.DanhSachPhieuEligible?.Count ?? 0) phiếu sẵn sàng
+                            </span>
+                        </div>
+
+                        <div class="ticket-cards-scroll-wrapper pe-1" style="max-height: 720px; overflow-y: auto;">
+                            @if (Model.DanhSachPhieuEligible == null || !Model.DanhSachPhieuEligible.Any())
+                            {
+                                <div class="text-center py-5">
+                                    <i class="bi bi-inbox text-muted display-4 d-block mb-3"></i>
+                                    <h5 class="fw-bold text-secondary">Không có phiếu nào cần đặt lịch</h5>
+                                    <p class="text-muted fs-8 max-w-300 mx-auto">
+                                        Tất cả phiếu hỗ trợ của bạn đã được sắp xếp lịch hẹn hoặc đã xử lý hoàn tất.
+                                    </p>
+                                    <a asp-controller="Ticket" asp-action="TaoPhieu" class="btn btn-sm btn-outline-danger mt-2">
+                                        <i class="bi bi-plus-lg me-1"></i> Tạo phiếu mới
+                                    </a>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="d-flex flex-column gap-3">
+                                    @foreach (var item in Model.DanhSachPhieuEligible)
+                                    {
+                                        <div class="ticket-select-card @(item.IsSelected ? "selected-active" : "")"
+                                             data-id="@item.IdPhieu"
+                                             onclick="selectTicketCard(@item.IdPhieu, this)">
+                                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                                <span class="ticket-select-badge">@item.MaPhieu</span>
+                                                <span class="badge @item.TrangThaiBadgeClass fs-9 px-2 py-1" id="ticket-badge-@item.IdPhieu">
+                                                    <i class="bi @item.TrangThaiIcon me-1"></i> @item.TrangThaiPhieu
+                                                </span>
+                                            </div>
+                                            <h6 class="fw-bold text-dark mb-1 text-truncate" title="@item.TieuDe">@item.TieuDe</h6>
+                                            <div class="d-flex align-items-center gap-2 text-muted fs-8 mb-2">
+                                                <i class="bi bi-tools text-danger"></i>
+                                                <span>Dịch vụ: <strong>@item.TenDichVu</strong></span>
+                                            </div>
+                                            <div class="d-flex justify-content-between align-items-center pt-2 border-top">
+                                                <span class="text-muted fs-9">
+                                                    <i class="bi bi-calendar3 me-1"></i> Tạo: @(item.NgayTao?.ToString("dd/MM/yyyy") ?? "--")
+                                                </span>
+                                                <button type="button" class="btn btn-sm btn-outline-danger px-3 py-1 font-weight-bold">
+                                                    <i class="bi bi-check2-circle me-1"></i> Chọn phiếu
+                                                </button>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <!-- =========================================================
+                   COL 2 (RIGHT): FORM ĐẶT LỊCH HẸN & TÓM TẮT REALTIME
+                   ========================================================= -->
+                <div class="col-lg-7 col-12">
+
+                    <!-- CARD 1: THÔNG TIN PHIẾU ĐANG CHỌN -->
+                    <div class="apt-card apt-ticket-card mb-4" data-aos="fade-up">
+                        <div class="apt-card-header d-flex align-items-center justify-content-between">
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="apt-icon-circle bg-red-soft">
+                                    <i class="bi bi-info-circle-fill text-danger fs-5"></i>
+                                </div>
+                                <div>
+                                    <h2 class="apt-card-title m-0">Phiếu Hỗ Trợ Đang Chọn</h2>
+                                    <span class="apt-card-subtitle">Thông tin sự cố được chọn đặt lịch</span>
+                                </div>
+                            </div>
+                            <span class="apt-status-badge badge @Model.TrangThaiBadgeClass px-3 py-2 fs-8" id="displayTrangThaiPhieu">
+                                <i class="bi @Model.TrangThaiIcon me-1"></i> @Model.TrangThaiPhieu
+                            </span>
+                        </div>
+                        <div class="apt-card-body">
+                            <div class="row g-3">
+                                <div class="col-sm-6 col-12">
+                                    <div class="apt-info-item">
+                                        <span class="info-label">Mã phiếu</span>
+                                        <span class="info-value font-mono text-danger fw-bold fs-6" id="displayMaPhieu">@(Model.MaPhieu ?? $"#TK-{Model.IdPhieu}")</span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-12">
+                                    <div class="apt-info-item">
+                                        <span class="info-label">Dịch vụ yêu cầu</span>
+                                        <span class="info-value fw-bold" id="displayTenDichVu">@(Model.TenDichVu ?? "Dịch vụ kỹ thuật Viettel")</span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-12">
+                                    <div class="apt-info-item">
+                                        <span class="info-label">Khách hàng</span>
+                                        <span class="info-value text-dark" id="displayTenKhachHang">@(Model.TenKhachHang ?? "Khách hàng")</span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-12">
+                                    <div class="apt-info-item">
+                                        <span class="info-label">KTV Phụ trách</span>
+                                        <div id="displayKtvContainer">
+                                            @if (Model.IsConfirmed)
+                                            {
+                                                <span class="info-value text-success font-weight-bold d-block" id="displayTenNhanVien">
+                                                    <i class="bi bi-person-check-fill me-1"></i> @Model.TenNhanVien
+                                                </span>
+                                                <div class="small mt-1 text-secondary" id="displaySoDienThoaiNV">
+                                                    <i class="bi bi-telephone-fill text-danger me-1"></i> SĐT: <a href="tel:@Model.SoDienThoaiNV" class="text-danger fw-bold">@(Model.SoDienThoaiNV ?? "--")</a>
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <span class="info-value text-muted d-block" id="displayTenNhanVien">
+                                                    <i class="bi bi-info-circle me-1"></i> Chưa phân công (Chờ Admin xác nhận)
+                                                </span>
+                                                <div class="small mt-1 text-secondary d-none" id="displaySoDienThoaiNV"></div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CARD 2: FORM NHẬP THỜI GIAN VÀ ĐỊA ĐIỂM -->
+                    <div class="apt-card apt-form-card mb-4" id="appointmentFormCard" data-aos="fade-up" data-aos-delay="100">
+                        <div class="apt-card-header d-flex align-items-center gap-2">
+                            <div class="apt-icon-circle bg-blue-soft">
+                                <i class="bi bi-calendar-plus-fill text-primary fs-5"></i>
+                            </div>
+                            <div>
+                                <h2 class="apt-card-title m-0">Chọn Thời Gian & Địa Điểm Hỗ Trợ</h2>
+                                <span class="apt-card-subtitle">Nhập thời gian và địa điểm kỹ thuật viên đến hỗ trợ</span>
+                            </div>
+                        </div>
+                        <div class="apt-card-body">
+                            <form method="post" id="appointmentForm">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" asp-for="IdPhieu" id="hiddenIdPhieuInput" />
+                                <input type="hidden" asp-for="GioBatDau" id="gioBatDauInput" value="@Model.GioBatDau.ToString("HH:mm")" />
+                                <input type="hidden" asp-for="GioKetThuc" id="gioKetThucInput" value="@Model.GioKetThuc.ToString("HH:mm")" />
+
+                                <div asp-validation-summary="ModelOnly" class="alert alert-danger mb-3" role="alert"></div>
+
+                                <!-- 1. Chọn ngày hỗ trợ -->
+                                <div class="form-group mb-4">
+                                    <label asp-for="NgayHen" class="form-label fw-bold">
+                                        <i class="bi bi-calendar3 me-1 text-danger"></i> 1. Chọn ngày hỗ trợ kỹ thuật <span class="text-danger">*</span>
+                                    </label>
+                                    <div class="apt-input-wrapper">
+                                        <input type="date" asp-for="NgayHen" id="aptDateInput" class="form-control apt-custom-input" min="@DateTime.Today.ToString("yyyy-MM-dd")" required />
+                                        <i class="bi bi-calendar-event apt-input-icon"></i>
+                                    </div>
+                                    <span asp-validation-for="NgayHen" class="text-danger font-size-xs"></span>
+                                </div>
+
+                                <!-- 2. Chọn khung giờ -->
+                                <div class="form-group mb-4">
+                                    <div class="d-flex align-items-center justify-content-between mb-2">
+                                        <label class="form-label fw-bold m-0">
+                                            <i class="bi bi-clock-history me-1 text-danger"></i> 2. Chọn khung giờ phù hợp <span class="text-danger">*</span>
+                                        </label>
+                                    </div>
+
+                                    <div class="apt-time-slots-grid" id="timeSlotsGrid">
+                                        <div class="time-slot-chip active" data-slot="08:00 - 10:00" data-status="available">
+                                            <div class="slot-time">08:00 - 10:00</div>
+                                            <div class="slot-status status-available"><i class="bi bi-check-circle-fill me-1"></i>Còn trống</div>
+                                        </div>
+                                        <div class="time-slot-chip" data-slot="10:00 - 12:00" data-status="available">
+                                            <div class="slot-time">10:00 - 12:00</div>
+                                            <div class="slot-status status-available"><i class="bi bi-check-circle-fill me-1"></i>Còn trống</div>
+                                        </div>
+                                        <div class="time-slot-chip" data-slot="13:00 - 15:00" data-status="available">
+                                            <div class="slot-time">13:00 - 15:00</div>
+                                            <div class="slot-status status-available"><i class="bi bi-check-circle-fill me-1"></i>Còn trống</div>
+                                        </div>
+                                        <div class="time-slot-chip" data-slot="15:00 - 17:00" data-status="available">
+                                            <div class="slot-time">15:00 - 17:00</div>
+                                            <div class="slot-status status-available"><i class="bi bi-check-circle-fill me-1"></i>Còn trống</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 3. Địa chỉ hỗ trợ -->
+                                <div class="form-group mb-4">
+                                    <label asp-for="DiaChiHoTro" class="form-label fw-bold">
+                                        <i class="bi bi-geo-alt-fill me-1 text-danger"></i> 3. Địa chỉ kỹ thuật viên đến hỗ trợ <span class="text-danger">*</span>
+                                    </label>
+                                    <textarea asp-for="DiaChiHoTro" id="aptAddressInput" class="form-control apt-custom-textarea" rows="3" placeholder="Nhập số nhà, tên đường, phường/xã, quận/huyện..."></textarea>
+                                    <span asp-validation-for="DiaChiHoTro" class="text-danger font-size-xs"></span>
+                                </div>
+
+                                <!-- 4. Ghi chú thêm -->
+                                <div class="form-group mb-4">
+                                    <label asp-for="GhiChu" class="form-label fw-bold">
+                                        <i class="bi bi-pencil-square me-1 text-danger"></i> 4. Ghi chú bổ sung (nếu có)
+                                    </label>
+                                    <textarea asp-for="GhiChu" id="aptNotesInput" class="form-control apt-custom-textarea" rows="2" placeholder="Ghi chú thêm chỉ dẫn vị trí, Modem hoặc yêu cầu đặc biệt..."></textarea>
+                                </div>
+
+                                <!-- CARD TÓM TẮT SIDEBAR TRONG FORM -->
+                                <div class="apt-summary-card p-3 bg-light rounded-3 border mb-4">
+                                    <h6 class="fw-bold text-dark mb-3"><i class="bi bi-file-earmark-check-fill text-danger me-1"></i> Tóm Tắt Yêu Cầu Lịch Hẹn</h6>
+                                    <div class="row g-2 fs-8">
+                                        <div class="col-sm-6 col-12">
+                                            <span class="text-muted">Mã phiếu:</span>
+                                            <strong class="text-danger ms-1" id="summaryMaPhieuVal">@(Model.MaPhieu ?? $"#TK-{Model.IdPhieu}")</strong>
+                                        </div>
+                                        <div class="col-sm-6 col-12">
+                                            <span class="text-muted">Ngày hẹn:</span>
+                                            <strong class="text-dark ms-1" id="summaryDateVal">@Model.NgayHen.ToString("dd/MM/yyyy")</strong>
+                                        </div>
+                                        <div class="col-sm-6 col-12">
+                                            <span class="text-muted">Khung giờ:</span>
+                                            <strong class="text-danger ms-1" id="summaryTimeVal">@Model.GioBatDau.ToString("HH:mm") - @Model.GioKetThuc.ToString("HH:mm")</strong>
+                                        </div>
+                                        <div class="col-sm-6 col-12">
+                                            <span class="text-muted">Trạng thái:</span>
+                                            <span class="badge bg-warning text-dark ms-1">Chờ xác nhận</span>
+                                        </div>
+                                        <div class="col-12 mt-2 pt-2 border-top">
+                                            <span class="text-muted">Địa chỉ:</span>
+                                            <strong class="text-dark ms-1" id="summaryAddressVal">@(Model.DiaChiHoTro ?? "Chưa nhập địa chỉ")</strong>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Submit Action -->
+                                <button type="submit" class="btn btn-apt-confirm btn-ripple w-100 justify-content-center py-3 fs-6" @(Model.DanhSachPhieuEligible == null || !Model.DanhSachPhieuEligible.Any() ? "disabled" : "")>
+                                    <i class="bi bi-calendar-check-fill me-2"></i> Gửi Yêu Cầu Lịch Hẹn
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+</div>
+
+<!-- =========================================================
+   VIETTEL TELECOM SUCCESS MODAL POPUP (SPA EXPERIENCE)
+   ========================================================= -->
+<div class="modal fade" id="successAppointmentModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered modal-md">
+        <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden" style="animation: modalPopIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);">
+            <div class="modal-header border-0 bg-success text-white p-4 text-center d-flex flex-column align-items-center position-relative">
+                <div class="rounded-circle bg-white text-success d-flex align-items-center justify-content-center shadow mb-2" style="width: 64px; height: 64px;">
+                    <i class="bi bi-check-lg display-5 fw-bold"></i>
+                </div>
+                <h4 class="fw-bold m-0 text-white">Đặt Lịch Hẹn Thành Công</h4>
+                <p class="small text-white-50 m-0 mt-1">Viettel Telecom đã ghi nhận yêu cầu của bạn</p>
+                <button type="button" class="btn-close btn-close-white position-absolute top-0 end-0 m-3" onclick="closeSuccessModal()"></button>
+            </div>
+
+            <div class="modal-body p-4 bg-light">
+                <div class="alert alert-success-soft text-center small mb-3 border-0 rounded-3 p-3 text-dark">
+                    <i class="bi bi-info-circle-fill text-success me-1"></i>
+                    Yêu cầu lịch hẹn của bạn đã được gửi thành công. Kỹ thuật viên sẽ xác nhận trong thời gian sớm nhất.
+                </div>
+
+                <!-- SQL-Backed Data Grid -->
+                <div class="card border-0 shadow-sm rounded-3 p-3 bg-white">
+                    <div class="row g-2 fs-8">
+                        <div class="col-6">
+                            <span class="text-muted d-block">Mã lịch hẹn:</span>
+                            <strong class="text-danger font-mono fs-7" id="popupMaLichHen">--</strong>
+                        </div>
+                        <div class="col-6">
+                            <span class="text-muted d-block">Mã phiếu:</span>
+                            <strong class="text-dark font-mono fs-7" id="popupMaPhieu">--</strong>
+                        </div>
+                        <div class="col-6">
+                            <span class="text-muted d-block">Ngày hẹn:</span>
+                            <strong class="text-dark" id="popupNgayHen">--</strong>
+                        </div>
+                        <div class="col-6">
+                            <span class="text-muted d-block">Khung giờ:</span>
+                            <strong class="text-danger" id="popupKhungGio">--</strong>
+                        </div>
+                        <div class="col-12 border-top pt-2 mt-1">
+                            <span class="text-muted d-block">Trạng thái:</span>
+                            <span class="badge bg-warning text-dark px-3 py-1" id="popupTrangThai">Chờ xác nhận</span>
+                        </div>
+                        <div class="col-12 border-top pt-2 mt-1">
+                            <span class="text-muted d-block">Địa chỉ hỗ trợ:</span>
+                            <strong class="text-dark" id="popupDiaChi">--</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer border-0 p-3 bg-white justify-content-center gap-2">
+                <button type="button" class="btn btn-outline-secondary px-4 py-2 rounded-pill fw-bold" onclick="closeSuccessModal()">
+                    <i class="bi bi-x-circle me-1"></i> Đóng
+                </button>
+                <button type="button" class="btn btn-danger px-4 py-2 rounded-pill fw-bold btn-ripple" onclick="viewAppointmentSummary()">
+                    <i class="bi bi-eye-fill me-1"></i> Xem lịch hẹn
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    @@keyframes modalPopIn {
+        from { opacity: 0; transform: scale(0.9); }
+        to { opacity: 1; transform: scale(1); }
+    }
+    .alert-success-soft {
+        background-color: #ECFDF5;
+        border: 1px solid #A7F3D0;
+    }
+</style>
+
+@section Scripts {
+    <script src="~/assets/js/appointment.js" asp-append-version="true"></script>
+}

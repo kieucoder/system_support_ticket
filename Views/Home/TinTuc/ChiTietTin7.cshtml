@@ -1,0 +1,119 @@
+@{
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+    ViewData["Title"] = "Hướng Dẫn Bảo Mật Tài Khoản Mã OTP Email - Viettel Cần Thơ";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/assets/css/news-detail.css" asp-append-version="true" />
+}
+
+<div class="reading-progress-bar"></div>
+
+<div class="news-detail-wrapper">
+
+    <section class="detail-header-section">
+        <div class="container">
+            <div class="detail-breadcrumb">
+                <a asp-controller="Customers" asp-action="TrangChu"><i class="bi bi-house-door-fill me-1"></i> Trang chủ</a>
+                <span>></span>
+                <a asp-controller="Home" asp-action="TinTuc">Tin tức</a>
+                <span>></span>
+                <span class="text-dark">Bảo mật tài khoản</span>
+            </div>
+
+            <h1 class="detail-article-title">
+                Hệ Thống Bổ Sung Tính Năng Xác Thực Mã OTP Email Tăng Cường Bảo Mật Chuẩn ISO 27001
+            </h1>
+
+            <div class="detail-meta-bar">
+                <span class="detail-author-badge">
+                    <i class="bi bi-shield-lock-fill"></i> Ban An Ninh Thông Tin Viettel
+                </span>
+                <span class="detail-meta-item"><i class="bi bi-calendar3 text-danger"></i> 14/07/2026</span>
+                <span class="detail-meta-item"><i class="bi bi-clock text-danger"></i> 5 phút đọc</span>
+                <span class="detail-meta-item"><i class="bi bi-eye text-danger"></i> 2,410 lượt xem</span>
+                <span class="badge bg-danger">Hệ Thống</span>
+            </div>
+        </div>
+    </section>
+
+    <div class="container py-5">
+        <div class="row g-4">
+
+            <div class="col-lg-8 col-12">
+                <article class="article-content">
+
+                    <div class="detail-cover-container">
+                        <img src="https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&q=80&w=1200" alt="Bảo mật tài khoản mã OTP email" />
+                    </div>
+                    <p class="detail-cover-caption">Xác thực 2 lớp qua mã OTP gửi về Email bảo vệ tuyệt đối dữ liệu tài khoản khách hàng</p>
+
+                    <p class="lead fw-bold text-dark mb-4">
+                        Nhằm tuân thủ các quy định khắt khe về an toàn thông tin mạng và bảo vệ dữ liệu cá nhân khách hàng, hệ thống TechSupport Viettel đã hoàn tất cập nhật tính năng <span class="text-highlight">Xác Thực Mã OTP Qua Email</span> khi đăng ký tài khoản và khôi phục mật khẩu.
+                    </p>
+
+                    <h2>1. Mã OTP Email Hoạt Động Như Thế Nào?</h2>
+                    <p>
+                        Mỗi khi khách hàng thực hiện các thao tác quan trọng như Đăng ký tài khoản mới, Đổi mật khẩu hoặc Xác minh Email cá nhân, hệ thống sẽ tự động tạo một mã OTP ngẫu nhiên gồm 6 chữ số có hiệu lực trong vòng 5 phút và gửi trực tiếp tới hòm thư điện tử của bạn.
+                    </p>
+
+                    <h2>2. Các Bước Kích Hoạt & Xác Thực Email Tài Khoản</h2>
+                    <ol>
+                        <li><strong>Bước 1:</strong> Đăng nhập tài khoản cá nhân trên website TechSupport Viettel.</li>
+                        <li><strong>Bước 2:</strong> Vào mục <em>Thông tin cá nhân</em> -> Bấm <em>"Xác thực Email"</em>.</li>
+                        <li><strong>Bước 3:</strong> Mở ứng dụng Mail (Gmail/Outlook/Yahoo) để lấy mã 6 chữ số từ thư xác nhận của Viettel.</li>
+                        <li><strong>Bước 4:</strong> Nhập mã vào ô xác thực trên website để hoàn tất kích hoạt tài khoản chính chủ.</li>
+                    </ol>
+
+                    <div class="callout-box">
+                        <h5><i class="bi bi-shield-check me-2"></i> Khuyên Cáo An Toàn</h5>
+                        <p>
+                            • Không bao giờ chia sẻ mã OTP Email cho bất kỳ ai kể cả nhân viên Viettel.<br />
+                            • Kiểm tra kỹ địa chỉ gửi email xác nhận đúng tên miền <strong>@@viettel.com.vn</strong>.<br />
+                            • Đặt mật khẩu Email cá nhân mạnh và kích hoạt bảo mật 2 lớp cho hòm thư của bạn.
+                        </p>
+                    </div>
+
+                    <!-- Share Section -->
+                    <div class="article-share-section">
+                        <span class="share-title"><i class="bi bi-share-fill me-2 text-danger"></i> Chia sẻ bài viết:</span>
+                        <div class="share-buttons-list">
+                            <a href="#" class="btn-share btn-share-facebook"><i class="bi bi-facebook"></i></a>
+                            <a href="#" class="btn-share btn-share-zalo"><i class="bi bi-chat-quote-fill"></i></a>
+                            <a href="#" class="btn-share btn-share-email"><i class="bi bi-envelope-fill"></i></a>
+                        </div>
+                    </div>
+
+                </article>
+            </div>
+
+            <!-- SIDEBAR -->
+            <div class="col-lg-4 col-12">
+                <aside class="news-sidebar">
+                    <div class="sidebar-widget">
+                        <h4 class="widget-title"><i class="bi bi-fire text-danger me-2"></i> Bài Viết Nổi Bật</h4>
+                        <a asp-controller="Home" asp-action="ChiTietTin1" class="text-decoration-none text-dark d-block">
+                            <div class="mini-post-item">
+                                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=200" class="mini-post-img" alt="Tạo phiếu" />
+                                <div>
+                                    <h5 class="mini-post-title">Hướng Dẫn Tạo Phiếu Báo Sự Cố Nhanh</h5>
+                                    <span class="mini-post-date"><i class="bi bi-calendar3"></i> 20/07/2026</span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </aside>
+            </div>
+
+        </div>
+    </div>
+
+  
+
+</div>
+
+<partial name="~/Views/Shared/_Footer.cshtml" />
+
+@section Scripts {
+    <script src="~/assets/js/news-detail.js" asp-append-version="true"></script>
+}

@@ -39,6 +39,21 @@
     transform: rotate(-15deg) scale(1.1);
 }
 
+.admin-sidebar,
+.admin-sidebar nav,
+.sidebar-menu {
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+}
+
+.admin-sidebar::-webkit-scrollbar,
+.admin-sidebar nav::-webkit-scrollbar,
+.sidebar-menu::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+}
+
 .sidebar-menu {
     list-style: none;
     padding: 24px 16px;

@@ -237,7 +237,66 @@
     transform: translateY(-2px);
 }
 
-/* ── Pagination Styling overrides ── */
+/* ── Pagination Styling (Matching Staff/QuanLyDanhMuc) ── */
+.vt-pagination-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px 24px 24px;
+    flex-wrap: wrap;
+    gap: 16px;
+    border-top: 1px solid var(--border-color, #e5e7eb);
+}
+
+.vt-pagination-info {
+    font-size: 0.82rem;
+    color: var(--text-muted, #6c757d);
+}
+
+.vt-pagination {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.vt-page-btn {
+    min-width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    border: 1.5px solid var(--border-color, #e0e0e0);
+    background-color: #ffffff;
+    color: #212529;
+    font-size: 0.82rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    padding: 0 8px;
+}
+
+.vt-page-btn:hover:not(:disabled):not(.active) {
+    border-color: #EE0033;
+    color: #EE0033;
+    background-color: rgba(238, 0, 51, 0.05);
+}
+
+.vt-page-btn.active {
+    background-color: #EE0033;
+    border-color: #EE0033;
+    color: #ffffff;
+    box-shadow: 0 4px 10px rgba(238, 0, 51, 0.3);
+}
+
+.vt-page-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
 .pagination {
     gap: 4px;
 }

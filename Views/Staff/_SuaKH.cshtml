@@ -1,0 +1,95 @@
+@model SupportTicketSysterm.Data.KhachHang
+
+<div class="modal fade" id="editCustomerModal" tabindex="-1" aria-labelledby="editCustomerModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border-radius: var(--vt-border-radius); overflow: hidden; border: none;">
+            <div class="modal-header bg-danger text-white py-3">
+                <h5 class="modal-title fw-bold" id="editCustomerModalLabel">
+                    <i class="fa-solid fa-user-pen me-2"></i>Chỉnh Sửa Thông Tin Khách Hàng
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Đóng"></button>
+            </div>
+            <form asp-controller="Staff" asp-action="SuaKhachHang" method="post" id="editCustomerForm" novalidate>
+                @Html.AntiForgeryToken()
+                <input type="hidden" id="editCustomerId" name="IdKhachHang" value="" />
+
+                <div class="modal-body p-4">
+                    <div id="editCustomerAlert" class="alert alert-danger d-none mb-3" style="border-radius: 10px; font-size: 0.85rem;"></div>
+                    <div class="row g-3">
+                        <!-- Customer Code & Full Name -->
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold text-dark mb-1">Mã KH</label>
+                            <input type="text" id="editCustomerCode" class="form-control form-control-custom bg-light" readonly />
+                        </div>
+                        <div class="col-md-8">
+                            <label for="editCustomerName" class="form-label fw-semibold text-dark mb-1">
+                                Họ tên <span class="text-danger">*</span>
+                            </label>
+                            <input name="HoTen" type="text" id="editCustomerName" class="form-control form-control-custom"
+                                   placeholder="Nhập họ và tên khách hàng..." required />
+                        </div>
+
+                        <!-- Phone & Email -->
+                        <div class="col-md-6">
+                            <label for="editCustomerPhone" class="form-label fw-semibold text-dark mb-1">
+                                Số điện thoại <span class="text-danger">*</span>
+                            </label>
+                            <input name="SoDienThoai" type="tel" id="editCustomerPhone" class="form-control form-control-custom"
+                                   placeholder="Nhập số điện thoại..." required />
+                        </div>
+                        <div class="col-md-6">
+                            <label for="editCustomerEmail" class="form-label fw-semibold text-dark mb-1">Email</label>
+                            <input name="Email" type="email" id="editCustomerEmail" class="form-control form-control-custom"
+                                   placeholder="Nhập email..." />
+                        </div>
+
+                        <!-- DOB & Status -->
+                        <div class="col-md-6">
+                            <label for="editCustomerDOB" class="form-label fw-semibold text-dark mb-1">Ngày sinh</label>
+                            <input name="NgaySinh" type="date" id="editCustomerDOB" class="form-control form-control-custom" />
+                        </div>
+                        <div class="col-md-6">
+                            <label for="editCustomerStatus" class="form-label fw-semibold text-dark mb-1">Trạng thái</label>
+                            <select name="TrangThai" id="editCustomerStatus" class="form-select form-select-custom">
+                                <option value="Hoạt động">Hoạt động</option>
+                                <option value="Đã khóa">Đã khóa</option>
+                            </select>
+                        </div>
+
+                        <!-- Address -->
+                        <div class="col-12">
+                            <label for="editCustomerAddress" class="form-label fw-semibold text-dark mb-1">Địa chỉ</label>
+                            <input name="DiaChi" type="text" id="editCustomerAddress" class="form-control form-control-custom"
+                                   placeholder="Số nhà, đường, quận/huyện, tỉnh/thành phố..." />
+                        </div>
+
+                        <!-- Password (Optional update) -->
+                        <div class="col-12">
+                            <label for="editCustomerPassword" class="form-label fw-semibold text-dark mb-1">
+                                Mật khẩu mới <small class="text-muted fw-normal">(Để trống nếu không đổi)</small>
+                            </label>
+                            <div class="position-relative">
+                                <input name="MatKhau" type="password" id="editCustomerPassword" class="form-control form-control-custom pe-5"
+                                       placeholder="Nhập mật khẩu mới nếu muốn đổi..." />
+                                <button type="button" class="btn-toggle-password" onclick="togglePasswordVisibility('editCustomerPassword', this)" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); border: none; background: none; color: var(--text-muted); cursor: pointer; padding: 0; z-index: 10;">
+                                    <i class="fa-regular fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer border-top-0 pt-0 px-4 pb-4">
+                    <button type="button" class="btn btn-secondary px-4 py-2" data-bs-dismiss="modal"
+                            style="border-radius: var(--vt-border-radius-sm);">
+                        Hủy
+                    </button>
+                    <button type="submit" class="btn btn-danger px-4 py-2"
+                            style="background-color: var(--vt-red); border-color: var(--vt-red); border-radius: var(--vt-border-radius-sm);">
+                        <i class="fa-solid fa-floppy-disk me-1"></i> Lưu thay đổi
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

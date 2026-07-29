@@ -526,12 +526,13 @@ body {
 .hero-title {
     font-size: clamp(2.2rem, 3.8vw, 2.8rem);
     font-weight: 850;
-    line-height: 1.25;
+    line-height: 1.35;
     letter-spacing: -0.02em;
     background: linear-gradient(180deg, #111827 0%, #374151 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     margin-bottom: 16px;
+    padding-top: 6px;
 }
 
 .hero-desc {

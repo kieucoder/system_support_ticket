@@ -19,5 +19,10 @@ namespace SupportTicketSysterm.Models
         public DateTime OtpSentAtUtc { get; set; }
 
         public DateTime OtpExpiresAtUtc { get; set; }
+
+        /// <summary>
+        /// ID của KhachHang đã được tạo (TrangThai="Chờ xác thực") trước khi xác nhận OTP.
+        /// </summary>
+        public int IdKhachHang { get; set; }
     }
 }

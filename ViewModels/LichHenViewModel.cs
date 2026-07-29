@@ -12,6 +12,9 @@ namespace SupportTicketSysterm.ViewModels
         public string? GhiChu { get; set; }
         public string? HoTenNhanVien { get; set; }
         public string? SoDienThoai { get; set; }
+        public string? LyDoHuy { get; set; }
+        public DateTime? NgayHuy { get; set; }
+        public string? NguoiHuy { get; set; }
 
         // Compatibility properties to support other parts of the application
         public TimeOnly? GioBatDau { get => GioHen; set => GioHen = value; }

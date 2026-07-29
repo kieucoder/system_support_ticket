@@ -1,0 +1,218 @@
+@{
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+    ViewData["Title"] = "5 Mẹo Tự Xử Lý Mạng Wifi Chập Chờn - Viettel TechSupport";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/assets/css/knowledge.css" asp-append-version="true" />
+}
+
+<!-- ==================== HERO BANNER (SYNCHRONIZED WITH PHIEUCUATOI & HUONGDAN) ==================== -->
+<section class="hero-section knowledge-hero-sync">
+    <div class="container hero-content">
+        <div class="row align-items-center g-4">
+            <!-- Left Text Column -->
+            <div class="col-lg-7 col-12 text-start hero-text-col animate-fade-up">
+                <nav class="hero-breadcrumb-sync" aria-label="breadcrumb">
+                    <ol class="breadcrumb m-0">
+                        <li class="breadcrumb-item"><a asp-controller="Customers" asp-action="TrangChu"><i class="fa-solid fa-house-door-fill me-1"></i>Trang chủ</a></li>
+                        <li class="breadcrumb-item"><a href="#">Cẩm nang</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Mẹo xử lý mạng Wifi</li>
+                    </ol>
+                </nav>
+                <span class="hero-badge-sync"><i class="bi bi-wifi me-1"></i> Kinh nghiệm kỹ thuật</span>
+                <h1 class="hero-title-sync text-uppercase">5 MẸO TỰ XỬ LÝ <span class="text-primary">MẠNG WIFI CHẬP CHỜN</span></h1>
+                <p class="hero-desc-sync">
+                    Tổng hợp các phương pháp đơn giản nhưng cực kỳ hiệu quả giúp bạn khắc phục ngay sự cố gián đoạn internet, Wifi yếu hoặc không vào được mạng ngay tại nhà.
+                </p>
+
+                <!-- CTA Buttons -->
+                <div class="hero-cta-buttons d-flex flex-wrap gap-3 mt-3">
+                    <a asp-controller="Ticket" asp-action="ChonDMDichVu" class="btn btn-hero-create-sync">
+                        <i class="bi bi-plus-circle me-1"></i> Tạo Phiếu Hỗ Trợ
+                    </a>
+                    <a asp-controller="Customers" asp-action="ChatTrucTuyen" class="btn btn-hero-contact-sync">
+                        <i class="bi bi-chat-dots-fill me-1"></i> Chat Với Kỹ Thuật Viên
+                    </a>
+                </div>
+            </div>
+
+            <!-- Right Graphic / Icon Illustration Column -->
+            <div class="col-lg-5 col-12 text-center animate-fade-up delay-1 d-none d-lg-block">
+                <div class="p-4 rounded-4 bg-white border shadow-sm d-inline-block text-start position-relative overflow-hidden" style="max-width: 380px;">
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <div class="p-3 bg-success-subtle text-success rounded-circle fs-3"><i class="bi bi-wifi"></i></div>
+                        <div>
+                            <h6 class="fw-bold text-dark mb-0">Viettel Fast 150 Mbps</h6>
+                            <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-0.5 mt-1" style="font-size:0.75rem;"><i class="bi bi-check-circle-fill me-1"></i>Đo kiểm ổn định</span>
+                        </div>
+                    </div>
+                    <div class="p-3 bg-light rounded-3 small text-secondary">
+                        <div class="d-flex justify-content-between mb-1"><span>Băng tần:</span><span class="text-dark fw-bold">Dual-band 2.4GHz & 5GHz</span></div>
+                        <div class="d-flex justify-content-between"><span>Độ trễ Ping:</span><span class="fw-semibold text-success">4 ms (Chuẩn Viettel)</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ==================== MAIN CONTENT SECTION ==================== -->
+<section class="knowledge-body-section">
+    <div class="container">
+        <div class="row g-4">
+            <!-- Left Main Column (8 Cols) -->
+            <div class="col-lg-8 col-12">
+                
+                <!-- 1. GIỚI THIỆU -->
+                <div class="kn-card-box">
+                    <h3 class="kn-section-heading">
+                        <i class="bi bi-lightbulb-fill text-warning"></i> Tại Sao Mạng Wifi Lại Chập Chờn?
+                    </h3>
+                    <p class="text-secondary mb-0" style="line-height: 1.65; font-size: 0.96rem;">
+                        Trong quá trình sử dụng đường truyền Internet, thiết bị Modem Wifi có thể bị nạp chồng bộ nhớ đệm (RAM Cache), đụng độ kênh sóng (Channel Interference) hoặc dây cáp tín hiệu bị lỏng. Bạn có thể tự mình kiểm tra và khắc phục <strong>hơn 80% trường hợp sự cố</strong> trước khi cần sự hỗ trợ từ kỹ thuật viên bằng 5 bước dưới đây.
+                    </p>
+                </div>
+
+                <!-- 2. 5 THẺ GIẢI PHÁP MẸO XỬ LÝ MẠNG -->
+                <div class="kn-card-box">
+                    <h3 class="kn-section-heading mb-4">
+                        <i class="bi bi-tools"></i> 5 Mẹo Xử Lý Sự Cố Wifi Chi Tiết
+                    </h3>
+
+                    <!-- Mẹo 1 -->
+                    <div class="net-tip-card">
+                        <div class="net-tip-icon">
+                            <i class="bi bi-power"></i>
+                        </div>
+                        <div class="net-tip-content">
+                            <h5>1. Khởi Động Lại Modem (Reboot / Restart)</h5>
+                            <p>Tắt nút nguồn hoặc rút phích cắm điện của modem Wifi. Hãy <strong>chờ khoảng 30 đến 60 giây</strong> trước khi cắm lại điện. Việc này giúp giải phóng bộ nhớ đệm cache, xóa kết nối rác và củng cố lại địa chỉ IP động từ hệ thống máy chủ Viettel.</p>
+                            <span class="badge bg-success-subtle text-success border border-success-subtle px-2.5 py-1">Khuyên dùng hàng tuần</span>
+                        </div>
+                    </div>
+
+                    <!-- Mẹo 2 -->
+                    <div class="net-tip-card">
+                        <div class="net-tip-icon">
+                            <i class="bi bi-ethernet"></i>
+                        </div>
+                        <div class="net-tip-content">
+                            <h5>2. Kiểm Tra Cáp Quang & Jack Cắm RJ45</h5>
+                            <p>Kiểm tra đầu dây nối từ hộp mạng vào cổng WAN của modem. Đảm bảo giắc cắm chắc chắn và dây cáp quang không bị đè nặng, uốn gập quá cong hoặc bị gãy gập lõi thủy tinh bên trong.</p>
+                            <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-2.5 py-1">Quan trọng</span>
+                        </div>
+                    </div>
+
+                    <!-- Mẹo 3 -->
+                    <div class="net-tip-card">
+                        <div class="net-tip-icon">
+                            <i class="bi bi-router-fill"></i>
+                        </div>
+                        <div class="net-tip-content">
+                            <h5>3. Đặt Modem Ở Vị Trí Thông Thoáng, Vị Trí Trung Tâm</h5>
+                            <p>Tránh để modem trong hộc tủ kín, gần bề mặt kim loại, lò vi sóng hay loa bluetooth. Nên đặt thiết bị ở vị trí cao tầm 1.5m so với mặt đất, giữa nhà để sóng Wifi phủ đều các phòng.</p>
+                            <span class="badge bg-info-subtle text-info border border-info-subtle px-2.5 py-1">Tối ưu sóng phát</span>
+                        </div>
+                    </div>
+
+                    <!-- Mẹo 4 -->
+                    <div class="net-tip-card">
+                        <div class="net-tip-icon">
+                            <i class="bi bi-globe2"></i>
+                        </div>
+                        <div class="net-tip-content">
+                            <h5>4. Thay Đổi Máy Chủ DNS Đăng Nhập Trang Web</h5>
+                            <p>Nếu bạn mở được phần mềm chat nhưng không tải được website, hãy thử đổi DNS trên máy tính/điện thoại sang Google DNS (<code>8.8.8.8 / 8.8.4.4</code>) hoặc Cloudflare DNS (<code>1.1.1.1 / 1.0.0.1</code>) để tăng tốc dịch tên miền.</p>
+                            <span class="badge bg-warning-subtle text-warning border border-warning-subtle px-2.5 py-1">Tăng tốc lướt web</span>
+                        </div>
+                    </div>
+
+                    <!-- Mẹo 5 -->
+                    <div class="net-tip-card">
+                        <div class="net-tip-icon">
+                            <i class="bi bi-headset"></i>
+                        </div>
+                        <div class="net-tip-content">
+                            <h5>5. Liên Hệ Kỹ Thuật Viên Viettel Hỗ Trợ Tận Nơi</h5>
+                            <p>Nếu đèn <strong>LOS trên modem nhấp nháy màu đỏ</strong> (tín hiệu đứt cáp quang bên ngoài), việc tự thao tác sẽ không có tác dụng. Vui lòng gửi yêu cầu hỗ trợ ngay trên cổng TechSupport để kỹ thuật viên tới đo kiểm đường dây.</p>
+                            <span class="badge bg-danger text-white px-2.5 py-1">Cần kỹ thuật xử lý</span>
+                        </div>
+                    </div>
+
+                    <!-- KHUNG LƯU Ý MÀU VÀNG WARNING -->
+                    <div class="kn-warning-box">
+                        <h6><i class="bi bi-exclamation-triangle-fill"></i> LƯU Ý QUAN TRỌNG DÀNH CHO KHÁCH HÀNG</h6>
+                        <p>
+                            KHÔNG tự ý nhấn giữ nút nhỏ ghi chữ <strong>"Reset"</strong> (Hard Reset) phía sau modem bằng tăm hay kim. Thao tác này sẽ làm xóa mất toàn bộ thông số cấu hình tài khoản đường truyền (PPPoE Account) của Viettel, khiến modem không thể truy cập internet được nữa!
+                        </p>
+                    </div>
+
+                </div>
+
+                <!-- CTA BANNER -->
+                <div class="kn-cta-banner">
+                    <div>
+                        <h4>Mạng vẫn chưa khắc phục được sự cố?</h4>
+                        <p>Tạo phiếu ngay để đội ngũ kỹ thuật Viettel qua xử lý tận nơi!</p>
+                    </div>
+                    <a asp-controller="Ticket" asp-action="ChonDMDichVu" class="kn-cta-btn">
+                        <i class="bi bi-arrow-right-circle-fill me-1"></i> Tạo Phiếu Hỗ Trợ Ngay
+                    </a>
+                </div>
+
+            </div>
+
+            <!-- Right Sidebar Column (4 Cols) -->
+            <div class="col-lg-4 col-12">
+                <!-- Widget 1: Danh mục cẩm nang -->
+                <div class="kn-sidebar-widget">
+                    <h5 class="widget-title">
+                        <i class="bi bi-folder2-open"></i> Danh Mục Cẩm Nang
+                    </h5>
+                    <ul class="sidebar-category-list">
+                        <li>
+                            <a asp-controller="Home" asp-action="HuongDanTaoPhieu" class="sidebar-category-link">
+                                <span><i class="bi bi-journal-text me-2"></i> Hướng dẫn tạo phiếu</span>
+                                <i class="bi bi-chevron-right small"></i>
+                            </a>
+                        </li>
+                        <li>
+                            <a asp-controller="Home" asp-action="ThongBaoBaoTri" class="sidebar-category-link">
+                                <span><i class="bi bi-bell-fill me-2"></i> Thông báo bảo trì</span>
+                                <i class="bi bi-chevron-right small"></i>
+                            </a>
+                        </li>
+                        <li>
+                            <a asp-controller="Home" asp-action="MeoXuLyMang" class="sidebar-category-link active">
+                                <span><i class="bi bi-wifi me-2"></i> Mẹo xử lý mạng Wifi</span>
+                                <i class="bi bi-chevron-right small"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Widget 2: Liên hệ hỗ trợ khẩn cấp -->
+                <div class="sidebar-contact-card">
+                    <h5><i class="bi bi-headset me-2 text-danger"></i> Cần Kỹ Thuật Hỗ Trợ?</h5>
+                    <p>Nếu bạn cần đo kiểm tốc độ mạng hoặc thay thế modem mới, hãy gọi hotline ngay.</p>
+                    <a href="tel:18008119" class="sidebar-contact-btn mb-2">
+                        <i class="bi bi-telephone-fill"></i> Hotline: 1800 8119 (Miễn Phí)
+                    </a>
+                    <a asp-controller="Customers" asp-action="ChatTrucTuyen" class="sidebar-contact-btn" style="background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3);">
+                        <i class="bi bi-chat-dots-fill"></i> Chat Trực Tuyến
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Back To Top Button -->
+<button type="button" id="knBackToTop" title="Lên đầu trang">
+    <i class="bi bi-arrow-up-short" style="font-size: 1.5rem;"></i>
+</button>
+
+@section Scripts {
+    <script src="~/assets/js/knowledge.js" asp-append-version="true"></script>
+}

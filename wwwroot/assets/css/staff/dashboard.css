@@ -156,18 +156,27 @@ body {
     margin-right: 10px;
 }
 
+.admin-sidebar,
+.admin-sidebar nav,
+.sidebar-menu {
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+}
+
+.admin-sidebar::-webkit-scrollbar,
+.admin-sidebar nav::-webkit-scrollbar,
+.sidebar-menu::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+}
+
 .sidebar-menu {
     list-style: none;
     padding: 20px 12px;
     margin: 0;
     flex-grow: 1;
     overflow-y: auto;
-    scrollbar-width: none;          /* Firefox */
-    -ms-overflow-style: none;       /* IE / Edge cũ */
-}
-
-.sidebar-menu::-webkit-scrollbar {
-    display: none;                  /* Chrome, Safari, Edge mới */
 }
 
 .sidebar-item {

@@ -50,17 +50,24 @@ namespace SupportTicketSysterm.Services
 
         public async Task SaveMessageAsync(int? idKhachHang, string message, string role)
         {
-            InitializeDatabase();
-            var chatMsg = new ChatMessage
+            try
             {
-                IdKhachHang = idKhachHang,
-                Message = message?.Trim() ?? "",
-                Role = role ?? "user",
-                CreatedAt = DateTime.Now
-            };
+                InitializeDatabase();
+                var chatMsg = new ChatMessage
+                {
+                    IdKhachHang = idKhachHang,
+                    Message = message?.Trim() ?? "",
+                    Role = role ?? "user",
+                    CreatedAt = DateTime.Now
+                };
 
-            _context.ChatMessages.Add(chatMsg);
-            await _context.SaveChangesAsync();
+                _context.ChatMessages.Add(chatMsg);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("SaveMessageAsync failed: " + ex.Message);
+            }
         }
 
         public async Task<List<ChatMessage>> GetHistoryAsync(int? idKhachHang, int limit = 20)

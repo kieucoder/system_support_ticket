@@ -23,6 +23,8 @@ namespace SupportTicketSysterm.ViewModels
         public string? PhanHoiNhanVien { get; set; }
         public DateTime? NgayPhanHoi { get; set; }
         public string? HoTenNhanVienPhanHoi { get; set; }
+        public int? IdNhanVienPhuTrach { get; set; }
+        public bool CanReply { get; set; } = true;
         public List<FileDinhKemViewModel> FileDinhKems { get; set; } = new();
     }
 }

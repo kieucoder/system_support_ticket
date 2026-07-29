@@ -11,7 +11,6 @@ namespace SupportTicketSysterm.Services
     public class OtpService : IOtpService
     {
         private const int ExpiryMinutes = 5;
-        private const int MaxAttempts = 5;
         private readonly TechSupportContext _context;
         private readonly ILogger<OtpService> _logger;
 
@@ -31,191 +30,63 @@ namespace SupportTicketSysterm.Services
             return Task.FromResult(otpVal.ToString());
         }
 
-        public async Task<bool> SaveOtpAsync(string email, string otpCode, string? ipAddress)
+        public async Task<bool> SaveOtpAsync(int idKhachHang, string otpCode)
         {
             try
             {
-                await DeleteExpiredOtpAsync();
+                // Xóa các OTP cũ của khách hàng này
+                await DeletePreviousOtpAsync(idKhachHang);
 
-                // Invalidate previous OTP for this email
-                await InvalidatePreviousOtpAsync(email);
-
-                var otpVerification = new XacThucOtp
+                var otpVerification = new TaiKhoanOtp
                 {
-                    Email = email.Trim(),
-                    MaOtp = otpCode.Trim(),
-                    ThoiGianTao = DateTime.UtcNow,
-                    ThoiGianHetHan = DateTime.UtcNow.AddMinutes(ExpiryMinutes),
-                    SoLanThu = 0,
-                    DaSuDung = false,
-
-                    NguoiTao = "Registration"
+                    IdKhachHang = idKhachHang,
+                    Otp = otpCode.Trim(),
+                    ThoiGianTao = DateTime.Now,
+                    HanSuDung = DateTime.Now.AddMinutes(ExpiryMinutes)
                 };
 
-                _context.XacThucOtps.Add(otpVerification);
+                _context.TaiKhoanOtps.Add(otpVerification);
                 await _context.SaveChangesAsync();
 
-                _logger.LogInformation("Đã lưu OTP cho email {Email}, hết hạn lúc {ExpiredAt}", email, otpVerification.ThoiGianHetHan);
+                _logger.LogInformation("Đã lưu OTP cho khách hàng ID {IdKhachHang}, hết hạn lúc {ExpiredAt}",
+                    idKhachHang, otpVerification.HanSuDung);
                 return true;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Lỗi lưu OTP cho email {Email}", email);
+                _logger.LogError(ex, "Lỗi lưu OTP cho khách hàng ID {IdKhachHang}", idKhachHang);
                 return false;
             }
         }
 
-        public async Task<OtpVerificationResult> VerifyOtpAsync(string email, string otpCode)
+        public async Task<bool> DeletePreviousOtpAsync(int idKhachHang)
         {
             try
             {
-                var otpRecord = await _context.XacThucOtps
-                    .Where(o => o.Email == email && !o.DaSuDung)
-                    .OrderByDescending(o => o.ThoiGianTao)
-                    .FirstOrDefaultAsync();
-
-                if (otpRecord == null)
-                {
-                    _logger.LogWarning("Không tìm thấy OTP còn hiệu lực cho email {Email}", email);
-                    return new OtpVerificationResult
-                    {
-                        Status = OtpVerificationStatus.NotFound,
-                        Message = "Vui lòng yêu cầu gửi lại mã OTP mới."
-                    };
-                }
-
-                // Check if expired
-                if (DateTime.UtcNow > otpRecord.ThoiGianHetHan)
-                {
-                    otpRecord.DaSuDung = true;
-                    await _context.SaveChangesAsync();
-                    _logger.LogWarning("OTP hết hạn cho email {Email}", email);
-                    return new OtpVerificationResult
-                    {
-                        Status = OtpVerificationStatus.Expired,
-                        Message = "Mã OTP đã hết hạn."
-                    };
-                }
-
-                // Check attempt count (lockout check)
-                if (otpRecord.SoLanThu >= MaxAttempts)
-                {
-                    otpRecord.DaSuDung = true;
-                    await _context.SaveChangesAsync();
-                    _logger.LogWarning("OTP bị khóa cho email {Email} do vượt quá số lần thử", email);
-                    return new OtpVerificationResult
-                    {
-                        Status = OtpVerificationStatus.Locked,
-                        Message = "Mã OTP đã bị khóa do nhập sai quá nhiều lần. Vui lòng gửi lại OTP."
-                    };
-                }
-
-                // Verify OTP code
-                if (otpCode.Trim() != otpRecord.MaOtp)
-                {
-                    otpRecord.SoLanThu++;
-
-                    if (otpRecord.SoLanThu >= MaxAttempts)
-                    {
-                        otpRecord.DaSuDung = true;
-                    }
-
-                    await _context.SaveChangesAsync();
-                    _logger.LogWarning("OTP xác thực thất bại cho email {Email}. Lần sai thứ {Attempt}", email, otpRecord.SoLanThu);
-
-                    if (otpRecord.SoLanThu >= MaxAttempts)
-                    {
-                        return new OtpVerificationResult
-                        {
-                            Status = OtpVerificationStatus.Locked,
-                            Message = "Mã OTP đã bị khóa do nhập sai quá 5 lần. Vui lòng gửi lại OTP."
-                        };
-                    }
-
-                    return new OtpVerificationResult
-                    {
-                        Status = OtpVerificationStatus.Invalid,
-                        Message = $"Mã OTP không chính xác. Bạn còn {MaxAttempts - otpRecord.SoLanThu} lần nhập."
-                    };
-                }
-
-                // OTP is valid
-                otpRecord.DaSuDung = true;
-                await _context.SaveChangesAsync();
-
-                _logger.LogInformation("OTP xác thực thành công cho email {Email}", email);
-                return new OtpVerificationResult
-                {
-                    Status = OtpVerificationStatus.Success,
-                    Message = "Xác thực OTP thành công."
-                };
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Lỗi xác thực OTP cho email {Email}", email);
-                return new OtpVerificationResult
-                {
-                    Status = OtpVerificationStatus.Error,
-                    Message = "Lỗi hệ thống khi xác thực OTP."
-                };
-            }
-        }
-
-        public async Task<bool> DeleteExpiredOtpAsync()
-        {
-            try
-            {
-                var expiredOtps = await _context.XacThucOtps
-                    .Where(o => o.ThoiGianHetHan < DateTime.UtcNow)
-                    .ToListAsync();
-
-                if (expiredOtps.Any())
-                {
-                    _context.XacThucOtps.RemoveRange(expiredOtps);
-                    await _context.SaveChangesAsync();
-                    _logger.LogInformation("Đã dọn {Count} OTP hết hạn", expiredOtps.Count);
-                }
-
-                return true;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Lỗi dọn OTP hết hạn");
-                return false;
-            }
-        }
-
-        public async Task<bool> InvalidatePreviousOtpAsync(string email)
-        {
-            try
-            {
-                var previousOtps = await _context.XacThucOtps
-                    .Where(o => o.Email == email && !o.DaSuDung)
+                var previousOtps = await _context.TaiKhoanOtps
+                    .Where(o => o.IdKhachHang == idKhachHang)
                     .ToListAsync();
 
                 if (previousOtps.Any())
                 {
-                    foreach (var otp in previousOtps)
-                    {
-                        otp.DaSuDung = true;
-                    }
+                    _context.TaiKhoanOtps.RemoveRange(previousOtps);
                     await _context.SaveChangesAsync();
-                    _logger.LogInformation("Đã vô hiệu hóa {Count} OTP cũ của {Email}", previousOtps.Count, email);
+                    _logger.LogInformation("Đã xóa {Count} OTP cũ của khách hàng ID {IdKhachHang}", previousOtps.Count, idKhachHang);
                 }
 
                 return true;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Lỗi vô hiệu hóa OTP cũ của {Email}", email);
+                _logger.LogError(ex, "Lỗi khi xóa OTP cũ của khách hàng ID {IdKhachHang}", idKhachHang);
                 return false;
             }
         }
 
-        public async Task<(bool Allowed, int RemainingSeconds)> CanResendOtpAsync(string email, int cooldownSeconds = 60)
+        public async Task<(bool Allowed, int RemainingSeconds)> CanResendOtpAsync(int idKhachHang, int cooldownSeconds = 60)
         {
-            var latestOtp = await _context.XacThucOtps
-                .Where(o => o.Email == email)
+            var latestOtp = await _context.TaiKhoanOtps
+                .Where(o => o.IdKhachHang == idKhachHang)
                 .OrderByDescending(o => o.ThoiGianTao)
                 .FirstOrDefaultAsync();
 
@@ -224,16 +95,16 @@ namespace SupportTicketSysterm.Services
                 return (true, 0);
             }
 
-            var elapsed = (int)(DateTime.UtcNow - latestOtp.ThoiGianTao).TotalSeconds;
+            var elapsed = (int)(DateTime.Now - latestOtp.ThoiGianTao).TotalSeconds;
             var remaining = cooldownSeconds - elapsed;
             return remaining > 0 ? (false, remaining) : (true, 0);
         }
 
-        public async Task<bool> IsHourlyLimitExceededAsync(string email)
+        public async Task<bool> IsHourlyLimitExceededAsync(int idKhachHang)
         {
-            var oneHourAgo = DateTime.UtcNow.AddHours(-1);
-            var count = await _context.XacThucOtps
-                .CountAsync(o => o.Email == email && o.ThoiGianTao >= oneHourAgo);
+            var oneHourAgo = DateTime.Now.AddHours(-1);
+            var count = await _context.TaiKhoanOtps
+                .CountAsync(o => o.IdKhachHang == idKhachHang && o.ThoiGianTao >= oneHourAgo);
             
             return count >= 5;
         }

@@ -39,16 +39,13 @@ namespace SupportTicketSysterm.Services
                     return (false, "Email không tồn tại trong hệ thống.");
                 }
 
-                // Delete expired Otp records
-                await _otpService.DeleteExpiredOtpAsync();
-
-                // Check limit or cooldown
-                if (await _otpService.IsHourlyLimitExceededAsync(cleanEmail))
+                // Check limit or cooldown bằng IdKhachHang
+                if (await _otpService.IsHourlyLimitExceededAsync(khachHang.IdKhachHang))
                 {
                     return (false, "Bạn đã vượt quá giới hạn gửi OTP (tối đa 5 lần một giờ). Vui lòng thử lại sau.");
                 }
 
-                var (allowed, remainingSeconds) = await _otpService.CanResendOtpAsync(cleanEmail, 60);
+                var (allowed, remainingSeconds) = await _otpService.CanResendOtpAsync(khachHang.IdKhachHang, 60);
                 if (!allowed)
                 {
                     return (false, $"Vui lòng chờ {remainingSeconds} giây trước khi gửi lại OTP.");
@@ -56,14 +53,15 @@ namespace SupportTicketSysterm.Services
 
                 // Generate and Save OTP
                 var otp = await _otpService.GenerateOtpAsync();
-                var saved = await _otpService.SaveOtpAsync(cleanEmail, otp, ipAddress);
+                var saved = await _otpService.SaveOtpAsync(khachHang.IdKhachHang, otp);
 
                 if (!saved)
                 {
                     return (false, "Lỗi hệ thống khi lưu mã OTP. Vui lòng thử lại.");
                 }
 
-                _logger.LogInformation("Đã sinh mã OTP thành công cho email {Email}", cleanEmail);
+                _logger.LogInformation("Đã sinh mã OTP thành công cho email {Email} (IdKhachHang={IdKhachHang})",
+                    cleanEmail, khachHang.IdKhachHang);
 
                 // Send email via service
                 try
@@ -74,7 +72,7 @@ namespace SupportTicketSysterm.Services
                 catch (Exception ex)
                 {
                     _logger.LogError(ex, "Lỗi gửi email chứa OTP tới {Email}", cleanEmail);
-                    await _otpService.InvalidatePreviousOtpAsync(cleanEmail);
+                    await _otpService.DeletePreviousOtpAsync(khachHang.IdKhachHang);
                     return (false, "Không thể gửi email chứa mã OTP. Vui lòng kiểm tra lại cấu hình SMTP.");
                 }
 
@@ -94,39 +92,26 @@ namespace SupportTicketSysterm.Services
                 var cleanEmail = email.Trim().ToLower();
                 var cleanOtp = otpCode.Trim();
 
-                // Read-only check for OTP validity to prevent premature marking as DaSuDung = true
-                var otpRecord = await _context.XacThucOtps
-                    .Where(o => o.Email != null && o.Email.ToLower() == cleanEmail && !o.DaSuDung)
+                // Tìm KhachHang để lấy IdKhachHang
+                var khachHang = await _context.KhachHangs
+                    .FirstOrDefaultAsync(x => x.Email != null && x.Email.ToLower() == cleanEmail);
+
+                if (khachHang == null)
+                {
+                    return (false, "Tài khoản không tồn tại.");
+                }
+
+                // Lọc OTP theo IdKhachHang + OTP
+                var otpRecord = await _context.TaiKhoanOtps
+                    .Where(o => o.IdKhachHang == khachHang.IdKhachHang
+                             && o.Otp == cleanOtp
+                             && o.HanSuDung > DateTime.Now)
                     .OrderByDescending(o => o.ThoiGianTao)
                     .FirstOrDefaultAsync();
 
                 if (otpRecord == null)
                 {
                     return (false, "Mã OTP không chính xác.");
-                }
-
-                if (DateTime.UtcNow > otpRecord.ThoiGianHetHan)
-                {
-                    return (false, "Mã OTP đã hết hạn. Vui lòng gửi lại.");
-                }
-
-                if (otpRecord.SoLanThu >= 5)
-                {
-                    return (false, "Mã OTP đã bị khóa do nhập sai quá nhiều lần. Vui lòng gửi lại OTP.");
-                }
-
-                if (otpRecord.MaOtp != cleanOtp)
-                {
-                    otpRecord.SoLanThu++;
-                    await _context.SaveChangesAsync();
-                    
-                    if (otpRecord.SoLanThu >= 5)
-                    {
-                        otpRecord.DaSuDung = true;
-                        await _context.SaveChangesAsync();
-                        return (false, "Mã OTP đã bị khóa do nhập sai quá 5 lần. Vui lòng gửi lại OTP.");
-                    }
-                    return (false, $"Mã OTP không chính xác. Bạn còn {5 - otpRecord.SoLanThu} lần nhập.");
                 }
 
                 return (true, "Xác minh OTP thành công.");
@@ -146,43 +131,31 @@ namespace SupportTicketSysterm.Services
                 var cleanEmail = email.Trim().ToLower();
                 var cleanOtp = otpCode.Trim();
 
-                // 1. Verify OTP again (and enforce it this time)
-                var otpRecord = await _context.XacThucOtps
-                    .Where(o => o.Email != null && o.Email.ToLower() == cleanEmail && !o.DaSuDung)
-                    .OrderByDescending(o => o.ThoiGianTao)
-                    .FirstOrDefaultAsync();
-
-                if (otpRecord == null || otpRecord.MaOtp != cleanOtp)
-                {
-                    return (false, "Mã OTP không chính xác.");
-                }
-
-                if (DateTime.UtcNow > otpRecord.ThoiGianHetHan)
-                {
-                    return (false, "Mã OTP đã hết hạn.");
-                }
-
-                // 2. Load Customer
+                // 1. Load Customer
                 var khachHang = await _context.KhachHangs.FirstOrDefaultAsync(x => x.Email != null && x.Email.ToLower() == cleanEmail);
                 if (khachHang == null)
                 {
                     return (false, "Tài khoản không tồn tại.");
                 }
 
-                // 3. Mark OTP as used
-                otpRecord.DaSuDung = true;
-                
-                // 4. Update Password (BCrypt hash)
+                // 2. Verify OTP lại
+                var otpRecord = await _context.TaiKhoanOtps
+                    .Where(o => o.IdKhachHang == khachHang.IdKhachHang
+                             && o.Otp == cleanOtp
+                             && o.HanSuDung > DateTime.Now)
+                    .OrderByDescending(o => o.ThoiGianTao)
+                    .FirstOrDefaultAsync();
+
+                if (otpRecord == null)
+                {
+                    return (false, "Mã OTP không chính xác.");
+                }
+
+                // 3. Update Password (BCrypt hash)
                 khachHang.MatKhau = BCrypt.Net.BCrypt.HashPassword(newPassword);
                 
-                // 5. Clean up old OTPs for this email
-                var oldOtps = await _context.XacThucOtps
-                    .Where(o => o.Email != null && o.Email.ToLower() == cleanEmail && !o.DaSuDung)
-                    .ToListAsync();
-                foreach (var oldOtp in oldOtps)
-                {
-                    oldOtp.DaSuDung = true;
-                }
+                // 4. Clean up all OTPs for this customer
+                await _otpService.DeletePreviousOtpAsync(khachHang.IdKhachHang);
 
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();

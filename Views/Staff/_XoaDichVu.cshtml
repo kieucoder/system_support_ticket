@@ -1,0 +1,80 @@
+@model SupportTicketSysterm.Data.DichVu
+
+<div id="deleteServiceModal" class="vt-modal-overlay"
+     role="dialog"
+     aria-modal="true"
+     aria-labelledby="deleteServiceModalTitle">
+
+    <div class="vt-modal vt-modal-delete-redesign">
+        <form asp-action="XoaDichVu" asp-controller="Staff" method="post" id="deleteServiceForm">
+            @Html.AntiForgeryToken()
+            <input type="hidden" id="IdDichVuXoa" name="id" />
+
+            <!-- Modal Header -->
+            <div class="vt-modal-header position-relative">
+                <div class="vt-modal-header-title">
+                    <div class="vt-modal-header-icon delete">
+                        <i class="bi bi-shield-exclamation"></i>
+                    </div>
+                    <div class="vt-modal-header-text">
+                        <h3 id="deleteServiceModalTitle">Xác Nhận Xóa Dịch Vụ</h3>
+                        <p>Hành động này không thể hoàn tác</p>
+                    </div>
+                </div>
+
+                <button type="button" class="vt-modal-close" onclick="closeDeleteServiceModal()" aria-label="Đóng">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="vt-modal-body px-4 py-3">
+                <div class="vt-delete-confirm-card text-center py-2">
+                    
+                    <!-- Animated Delete Icon -->
+                    <div class="vt-delete-icon-circle mx-auto mb-3">
+                        <div class="vt-delete-icon-inner">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </div>
+                    </div>
+
+                    <h5 class="fw-bold text-dark mb-2" style="font-size: 1.1rem;">Bạn có chắc chắn muốn xóa?</h5>
+                    
+                    <!-- Service Name Highlight Badge -->
+                    <div class="my-3">
+                        <span class="vt-delete-target-badge" id="deleteServiceName">
+                            <!-- Dynamic Service Name -->
+                        </span>
+                    </div>
+
+                    <!-- Error Alert Banner for Constraints -->
+                    <div id="deleteServiceErrorAlert" class="vt-delete-alert-banner d-none mb-3">
+                        <div class="d-flex align-items-start gap-2">
+                            <i class="bi bi-exclamation-octagon-fill text-danger fs-5 flex-shrink-0 mt-0.5"></i>
+                            <div class="text-start">
+                                <strong class="d-block text-danger mb-1" style="font-size: 0.88rem;">Không thể xóa dịch vụ này!</strong>
+                                <span id="deleteServiceErrorMessage" class="text-secondary d-block" style="font-size: 0.83rem; line-height: 1.45;"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Subtitle note -->
+                    <p class="text-muted mb-0" style="font-size: 0.82rem; line-height: 1.5;">
+                        <i class="bi bi-info-circle me-1 text-danger"></i> Toàn bộ dữ liệu liên quan đến dịch vụ sẽ bị xóa vĩnh viễn khỏi hệ thống.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="vt-modal-footer bg-light-subtle border-top px-4 py-3 d-flex justify-content-end gap-2">
+                <button type="button" class="btn btn-light fw-bold px-4 py-2 text-secondary border vt-btn-cancel-custom" onclick="closeDeleteServiceModal()">
+                    <i class="bi bi-x-circle me-1"></i> Hủy bỏ
+                </button>
+
+                <button type="submit" class="btn btn-danger fw-bold px-4 py-2 shadow-sm vt-btn-danger-custom" id="btnSubmitDeleteService">
+                    <i class="fa-solid fa-trash-can me-1"></i> Xác nhận xóa
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

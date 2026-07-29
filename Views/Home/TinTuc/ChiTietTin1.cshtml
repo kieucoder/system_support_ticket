@@ -1,0 +1,265 @@
+@{
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+    ViewData["Title"] = "Hướng Dẫn Tạo Phiếu Báo Sự Cố Nhanh - TechSupport Viettel Cần Thơ";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/assets/css/news-detail.css" asp-append-version="true" />
+}
+
+<div class="reading-progress-bar"></div>
+
+<div class="news-detail-wrapper">
+
+    <!-- ==========================================
+       HEADER & BREADCRUMB
+       ========================================== -->
+    <section class="detail-header-section">
+        <div class="container">
+            <div class="detail-breadcrumb">
+                <a asp-controller="Customers" asp-action="TrangChu"><i class="bi bi-house-door-fill me-1"></i> Trang chủ</a>
+                <span>></span>
+                <a asp-controller="Home" asp-action="TinTuc">Tin tức</a>
+                <span>></span>
+                <span class="text-dark">Hướng dẫn tạo phiếu hỗ trợ</span>
+            </div>
+
+            <h1 class="detail-article-title">
+                Hướng Dẫn Chi Tiết Tạo Phiếu Báo Sự Cố Kỹ Thuật Nhanh Trực Tuyến Trên Website TechSupport
+            </h1>
+
+            <div class="detail-meta-bar">
+                <span class="detail-author-badge">
+                    <i class="bi bi-person-badge-fill"></i> Ban Kỹ Thuật Viettel
+                </span>
+                <span class="detail-meta-item"><i class="bi bi-calendar3 text-danger"></i> 20/07/2026</span>
+                <span class="detail-meta-item"><i class="bi bi-clock text-danger"></i> 5 phút đọc</span>
+                <span class="detail-meta-item"><i class="bi bi-eye text-danger"></i> 2,840 lượt xem</span>
+                <span class="badge bg-danger">Hướng Dẫn</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================
+       ARTICLE CONTENT & SIDEBAR
+       ========================================== -->
+    <div class="container py-5">
+        <div class="row g-4">
+
+            <!-- LEFT COLUMN: ARTICLE CONTENT (Col 8) -->
+            <div class="col-lg-8 col-12">
+                <article class="article-content">
+
+                    <!-- Cover Image -->
+                    <div class="detail-cover-container">
+                        <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=1200" alt="Hướng dẫn tạo phiếu hỗ trợ" />
+                    </div>
+                    <p class="detail-cover-caption">Giao diện tạo phiếu hỗ trợ trực tuyến đơn giản, tự động hóa 100% của Viettel Telecom Cần Thơ</p>
+
+                    <p class="lead fw-bold text-dark mb-4">
+                        Trong thời đại chuyển đổi số viễn thông, việc báo hỏng dịch vụ internet cáp quang, truyền hình số hay camera giám sát không còn phụ thuộc vào tổng đài cuộc gọi truyền thống. Hệ thống <span class="text-highlight">TechSupport Viettel</span> mang đến trải nghiệm tiếp nhận sự cố kỹ thuật tự động 24/7, giúp khách hàng khởi tạo ticket chỉ trong 60 giây.
+                    </p>
+
+                    <h2>1. Vì Sao Nên Sử Dụng Hệ Thống Tạo Phiếu Trực Tuyến?</h2>
+                    <p>
+                        Thay vì mất thời gian chờ đợi nhân viên tổng đài nối máy trong giờ cao điểm, cổng tiếp nhận phiếu hỗ trợ kỹ thuật trực tuyến của Viettel Cần Thơ giúp ghi nhận chính xác mã hợp đồng, định vị địa chỉ lắp đặt và phân loại tự động mức độ ưu tiên sự cố.
+                    </p>
+
+                    <div class="callout-box">
+                        <h5><i class="bi bi-lightning-charge-fill me-2"></i> Lợi Ích Vượt Trội Khi Tạo Ticket Online</h5>
+                        <p>
+                            • Tiết kiệm 100% cước phí cuộc gọi và thời gian chờ máy.<br />
+                            • Tự động kết nối với kỹ thuật viên phụ trách đúng địa bàn phường/xã.<br />
+                            • Đính kèm ảnh chụp sự cố thực tế để kỹ thuật chuẩn bị trước vật tư thay thế.<br />
+                            • Nhận thông báo xác nhận và mã tra cứu qua tin nhắn Zalo/SMS lập tức.
+                        </p>
+                    </div>
+
+                    <h2>2. Quy Trình 04 Bước Tạo Phiếu Báo Sự Cố</h2>
+
+                    <h3>Bước 1: Truy cập Cổng Tạo Phiếu Dịch Vụ</h3>
+                    <p>
+                        Từ trang chủ website TechSupport Viettel, quý khách nhấn chọn nút <strong>"Tạo Phiếu Hỗ Trợ"</strong> hoặc truy cập đường dẫn danh mục dịch vụ. Hệ thống sẽ hiển thị các nhóm dịch vụ chính như Internet Cáp Quang, Truyền Hình Viettel, Camera AI và Dịch vụ Doanh nghiệp.
+                    </p>
+
+                    <div class="article-inline-image">
+                        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=1000" alt="Chọn danh mục dịch vụ" />
+                        <div class="article-inline-caption">Hình 1: Chọn đúng danh mục dịch vụ viễn thông cần gửi yêu cầu xử lý sự cố</div>
+                    </div>
+
+                    <h3>Bước 2: Điền Thông Tin Khách Hàng & Địa Chỉ Lắp Đặt</h3>
+                    <p>
+                        Vui lòng cung cấp chính xác thông tin liên hệ để kỹ thuật viên chủ động gọi điện xác nhận trước khi đến nhà:
+                    </p>
+                    <ul>
+                        <li><strong>Họ và tên người yêu cầu:</strong> Tên chủ hợp đồng hoặc người trực tiếp quản lý thiết bị.</li>
+                        <li><strong>Số điện thoại liên hệ:</strong> Số điện thoại nhận tin nhắn SMS/Zalo cập nhật trạng thái phiếu.</li>
+                        <li><strong>Mã hợp đồng / Mã đường truyền:</strong> (Nếu có) Ví dụ: <em>CTO_FTTH_123456</em> giúp tra cứu hạ tầng tức thì.</li>
+                        <li><strong>Địa chỉ sự cố:</strong> Số nhà, tên đường, phường/xã chính xác tại Cần Thơ.</li>
+                    </ul>
+
+                    <h3>Bước 3: Mô Tả Chi Tiết Hiện Trạng Lỗi & Đính Kèm Hình Ảnh</h3>
+                    <p>
+                        Hãy mô tả ngắn gọn hiện trạng sự cố bạn đang gặp phải. Quý khách có thể chọn nhanh các mẫu lỗi thường gặp như: <em>Modem báo đèn đỏ LOS, Mạng chập chờn giờ cao điểm, Mất tín hiệu truyền hình, Không đăng nhập được ứng dụng...</em>
+                    </p>
+
+                    <blockquote class="article-blockquote">
+                        <i class="bi bi-quote quote-icon"></i>
+                        "Mẹo kỹ thuật: Đính kèm 1 ảnh chụp rõ đèn báo trên thiết bị Modem ONT hoặc màn hình báo lỗi giúp đội ngũ chuyên gia chẩn đoán chính xác 90% nguyên nhân trước khi lên đường."
+                    </blockquote>
+
+                    <h3>Bước 4: Xác Nhận & Nhận Mã Ticket Tra Cứu</h3>
+                    <p>
+                        Nhấn nút <strong>"Gửi Yêu Cầu Hỗ Trợ"</strong>. Hệ thống sẽ tự động cấp một mã ticket có định dạng <span class="text-highlight">HT2026xxxx</span>. Bạn có thể sử dụng mã này hoặc số điện thoại để tra cứu tiến độ xử lý bất cứ lúc nào.
+                    </p>
+
+                    <h2>3. Cam Kết Thời Gian Phản Hồi SLA</h2>
+                    <p>
+                        Viettel Telecom Cần Thơ cam kết duy trì chỉ số SLA nghiêm ngặt cho toàn bộ ticket kỹ thuật tiếp nhận trên hệ thống:
+                    </p>
+                    <ol>
+                        <li><strong>Dưới 15 phút:</strong> Phân công kỹ thuật viên phụ trách địa bàn và gửi SMS xác nhận cho khách hàng.</li>
+                        <li><strong>Dưới 2 giờ:</strong> Kỹ thuật viên liên hệ trực tiếp kiểm tra từ xa hoặc hẹn giờ đến tận nơi.</li>
+                        <li><strong>Dưới 4 giờ:</strong> Khắc phục triệt để các sự cố cáp quang đứt đứt, suy hao quang hoặc lỗi thiết bị nhà mạng.</li>
+                    </ol>
+
+                    <!-- Share Section -->
+                    <div class="article-share-section">
+                        <span class="share-title"><i class="bi bi-share-fill me-2 text-danger"></i> Chia sẻ bài viết này:</span>
+                        <div class="share-buttons-list">
+                            <a href="#" class="btn-share btn-share-facebook" title="Chia sẻ Facebook"><i class="bi bi-facebook"></i></a>
+                            <a href="#" class="btn-share btn-share-zalo" title="Chia sẻ Zalo"><i class="bi bi-chat-quote-fill"></i></a>
+                            <a href="#" class="btn-share btn-share-linkedin" title="Chia sẻ LinkedIn"><i class="bi bi-linkedin"></i></a>
+                            <a href="#" class="btn-share btn-share-email" title="Gửi Email"><i class="bi bi-envelope-fill"></i></a>
+                        </div>
+                    </div>
+
+                    <!-- Related Articles -->
+                    <div class="mt-5">
+                        <h3 class="related-section-title">Bài Viết Liên Quan</h3>
+                        <div class="row g-3">
+                            <div class="col-md-6 col-12">
+                                <div class="related-card">
+                                    <a asp-controller="Home" asp-action="ChiTietTin2" class="d-block related-img-box">
+                                        <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=400" alt="Tra cứu phiếu" />
+                                    </a>
+                                    <div class="related-body">
+                                        <span class="related-date"><i class="bi bi-calendar3"></i> 19/07/2026</span>
+                                        <h4 class="related-card-title">
+                                            <a asp-controller="Home" asp-action="ChiTietTin2" class="text-decoration-none text-dark">
+                                                Hướng Dẫn Tra Cứu Tiến Độ Xử Lý Phiếu Báo Hỏng Trực Tuyến
+                                            </a>
+                                        </h4>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-12">
+                                <div class="related-card">
+                                    <a asp-controller="Home" asp-action="ChiTietTin5" class="d-block related-img-box">
+                                        <img src="https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&q=80&w=400" alt="Khắc phục Wifi" />
+                                    </a>
+                                    <div class="related-body">
+                                        <span class="related-date"><i class="bi bi-calendar3"></i> 16/07/2026</span>
+                                        <h4 class="related-card-title">
+                                            <a asp-controller="Home" asp-action="ChiTietTin5" class="text-decoration-none text-dark">
+                                                Top 5 Sự Cố Mạng Internet Cáp Quang Thường Gặp Vài Cách Tự Khắc Phục
+                                            </a>
+                                        </h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </article>
+            </div>
+
+            <!-- RIGHT COLUMN: SIDEBAR (Col 4) -->
+            <div class="col-lg-4 col-12">
+                <aside class="news-sidebar">
+
+                    <!-- Widget 1: Bài viết nổi bật -->
+                    <div class="sidebar-widget">
+                        <h4 class="widget-title"><i class="bi bi-fire text-danger me-2"></i> Bài Viết Nổi Bật</h4>
+                        
+                        <a asp-controller="Home" asp-action="ChiTietTin4" class="text-decoration-none text-dark d-block">
+                            <div class="mini-post-item">
+                                <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&q=80&w=200" class="mini-post-img" alt="Gemini AI" />
+                                <div>
+                                    <h5 class="mini-post-title">Tích Hợp Trợ Lý Ảo Gemini AI Phân Loại Ticket 24/7</h5>
+                                    <span class="mini-post-date"><i class="bi bi-calendar3"></i> 21/07/2026</span>
+                                </div>
+                            </div>
+                        </a>
+
+                        <a asp-controller="Home" asp-action="ChiTietTin2" class="text-decoration-none text-dark d-block">
+                            <div class="mini-post-item">
+                                <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=200" class="mini-post-img" alt="Tra cứu phiếu" />
+                                <div>
+                                    <h5 class="mini-post-title">Hướng Dẫn Tra Cứu Tiến Độ Xử Lý Phiếu Báo Hỏng</h5>
+                                    <span class="mini-post-date"><i class="bi bi-calendar3"></i> 19/07/2026</span>
+                                </div>
+                            </div>
+                        </a>
+
+                        <a asp-controller="Home" asp-action="ChiTietTin7" class="text-decoration-none text-dark d-block">
+                            <div class="mini-post-item">
+                                <img src="https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&q=80&w=200" class="mini-post-img" alt="Bảo mật OTP" />
+                                <div>
+                                    <h5 class="mini-post-title">Bảo Mật Tài Khoản Khách Hàng Mã OTP Email ISO</h5>
+                                    <span class="mini-post-date"><i class="bi bi-calendar3"></i> 14/07/2026</span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+                    <!-- Widget 2: Danh Mục -->
+                    <div class="sidebar-widget">
+                        <h4 class="widget-title"><i class="bi bi-folder2-open text-danger me-2"></i> Danh Mục</h4>
+                        <ul class="sidebar-cat-list">
+                            <li class="sidebar-cat-item">
+                                <a asp-controller="Home" asp-action="TinTuc" class="text-decoration-none text-dark">Hướng dẫn sử dụng</a>
+                                <span class="sidebar-cat-count">5</span>
+                            </li>
+                            <li class="sidebar-cat-item">
+                                <a asp-controller="Home" asp-action="TinTuc" class="text-decoration-none text-dark">Công nghệ & AI</a>
+                                <span class="sidebar-cat-count">4</span>
+                            </li>
+                            <li class="sidebar-cat-item">
+                                <a asp-controller="Home" asp-action="TinTuc" class="text-decoration-none text-dark">Thông báo bảo trì</a>
+                                <span class="sidebar-cat-count">2</span>
+                            </li>
+                            <li class="sidebar-cat-item">
+                                <a asp-controller="Home" asp-action="TinTuc" class="text-decoration-none text-dark">Cập nhật hệ thống</a>
+                                <span class="sidebar-cat-count">2</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Widget 3: Tags -->
+                    <div class="sidebar-widget">
+                        <h4 class="widget-title"><i class="bi bi-tags text-danger me-2"></i> Từ Khóa Hot</h4>
+                        <div class="tags-cloud">
+                            <span class="tag-item">#TaoPhieu</span>
+                            <span class="tag-item">#ViettelCầnThơ</span>
+                            <span class="tag-item">#HuongDan</span>
+                            <span class="tag-item">#CapQuangGPON</span>
+                            <span class="tag-item">#SLA15Phut</span>
+                        </div>
+                    </div>
+
+                </aside>
+            </div>
+
+        </div>
+    </div>
+
+   
+
+</div>
+
+<partial name="~/Views/Shared/_Footer.cshtml" />
+
+@section Scripts {
+    <script src="~/assets/js/news-detail.js" asp-append-version="true"></script>
+}

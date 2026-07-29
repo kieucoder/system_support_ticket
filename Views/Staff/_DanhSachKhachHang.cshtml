@@ -1,4 +1,10 @@
 @model List<SupportTicketSysterm.Data.KhachHang>
+@using System.Security.Claims
+
+@{
+    string vaiTro = Context.Session?.GetString("Role") ?? Context.Session?.GetString("VaiTro") ?? User.FindFirstValue(ClaimTypes.Role) ?? User.FindFirstValue("VaiTro") ?? "";
+    bool isAdmin = ViewBag.IsAdmin ?? (vaiTro.Equals("Admin", StringComparison.OrdinalIgnoreCase) || vaiTro.Equals("Quản trị viên", StringComparison.OrdinalIgnoreCase));
+}
 
 <div class="card-header bg-transparent border-0 pt-4 pb-0 d-flex justify-content-between align-items-center flex-wrap gap-2">
     <div>
@@ -87,17 +93,25 @@
                                             onclick="viewTicketHistory('@item.IdKhachHang')">
                                         <i class="fa-solid fa-clock-rotate-left"></i>
                                     </button>
-                                    <button class="btn-action-custom @(item.TrangThai == "Hoạt động" ? "lock" : "unlock") btn-toggle-status"
-                                            data-id="@item.IdKhachHang"
-                                            title="@(item.TrangThai == "Hoạt động" ? "Khóa tài khoản" : "Mở khóa tài khoản")"
-                                            onclick="toggleLockStatus('@item.IdKhachHang')">
-                                        <i class="fa-solid @(item.TrangThai == "Hoạt động" ? "fa-lock" : "fa-lock-open")"></i>
-                                    </button>
-                                    <button class="btn-action-custom delete"
-                                            title="Xóa tài khoản"
-                                            onclick="deleteCustomer('@item.IdKhachHang')">
-                                        <i class="fa-solid fa-trash"></i>
-                                    </button>
+                                    @if (isAdmin)
+                                    {
+                                        <button class="btn-action-custom edit"
+                                                title="Chỉnh sửa"
+                                                onclick="openEditCustomerModal('@item.IdKhachHang')">
+                                            <i class="fa-solid fa-pen-to-square"></i>
+                                        </button>
+                                        <button class="btn-action-custom @(item.TrangThai == "Hoạt động" ? "lock" : "unlock") btn-toggle-status"
+                                                data-id="@item.IdKhachHang"
+                                                title="@(item.TrangThai == "Hoạt động" ? "Khóa tài khoản" : "Mở khóa tài khoản")"
+                                                onclick="toggleLockStatus('@item.IdKhachHang')">
+                                            <i class="fa-solid @(item.TrangThai == "Hoạt động" ? "fa-lock-open" : "fa-lock")"></i>
+                                        </button>
+                                        <button class="btn-action-custom delete"
+                                                title="Xóa tài khoản"
+                                                onclick="deleteCustomer('@item.IdKhachHang')">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </button>
+                                    }
                                 </div>
                             </td>
                         </tr>
@@ -142,10 +156,14 @@
                     <div class="card-footer bg-transparent d-flex justify-content-end gap-1 p-2">
                         <button class="btn btn-sm btn-outline-primary" onclick="viewCustomerDetails('@item.IdKhachHang')"><i class="fa-solid fa-eye me-1"></i> Chi tiết</button>
                         <button class="btn btn-sm btn-outline-warning" onclick="viewTicketHistory('@item.IdKhachHang')"><i class="fa-solid fa-clock-rotate-left me-1"></i> Lịch sử</button>
-                        <button class="btn btn-sm btn-outline-secondary btn-toggle-status" data-id="@item.IdKhachHang" onclick="toggleLockStatus('@item.IdKhachHang')">
-                            <i class="fa-solid @(item.TrangThai == "Hoạt động" ? "fa-lock" : "fa-lock-open")"></i> Status
-                        </button>
-                        <button class="btn btn-sm btn-outline-danger" onclick="deleteCustomer('@item.IdKhachHang')"><i class="fa-solid fa-trash me-1"></i> Xóa</button>
+                        @if (isAdmin)
+                        {
+                            <button class="btn btn-sm btn-outline-info" onclick="openEditCustomerModal('@item.IdKhachHang')"><i class="fa-solid fa-pen-to-square me-1"></i> Sửa</button>
+                            <button class="btn btn-sm btn-outline-secondary btn-toggle-status" data-id="@item.IdKhachHang" onclick="toggleLockStatus('@item.IdKhachHang')">
+                                <i class="fa-solid @(item.TrangThai == "Hoạt động" ? "fa-lock" : "fa-lock-open")"></i> Status
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger" onclick="deleteCustomer('@item.IdKhachHang')"><i class="fa-solid fa-trash me-1"></i> Xóa</button>
+                        }
                     </div>
                 </div>
             }
@@ -159,26 +177,68 @@
         }
     </div>
 
-    <!-- Table Pagination Footer -->
-    <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 p-4 border-top">
-        <div class="d-flex align-items-center gap-2">
-            <label for="pageSizeSelect" class="text-muted mb-0"
-                   style="font-size: 0.82rem; white-space: nowrap;">Hiển thị:</label>
-            <select id="pageSizeSelect" class="form-select form-select-sm border"
-                   style="width: 75px; border-radius: 6px;">
-                <option value="10" selected>10</option>
-                <option value="25">25</option>
-                <option value="50">50</option>
-                <option value="100">100</option>
-            </select>
-            <span class="text-muted" style="font-size: 0.82rem; white-space: nowrap;">
-                bản ghi / trang
-            </span>
+    <!-- Table Pagination Footer (Matching Staff/QuanLyDanhMuc) -->
+    <div class="vt-pagination-wrap">
+        <span class="vt-pagination-info" id="customerPaginationInfo">
+            Đang hiển thị @(ViewBag.StartItem ?? 0) đến @(ViewBag.EndItem ?? 0) trong tổng số @(ViewBag.TotalItems ?? 0) khách hàng
+        </span>
+        <div id="customersPagination" class="vt-pagination" role="navigation" aria-label="Phân trang khách hàng">
+            <button class="vt-page-btn" onclick="goPageKH(@((ViewBag.CurrentPage ?? 1) - 1))" @((ViewBag.CurrentPage ?? 1) <= 1 ? "disabled" : "") title="Trang trước">
+                <i class="fa-solid fa-chevron-left" style="font-size:0.7rem;"></i>
+            </button>
+
+            @{
+                int totalPages = ViewBag.TotalPages ?? 1;
+                int currentPage = ViewBag.CurrentPage ?? 1;
+                List<string> pages = new List<string>();
+                int maxVisible = 5;
+                if (totalPages <= maxVisible)
+                {
+                    for (int i = 1; i <= totalPages; i++) pages.Add(i.ToString());
+                }
+                else
+                {
+                    int half = maxVisible / 2;
+                    int start = Math.Max(1, currentPage - half);
+                    int end = Math.Min(totalPages, start + maxVisible - 1);
+                    if (end - start < maxVisible - 1)
+                    {
+                        start = Math.Max(1, end - maxVisible + 1);
+                    }
+
+                    if (start > 1)
+                    {
+                        pages.Add("1");
+                        if (start > 2) pages.Add("…");
+                    }
+                    for (int p = start; p <= end; p++)
+                    {
+                        pages.Add(p.ToString());
+                    }
+                    if (end < totalPages)
+                    {
+                        if (end < totalPages - 1) pages.Add("…");
+                        pages.Add(totalPages.ToString());
+                    }
+                }
+            }
+
+            @foreach (var p in pages)
+            {
+                if (p == "…")
+                {
+                    <button class="vt-page-btn" disabled>…</button>
+                }
+                else
+                {
+                    int pageNum = int.Parse(p);
+                    <button class="vt-page-btn @(pageNum == currentPage ? "active" : "")" onclick="goPageKH(@pageNum)">@pageNum</button>
+                }
+            }
+
+            <button class="vt-page-btn" onclick="goPageKH(@((ViewBag.CurrentPage ?? 1) + 1))" @((ViewBag.CurrentPage ?? 1) >= (ViewBag.TotalPages ?? 1) ? "disabled" : "") title="Trang sau">
+                <i class="fa-solid fa-chevron-right" style="font-size:0.7rem;"></i>
+            </button>
         </div>
-        <nav aria-label="Điều hướng phân trang khách hàng">
-            <ul class="pagination pagination-sm mb-0" id="customersPagination">
-                <!-- Filled dynamically by JS -->
-            </ul>
-        </nav>
     </div>
 </div>

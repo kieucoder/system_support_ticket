@@ -29,6 +29,8 @@ public partial class NhanVien
 
     public string? Avatar { get; set; }
 
+    public string? ChucVu => VaiTro;
+
 
 
     public virtual ICollection<LichHen> LichHens { get; set; } = new List<LichHen>();

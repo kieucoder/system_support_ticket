@@ -368,70 +368,158 @@ function renderPaginationControls(totalPages) {
 }
 
 window.goPage = function (p) {
-    const totalPages = Math.ceil(filteredCustomers.length / pageSize);
-    if (p < 1 || p > totalPages) return;
-    currentPage = p;
-    renderCustomersList();
+    if (!p || p < 1) return;
+    window.applyFiltersKH(p);
+};
+
+window.goPageKH = function (p) {
+    if (!p || p < 1) return;
+    window.applyFiltersKH(p);
+};
+
+/* ══════════════════════════════════════════
+   FILTERS & SEARCH ACTIONS (SERVERSIDE)
+   ══════════════════════════════════════════ */
+let currentKHPage = 1;
+
+window.applyFiltersKH = function (page) {
+    if (page) currentKHPage = page;
+    const keyword = $('#searchCustomer').val() || '';
+    const status = $('#filterStatus').val() || 'all';
+    const sort = $('#filterSort').val() || 'newest';
+
+    $.ajax({
+        url: '/Staff/DanhSachKhachHang',
+        type: 'GET',
+        data: { keyword: keyword, status: status, sort: sort, page: currentKHPage, pageSize: 10 },
+        success: function (data) {
+            $('#customersCardContainer').html(data);
+        },
+        error: function () {
+            showToast('error', 'Lỗi khi kết nối hệ thống để lọc danh sách khách hàng.');
+        }
+    });
+};
+
+window.clearFiltersKH = function () {
+    $('#searchCustomer').val('');
+    $('#filterStatus').val('all');
+    $('#filterSort').val('newest');
+    window.applyFiltersKH(1);
 };
 
 /* ══════════════════════════════════════════
    MODAL ACTIONS: VIEW CUSTOMER DETAILED DATA
    ══════════════════════════════════════════ */
 window.viewCustomerDetails = function (customerId) {
-    const customer = customersList.find(c => c.id === customerId);
-    if (!customer) return;
+    if (!customerId) return;
 
-    // Retrieve stats
-    const totalTickets = ticketsList.filter(t => t.customerName === customer.hoTen || t.customerPhone === customer.soDienThoai).length;
-    const totalAppointments = appointmentsList.filter(a => a.customerName === customer.hoTen).length;
+    // 1. Show modal with loading state immediately
+    $('#customerDetailContainer').html(`
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: var(--vt-border-radius); overflow: hidden;">
+                <div class="modal-header bg-danger text-white py-3">
+                    <h5 class="modal-title fw-bold">
+                        <i class="bi bi-id-card me-2"></i>Hồ Sơ Chi Tiết Khách Hàng
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Đóng"></button>
+                </div>
+                <div class="modal-body p-5 text-center">
+                    <div class="spinner-border text-danger my-3" role="status" style="width: 2.5rem; height: 2.5rem;">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="text-muted fw-semibold mb-0">Đang tải dữ liệu hồ sơ khách hàng...</p>
+                </div>
+            </div>
+        </div>
+    `);
 
-    // Mock Rating
-    let ratingVal = 4.8;
-    if (customerId === 'KH005') ratingVal = 3.5;
-    if (customerId === 'KH009') ratingVal = 4.0;
-
-    const statusHtml = customer.trangThai === 'Hoạt động'
-        ? '<span class="badge-status active">Hoạt động</span>'
-        : '<span class="badge-status locked">Đã khóa</span>';
-
-    setText('viewCustomerId', customer.id);
-    setText('viewCustomerName', customer.hoTen);
-    setText('viewCustomerPhone', customer.soDienThoai);
-    setText('viewCustomerEmail', customer.email || '—');
-    setText('viewCustomerUsername', customer.tenDangNhap);
-    setText('viewCustomerDOB', customer.ngaySinh ? formatDateString(customer.ngaySinh) : '—');
-    setText('viewCustomerCreatedDate', customer.ngayTao);
-    setText('viewCustomerAddress', customer.diaChi || '—');
-
-    setText('viewCustomerTotalTickets', totalTickets);
-    setText('viewCustomerTotalAppointments', totalAppointments);
-    
-    const ratingSpan = document.getElementById('viewCustomerRating');
-    if (ratingSpan) {
-        ratingSpan.innerHTML = `${ratingVal.toFixed(1)} <i class="fa-solid fa-star small text-warning"></i>`;
+    const modalEl = document.getElementById('viewCustomerModal');
+    if (modalEl) {
+        const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+        modal.show();
     }
 
-    const statusDiv = document.getElementById('viewCustomerStatus');
-    if (statusDiv) statusDiv.innerHTML = statusHtml;
+    // 2. Fetch server partial view
+    $.ajax({
+        url: '/Staff/ChiTietKH',
+        type: 'GET',
+        data: { id: customerId },
+        success: function (html) {
+            $('#customerDetailContainer').html(html);
+        },
+        error: function (xhr) {
+            console.error('Lỗi khi tải chi tiết KH:', xhr);
+            $('#customerDetailContainer').html(`
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content border-0 shadow-lg" style="border-radius: var(--vt-border-radius); overflow: hidden;">
+                        <div class="modal-header bg-danger text-white py-3">
+                            <h5 class="modal-title fw-bold">
+                                <i class="bi bi-exclamation-triangle me-2"></i>Thông Báo
+                            </h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Đóng"></button>
+                        </div>
+                        <div class="modal-body p-4 text-center">
+                            <i class="fa-solid fa-circle-exclamation text-danger mb-3" style="font-size: 2.5rem;"></i>
+                            <h6 class="fw-bold text-dark">Không thể tải thông tin khách hàng</h6>
+                            <p class="text-muted small mb-0">Vui lòng kiểm tra lại kết nối mạng hoặc thử lại sau.</p>
+                        </div>
+                        <div class="modal-footer border-top-0 pt-0 px-4 pb-4">
+                            <button type="button" class="btn btn-secondary px-4 py-2" data-bs-dismiss="modal" style="border-radius: var(--vt-border-radius-sm);">Đóng</button>
+                        </div>
+                    </div>
+                </div>
+            `);
+        }
+    });
+};
 
-    if (viewCustomerModal) {
-        viewCustomerModal.show();
-    }
+/* ══════════════════════════════════════════
+   MODAL ACTIONS: EDIT CUSTOMER
+   ══════════════════════════════════════════ */
+window.openEditCustomerModal = function (customerId) {
+    $.ajax({
+        url: '/Staff/LayThongTinKH',
+        type: 'GET',
+        data: { id: customerId },
+        success: function (res) {
+            if (res.success && res.data) {
+                const d = res.data;
+                $('#editCustomerId').val(d.idKhachHang);
+                $('#editCustomerCode').val(d.maKh || '');
+                $('#editCustomerName').val(d.hoTen || '');
+                $('#editCustomerPhone').val(d.soDienThoai || '');
+                $('#editCustomerEmail').val(d.email || '');
+                $('#editCustomerDOB').val(d.ngaySinh || '');
+                $('#editCustomerStatus').val(d.trangThai || 'Hoạt động');
+                $('#editCustomerAddress').val(d.diaChi || '');
+                $('#editCustomerPassword').val('');
+                $('#editCustomerAlert').addClass('d-none').html('');
+
+                const modalEl = document.getElementById('editCustomerModal');
+                if (modalEl) {
+                    const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+                    modal.show();
+                }
+            } else {
+                Swal.fire('Lỗi', res.message || 'Không thể lấy thông tin khách hàng.', 'error');
+            }
+        },
+        error: function () {
+            showToast('error', 'Lỗi hệ thống khi tải thông tin khách hàng.');
+        }
+    });
 };
 
 /* ══════════════════════════════════════════
    LOCK / UNLOCK ACCOUNT STATE FLOW
    ══════════════════════════════════════════ */
 window.toggleLockStatus = function (customerId) {
-    const customer = customersList.find(c => c.id === customerId);
-    if (!customer) return;
-
-    const actionText = customer.trangThai === 'Hoạt động' ? 'khóa' : 'mở khóa';
-    const newStatus = customer.trangThai === 'Hoạt động' ? 'Đã khóa' : 'Hoạt động';
+    const token = $('#antiForgeryForm input[name="__RequestVerificationToken"]').val();
 
     Swal.fire({
-        title: `Xác nhận ${actionText}?`,
-        text: `Bạn có chắc chắn muốn thay đổi trạng thái tài khoản của khách hàng "${customer.hoTen}" không?`,
+        title: 'Xác nhận thay đổi trạng thái?',
+        text: 'Bạn có chắc chắn muốn thay đổi trạng thái khóa / mở khóa tài khoản khách hàng này?',
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#EE0033',
@@ -440,16 +528,26 @@ window.toggleLockStatus = function (customerId) {
         cancelButtonText: 'Hủy'
     }).then((result) => {
         if (result.isConfirmed) {
-            customer.trangThai = newStatus;
-            localStorage.setItem(CUSTOMERS_STORAGE_KEY, JSON.stringify(customersList));
-            
-            applyFilters();
-
-            Swal.fire(
-                'Thành công!',
-                `Đã ${actionText} tài khoản khách hàng thành công.`,
-                'success'
-            );
+            $.ajax({
+                url: '/Staff/KhoaKhachHang',
+                type: 'POST',
+                data: {
+                    id: customerId,
+                    __RequestVerificationToken: token
+                },
+                headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                success: function (res) {
+                    if (res.success) {
+                        Swal.fire('Thành công!', res.message, 'success');
+                        window.applyFiltersKH();
+                    } else {
+                        Swal.fire('Thất bại!', res.message, 'error');
+                    }
+                },
+                error: function () {
+                    Swal.fire('Lỗi', 'Không thể kết nối đến máy chủ.', 'error');
+                }
+            });
         }
     });
 };
@@ -458,27 +556,11 @@ window.toggleLockStatus = function (customerId) {
    DELETE CUSTOMER STATE FLOW (CONSTRAINED)
    ══════════════════════════════════════════ */
 window.deleteCustomer = function (customerId) {
-    const customer = customersList.find(c => c.id === customerId);
-    if (!customer) return;
+    const token = $('#antiForgeryForm input[name="__RequestVerificationToken"]').val();
 
-    // Check constraint: Has tickets?
-    const hasTickets = ticketsList.some(t => t.customerName === customer.hoTen || t.customerPhone === customer.soDienThoai);
-
-    if (hasTickets) {
-        Swal.fire({
-            title: 'Không thể xóa!',
-            text: 'Không thể xóa khách hàng đã phát sinh phiếu hỗ trợ kỹ thuật trên hệ thống.',
-            icon: 'error',
-            confirmButtonColor: '#2C3E50',
-            confirmButtonText: 'Đóng'
-        });
-        return;
-    }
-
-    // Confirm Delete
     Swal.fire({
         title: 'Xác nhận xóa?',
-        text: `Bạn có chắc chắn muốn xóa khách hàng "${customer.hoTen}" vĩnh viễn không? Hành động này không thể phục hồi.`,
+        text: 'Bạn có chắc chắn muốn xóa tài khoản khách hàng này vĩnh viễn không? Hành động này không thể hoàn tác.',
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#EE0033',
@@ -487,16 +569,26 @@ window.deleteCustomer = function (customerId) {
         cancelButtonText: 'Hủy'
     }).then((result) => {
         if (result.isConfirmed) {
-            customersList = customersList.filter(c => c.id !== customerId);
-            localStorage.setItem(CUSTOMERS_STORAGE_KEY, JSON.stringify(customersList));
-
-            applyFilters();
-
-            Swal.fire(
-                'Đã xóa!',
-                'Khách hàng đã được loại bỏ khỏi hệ thống.',
-                'success'
-            );
+            $.ajax({
+                url: '/Staff/XoaKhachHang',
+                type: 'POST',
+                data: {
+                    id: customerId,
+                    __RequestVerificationToken: token
+                },
+                headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                success: function (res) {
+                    if (res.success) {
+                        Swal.fire('Đã xóa!', res.message, 'success');
+                        window.applyFiltersKH();
+                    } else {
+                        Swal.fire('Không thể xóa!', res.message, 'error');
+                    }
+                },
+                error: function () {
+                    Swal.fire('Lỗi', 'Không thể gửi yêu cầu xóa tới máy chủ.', 'error');
+                }
+            });
         }
     });
 };
@@ -822,10 +914,68 @@ function showToast(type, msg) {
 }
 
 /* ══════════════════════════════════════════
-   INITIALIZATION
+   INITIALIZATION & FORM SUBMITS
    ══════════════════════════════════════════ */
 document.addEventListener('DOMContentLoaded', function () {
     loadCustomersData();
     initCustomersDom();
-    applyFilters();
+});
+
+$(document).on('submit', '#addCustomerForm', function (e) {
+    e.preventDefault();
+    const form = $(this);
+    const actionUrl = form.attr('action') || '/Staff/ThemKhachHang';
+
+    $.ajax({
+        url: actionUrl,
+        type: 'POST',
+        data: form.serialize(),
+        headers: { 'X-Requested-With': 'XMLHttpRequest' },
+        success: function (res) {
+            if (res.success) {
+                const modalEl = document.getElementById('addCustomerModal');
+                if (modalEl) {
+                    const modal = bootstrap.Modal.getInstance(modalEl) || bootstrap.Modal.getOrCreateInstance(modalEl);
+                    if (modal) modal.hide();
+                }
+                form[0].reset();
+                Swal.fire('Thành công!', res.message || 'Đã thêm khách hàng mới thành công.', 'success');
+                window.applyFiltersKH();
+            } else {
+                Swal.fire('Lỗi', res.message || 'Không thể thêm khách hàng.', 'error');
+            }
+        },
+        error: function () {
+            Swal.fire('Lỗi', 'Lỗi kết nối khi gửi thông tin.', 'error');
+        }
+    });
+});
+
+$(document).on('submit', '#editCustomerForm', function (e) {
+    e.preventDefault();
+    const form = $(this);
+    const alertBox = $('#editCustomerAlert');
+
+    $.ajax({
+        url: '/Staff/SuaKhachHang',
+        type: 'POST',
+        data: form.serialize(),
+        headers: { 'X-Requested-With': 'XMLHttpRequest' },
+        success: function (res) {
+            if (res.success) {
+                const modalEl = document.getElementById('editCustomerModal');
+                if (modalEl) {
+                    const modal = bootstrap.Modal.getInstance(modalEl) || bootstrap.Modal.getOrCreateInstance(modalEl);
+                    if (modal) modal.hide();
+                }
+                Swal.fire('Thành công!', res.message || 'Đã cập nhật thông tin khách hàng thành công.', 'success');
+                window.applyFiltersKH();
+            } else {
+                alertBox.removeClass('d-none').html(res.message || 'Không thể lưu thay đổi.');
+            }
+        },
+        error: function () {
+            alertBox.removeClass('d-none').html('Lỗi máy chủ khi cập nhật thông tin.');
+        }
+    });
 });

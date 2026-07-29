@@ -1,12 +1,33 @@
 @using Microsoft.AspNetCore.Http
 @using System.Security.Claims
+@using SupportTicketSysterm.Data
+@inject TechSupportContext DbContext
 @{
-    var currentController = ViewContext.RouteData.Values["Controller"]?.ToString();
-    var currentAction = ViewContext.RouteData.Values["Action"]?.ToString();
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
+    var currentAction = ViewContext.RouteData.Values["action"]?.ToString() ?? "";
 
-    var hoTen = Context.Session?.GetString("HoTen") ?? User.FindFirstValue("HoTen") ?? User.Identity?.Name ?? "Nhân viên";
-    var vaiTro = Context.Session?.GetString("Role") ?? User.FindFirstValue(ClaimTypes.Role) ?? "NhanVien";
-    var vaiTroVn = vaiTro == "Admin" ? "Quản trị viên" : "Nhân viên hỗ trợ";
+    var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier) 
+                    ?? User.FindFirstValue("UserId") 
+                    ?? Context.Session?.GetInt32("UserId")?.ToString();
+
+    string hoTen = Context.Session?.GetString("HoTen") ?? User.FindFirstValue("HoTen") ?? User.FindFirstValue(ClaimTypes.Name) ?? User.Identity?.Name ?? "";
+    string vaiTro = Context.Session?.GetString("Role") ?? Context.Session?.GetString("VaiTro") ?? User.FindFirstValue(ClaimTypes.Role) ?? User.FindFirstValue("VaiTro") ?? "";
+
+    if (int.TryParse(userIdStr, out int nhanVienId) && nhanVienId > 0)
+    {
+        var staffDb = DbContext.NhanViens.FirstOrDefault(x => x.IdNhanVien == nhanVienId);
+        if (staffDb != null)
+        {
+            if (string.IsNullOrEmpty(hoTen)) hoTen = staffDb.HoTen?.Trim() ?? "";
+            if (string.IsNullOrEmpty(vaiTro)) vaiTro = staffDb.VaiTro?.Trim() ?? "";
+        }
+    }
+
+    if (string.IsNullOrEmpty(hoTen)) hoTen = "Nhân viên";
+    if (string.IsNullOrEmpty(vaiTro)) vaiTro = "NhanVien";
+
+    bool isAdmin = vaiTro.Equals("Admin", StringComparison.OrdinalIgnoreCase) || vaiTro.Equals("Quản trị viên", StringComparison.OrdinalIgnoreCase);
+    var vaiTroVn = isAdmin ? "Quản trị viên" : "Nhân viên hỗ trợ";
 }
 
 <!-- ============================================================
@@ -27,12 +48,11 @@
     </div>
 
     <!-- Sidebar Brand Logo (Desktop only) -->
-    <a href="/Staff/Dashboard" class="sidebar-brand d-none d-lg-flex">
+    <a asp-controller="Staff" asp-action="Dashboard" class="sidebar-brand d-none d-lg-flex">
         <i class="fa-solid fa-headset"></i>
         <span>
             TechSupport <small style="display:block;font-size:0.65rem;font-weight:400;letter-spacing:1px;color:rgba(255,255,255,0.5);">
-                VIETTEL
-                ADMIN
+                VIETTEL ADMIN
             </small>
         </span>
     </a>
@@ -42,7 +62,7 @@
         <ul class="sidebar-menu">
 
             <li class="sidebar-section-label">TỔNG QUAN</li>
-            <li class="sidebar-item @(currentController == "Staff" && currentAction == "Dashboard" ? "active" : "")" data-page="dashboard.html">
+            <li class="sidebar-item @(currentController.Equals("Staff", StringComparison.OrdinalIgnoreCase) && currentAction.Equals("Dashboard", StringComparison.OrdinalIgnoreCase) ? "active" : "")">
                 <a asp-controller="Staff" asp-action="Dashboard" class="sidebar-link">
                     <i class="fa-solid fa-gauge-high"></i>
                     <span>Dashboard</span>
@@ -50,90 +70,90 @@
             </li>
 
             <li class="sidebar-section-label">QUẢN LÝ</li>
-            <li class="sidebar-item @(currentController == "Staff" && currentAction == "QuanLyPhieuHoTro" ? "active" : "")" data-page="staff-ticket-management.html">
-                <a asp-controller="Staff" asp-action="QuanLyPhieuHoTro" class="sidebar-link">
-                    <i class="fa-solid fa-ticket"></i>
-                    <span>Phiếu Hỗ Trợ</span>
-                </a>
-            </li>
-            <li class="sidebar-item @(currentController == "Chat" && currentAction == "Index" ? "active" : "")" data-page="staff-chat.html">
-                <a asp-controller="Chat" asp-action="Index" class="sidebar-link">
-                    <i class="fa-solid fa-comments"></i>
-                    <span>Chat Hỗ Trợ</span>
-                </a>
-            </li>
-            <li class="sidebar-item @(currentController == "Staff" && currentAction == "QuanLyLichHen" ? "active" : "")" data-page="admin-appointments.html">
-                <a asp-controller="Staff" asp-action="QuanLyLichHen" class="sidebar-link">
-                    <i class="fa-solid fa-calendar-days"></i>
-                    <span>Lịch Hẹn Kỹ Thuật</span>
-                </a>
-            </li>
-            <li class="sidebar-item @(currentController == "Staff" && currentAction == "QuanLyDanhMuc" ? "active" : "")" data-page="admin-categories.html">
-                <a asp-controller="Staff" asp-action="QuanLyDanhMuc" class="sidebar-link">
-                    <i class="fa-solid fa-layer-group"></i>
-                    <span>Danh Mục Sự Cố</span>
-                </a>
-            </li>
-            <li class="sidebar-item @(currentController == "Staff" && currentAction == "QuanLyDichVu" ? "active" : "")" data-page="admin-services.html">
-                <a asp-controller="Staff" asp-action="QuanLyDichVu" class="sidebar-link">
-                    <i class="fa-solid fa-network-wired"></i>
-                    <span>Dịch Vụ Kỹ Thuật</span>
-                </a>
-            </li>
-            <li class="sidebar-item @(currentController == "Staff" && currentAction == "QuanLyKH" ? "active" : "")" data-page="admin-customers.html">
-                <a asp-controller="Staff" asp-action="QuanLyKH" class="sidebar-link">
-                    <i class="fa-solid fa-users"></i>
-                    <span>Khách Hàng</span>
-                </a>
-            </li>
-            <li class="sidebar-item @(currentController == "Staff" && currentAction == "QuanLyNhanVien" ? "active" : "")" data-page="staff.html">
-                <a asp-controller="Staff" asp-action="QuanLyNhanVien" class="sidebar-link">
-                    <i class="fa-solid fa-users-gear"></i>
-                    <span>Nhân Viên</span>
-                </a>
-            </li>
-            <li class="sidebar-item @(currentController == "Staff" && (currentAction == "DanhSachDanhGia" || currentAction == "PhanHoiDanhGia") ? "active" : "")" data-page="staff-review-list.html">
-                <a asp-controller="Staff" asp-action="DanhSachDanhGia" class="sidebar-link">
-                    <i class="fa-solid fa-star"></i>
-                    <span>Đánh Giá Khách Hàng</span>
-                </a>
-            </li>
 
-            <li class="sidebar-section-label">THỐNG KÊ</li>
-            <li class="sidebar-item" data-page="admin-report.html">
-                <a href="/staff/admin-report.html" class="sidebar-link">
-                    <i class="fa-solid fa-chart-line"></i>
-                    <span>Báo Cáo &amp; Thống Kê</span>
-                </a>
-            </li>
-
-            @if (vaiTro == "Admin")
+            @if (isAdmin)
             {
-                <li class="sidebar-section-label">HỆ THỐNG</li>
-                <li class="sidebar-item @(currentController == "Admin" && currentAction == "GeminiDiagnostic" ? "active" : "")">
-                    <a asp-controller="Admin" asp-action="GeminiDiagnostic" class="sidebar-link">
-                        <i class="fa-solid fa-robot"></i>
-                        <span>Chẩn Đoán Gemini AI</span>
+                <!-- Quản lý Danh mục (Admin) -->
+                <li class="sidebar-item @(currentController.Equals("Staff", StringComparison.OrdinalIgnoreCase) && (currentAction.Equals("QuanLyDanhMuc", StringComparison.OrdinalIgnoreCase) || currentAction.Equals("DanhSachDanhMuc", StringComparison.OrdinalIgnoreCase)) ? "active" : "")">
+                    <a asp-controller="Staff" asp-action="QuanLyDanhMuc" class="sidebar-link">
+                        <i class="fa-solid fa-layer-group"></i>
+                        <span>Quản lý Danh mục</span>
+                    </a>
+                </li>
+
+                <!-- Quản lý Dịch vụ (Admin) -->
+                <li class="sidebar-item @(currentController.Equals("Staff", StringComparison.OrdinalIgnoreCase) && (currentAction.Equals("QuanLyDichVu", StringComparison.OrdinalIgnoreCase) || currentAction.Equals("DanhSachDichVu", StringComparison.OrdinalIgnoreCase)) ? "active" : "")">
+                    <a asp-controller="Staff" asp-action="QuanLyDichVu" class="sidebar-link">
+                        <i class="fa-solid fa-network-wired"></i>
+                        <span>Quản lý Dịch vụ</span>
                     </a>
                 </li>
             }
 
-            <li class="sidebar-section-label">TÀI KHOẢN</li>
-            <li class="sidebar-item @(currentController == "Staff" && (currentAction == "TaiKhoanNhanVien" || currentAction == "ThongTinCaNhan") ? "active" : "")" data-page="admin-profile.html">
-                <a asp-controller="Staff" asp-action="TaiKhoanNhanVien" class="sidebar-link">
-                    <i class="fa-solid fa-circle-user"></i>
-                    <span>Thông Tin Cá Nhân</span>
+            <!-- Quản lý Phiếu hỗ trợ (Admin & Nhân viên) -->
+            <li class="sidebar-item @((currentController.Equals("Staff", StringComparison.OrdinalIgnoreCase) && (currentAction.Equals("QuanLyPhieuHoTro", StringComparison.OrdinalIgnoreCase) || currentAction.Equals("QuanLyPhieu", StringComparison.OrdinalIgnoreCase) || currentAction.Equals("ChiTietPhieuHoTro", StringComparison.OrdinalIgnoreCase))) || currentController.Equals("Ticket", StringComparison.OrdinalIgnoreCase) ? "active" : "")">
+                <a asp-controller="Staff" asp-action="QuanLyPhieuHoTro" class="sidebar-link">
+                    <i class="fa-solid fa-ticket"></i>
+                    <span>Quản lý Phiếu hỗ trợ</span>
                 </a>
             </li>
 
+            <!-- Quản lý Lịch hẹn (Admin & Nhân viên) -->
+            <li class="sidebar-item @(currentController.Equals("AdminLichHen", StringComparison.OrdinalIgnoreCase) || currentController.Equals("StaffLichHen", StringComparison.OrdinalIgnoreCase) || (currentController.Equals("Staff", StringComparison.OrdinalIgnoreCase) && currentAction.Equals("QuanLyLichHen", StringComparison.OrdinalIgnoreCase)) ? "active" : "")">
+                <a asp-controller="@(isAdmin ? "AdminLichHen" : "Staff")" asp-action="@(isAdmin ? "Index" : "QuanLyLichHen")" class="sidebar-link">
+                    <i class="fa-solid fa-calendar-days"></i>
+                    <span>Quản lý Lịch hẹn</span>
+                </a>
+            </li>
+
+            <!-- Quản lý Khách hàng (Admin & Nhân viên) -->
+            <li class="sidebar-item @(currentController.Equals("Staff", StringComparison.OrdinalIgnoreCase) && (currentAction.Equals("QuanLyKH", StringComparison.OrdinalIgnoreCase) || currentAction.Equals("DanhSachKhachHang", StringComparison.OrdinalIgnoreCase) || currentAction.Equals("ChiTietKH", StringComparison.OrdinalIgnoreCase)) ? "active" : "")">
+                <a asp-controller="Staff" asp-action="QuanLyKH" class="sidebar-link">
+                    <i class="fa-solid fa-users"></i>
+                    <span>Quản lý Khách hàng</span>
+                </a>
+            </li>
+
+            @if (isAdmin)
+            {
+                <!-- Quản lý Nhân viên (Admin) -->
+                <li class="sidebar-item @(currentController.Equals("Staff", StringComparison.OrdinalIgnoreCase) && (currentAction.Equals("QuanLyNhanVien", StringComparison.OrdinalIgnoreCase) || currentAction.Equals("ChiTietNhanVien", StringComparison.OrdinalIgnoreCase)) ? "active" : "")">
+                    <a asp-controller="Staff" asp-action="QuanLyNhanVien" class="sidebar-link">
+                        <i class="fa-solid fa-users-gear"></i>
+                        <span>Quản lý Nhân viên</span>
+                    </a>
+                </li>
+            }
+
+            <!-- Phản hồi đánh giá (Admin & Nhân viên) -->
+            <li class="sidebar-item @(currentController.Equals("Staff", StringComparison.OrdinalIgnoreCase) && (currentAction.Equals("DanhSachDanhGia", StringComparison.OrdinalIgnoreCase) || currentAction.Equals("DanhGiaKhachHang", StringComparison.OrdinalIgnoreCase)) || currentController.Equals("DanhGia", StringComparison.OrdinalIgnoreCase) ? "active" : "")">
+                <a asp-controller="Staff" asp-action="DanhSachDanhGia" class="sidebar-link">
+                    <i class="fa-solid fa-star"></i>
+                    <span>Phản hồi đánh giá</span>
+                </a>
+            </li>
+
+            <!-- Hỗ trợ trực tuyến (Admin & Nhân viên) -->
+            <li class="sidebar-item @(currentController.Equals("Chat", StringComparison.OrdinalIgnoreCase) || currentController.Equals("LiveSupport", StringComparison.OrdinalIgnoreCase) ? "active" : "")">
+                <a asp-controller="Chat" asp-action="Index" class="sidebar-link">
+                    <i class="fa-solid fa-comments"></i>
+                    <span>Hỗ trợ trực tuyến</span>
+                </a>
+            </li>
+
+            @if (isAdmin)
+            {
+                <!-- Thống kê báo cáo (Admin) -->
+                <li class="sidebar-item @(currentController.Equals("Staff", StringComparison.OrdinalIgnoreCase) && (currentAction.Equals("ThongKeBaoCao", StringComparison.OrdinalIgnoreCase) || currentAction.Equals("BaoCaoThongKe", StringComparison.OrdinalIgnoreCase)) ? "active" : "")">
+                    <a asp-controller="Staff" asp-action="ThongKeBaoCao" class="sidebar-link">
+                        <i class="fa-solid fa-chart-line"></i>
+                        <span>Thống kê báo cáo</span>
+                    </a>
+                </li>
+            }
+
+     
+
         </ul>
     </nav>
-
-    <!-- Sidebar Footer Logout -->
-    <div class="sidebar-footer">
-        <a asp-controller="Auth" asp-action="DangXuat" class="sidebar-link text-danger">
-            <i class="fa-solid fa-right-from-bracket"></i>
-            <span>Đăng Xuất</span>
-        </a>
-    </div>
 </aside>

@@ -175,7 +175,10 @@
                 }
                 else
                 {
-                    cardHtml = $@"
+                    string targetTicketUrl = $"/Ticket/TaoPhieu?title={urlEncodedTitle}&content={urlEncodedContent}&categoryId={categoryId}&serviceId={serviceId}&priority={priority}";
+                string safeReturnUrl = Uri.EscapeDataString(targetTicketUrl);
+
+                cardHtml = $@"
 <div class='ticket-creation-card d-block w-100 border rounded-3 p-3 mt-3 bg-white shadow-sm' style='border-left: 4px solid #D71920 !important; box-sizing: border-box; clear: both;'>
     <div class='d-flex align-items-center mb-2'>
         <i class='bi bi-info-circle-fill text-danger fs-4 me-2'></i>
@@ -190,12 +193,78 @@
             <span class='text-secondary'>Mô tả:</span> <span class='text-dark'>{displayContent}</span>
         </div>
     </div>
-    <a href='/Auth/DangNhap?returnUrl=/Ticket/TaoPhieu?title={urlEncodedTitle}%26content={urlEncodedContent}%26categoryId={categoryId}%26serviceId={serviceId}%26priority={priority}' class='btn btn-danger btn-sm rounded-pill w-100 fw-bold text-white text-decoration-none d-block text-center py-2' style='background-color:#D71920; border-color:#D71920; font-size:0.8rem;'>
+    <a href='/Auth/DangNhap?returnUrl={safeReturnUrl}' class='btn btn-danger btn-sm rounded-pill w-100 fw-bold text-white text-decoration-none d-block text-center py-2' style='background-color:#D71920; border-color:#D71920; font-size:0.8rem;'>
         <i class='bi bi-shield-lock-fill me-1'></i> Đăng Nhập Để Tạo Phiếu
     </a>
 </div>";
                 }
                 encoded = encoded.Replace(fullTag, cardHtml);
+            }
+        }
+
+        // 2.6 Parse Intent Detection Tag: [INTENT_TAG|{json}]
+        var intentMarker = "[INTENT_TAG|";
+        if (encoded.Contains(intentMarker))
+        {
+            int iIndex = encoded.IndexOf(intentMarker);
+            int iEnd = encoded.IndexOf("]", iIndex);
+            if (iEnd > iIndex)
+            {
+                var fullTag = encoded.Substring(iIndex, iEnd - iIndex + 1);
+                var jsonStr = fullTag.Replace("[INTENT_TAG|", "").Replace("]", "");
+                var scriptInject = $"<script>try {{ window.dispatchEvent(new CustomEvent('ai_intent_detected', {{ detail: {jsonStr} }})); }} catch(e){{}}</script>";
+                encoded = encoded.Replace(fullTag, scriptInject);
+            }
+        }
+
+        // 2.7 Parse Service Card Tag: [SHOW_SERVICE_CARD|ServiceId=X]
+        var serviceCardMarker = "[SHOW_SERVICE_CARD|";
+        if (encoded.Contains(serviceCardMarker))
+        {
+            int scIndex = encoded.IndexOf(serviceCardMarker);
+            int scEnd = encoded.IndexOf("]", scIndex);
+            if (scEnd > scIndex)
+            {
+                var fullTag = encoded.Substring(scIndex, scEnd - scIndex + 1);
+                var sIdStr = fullTag.Replace("[SHOW_SERVICE_CARD|ServiceId=", "").Replace("]", "").Trim();
+                var cardHtml = $@"
+<div class='ai-service-card-slot d-block w-100 p-3 rounded-4 mt-3 bg-white border border-danger-subtle shadow-sm' data-service-id='{sIdStr}' style='clear:both; box-sizing:border-box;'>
+    <div class='d-flex align-items-center mb-2'>
+        <i class='bi bi-hdd-network-fill text-danger fs-4 me-2'></i>
+        <h6 class='m-0 fw-bold text-dark' style='font-size:0.9rem;'>Thông Tin Dịch Vụ Viettel</h6>
+    </div>
+    <div class='service-card-loading text-center py-3 text-muted small'>
+        <i class='fa-solid fa-circle-notch fa-spin me-2 text-danger'></i>Đang tải thông tin dịch vụ từ SQL Server...
+    </div>
+</div>";
+                encoded = encoded.Replace(fullTag, cardHtml);
+            }
+        }
+
+        // 2.8 Parse Appointment Slots Tag: [SHOW_APPOINTMENT_SLOTS|ServiceId=X]
+        var slotMarker = "[SHOW_APPOINTMENT_SLOTS|";
+        if (encoded.Contains(slotMarker))
+        {
+            int slIndex = encoded.IndexOf(slotMarker);
+            int slEnd = encoded.IndexOf("]", slIndex);
+            if (slEnd > slIndex)
+            {
+                var fullTag = encoded.Substring(slIndex, slEnd - slIndex + 1);
+                var slotsHtml = @"
+<div class='ai-appointment-slots-card p-3 bg-white border border-danger-subtle rounded-4 mt-3 shadow-sm' style='clear:both;'>
+    <div class='d-flex align-items-center mb-2'>
+        <i class='bi bi-calendar-check-fill text-danger fs-4 me-2'></i>
+        <h6 class='m-0 fw-bold text-dark' style='font-size:0.9rem;'>Đề Xuất Lịch Hẹn Kỹ Thuật Tại Nhà</h6>
+    </div>
+    <p class='small text-muted mb-2' style='font-size:0.78rem;'>Chọn khung giờ phù hợp để kỹ thuật viên Viettel đến kiểm tra tận nơi:</p>
+    <div class='d-flex flex-wrap gap-2 my-2'>
+        <button type='button' class='btn btn-outline-danger btn-sm rounded-pill px-3 py-1.5 fw-bold btn-slot-item' onclick='selectAiAppointmentSlot(""08:00"", this)'>08:00 Sáng</button>
+        <button type='button' class='btn btn-outline-danger btn-sm rounded-pill px-3 py-1.5 fw-bold btn-slot-item' onclick='selectAiAppointmentSlot(""10:00"", this)'>10:00 Sáng</button>
+        <button type='button' class='btn btn-outline-danger btn-sm rounded-pill px-3 py-1.5 fw-bold btn-slot-item' onclick='selectAiAppointmentSlot(""14:00"", this)'>14:00 Chiều</button>
+        <button type='button' class='btn btn-outline-danger btn-sm rounded-pill px-3 py-1.5 fw-bold btn-slot-item' onclick='selectAiAppointmentSlot(""16:00"", this)'>16:00 Chiều</button>
+    </div>
+</div>";
+                encoded = encoded.Replace(fullTag, slotsHtml);
             }
         }
 

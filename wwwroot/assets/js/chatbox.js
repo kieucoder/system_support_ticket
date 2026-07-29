@@ -132,11 +132,11 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Suggestion pills click delegation
+    // Suggestion pills & quick prompt chips click delegation
     document.addEventListener('click', (e) => {
-        const pill = e.target.closest('.suggestion-pill');
+        const pill = e.target.closest('.suggestion-pill, .quick-prompt-chip');
         if (pill) {
-            const text = pill.getAttribute('data-text');
+            const text = pill.getAttribute('data-prompt') || pill.getAttribute('data-text');
             if (!text) return;
             if (!screenAiChat.classList.contains('d-none')) {
                 const aiInputField = document.getElementById('aiInputField');
@@ -152,6 +152,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     roomInputField.value = text;
                     btnRoomSend.click();
                 }
+            } else {
+                // If on Home screen, switch to AI Chat and submit prompt
+                switchScreen(screenAiChat);
+                loadAiHistory();
+                setTimeout(() => {
+                    sendAiMessage(text);
+                }, 400);
             }
         }
     });
@@ -206,6 +213,18 @@ document.addEventListener('DOMContentLoaded', function() {
         btnGoChatAi.addEventListener('click', () => {
             switchScreen(screenAiChat);
             loadAiHistory();
+        });
+    }
+
+    const btnGoStaffChat = document.getElementById('btnGoStaffChat');
+    if (btnGoStaffChat) {
+        btnGoStaffChat.addEventListener('click', () => {
+            if (!config.isLoggedIn) {
+                if (loginModal) loginModal.style.display = 'flex';
+                return;
+            }
+            switchScreen(screenConversations);
+            loadConversationsList();
         });
     }
 

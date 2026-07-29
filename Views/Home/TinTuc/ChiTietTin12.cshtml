@@ -1,0 +1,119 @@
+@{
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+    ViewData["Title"] = "Tổng Quan Xu Hướng Mạng 5G & Hạ Tầng Số - Viettel Cần Thơ";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/assets/css/news-detail.css" asp-append-version="true" />
+}
+
+<div class="reading-progress-bar"></div>
+
+<div class="news-detail-wrapper">
+
+    <section class="detail-header-section">
+        <div class="container">
+            <div class="detail-breadcrumb">
+                <a asp-controller="Customers" asp-action="TrangChu"><i class="bi bi-house-door-fill me-1"></i> Trang chủ</a>
+                <span>></span>
+                <a asp-controller="Home" asp-action="TinTuc">Tin tức</a>
+                <span>></span>
+                <span class="text-dark">Tin tức công nghệ</span>
+            </div>
+
+            <h1 class="detail-article-title">
+                Tổng Quan Xu Hướng Công Nghệ Viễn Thông 5G & Giải Pháp Hạ Tầng Số Doanh Nghiệp Thời Đại Mới
+            </h1>
+
+            <div class="detail-meta-bar">
+                <span class="detail-author-badge">
+                    <i class="bi bi-broadcast"></i> Viettel 5G Innovation Center
+                </span>
+                <span class="detail-meta-item"><i class="bi bi-calendar3 text-danger"></i> 09/07/2026</span>
+                <span class="detail-meta-item"><i class="bi bi-clock text-danger"></i> 6 phút đọc</span>
+                <span class="detail-meta-item"><i class="bi bi-eye text-danger"></i> 3,120 lượt xem</span>
+                <span class="badge bg-danger">Công Nghệ</span>
+            </div>
+        </div>
+    </section>
+
+    <div class="container py-5">
+        <div class="row g-4">
+
+            <div class="col-lg-8 col-12">
+                <article class="article-content">
+
+                    <div class="detail-cover-container">
+                        <img src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&q=80&w=1200" alt="Xu hướng mạng 5G Viettel" />
+                    </div>
+                    <p class="detail-cover-caption">Mạng 5G Viettel thương mại hóa thúc đẩy tự động hóa hạ tầng công nghiệp số</p>
+
+                    <p class="lead fw-bold text-dark mb-4">
+                        Sự bùng nổ của mạng di động thế hệ thứ 5 (5G) cùng với hạ tầng băng rộng cố định tốc độ Gbps đang mở ra kỷ nguyên chuyển đổi số toàn diện. Viettel Telecom Cần Thơ tiếp tục tiên phong cung cấp giải pháp <span class="text-highlight">Mạng 5G Chuyên Dùng (5G Private Network)</span> cho khu công nghiệp và doanh nghiệp số.
+                    </p>
+
+                    <h2>1. Ưu Thế Vượt Trội Của Mạng 5G Viettel</h2>
+                    <p>
+                        So với các thế hệ mạng di động trước đây, 5G mang lại 3 đột phá chính:
+                    </p>
+                    <ul>
+                        <li><strong>Tốc độ siêu đỉnh:</strong> Đạt tới 1 - 2 Gbps, nhanh gấp 10 - 20 lần mạng 4G.</li>
+                        <li><strong>Độ trễ siêu thấp (Ultra-low Latency):</strong> Chỉ dưới 1 millisecond (ms), phù hợp cho điều khiển robot và xe tự lái trong nhà máy.</li>
+                        <li><strong>Mật độ kết nối cực lớn:</strong> Cho phép kết nối 1 triệu thiết bị IoT trên mỗi km2.</li>
+                    </ul>
+
+                    <h2>2. Tích Hợp Hạ Tầng 5G Trong Công Tác Kỹ Thuật Support</h2>
+                    <p>
+                        Viettel ứng dụng thiết bị 5G FWA (Fixed Wireless Access) làm phương án dự phòng bảo vệ cho các đường truyền cáp quang Leased Line doanh nghiệp. Khi có sự cố đứt cáp quang đường bộ, mạng 5G sẽ tự động kích hoạt kết nối chuyển vùng tức thì trong 0.01 giây.
+                    </p>
+
+                    <div class="callout-box">
+                        <h5><i class="bi bi-cpu me-2"></i> Hạ Tầng Số Tương Lai</h5>
+                        <p>
+                            Viettel cam kết không ngừng đầu tư trạm phát sóng 5G và đài trạm cáp quang băng rộng, đưa Cần Thơ trở thành đô thị thông minh chuẩn quốc tế.
+                        </p>
+                    </div>
+
+                    <!-- Share Section -->
+                    <div class="article-share-section">
+                        <span class="share-title"><i class="bi bi-share-fill me-2 text-danger"></i> Chia sẻ bài viết:</span>
+                        <div class="share-buttons-list">
+                            <a href="#" class="btn-share btn-share-facebook"><i class="bi bi-facebook"></i></a>
+                            <a href="#" class="btn-share btn-share-zalo"><i class="bi bi-chat-quote-fill"></i></a>
+                            <a href="#" class="btn-share btn-share-linkedin"><i class="bi bi-linkedin"></i></a>
+                            <a href="#" class="btn-share btn-share-email"><i class="bi bi-envelope-fill"></i></a>
+                        </div>
+                    </div>
+
+                </article>
+            </div>
+
+            <!-- SIDEBAR -->
+            <div class="col-lg-4 col-12">
+                <aside class="news-sidebar">
+                    <div class="sidebar-widget">
+                        <h4 class="widget-title"><i class="bi bi-fire text-danger me-2"></i> Bài Viết Nổi Bật</h4>
+                        <a asp-controller="Home" asp-action="ChiTietTin1" class="text-decoration-none text-dark d-block">
+                            <div class="mini-post-item">
+                                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=200" class="mini-post-img" alt="Tạo phiếu" />
+                                <div>
+                                    <h5 class="mini-post-title">Hướng Dẫn Tạo Phiếu Báo Sự Cố Nhanh</h5>
+                                    <span class="mini-post-date"><i class="bi bi-calendar3"></i> 20/07/2026</span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </aside>
+            </div>
+
+        </div>
+    </div>
+
+    
+</div>
+
+<partial name="~/Views/Shared/_Footer.cshtml" />
+
+@section Scripts {
+    <script src="~/assets/js/news-detail.js" asp-append-version="true"></script>
+}

@@ -1,0 +1,480 @@
+@{
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+    ViewData["Title"] = "Giới Thiệu - Hệ Thống Quản Lý Phiếu Hỗ Trợ Kỹ Thuật Viettel Telecom";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/assets/css/about.css" asp-append-version="true" />
+}
+
+<div class="about-page-wrapper">
+
+    <!-- ==========================================
+       1. HERO BANNER SECTION
+       ========================================== -->
+    <section class="about-hero">
+        <div class="about-hero-overlay"></div>
+        <div class="about-hero-particles"></div>
+        <div class="about-hero-content">
+            <h1 class="about-hero-title">
+                GIỚI THIỆU<br />
+                <span>Website Quản Lý Phiếu Hỗ Trợ Kỹ Thuật</span>
+            </h1>
+            <p class="about-hero-desc">
+                Hệ thống tiếp nhận, xử lý sự cố kỹ thuật và phân công kỹ thuật viên tự động hàng đầu. 
+                Cam kết mang đến dịch vụ viễn thông, mạng internet và giải pháp doanh nghiệp thông suốt 24/7.
+            </p>
+            <div class="d-flex justify-content-center gap-3 flex-wrap">
+                <a href="#about-intro" class="btn-viettel-primary">
+                    <i class="fa-solid fa-compass me-1"></i> Khám Phá Ngay
+                </a>
+                <a asp-controller="Home" asp-action="LienHe" class="btn-viettel-outline">
+                    <i class="fa-solid fa-headset me-1"></i> Liên Hệ Hỗ Trợ
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================
+       2. GIỚI THIỆU VIETTEL CẦN THƠ SECTION
+       ========================================== -->
+    <section id="about-intro" class="about-section">
+        <div class="container">
+            <div class="intro-card-wrapper about-reveal">
+                <div class="row g-0 align-items-center">
+                    <!-- Column Left: Image -->
+                    <div class="col-lg-6 col-12">
+                        <div class="intro-image-container">
+                            <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=1000" alt="Viettel Cần Thơ Building" />
+                            <div class="intro-badge-overlay">
+                                <i class="fa-solid fa-building-flag"></i>
+                                <div class="intro-badge-text">
+                                    <h6>Viettel Cần Thơ</h6>
+                                    <p>Tiên phong chuyển đổi số Tây Nam Bộ</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Column Right: Content -->
+                    <div class="col-lg-6 col-12">
+                        <div class="intro-content-padding">
+                            <div class="about-badge">
+                                <i class="fa-solid fa-star me-1"></i> Về Chúng Tôi
+                            </div>
+                            <h2 class="about-section-title">
+                                Hành Trình Kiến Tạo <span>Hạ Tầng Kỹ Thuật Số</span>
+                            </h2>
+                            <p class="intro-paragraph">
+                                Viettel Cần Thơ tự hào là đơn vị tiên phong trong hạ tầng viễn thông và dịch vụ công nghệ thông tin tại khu vực Đồng bằng Sông Cửu Long. Với lịch sử phát triển bền vững, chúng tôi không ngừng cải tiến quy trình chăm sóc khách hàng.
+                            </p>
+                            <p class="intro-paragraph mb-0">
+                                <strong>Website Quản lý Phiếu Hỗ Trợ Kỹ Thuật (TechSupport)</strong> được xây dựng với mục tiêu tự động hóa việc tiếp nhận báo hỏng, minh bạch tiến độ xử lý sự cố internet, truyền hình, camera và giải pháp doanh nghiệp một cách nhanh chóng nhất.
+                            </p>
+
+                            <div class="intro-highlights">
+                                <div class="intro-highlight-item">
+                                    <div class="intro-highlight-icon">
+                                        <i class="fa-solid fa-circle-check"></i>
+                                    </div>
+                                    <p class="intro-highlight-text">Tự động hóa 100% quy trình tạo ticket</p>
+                                </div>
+                                <div class="intro-highlight-item">
+                                    <div class="intro-highlight-icon">
+                                        <i class="fa-solid fa-clock-rotate-left"></i>
+                                    </div>
+                                    <p class="intro-highlight-text">Giảm 60% thời gian khắc phục sự cố</p>
+                                </div>
+                                <div class="intro-highlight-item">
+                                    <div class="intro-highlight-icon">
+                                        <i class="fa-solid fa-map-location-dot"></i>
+                                    </div>
+                                    <p class="intro-highlight-text">Phân công kỹ thuật theo vị trí địa lý</p>
+                                </div>
+                                <div class="intro-highlight-item">
+                                    <div class="intro-highlight-icon">
+                                        <i class="fa-solid fa-robot"></i>
+                                    </div>
+                                    <p class="intro-highlight-text">Trợ lý trí tuệ nhân tạo Gemini AI 24/7</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================
+       3. SỨ MỆNH & TẦM NHÌN SECTION
+       ========================================== -->
+    <section class="about-section about-section-bg">
+        <div class="container">
+            <div class="about-section-header about-reveal">
+                <div class="about-badge">
+                    <i class="fa-solid fa-bullseye me-1"></i> Định Hướng Phát Triển
+                </div>
+                <h2 class="about-section-title">
+                    Sứ Mệnh & <span>Tầm Nhìn Chiến Lược</span>
+                </h2>
+                <p class="about-section-desc">
+                    Chúng tôi định hình chuẩn mực dịch vụ hỗ trợ kỹ thuật viễn thông với mục tiêu lấy sự hài lòng và trải nghiệm thông suốt của khách hàng làm thước đo thành công.
+                </p>
+            </div>
+
+            <div class="row g-4">
+                <!-- Card 1: Sứ mệnh -->
+                <div class="col-lg-6 col-12 about-reveal delay-1">
+                    <div class="mv-card">
+                        <div class="mv-icon-wrapper">
+                            <i class="fa-solid fa-rocket"></i>
+                        </div>
+                        <h3 class="mv-title">Sứ Mệnh</h3>
+                        <p class="mv-desc">
+                            Cung cấp hệ thống tiếp nhận và giải quyết sự cố kỹ thuật thông minh, liên tục và chính xác. Đảm bảo mọi kết nối viễn thông của khách hàng cá nhân và doanh nghiệp luôn được duy trì ở chất lượng cao nhất.
+                        </p>
+                    </div>
+                </div>
+                <!-- Card 2: Tầm nhìn -->
+                <div class="col-lg-6 col-12 about-reveal delay-2">
+                    <div class="mv-card">
+                        <div class="mv-icon-wrapper">
+                            <i class="fa-solid fa-eye"></i>
+                        </div>
+                        <h3 class="mv-title">Tầm Nhìn</h3>
+                        <p class="mv-desc">
+                            Trở thành nền tảng Quản lý Hỗ trợ Kỹ thuật số 1 tại Việt Nam, tiên phong ứng dụng trí tuệ nhân tạo (AI) và tự động hóa quy trình, đưa trải nghiệm dịch vụ khách hàng lên tầm cao chuẩn quốc tế.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================
+       4. GIÁ TRỊ CỐT LÕI SECTION
+       ========================================== -->
+    <section class="about-section">
+        <div class="container">
+            <div class="about-section-header about-reveal">
+                <div class="about-badge">
+                    <i class="fa-solid fa-heart me-1"></i> Nguyên Tắc Hoạt Động
+                </div>
+                <h2 class="about-section-title">
+                    04 Giá Trị <span>Cốt Lõi Của Viettel</span>
+                </h2>
+                <p class="about-section-desc">
+                    Kim chỉ nam cho mọi hành động của đội ngũ kỹ thuật viên và tư vấn viên trong quá trình phục vụ khách hàng.
+                </p>
+            </div>
+
+            <div class="row g-4">
+                <!-- Card 1: Đổi mới -->
+                <div class="col-lg-3 col-md-6 col-12 about-reveal delay-1">
+                    <div class="core-card">
+                        <div class="core-icon-box">
+                            <i class="fa-solid fa-lightbulb"></i>
+                        </div>
+                        <h4 class="core-title">Đổi Mới Sáng Tạo</h4>
+                        <p class="core-desc">
+                            Liên tục cải tiến công nghệ, áp dụng AI và công cụ quản trị hiện đại để tối ưu hóa quy trình.
+                        </p>
+                    </div>
+                </div>
+                <!-- Card 2: Khách hàng là trung tâm -->
+                <div class="col-lg-3 col-md-6 col-12 about-reveal delay-2">
+                    <div class="core-card">
+                        <div class="core-icon-box">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+                        <h4 class="core-title">Khách Hàng Là Trung Tâm</h4>
+                        <p class="core-desc">
+                            Lắng nghe từng phản hồi, giải quyết triệt để sự cố và lấy sự hài lòng của bạn làm mục tiêu hàng đầu.
+                        </p>
+                    </div>
+                </div>
+                <!-- Card 3: Chuyển đổi số -->
+                <div class="col-lg-3 col-md-6 col-12 about-reveal delay-3">
+                    <div class="core-card">
+                        <div class="core-icon-box">
+                            <i class="fa-solid fa-laptop-code"></i>
+                        </div>
+                        <h4 class="core-title">Chuyển Đổi Số</h4>
+                        <p class="core-desc">
+                            Tác phong chuẩn mực, tay nghề chuyên môn cao, xử lý công việc theo quy trình SLA nghiêm ngặt.
+                        </p>
+                    </div>
+                </div>
+                <!-- Card 4: Tin cậy -->
+                <div class="col-lg-3 col-md-6 col-12 about-reveal delay-4">
+                    <div class="core-card">
+                        <div class="core-icon-box">
+                            <i class="fa-solid fa-shield-heart"></i>
+                        </div>
+                        <h4 class="core-title">Tin Cậy & Minh Bạch</h4>
+                        <p class="core-desc">
+                            Cam kết bảo mật thông tin tuyệt đối và cập nhật tiến độ xử lý phiếu rõ ràng theo thời gian thực.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================
+       6. THÀNH TỰU SECTION (COUNTER)
+       ========================================== -->
+    <section class="about-section">
+        <div class="container">
+            <div class="achievements-banner about-reveal">
+                <div class="row g-4 justify-content-center">
+                    <!-- Counter 1 -->
+                    <div class="col-lg-3 col-md-6 col-12">
+                        <div class="counter-item">
+                            <div class="counter-icon">
+                                <i class="fa-solid fa-users"></i>
+                            </div>
+                            <div class="counter-value" data-target="10000" data-suffix="+">0</div>
+                            <p class="counter-label">Khách Hàng Tin Dùng</p>
+                        </div>
+                    </div>
+                    <!-- Counter 2 -->
+                    <div class="col-lg-3 col-md-6 col-12">
+                        <div class="counter-item">
+                            <div class="counter-icon">
+                                <i class="fa-solid fa-ticket-simple"></i>
+                            </div>
+                            <div class="counter-value" data-target="5000" data-suffix="+">0</div>
+                            <p class="counter-label">Phiếu Hỗ Trợ Đã Xử Lý</p>
+                        </div>
+                    </div>
+                    <!-- Counter 3 -->
+                    <div class="col-lg-3 col-md-6 col-12">
+                        <div class="counter-item">
+                            <div class="counter-icon">
+                                <i class="fa-solid fa-face-smile"></i>
+                            </div>
+                            <div class="counter-value" data-target="99" data-suffix="%">0</div>
+                            <p class="counter-label">Khách Hàng Hài Lòng</p>
+                        </div>
+                    </div>
+                    <!-- Counter 4 -->
+                    <div class="col-lg-3 col-md-6 col-12">
+                        <div class="counter-item">
+                            <div class="counter-icon">
+                                <i class="fa-solid fa-headset"></i>
+                            </div>
+                            <div class="counter-value" data-target="24" data-suffix="/7">0</div>
+                            <p class="counter-label">Hỗ Trợ Liên Tục</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================
+       7. QUY TRÌNH HỖ TRỢ SECTION
+       ========================================== -->
+    <section class="about-section about-section-bg">
+        <div class="container">
+            <div class="about-section-header about-reveal">
+                <div class="about-badge">
+                    <i class="fa-solid fa-diagram-project me-1"></i> Quy Trình Chuẩn
+                </div>
+                <h2 class="about-section-title">
+                    04 Bước Xử Lý <span>Sự Cố Kỹ Thuật</span>
+                </h2>
+                <p class="about-section-desc">
+                    Quy trình làm việc minh bạch, tối ưu thời gian chờ đợi và cập nhật tiến độ công khai cho khách hàng.
+                </p>
+            </div>
+
+            <div class="timeline-grid about-reveal">
+                <div class="timeline-line-connector d-none d-lg-block">
+                    <div class="timeline-line-progress"></div>
+                </div>
+
+                <div class="row g-4">
+                    <!-- Step 1 -->
+                    <div class="col-lg-3 col-md-6 col-12">
+                        <div class="timeline-step-card">
+                            <div class="timeline-step-number">1</div>
+                            <div class="timeline-icon-box">
+                                <i class="fa-solid fa-file-signature"></i>
+                            </div>
+                            <h4 class="timeline-title">1. Tiếp Nhận Ticket</h4>
+                            <p class="timeline-desc">
+                                Khách hàng gửi yêu cầu qua website, ứng dụng di động hoặc chat tự động với trợ lý Gemini AI.
+                            </p>
+                        </div>
+                    </div>
+                    <!-- Step 2 -->
+                    <div class="col-lg-3 col-md-6 col-12">
+                        <div class="timeline-step-card">
+                            <div class="timeline-step-number">2</div>
+                            <div class="timeline-icon-box">
+                                <i class="fa-solid fa-user-gear"></i>
+                            </div>
+                            <h4 class="timeline-title">2. Phân Công Kỹ Thuật</h4>
+                            <p class="timeline-desc">
+                                Hệ thống tự động phân loại mức độ ưu tiên và chuyển phiếu đến kỹ thuật viên phụ trách địa bàn.
+                            </p>
+                        </div>
+                    </div>
+                    <!-- Step 3 -->
+                    <div class="col-lg-3 col-md-6 col-12">
+                        <div class="timeline-step-card">
+                            <div class="timeline-step-number">3</div>
+                            <div class="timeline-icon-box">
+                                <i class="fa-solid fa-wrench"></i>
+                            </div>
+                            <h4 class="timeline-title">3. Xử Lý Sự Cố</h4>
+                            <p class="timeline-desc">
+                                Kỹ thuật viên liên hệ trực tiếp hoặc đến tận nơi kiểm tra, khắc phục lỗi thiết bị và hạ tầng.
+                            </p>
+                        </div>
+                    </div>
+                    <!-- Step 4 -->
+                    <div class="col-lg-3 col-md-6 col-12">
+                        <div class="timeline-step-card">
+                            <div class="timeline-step-number">4</div>
+                            <div class="timeline-icon-box">
+                                <i class="fa-solid fa-circle-check"></i>
+                            </div>
+                            <h4 class="timeline-title">4. Nghiệm Thu & Đánh Giá</h4>
+                            <p class="timeline-desc">
+                                Hoàn tất đóng phiếu, gửi thông báo xác nhận và ghi nhận đánh giá chất lượng từ khách hàng.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================
+       8. TẠI SAO CHỌN CHÚNG TÔI SECTION
+       ========================================== -->
+    <section class="about-section">
+        <div class="container">
+            <div class="about-section-header about-reveal">
+                <div class="about-badge">
+                    <i class="fa-solid fa-thumbs-up me-1"></i> Ưu Thế Vượt Trội
+                </div>
+                <h2 class="about-section-title">
+                    Tại Sao Chọn <span>TechSupport Viettel?</span>
+                </h2>
+                <p class="about-section-desc">
+                    Chúng tôi mang lại giải pháp hỗ trợ kỹ thuật toàn diện, đáng tin cậy với công nghệ dẫn đầu thị trường.
+                </p>
+            </div>
+
+            <div class="row g-4">
+                <!-- Reason 1 -->
+                <div class="col-lg-4 col-md-6 col-12 about-reveal delay-1">
+                    <div class="why-card">
+                        <div class="why-icon-box">
+                            <i class="fa-solid fa-bolt-lightning"></i>
+                        </div>
+                        <div class="why-content">
+                            <h5>Phản Hồi Siêu Tốc</h5>
+                            <p>Cam kết chỉ số phản hồi SLA dưới 15 phút từ lúc tạo phiếu báo sự cố.</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Reason 2 -->
+                <div class="col-lg-4 col-md-6 col-12 about-reveal delay-2">
+                    <div class="why-card">
+                        <div class="why-icon-box">
+                            <i class="fa-solid fa-user-shield"></i>
+                        </div>
+                        <div class="why-content">
+                            <h5>Kỹ Thuật Viên Lành Nghề</h5>
+                            <p>Đội ngũ nhân sự sở hữu chứng chỉ viễn thông & công nghệ thông tin chuẩn mực.</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Reason 3 -->
+                <div class="col-lg-4 col-md-6 col-12 about-reveal delay-3">
+                    <div class="why-card">
+                        <div class="why-icon-box">
+                            <i class="fa-solid fa-lock"></i>
+                        </div>
+                        <div class="why-content">
+                            <h5>Bảo Mật Dữ Liệu ISO</h5>
+                            <p>Mọi thông tin cá nhân và dữ liệu doanh nghiệp được mã hóa an toàn 100%.</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Reason 4 -->
+                <div class="col-lg-4 col-md-6 col-12 about-reveal delay-1">
+                    <div class="why-card">
+                        <div class="why-icon-box">
+                            <i class="fa-solid fa-headset"></i>
+                        </div>
+                        <div class="why-content">
+                            <h5>Thường Trực 24/7</h5>
+                            <p>Sẵn sàng tiếp nhận và giải quyết yêu cầu kỹ thuật kể cả ngày lễ Tết.</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Reason 5 -->
+                <div class="col-lg-4 col-md-6 col-12 about-reveal delay-2">
+                    <div class="why-card">
+                        <div class="why-icon-box">
+                            <i class="fa-solid fa-list-check"></i>
+                        </div>
+                        <div class="why-content">
+                            <h5>Quy Trình Chuẩn Hóa</h5>
+                            <p>Minh bạch tiến độ xử lý qua từng công đoạn, báo cáo thống kê trực quan.</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Reason 6 -->
+                <div class="col-lg-4 col-md-6 col-12 about-reveal delay-3">
+                    <div class="why-card">
+                        <div class="why-icon-box">
+                            <i class="fa-solid fa-microchip"></i>
+                        </div>
+                        <div class="why-content">
+                            <h5>Công Nghệ Trí Tuệ AI</h5>
+                            <p>Tích hợp Gemini AI hỗ trợ tra cứu chẩn đoán lỗi tự động cực kỳ chính xác.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================
+       9. CTA SECTION
+       ========================================== -->
+    <section class="about-section py-5">
+        <div class="container">
+            <div class="cta-banner-wrapper about-reveal">
+                <h2 class="cta-title">Bạn Đang Gặp Sự Cố Kỹ Thuật?</h2>
+                <p class="cta-subtitle">
+                    Đừng lo lắng! Hãy gửi ngay phiếu hỗ trợ kỹ thuật hoặc tra cứu tiến độ xử lý ticket của bạn chỉ trong vài thao tác đơn giản.
+                </p>
+                <div class="cta-buttons">
+                    <a asp-controller="Ticket" asp-action="ChonDMDichVu" class="btn-cta-white">
+                        <i class="fa-solid fa-circle-plus me-1"></i> Tạo Phiếu Hỗ Trợ
+                    </a>
+                    <a asp-controller="Ticket" asp-action="TraCuuPhieu" class="btn-cta-outline">
+                        <i class="fa-solid fa-magnifying-glass me-1"></i> Tra Cứu Tiến Độ
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</div>
+
+<!-- ==========================================
+   10. FOOTER SECTION
+   ========================================== -->
+<partial name="~/Views/Shared/_Footer.cshtml" />
+
+@section Scripts {
+    <script src="~/assets/js/about.js" asp-append-version="true"></script>
+}

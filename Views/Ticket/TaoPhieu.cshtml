@@ -452,103 +452,7 @@
                                     <div class="upload-preview-grid d-none" id="filePreviewGrid"></div>
                                 </div>
 
-                                <!-- Có cần lịch hẹn? -->
-                                <div class="col-12 mt-4">
-                                    <label asp-for="CanLichHen" class="form-label-custom mb-2">Có cần lịch hẹn? <span>*</span></label>
-                                    <div class="d-flex gap-4 align-items-center">
-                                        <div class="form-check custom-radio-option">
-                                            <input class="form-check-input" type="radio" asp-for="CanLichHen"
-                                                value="Không" checked>
-                                            <label class="form-check-label fw-bold text-dark pointer">
-                                                Không
-                                            </label>
-                                        </div>
-                                        <div class="form-check custom-radio-option">
-                                            <input class="form-check-input" type="radio" asp-for="CanLichHen"
-                                                value="Có">
-                                            <label class="form-check-label fw-bold text-dark pointer">
-                                                Có
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <span asp-validation-for="CanLichHen" class="invalid-feedback">Vui lòng chọn có cần lịch hẹn.</span>
-                                </div>
 
-                                <!-- Collapsible Section -->
-                                <div class="appointment-details mt-3 @(Model?.CanLichHen == "Có" ? "" : "d-none") animate-slide-down"
-                                    id="appointmentContainer">
-                                    <div class="card card-body appointment-card border-0 shadow-sm p-4">
-                                        <h5 class="fw-bold fs-6 text-dark mb-3">
-                                            <i class="fa-solid fa-calendar-days text-danger me-2"></i>Chọn Thời Gian &
-                                            Địa Chỉ Hẹn
-                                        </h5>
-                                        <div class="row g-3">
-                                            <div class="col-md-6 col-12">
-                                                <label asp-for="NgayHen" class="form-label-custom fs-7">Ngày hẹn
-                                                    <span>*</span></label>
-                                                <div class="input-group">
-                                                    <span class="input-group-text bg-light border-end-0"><i
-                                                            class="bi bi-calendar text-muted"></i></span>
-                                                    <input type="text"
-                                                        class="form-control form-control-custom border-start-0 ps-0 text-dark pointer"
-                                                        asp-for="NgayHen" id="appointmentDate" placeholder="Chọn ngày hẹn" required="@(Model?.CanLichHen == "Có" ? "required" : null)">
-                                                </div>
-                                                <span asp-validation-for="NgayHen" class="text-danger small"></span>
-                                            </div>
-                                            <div class="col-md-6 col-12">
-                                                <label class="form-label-custom fs-7">Khung giờ hẹn
-                                                    <span>*</span></label>
-                                                <div class="d-flex align-items-center gap-2">
-                                                    <div class="input-group flex-grow-1">
-                                                        <span class="input-group-text bg-light border-end-0"><i
-                                                                class="fa-regular fa-solid fa-clock text-muted"></i></span>
-                                                        <input type="text"
-                                                            class="form-control form-control-custom border-start-0 ps-0 text-dark pointer"
-                                                            asp-for="GioBatDau" id="appointmentStartTime" placeholder="Bắt đầu" required="@(Model?.CanLichHen == "Có" ? "required" : null)">
-                                                    </div>
-                                                    <span class="text-muted fw-bold">-</span>
-                                                    <div class="input-group flex-grow-1">
-                                                        <span class="input-group-text bg-light border-end-0"><i
-                                                                class="fa-regular fa-solid fa-clock text-muted"></i></span>
-                                                        <input type="text"
-                                                            class="form-control form-control-custom border-start-0 ps-0 text-dark pointer"
-                                                            asp-for="GioKetThuc" id="appointmentEndTime" placeholder="Kết thúc" required="@(Model?.CanLichHen == "Có" ? "required" : null)">
-                                                    </div>
-                                                </div>
-                                                <div class="d-flex gap-3 mt-1">
-                                                    <span asp-validation-for="GioBatDau" class="text-danger small"></span>
-                                                    <span asp-validation-for="GioKetThuc" class="text-danger small"></span>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6 col-12">
-                                                <label asp-for="DiaChiHen" class="form-label-custom fs-7">Địa chỉ
-                                                    hỗ trợ <span>*</span></label>
-                                                <div class="input-group">
-                                                    <span class="input-group-text bg-light border-end-0"><i
-                                                            class="fa-solid fa-map-marker text-muted"></i></span>
-                                                    <input type="text"
-                                                        class="form-control form-control-custom border-start-0 ps-0 text-dark"
-                                                        asp-for="DiaChiHen" id="appointmentAddress"
-                                                        placeholder="Nhập địa chỉ cụ thể cần hỗ trợ..." required="@(Model?.CanLichHen == "Có" ? "required" : null)">
-                                                </div>
-                                                <span asp-validation-for="DiaChiHen" class="text-danger small"></span>
-                                            </div>
-                                            <div class="col-md-6 col-12">
-                                                <label asp-for="GhiChuHen" class="form-label-custom fs-7">Ghi chú lịch
-                                                    hẹn</label>
-                                                <div class="input-group">
-                                                    <span class="input-group-text bg-light border-end-0"><i
-                                                            class="fa-regular fa-solid fa-comments text-muted"></i></span>
-                                                    <input type="text"
-                                                        class="form-control form-control-custom border-start-0 ps-0 text-dark"
-                                                        asp-for="GhiChuHen" id="appointmentNote"
-                                                        placeholder="Nhập ghi chú hoặc chỉ dẫn thêm...">
-                                                </div>
-                                                <span asp-validation-for="GhiChuHen" class="text-danger small"></span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
 
                                 <!-- Thời Gian (Readonly values) -->
                                 <div class="col-md-6 col-12 mt-3">
@@ -698,22 +602,6 @@
                 </div>
             </div>
 
-            <!-- CTA SECTION -->
-            <section class="contact-cta-section mt-5">
-                <h2 class="contact-cta-title">Cần Hỗ Trợ Khẩn Cấp?</h2>
-                <p class="contact-cta-desc">
-                    Liên hệ trực tiếp với đội ngũ kỹ thuật của chúng tôi qua hotline để được xử lý ngay lập tức.
-                </p>
-                <div class="contact-cta-buttons d-flex align-items-center justify-content-center gap-3 flex-wrap">
-                    <a href="#ticketFormSection" class="btn-cta-white">
-                        <i class="fa-solid fa-plus-circle me-1"></i> Tạo Phiếu Hỗ Trợ
-                    </a>
-                    <a href="tel:18008119" class="btn-cta-outline">
-                        <i class="fa-solid fa-phone me-1"></i> Gọi Hotline 1800 8119
-                    </a>
-                </div>
-            </section>
-
         </div>
     </main>
 
@@ -721,7 +609,7 @@
     <div id="chatbox-container"></div>
 
     <!-- Footer Component Container -->
-    <div id="footer-container">
+    @* <div id="footer-container">
         <!-- Local fallback footer for direct file:// loading -->
         <footer class="custom-footer" id="footerSection">
             <div class="container">
@@ -792,7 +680,7 @@
             <button class="scroll-top-btn" aria-label="Quay lại đầu trang"><i class="bi bi-arrow-up-short"></i></button>
         </footer>
     </div>
-
+ *@
     <!-- Bootstrap 5.3 JS Bundle (includes Popper) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"

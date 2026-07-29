@@ -80,11 +80,22 @@
                 </div>
             </div>
         </div>
-        <div class="modal-footer border-top-0 pt-0 px-4 pb-4">
+        <div class="modal-footer border-top-0 pt-0 px-4 pb-4 d-flex justify-content-end gap-2">
             <button type="button" class="btn btn-secondary px-4 py-2" data-bs-dismiss="modal"
                     style="border-radius: var(--vt-border-radius-sm);">
                 Đóng
             </button>
+            @{
+                string vaiTro = Context.Session?.GetString("Role") ?? Context.Session?.GetString("VaiTro") ?? User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value ?? User.FindFirst("VaiTro")?.Value ?? "";
+                bool isAdmin = ViewBag.IsAdmin ?? (vaiTro.Equals("Admin", StringComparison.OrdinalIgnoreCase) || vaiTro.Equals("Quản trị viên", StringComparison.OrdinalIgnoreCase));
+            }
+            @if (isAdmin)
+            {
+                <button type="button" class="btn btn-warning text-dark fw-bold px-4 py-2" data-bs-dismiss="modal" onclick="openEditCustomerModal('@Model.IdKhachHang')"
+                        style="border-radius: var(--vt-border-radius-sm);">
+                    <i class="fa-solid fa-pen-to-square me-1"></i> Chỉnh sửa thông tin
+                </button>
+            }
         </div>
     </div>
 </div>

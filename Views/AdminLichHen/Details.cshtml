@@ -1,0 +1,276 @@
+@model SupportTicketSysterm.ViewModels.AdminLichHenDetailViewModel
+@{
+    ViewData["Title"] = $"Chi tiết Lịch hẹn #{Model.IdLichHen} - {Model.MaPhieu}";
+    Layout = "~/Views/Shared/_LayoutStaff.cshtml";
+}
+
+<div class="container-fluid py-3">
+    <!-- PAGE TITLE & BREADCRUMB -->
+    <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between mb-4 gap-3">
+        <div>
+            <div class="d-flex align-items-center gap-2 mb-1">
+                <a href="@Url.Action("Index", "AdminLichHen")" class="text-decoration-none text-secondary">
+                    <i class="fa-solid fa-arrow-left me-1"></i> Trở về danh sách
+                </a>
+                <span class="text-muted">/</span>
+                <span class="text-dark font-weight-bold">Chi tiết Lịch hẹn #@Model.IdLichHen</span>
+            </div>
+            <h1 class="h3 mb-0 font-weight-bold text-gray-800">
+                Lịch Hẹn Phiếu: <span class="text-danger">@Model.MaPhieu</span>
+            </h1>
+        </div>
+
+        <div class="d-flex align-items-center gap-2">
+            @if (Model.TrangThaiCode == "ChoXacNhan" || Model.TrangThaiCode == "Chờ xác nhận")
+            {
+                <button type="button" class="btn btn-success font-weight-bold shadow-xs" onclick="openConfirmModalDetail()">
+                    <i class="fa-solid fa-check me-1"></i> Xác Nhận & Phân Công KTV
+                </button>
+                <button type="button" class="btn btn-outline-danger font-weight-bold shadow-xs" onclick="openRejectModalDetail()">
+                    <i class="fa-solid fa-xmark me-1"></i> Từ Chối
+                </button>
+            }
+            else if (Model.TrangThaiCode == "DaXacNhan" || Model.TrangThaiCode == "Đã xác nhận" || Model.TrangThaiCode == "DangThucHien")
+            {
+                <button type="button" class="btn btn-success font-weight-bold shadow-xs" onclick="openCompleteModalDetail()">
+                    <i class="fa-solid fa-check-double me-1"></i> Đánh Dấu Hoàn Thành
+                </button>
+                <button type="button" class="btn btn-outline-danger font-weight-bold shadow-xs" onclick="openCancelModalDetail()">
+                    <i class="fa-solid fa-ban me-1"></i> Hủy Lịch Hẹn
+                </button>
+            }
+
+            <a href="@Url.Action("Edit", "AdminLichHen", new { id = Model.IdLichHen })" class="btn btn-outline-secondary font-weight-bold shadow-xs">
+                <i class="fa-solid fa-pen-to-square me-1"></i> Chỉnh Sửa
+            </a>
+        </div>
+    </div>
+
+    <!-- MAIN 2-COLUMN LAYOUT -->
+    <div class="row g-4">
+        <!-- LEFT COLUMN (8 COLS) -->
+        <div class="col-lg-8">
+            <!-- CARD 1: THÔNG TIN LỊCH HẸN -->
+            <div class="card border-0 shadow-sm rounded-3 mb-4">
+                <div class="card-header bg-white py-3 border-0 d-flex align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fa-solid fa-calendar-day me-2 text-danger"></i>Thông Tin Chi Tiết Lịch Hẹn
+                    </h6>
+                    <span class="badge @Model.TrangThaiBadgeClass px-3 py-2 rounded-pill font-weight-bold">
+                        @Model.TrangThaiTitle
+                    </span>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="p-3 bg-light rounded-3">
+                                <span class="text-muted small d-block mb-1">Ngày & Khung giờ hẹn</span>
+                                <div class="h5 fw-bold text-dark mb-0">
+                                    <i class="fa-regular fa-clock text-danger me-2"></i>
+                                    @(Model.NgayHen.HasValue ? Model.NgayHen.Value.ToString("dd/MM/yyyy") : "Chưa chọn")
+                                    @if (Model.GioBatDau.HasValue && Model.GioKetThuc.HasValue)
+                                    {
+                                        <span class="text-primary font-size-sm">(@Model.GioBatDau.Value.ToString("HH:mm") - @Model.GioKetThuc.Value.ToString("HH:mm"))</span>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+                       
+                        <div class="col-12">
+                            <div class="p-3 bg-light rounded-3">
+                                <span class="text-muted small d-block mb-1">Địa điểm kỹ thuật viên đến hỗ trợ</span>
+                                <div class="fw-bold text-dark">
+                                    <i class="fa-solid fa-location-dot me-2 text-danger"></i>
+                                    @(string.IsNullOrWhiteSpace(Model.DiaDiem) ? "Địa chỉ khách hàng" : Model.DiaDiem)
+                                </div>
+                            </div>
+                        </div>
+
+                        @if (!string.IsNullOrWhiteSpace(Model.GhiChu))
+                        {
+                            <div class="col-12">
+                                <div class="p-3 bg-light rounded-3">
+                                    <span class="text-muted small d-block mb-1">Ghi chú từ Khách hàng / Admin</span>
+                                    <div class="fst-italic text-dark">@Model.GhiChu</div>
+                                </div>
+                            </div>
+                        }
+
+                        @if (!string.IsNullOrWhiteSpace(Model.LyDoHuy))
+                        {
+                            <div class="col-12">
+                                <div class="p-3 bg-danger-soft rounded-3 border border-danger text-danger">
+                                    <span class="font-weight-bold d-block mb-1"><i class="fa-solid fa-triangle-exclamation me-1"></i>Lý do từ chối / Hủy lịch:</span>
+                                    <div>@Model.LyDoHuy</div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- CARD 2: THÔNG TIN PHIẾU HỖ TRỢ -->
+            <div class="card border-0 shadow-sm rounded-3 mb-4">
+                <div class="card-header bg-white py-3 border-0 d-flex align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fa-solid fa-ticket me-2 text-danger"></i>Thông Tin Phiếu Hỗ Trợ
+                    </h6>
+                    <a href="@Url.Action("ChiTietPhieu", "Ticket", new { id = Model.IdPhieu })" class="btn btn-sm btn-outline-primary rounded-pill">
+                        <i class="fa-solid fa-up-right-from-square me-1"></i> Xem Phiếu
+                    </a>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <span class="text-muted small d-block">Mã Phiếu Hỗ Trợ:</span>
+                            <span class="fw-bold text-danger fs-6">@Model.MaPhieu</span>
+                        </div>
+                        <div class="col-md-6">
+                            <span class="text-muted small d-block">Dịch vụ yêu cầu:</span>
+                            <span class="fw-bold text-dark">@Model.TenDichVu</span>
+                        </div>
+                        <div class="col-12">
+                            <span class="text-muted small d-block">Tiêu đề sự cố:</span>
+                            <span class="fw-bold text-dark">@Model.TieuDePhieu</span>
+                        </div>
+                        <div class="col-md-6">
+                            <span class="text-muted small d-block">Trạng thái phiếu:</span>
+                            <span class="badge bg-secondary">@Model.TrangThaiPhieu</span>
+                        </div>
+                        <div class="col-md-6">
+                            <span class="text-muted small d-block">Ngày khởi tạo phiếu:</span>
+                            <span class="text-dark">@(Model.NgayTaoPhieu.HasValue ? Model.NgayTaoPhieu.Value.ToString("dd/MM/yyyy HH:mm") : "--")</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CARD 3: NHẬT KÝ XỬ LÝ & LỊCH SỬ -->
+            <div class="card border-0 shadow-sm rounded-3">
+                <div class="card-header bg-white py-3 border-0">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fa-solid fa-timeline me-2 text-danger"></i>Nhật Ký Xử Lý & Lịch Sử Hỗ Trợ
+                    </h6>
+                </div>
+                <div class="card-body p-0">
+                    @if (!Model.HistoryLogs.Any())
+                    {
+                        <div class="p-4 text-center text-muted">Chưa có nhật ký hoạt động nào cho phiếu này.</div>
+                    }
+                    else
+                    {
+                        <ul class="list-group list-group-flush">
+                            @foreach (var log in Model.HistoryLogs)
+                            {
+                                <li class="list-group-item p-3 border-0 border-bottom">
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <span class="fw-bold text-dark">@log.TenNhanVien</span>
+                                        <span class="small text-muted">@(log.NgayCapNhat.HasValue ? log.NgayCapNhat.Value.ToString("dd/MM/yyyy") : "")</span>
+                                    </div>
+                                    <p class="mb-1 text-secondary small">@log.NoiDungCapNhat</p>
+                                    <div class="small">
+                                        <span class="badge bg-light text-secondary border">@log.TrangThaiCu</span>
+                                        <i class="fa-solid fa-arrow-right mx-1 text-muted font-size-xs"></i>
+                                        <span class="badge bg-primary">@log.TrangThaiMoi</span>
+                                    </div>
+                                </li>
+                            }
+                        </ul>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT COLUMN (4 COLS) -->
+        <div class="col-lg-4">
+            <!-- KHÁCH HÀNG CARD -->
+            <div class="card border-0 shadow-sm rounded-3 mb-4">
+                <div class="card-header bg-white py-3 border-0">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fa-solid fa-user me-2 text-danger"></i>Thông Tin Khách Hàng
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <img src="https://ui-avatars.com/api/?name=@Uri.EscapeDataString(Model.TenKhachHang)&background=0D6EFD&color=fff&size=48" class="rounded-circle" alt="Avatar KH">
+                        <div>
+                            <h6 class="fw-bold text-dark mb-0">@Model.TenKhachHang</h6>
+                            <span class="small text-muted">Khách hàng dịch vụ Viettel</span>
+                        </div>
+                    </div>
+                    <hr class="my-2">
+                    <div class="mb-2">
+                        <span class="text-muted small d-block">Số điện thoại:</span>
+                        <a href="tel:@Model.SoDienThoaiKhachHang" class="fw-bold text-primary text-decoration-none">
+                            <i class="fa-solid fa-phone me-1"></i>@Model.SoDienThoaiKhachHang
+                        </a>
+                    </div>
+                    <div class="mb-2">
+                        <span class="text-muted small d-block">Email liên hệ:</span>
+                        <span class="text-dark">@(string.IsNullOrEmpty(Model.EmailKhachHang) ? "Chưa cập nhật" : Model.EmailKhachHang)</span>
+                    </div>
+                    <div>
+                        <span class="text-muted small d-block">Địa chỉ lắp đặt:</span>
+                        <span class="text-dark">@Model.DiaChiKhachHang</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- KỸ THUẬT VIÊN CARD -->
+            <div class="card border-0 shadow-sm rounded-3 mb-4">
+                <div class="card-header bg-white py-3 border-0 d-flex align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fa-solid fa-user-gear me-2 text-danger"></i>KTV Phụ Trách
+                    </h6>
+                </div>
+                <div class="card-body">
+                    @if (Model.IdNhanVien.HasValue)
+                    {
+                        <div class="d-flex align-items-center gap-3 mb-3">
+                            <img src="https://ui-avatars.com/api/?name=@Uri.EscapeDataString(Model.TenNhanVien)&background=D71920&color=fff&size=48" class="rounded-circle" alt="Avatar KTV">
+                            <div>
+                                <h6 class="fw-bold text-dark mb-0">@Model.TenNhanVien</h6>
+                                <span class="small text-muted">@Model.ChucVuNhanVien</span>
+                            </div>
+                        </div>
+                        <div class="mb-2">
+                            <span class="text-muted small d-block">Số điện thoại KTV:</span>
+                            <a href="tel:@Model.SoDienThoaiNhanVien" class="fw-bold text-dark text-decoration-none">
+                                <i class="fa-solid fa-phone me-1 text-success"></i>@Model.SoDienThoaiNhanVien
+                            </a>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="p-3 bg-warning-soft text-center rounded-3">
+                            <i class="fa-solid fa-circle-exclamation fs-3 text-warning mb-2 d-block"></i>
+                            <div class="fw-bold text-dark mb-1">Chưa phân công KTV</div>
+                            <p class="small text-muted mb-2">Lịch hẹn này chưa được gán kỹ thuật viên địa bàn phụ trách.</p>
+                            <button type="button" class="btn btn-sm btn-success rounded-pill px-3" onclick="openConfirmModalDetail()">
+                                <i class="fa-solid fa-user-plus me-1"></i> Phân công KTV ngay
+                            </button>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function openConfirmModalDetail() {
+            window.location.href = '@Url.Action("Index", "AdminLichHen", new { TrangThai = "ChoXacNhan" })';
+        }
+        function openRejectModalDetail() {
+            window.location.href = '@Url.Action("Index", "AdminLichHen")';
+        }
+        function openCancelModalDetail() {
+            window.location.href = '@Url.Action("Index", "AdminLichHen")';
+        }
+        function openCompleteModalDetail() {
+            window.location.href = '@Url.Action("Index", "AdminLichHen")';
+        }
+    </script>
+}

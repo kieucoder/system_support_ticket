@@ -11,5 +11,6 @@ namespace SupportTicketSysterm.Services
         Task<TinNhan> SaveCustomerMessageAsync(int idLienHe, string content);
         Task<TinNhan> SaveAiMessageAsync(int idLienHe, string content);
         Task<string> GetAiResponseAndProcessActionsAsync(int idLienHe, string userMessage, int? idKhachHang);
+        Task<string> GetAiMultimodalResponseAsync(int idLienHe, string userMessage, byte[] fileBytes, string mimeType, int? idKhachHang);
     }
 }

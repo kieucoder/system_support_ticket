@@ -199,26 +199,23 @@
     </div>
 
     <!-- HERO SECTION -->
-    <section class="hero-section">
+    <section class="hero-section" aria-label="Hồ sơ cá nhân khách hàng">
         <div class="container hero-content">
-            <div class="row align-items-center g-5"
-                 style="display: flex; flex-wrap: wrap; width: 100%; margin: 0; align-items: center;">
+            <div class="row align-items-center g-4 g-lg-5">
 
                 <!-- Left Column (Text & CTAs) -->
-                <div class="col-left" style="flex: 1 1 500px; padding: 0 15px; text-align: left;">
+                <div class="col-lg-7 col-12 text-start hero-text-col">
                     <!-- Breadcrumb Navigation -->
                     <nav aria-label="breadcrumb" class="hero-breadcrumb">
-                        <ol class="breadcrumb m-0"
-                            style="display: flex; list-style: none; padding: 0; margin: 0; gap: 0.5rem;">
+                        <ol class="breadcrumb m-0">
                             <li class="breadcrumb-item">
-                                <a href="../index.html"
-                                   style="color: #4b5563; text-decoration: none; display: inline-flex; align-items: center; gap: 0.25rem;">
-                                    <i class="fa-solid fa-house-door-fill"></i> Trang chủ
+                                <a href="/" class="text-decoration-none d-inline-flex align-items-center">
+                                    <i class="fa-solid fa-house-door-fill me-1"></i>
+                                    <span>Trang chủ</span>
                                 </a>
                             </li>
-                            <li class="breadcrumb-item active" aria-current="page"
-                                style="color: #0f1115; font-weight: 600;">
-                                Thông tin cá nhân
+                            <li class="breadcrumb-item active" aria-current="page">
+                                <span>Thông tin cá nhân</span>
                             </li>
                         </ol>
                     </nav>
@@ -229,7 +226,7 @@
                     </span>
 
                     <!-- Title -->
-                    <h1 class="hero-title text-uppercase">Hồ Sơ Cá Nhân</h1>
+                    <h1 class="hero-title text-uppercase">HỒ SƠ <span class="text-primary">CÁ NHÂN</span></h1>
 
                     <!-- Description -->
                     <p class="hero-desc">
@@ -238,22 +235,18 @@
                     </p>
 
                     <!-- CTA Buttons -->
-                    <div class="hero-cta-buttons"
-                         style="display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 1.5rem;">
-                        <a href="#my-tickets" class="btn btn-hero-create px-4 py-2"
-                           style="text-decoration: none;">
+                    <div class="hero-cta-buttons d-flex flex-wrap align-items-center gap-3">
+                        <a href="#my-tickets" class="btn btn-hero-create px-4 py-2">
                             <i class="bi bi-ticket-detailed me-1"></i> Phiếu Của Tôi
                         </a>
-                        <a href="#my-appointments" class="btn btn-hero-contact px-4 py-2"
-                           style="text-decoration: none;">
+                        <a href="#my-appointments" class="btn btn-hero-contact px-4 py-2">
                             <i class="bi bi-calendar2-week me-1"></i> Lịch Hẹn Hỗ Trợ
                         </a>
                     </div>
                 </div>
 
                 <!-- Right Column (Vector Illustration) -->
-                <div class="col-right hero-banner-wrapper"
-                     style="flex: 1 1 400px; padding: 0 15px; display: flex; justify-content: center; align-items: center;">
+                <div class="col-lg-5 col-12 hero-banner-wrapper">
                     <!-- SVG illustration representing profile dashboard -->
                     <svg class="hero-banner-svg" viewBox="0 0 500 400" xmlns="http://www.w3.org/2000/svg"
                          aria-label="Customer Profile Tech Illustration">
@@ -415,26 +408,9 @@
                                 </a>
                             </li>
                             <li class="sidebar-nav-item">
-                                <a href="#my-appointments" class="sidebar-nav-link"
+                                <a href="#personalInfoSection" class="sidebar-nav-link"
                                    id="btnEditProfileInline">
-                                    <i class=" bi bi-calendar2-week-fill"></i> Chỉnh sửa
-                                </a>
-                            </li>
-                            <li class="sidebar-nav-item">
-                                <a href="#my-tickets" class="sidebar-nav-link" id="menuLinkTickets">
-                                    <i class="bi bi-ticket-detailed-fill"></i> Phiếu hỗ trợ
-                                </a>
-                            </li>
-                            <li class="sidebar-nav-item">
-                                <a href="#my-appointments" class="sidebar-nav-link"
-                                   id="menuLinkAppointments">
-                                    <i class="bi bi-calendar2-week-fill"></i> Lịch hẹn
-                                </a>
-                            </li>
-                            <li class="sidebar-nav-item">
-                                <a href="#service-review-section" class="sidebar-nav-link"
-                                   id="menuLinkReview">
-                                    <i class="fa-solid fa-star"></i> Đánh giá
+                                    <i class="bi bi-pencil-square"></i> Chỉnh sửa
                                 </a>
                             </li>
                             <li class="sidebar-nav-item">
@@ -455,8 +431,16 @@
                          style="scroll-margin-top: 140px;">
                     <div class="profile-details-card">
 
+                        <div class="card-header-with-action">
+                            <h3 class="card-section-title">
+                                <i class="bi bi-person-vcard text-danger"></i> Thông tin cá nhân
+                            </h3>
+                            <button type="button" class="btn btn-hero-create btn-sm rounded-pill px-3 shadow-sm" id="btnOpenEditProfileModal">
+                                <i class="bi bi-pencil-square me-1"></i> Chỉnh sửa thông tin
+                            </button>
+                        </div>
+
                         <form id="inlineProfileForm" class="mt-3" novalidate>
-                            @Html.AntiForgeryToken()
                             <div class="profile-fields-grid">
                                 <div class="profile-field-item">
                                     <label for="profileUserCode" class="field-label">Mã khách hàng</label>
@@ -464,54 +448,31 @@
                                            id="profileUserCode" value="@Model.MaKh" readonly>
                                 </div>
                                 <div class="profile-field-item">
-                                    <label for="profileFullname" class="field-label">
-                                        Họ và tên <span class="text-required">*</span>
-                                    </label>
+                                    <label for="profileFullname" class="field-label">Họ và tên</label>
                                     <input type="text" class="profile-form-input" id="profileFullname"
-                                           value="@Model.HoTen" readonly required>
-                                    <span class="form-validation-error-msg" id="profileFullnameError">
-                                        Vui
-                                        lòng nhập họ
-                                        và tên
-                                    </span>
+                                           value="@Model.HoTen" readonly>
                                 </div>
                                 <div class="profile-field-item">
-                                    <label for="profilePhone" class="field-label">
-                                        Số điện thoại đăng ký
-                                        <span class="text-required">*</span>
-                                    </label>
+                                    <label for="profilePhone" class="field-label">Số điện thoại đăng ký</label>
                                     <input type="tel" class="profile-form-input" id="profilePhone"
-                                           value="@Model.SoDienThoai" readonly required>
-                                    <span class="form-validation-error-msg" id="profilePhoneError">
-                                        Số điện
-                                        thoại không
-                                        hợp lệ (10 số)
-                                    </span>
+                                           value="@Model.SoDienThoai" readonly>
                                 </div>
                                 <div class="profile-field-item">
-                                    <label for="profileEmail" class="field-label">
-                                        Địa chỉ Email <span class="text-required">*</span>
-                                    </label>
+                                    <label for="profileEmail" class="field-label">Địa chỉ Email</label>
                                     <input type="email" class="profile-form-input" id="profileEmail"
-                                           value="@Model.Email" readonly required>
-                                    <span class="form-validation-error-msg" id="profileEmailError">
-                                        Email
-                                        không đúng định
-                                        dạng
-                                    </span>
+                                           value="@Model.Email" readonly>
                                 </div>
                                 
                                 <div class="profile-field-item full-width">
-                                    <label for="profileAddress" class="field-label">
-                                        Địa chỉ lắp đặt / Liên hệ
-                                    </label>
+                                    <label for="profileAddress" class="field-label">Địa chỉ lắp đặt / Liên hệ</label>
                                     <input type="text" class="profile-form-input" id="profileAddress"
-                                           value="@(Model.DiaChi ?? "Chưa cập nhật")" readonly>
+                                           value="@(Model.DiaChi ?? "")" readonly placeholder="Chưa cập nhật">
                                 </div>
                                 <div class="profile-field-item">
                                     <label for="profileBirthdate" class="field-label">Ngày sinh</label>
                                     <input type="text" class="profile-form-input" id="profileBirthdate"
-                                           value="@(Model.NgaySinh?.ToString("dd/MM/yyyy") ?? "Chưa cập nhật")" readonly>
+                                           value="@(Model.NgaySinh?.ToString("dd/MM/yyyy") ?? "Chưa cập nhật")"
+                                           data-display-value="@(Model.NgaySinh?.ToString("dd/MM/yyyy") ?? "Chưa cập nhật")" readonly>
                                 </div>
                                 <div class="profile-field-item">
                                     <label for="profileJoinDate" class="field-label">
@@ -522,227 +483,10 @@
                                 </div>
 
                             </div>
-                            <!-- Inline edit action buttons (hidden by default) -->
-                            <div class="inline-edit-actions mt-3 d-none">
-                                <button type="button" class="btn btn-secondary px-4 py-2 me-2"
-                                        id="btnCancelEditInline">
-                                    Hủy bỏ
-                                </button>
-                                <button type="submit" class="btn btn-hero-create px-4 py-2"
-                                        id="btnSaveProfileInline">
-                                    <i class="bi bi-save"></i> Lưu thay
-                                    đổi
-                                </button>
-                            </div>
                         </form>
                     </div>
                 </article>
             </div>
-
-            <!-- Bottom Sections: Recent Tickets & Appointments Timeline -->
-            <div class="profile-sections-grid mt-4">
-
-                <!-- Recent Support Tickets Section -->
-                <section class="recent-tickets-card" id="my-tickets" style="scroll-margin-top: 140px;">
-                    <div class="section-card-header flex-wrap gap-3">
-                        <div class="header-left">
-                            <h2 class="card-section-title">
-                                <i class="bi bi-ticket-detailed-fill text-danger"></i> Phiếu
-                                hỗ trợ của tôi
-                            </h2>
-                            <p class="section-card-subtitle">
-                                Theo dõi các phiếu yêu cầu sửa chữa, lắp đặt và
-                                hỗ trợ kỹ
-                                thuật.
-                            </p>
-                        </div>
-                        <div class="header-actions-toolbelt d-flex align-items-center gap-2 flex-wrap w-100 mt-2">
-                            <div class="search-box-wrapper flex-grow-1">
-                                <i class="fa-solid fa-search search-icon"></i>
-                                <input type="text" class="custom-form-input ps-5" id="ticketSearchInput"
-                                       placeholder="Tìm kiếm mã phiếu hoặc nội dung sự cố...">
-                            </div>
-                            <div class="filter-dropdown-wrapper">
-                                <select class="custom-form-input" id="ticketStatusFilter">
-                                    <option value="all">Tất cả trạng thái</option>
-                                    <option value="pending">Chờ tiếp nhận</option>
-                                    <option value="processing">Đang xử lý</option>
-                                    <option value="completed">Đã hoàn thành</option>
-                                    <option value="cancelled">Đã hủy</option>
-                                </select>
-                            </div>
-                            <button class="btn btn-hero-create px-4 py-2" id="btnSearchTickets">
-                                <i class="bi bi-funnel-fill"></i> Lọc
-                            </button>
-                            <a href="create-ticket.html"
-                               class="btn btn-create-ticket-custom btn-ripple px-4 py-2"
-                               style="white-space: nowrap;">
-                                <i class="bi bi-plus-circle-fill"></i> Tạo phiếu mới
-                            </a>
-                        </div>
-                    </div>
-
-                    <div class="table-responsive-wrapper mt-3">
-                        <table class="tickets-data-table">
-                            <thead>
-                                <tr>
-                                    <th>STT</th>
-                                    <th>Mã phiếu</th>
-                                    <th>Dịch vụ</th>
-                                    <th>Loại sự cố</th>
-                                    <th>Ngày tạo</th>
-                                    <th>Trạng thái</th>
-                                    <th>Mức ưu tiên</th>
-                                    <th>Thao tác</th>
-                                </tr>
-                            </thead>
-                            <tbody id="ticketsTableBody">
-                                @if (Model.DanhSachPhieu == null || !Model.DanhSachPhieu.Any())
-                                {
-                                    <tr>
-                                        <td colspan="8" class="table-empty-state">
-                                            <i class="fa-solid fa-ticket"></i>
-                                            <p>Không có phiếu hỗ trợ nào.</p>
-                                        </td>
-                                    </tr>
-                                }
-                                else
-                                {
-                                    int stt = 1;
-                                    foreach (var phieu in Model.DanhSachPhieu)
-                                    {
-                                        <tr data-ticket-code="@phieu.MaPhieu" data-ticket-status="@GetStatusClass(phieu.TrangThai)">
-                                            <td>@(stt++)</td>
-                                            <td><span class="ticket-code-badge">@phieu.MaPhieu</span></td>
-                                            <td>@(phieu.IdDichVuNavigation?.TenDichVu ?? "--")</td>
-                                            <td>@phieu.LoaiYeuCau</td>
-                                            <td>@(phieu.NgayTao?.ToString("dd/MM/yyyy") ?? "--")</td>
-                                            <td>
-                                                <span class="status-badge @GetStatusClass(phieu.TrangThai)">
-                                                    @(phieu.TrangThai ?? "Chờ tiếp nhận")
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <span class="priority-badge @GetPriorityClass(phieu.MucDoUuTien)">
-                                                    @GetPriorityText(phieu.MucDoUuTien)
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <button type="button" class="btn-table-action btn-view-ticket"
-                                                        data-ticket-id="@phieu.IdPhieu"
-                                                        title="Xem chi tiết">
-                                                    <i class="bi bi-eye-fill"></i>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    }
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-
-                    @if (Model.TongSoPhieu > 0)
-                    {
-                        <div class="table-pagination" id="ticketsPagination">
-                            <span class="pagination-info">Tổng: @Model.TongSoPhieu phiếu hỗ trợ</span>
-                        </div>
-                    }
-
-                </section>
-
-                <!-- Upcoming Appointments Section -->
-                <section class="appointments-card" id="my-appointments" style="scroll-margin-top: 140px;">
-                    <div class="section-card-header">
-                        <h2 class="card-section-title">
-                            <i class="bi bi-calendar2-week-fill text-danger"></i>
-                            Lịch hẹn hỗ
-                            trợ
-                        </h2>
-                        <p class="section-card-subtitle">
-                            Kế hoạch khảo sát và sửa chữa của kỹ thuật viên tại
-                            nhà.
-                        </p>
-                    </div>
-
-                    <div class="appointments-timeline" id="appointmentsTimeline">
-                        @if (Model.DanhSachLichHen == null || !Model.DanhSachLichHen.Any())
-                        {
-                            <div class="timeline-empty-state">
-                                <i class="bi bi-calendar-check"></i>
-                                <p>Không có lịch hẹn hỗ trợ nào.</p>
-                            </div>
-                        }
-                        else
-                        {
-                            foreach (var lichHen in Model.DanhSachLichHen)
-                            {
-                                bool isActive = IsAppointmentActive(lichHen.TrangThai);
-                                <div class="timeline-item @(isActive ? "active" : "")">
-                                    <div class="timeline-marker"></div>
-                                    <div class="timeline-content">
-                                        <div class="timeline-header d-flex flex-wrap gap-2 align-items-center mb-1">
-                                            <span class="timeline-date">
-                                                <i class="bi bi-calendar2-event-fill me-1"></i>
-                                                @(lichHen.NgayHen?.ToString("dd/MM/yyyy") ?? "--")
-                                            </span>
-                                            <span class="timeline-time">
-                                                <i class="bi bi-clock me-1"></i>
-                                                @if (lichHen.GioBatDau.HasValue)
-                                                {
-                                                    @lichHen.GioBatDau.Value.ToString("HH:mm")
-                                                }
-                                                @if (lichHen.GioKetThuc.HasValue)
-                                                {
-                                                    <text> - @lichHen.GioKetThuc.Value.ToString("HH:mm")</text>
-                                                }
-                                            </span>
-                                            <span class="status-badge @GetStatusClass(lichHen.TrangThai)">
-                                                @(lichHen.TrangThai ?? "Chờ xử lý")
-                                            </span>
-                                        </div>
-                                        <h4 class="timeline-title mb-1">
-                                            @(lichHen.IdPhieuNavigation?.TieuDe ?? lichHen.GhiChu ?? "Hẹn hỗ trợ kỹ thuật")
-                                        </h4>
-                                        @if (!string.IsNullOrWhiteSpace(lichHen.GhiChu))
-                                        {
-                                            <p class="timeline-desc text-muted small mb-1">@lichHen.GhiChu</p>
-                                        }
-                                        <div class="timeline-staff-info">
-                                            <i class="bi bi-person-badge-fill text-danger me-1"></i>
-                                            <strong>KTV:</strong>
-                                            @if (lichHen.IdNhanVienNavigation != null)
-                                            {
-                                                <span class="ms-1">@lichHen.IdNhanVienNavigation.HoTen</span>
-                                                @if (!string.IsNullOrEmpty(lichHen.IdNhanVienNavigation.SoDienThoai))
-                                                {
-                                                    <span class="ms-2 text-muted small">
-                                                        <i class="bi bi-telephone-fill me-1"></i>@lichHen.IdNhanVienNavigation.SoDienThoai
-                                                    </span>
-                                                }
-                                            }
-                                            else
-                                            {
-                                                <span class="ms-1 text-muted">Chưa phân công</span>
-                                            }
-                                        </div>
-                                        @if (!string.IsNullOrWhiteSpace(lichHen.DiaChiHoTro))
-                                        {
-                                            <div class="mt-1 small">
-                                                <i class="bi bi-geo-alt-fill text-danger me-1"></i>@lichHen.DiaChiHoTro
-                                            </div>
-                                        }
-                                    </div>
-                                </div>
-                            }
-                        }
-                    </div>
-
-                </section>
-
-              
-
-            </div>
-
         </div>
     </main>
 
@@ -753,10 +497,10 @@
     <div id="chatbox-container"></div>
 
 
-    <!-- Backdrop Overlay -->
-    <div class="modal-backdrop-overlay" id="modalBackdropOverlay"></div>
+    <!-- Floating Toast Notification System Container -->
+    <div class="toast-container-fixed" id="toastContainer"></div>
 
-    <!-- Modal Cập Nhật Thông Tin -->
+    <!-- Modal Cập Nhật Thông Tin Cá Nhân (Giao diện giống Modal Đổi mật khẩu) -->
     <div class="profile-custom-modal" id="editProfileModal" role="dialog" aria-modal="true"
          aria-labelledby="editProfileModalTitle">
         <div class="modal-dialog-card">
@@ -769,21 +513,8 @@
                 </button>
             </div>
             <div class="modal-body">
-                @* ── Alert thành công / lỗi từ TempData (EditError) ── *@
-                @if (TempData["EditSuccess"] != null)
-                {
-                    <div class="alert alert-success alert-dismissible fade show mb-3" role="alert">
-                        <i class="bi bi-check-circle-fill me-2"></i> @TempData["EditSuccess"]
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                }
-                @if (TempData["EditError"] != null && TempData["Error"] != null)
-                {
-                    <div class="alert alert-danger alert-dismissible fade show mb-3" role="alert">
-                        <i class="bi bi-exclamation-triangle-fill me-2"></i> @TempData["Error"]
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                }
+                <!-- Inline alert container for validation / backend errors -->
+                <div id="modalAlertContainer"></div>
 
                 <form id="editProfileForm"
                       asp-action="CapNhatThongTinCaNhan"
@@ -791,8 +522,19 @@
                       method="post"
                       novalidate>
                     @Html.AntiForgeryToken()
-                    @* Hidden: Id để controller biết ai đang cập nhật *@
                     <input type="hidden" asp-for="IdKhachHang" />
+
+                    <!-- Read-only Info Block (Mã KH, Ngày tạo) -->
+                    <div class="form-row-grid">
+                        <div class="form-group-item">
+                            <label class="custom-form-label">Mã khách hàng</label>
+                            <input type="text" class="custom-form-input highlight" value="@Model.MaKh" readonly disabled />
+                        </div>
+                        <div class="form-group-item">
+                            <label class="custom-form-label">Ngày tạo tài khoản</label>
+                            <input type="text" class="custom-form-input" value="@(Model.NgayTao?.ToString("dd/MM/yyyy") ?? "--")" readonly disabled />
+                        </div>
+                    </div>
 
                     <div class="form-row-grid">
                         <div class="form-group-item">
@@ -804,10 +546,8 @@
                                    class="custom-form-input"
                                    id="editFullname"
                                    placeholder="Nhập họ và tên..."
-                                   required>
-                            <span asp-validation-for="HoTen"
-                                  class="form-validation-error-msg"
-                                  id="editFullnameError"></span>
+                                   required />
+                            <span asp-validation-for="HoTen" class="form-validation-error-msg text-danger" id="editFullnameError"></span>
                         </div>
                         <div class="form-group-item">
                             <label for="editPhone" class="custom-form-label">
@@ -817,24 +557,22 @@
                                    type="tel"
                                    class="custom-form-input"
                                    id="editPhone"
-                                   placeholder="Nhập số điện thoại..."
-                                   required>
-                            <span asp-validation-for="SoDienThoai"
-                                  class="form-validation-error-msg"
-                                  id="editPhoneError"></span>
+                                   placeholder="Nhập số điện thoại (10 chữ số)..."
+                                   required />
+                            <span asp-validation-for="SoDienThoai" class="form-validation-error-msg text-danger" id="editPhoneError"></span>
                         </div>
                     </div>
+
                     <div class="form-row-grid">
                         <div class="form-group-item">
-                            <label for="editEmail" class="custom-form-label">Email tài khoản</label>
+                            <label for="editEmail" class="custom-form-label">Email tài khoản <span class="text-required">*</span></label>
                             <input asp-for="Email"
                                    type="email"
                                    class="custom-form-input"
                                    id="editEmail"
-                                   placeholder="Nhập địa chỉ email...">
-                            <span asp-validation-for="Email"
-                                  class="form-validation-error-msg"
-                                  id="editEmailError"></span>
+                                   placeholder="Nhập địa chỉ email..."
+                                   required />
+                            <span asp-validation-for="Email" class="form-validation-error-msg text-danger" id="editEmailError"></span>
                         </div>
                         <div class="form-group-item">
                             <label for="editNgaySinh" class="custom-form-label">Ngày sinh</label>
@@ -842,12 +580,11 @@
                                    type="date"
                                    class="custom-form-input"
                                    id="editNgaySinh"
-                                   max="@DateTime.Today.ToString("yyyy-MM-dd")">
-                            <span asp-validation-for="NgaySinh"
-                                  class="form-validation-error-msg"
-                                  id="editNgaySinhError"></span>
+                                   max="@DateTime.Today.ToString("yyyy-MM-dd")" />
+                            <span asp-validation-for="NgaySinh" class="form-validation-error-msg text-danger" id="editNgaySinhError"></span>
                         </div>
                     </div>
+
                     <div class="form-group-item">
                         <label for="editAddress" class="custom-form-label">
                             Địa chỉ lắp đặt / Liên hệ
@@ -857,17 +594,16 @@
                                   id="editAddress"
                                   rows="3"
                                   placeholder="Nhập địa chỉ đầy đủ (số nhà, tên đường, phường/xã, quận/huyện)..."></textarea>
-                        <span asp-validation-for="DiaChi"
-                              class="form-validation-error-msg"
-                              id="editAddressError"></span>
+                        <span asp-validation-for="DiaChi" class="form-validation-error-msg text-danger" id="editAddressError"></span>
                     </div>
+
                     <div class="modal-footer-actions">
                         <button type="button" class="btn-modal-action btn-cancel" data-close-modal>
                             Hủy bỏ
                         </button>
-                        <button type="submit" id="btnSaveProfile"
-                                class="btn-modal-action btn-submit btn-viettel-red">
-                            <i class="bi bi-save me-1" id="btnSaveProfileIcon"></i> Lưu thay đổi
+                        <button type="submit" id="btnSaveProfile" class="btn-modal-action btn-submit btn-viettel-red">
+                            <i class="bi bi-save me-1" id="btnSaveProfileIcon"></i>
+                            Lưu thay đổi
                         </button>
                     </div>
                 </form>

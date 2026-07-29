@@ -369,10 +369,44 @@ function renderPaginationControls(totalPages) {
 }
 
 window.goPage = function (p) {
-    const totalPages = Math.ceil(filteredCustomers.length / pageSize);
-    if (p < 1 || p > totalPages) return;
-    currentPage = p;
-    renderCustomersList();
+    if (!p || p < 1) return;
+    window.applyFiltersKH(p);
+};
+
+window.goPageKH = function (p) {
+    if (!p || p < 1) return;
+    window.applyFiltersKH(p);
+};
+
+/* ══════════════════════════════════════════
+   FILTERS & SEARCH ACTIONS (SERVERSIDE)
+   ══════════════════════════════════════════ */
+let currentKHPage = 1;
+
+window.applyFiltersKH = function (page) {
+    if (page) currentKHPage = page;
+    const keyword = $('#searchCustomer').val() || '';
+    const status = $('#filterStatus').val() || 'all';
+    const sort = $('#filterSort').val() || 'newest';
+
+    $.ajax({
+        url: '/Staff/DanhSachKhachHang',
+        type: 'GET',
+        data: { keyword: keyword, status: status, sort: sort, page: currentKHPage, pageSize: 10 },
+        success: function (data) {
+            $('#customersCardContainer').html(data);
+        },
+        error: function () {
+            showToast('error', 'Lỗi khi kết nối hệ thống để lọc danh sách khách hàng.');
+        }
+    });
+};
+
+window.clearFiltersKH = function () {
+    $('#searchCustomer').val('');
+    $('#filterStatus').val('all');
+    $('#filterSort').val('newest');
+    window.applyFiltersKH(1);
 };
 
 /* ══════════════════════════════════════════

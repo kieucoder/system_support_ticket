@@ -34,7 +34,7 @@
         '        <span>TechSupport <small style="display:block;font-size:0.65rem;font-weight:400;letter-spacing:1px;color:rgba(255,255,255,0.5);">VIETTEL ADMIN</small></span>' +
         '    </a>' +
         '    <!-- Sidebar Menu -->' +
-        '    <nav aria-label="Primary navigation" class="flex-grow-1 overflow-y-auto">' +
+        '    <nav aria-label="Primary navigation" class="flex-grow-1">' +
         '        <ul class="sidebar-menu">' +
         '            <li class="sidebar-section-label">TỔNG QUAN</li>' +
         '            <li class="sidebar-item" data-page="dashboard.html">' +

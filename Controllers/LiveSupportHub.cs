@@ -16,6 +16,25 @@ namespace SupportTicketSysterm.Controllers
             _liveSupportService = liveSupportService;
         }
 
+        public override async Task OnConnectedAsync()
+        {
+            var httpContext = Context.GetHttpContext();
+            var (userId, _) = GetUserConnectionInfo(httpContext);
+            if (userId.HasValue)
+            {
+                await Groups.AddToGroupAsync(Context.ConnectionId, $"User_{userId.Value}");
+            }
+            await base.OnConnectedAsync();
+        }
+
+        public async Task JoinUserGroup(string userGroupId)
+        {
+            if (!string.IsNullOrEmpty(userGroupId))
+            {
+                await Groups.AddToGroupAsync(Context.ConnectionId, userGroupId);
+            }
+        }
+
         public async Task JoinRoom(string ticketId)
         {
             var httpContext = Context.GetHttpContext();
@@ -26,7 +45,26 @@ namespace SupportTicketSysterm.Controllers
                 throw new HubException("Bạn cần đăng nhập để tham gia phòng chat.");
             }
 
-            var ticket = await _liveSupportService.GetTicketByCodeAsync(ticketId);
+            if (string.IsNullOrWhiteSpace(ticketId))
+            {
+                throw new HubException("Mã hoặc Id phiếu hỗ trợ không hợp lệ.");
+            }
+
+            string cleanId = ticketId.StartsWith("Ticket_", StringComparison.OrdinalIgnoreCase)
+                ? ticketId.Substring(7)
+                : ticketId;
+
+            Data.PhieuHoTro? ticket = null;
+            if (int.TryParse(cleanId, out int idPhieu))
+            {
+                ticket = await _liveSupportService.GetTicketByIdAsync(idPhieu);
+            }
+
+            if (ticket == null)
+            {
+                ticket = await _liveSupportService.GetTicketByCodeAsync(cleanId);
+            }
+
             if (ticket == null)
             {
                 throw new HubException("Phiếu hỗ trợ không tồn tại.");
@@ -55,11 +93,17 @@ namespace SupportTicketSysterm.Controllers
 
             if (!isAuthorized)
             {
-                throw new HubException("Bạn không có quyền truy cập vào phòng chat này.");
+                throw new HubException("403 Forbidden: Bạn không có quyền truy cập vào phiếu hỗ trợ này.");
             }
 
-            await Groups.AddToGroupAsync(Context.ConnectionId, ticketId);
-            await Clients.Group(ticketId).SendAsync("UserOnline", ticketId, role);
+            string groupName = $"Ticket_{ticket.IdPhieu}";
+            await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
+            if (!string.Equals(ticketId, groupName, StringComparison.OrdinalIgnoreCase))
+            {
+                await Groups.AddToGroupAsync(Context.ConnectionId, ticketId);
+            }
+
+            await Clients.Group(groupName).SendAsync("UserOnline", ticket.IdPhieu.ToString(), role);
         }
 
         public async Task LeaveRoom(string ticketId)
@@ -79,6 +123,20 @@ namespace SupportTicketSysterm.Controllers
         public async Task Typing(string ticketId, string senderRole, bool isTyping)
         {
             await Clients.Group(ticketId).SendAsync("Typing", ticketId, senderRole, isTyping);
+        }
+
+        public async Task NotifyTicketUpdate(string ticketCode, string updateType, object data)
+        {
+            if (!string.IsNullOrEmpty(ticketCode))
+            {
+                await Clients.Group(ticketCode).SendAsync("TicketUpdated", new
+                {
+                    ticketCode = ticketCode,
+                    updateType = updateType,
+                    data = data,
+                    timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
+                });
+            }
         }
 
         public async Task ReadMessage(string ticketId, string role)

@@ -5,181 +5,556 @@
     var hoTen = Model?.GetString("HoTen") ?? User.FindFirstValue("HoTen") ?? User.Identity?.Name;
     var isAuthenticated = !string.IsNullOrEmpty(hoTen);
 
+    var role = Model?.GetString("Role") ?? Model?.GetString("VaiTro") ?? User.FindFirst(ClaimTypes.Role)?.Value ?? User.FindFirst("VaiTro")?.Value ?? "";
+    var isStaff = role.Equals("Admin", StringComparison.OrdinalIgnoreCase) || 
+                 role.Equals("Quản trị viên", StringComparison.OrdinalIgnoreCase) || 
+                 role.Equals("NhanVien", StringComparison.OrdinalIgnoreCase) || 
+                 role.Equals("Nhân viên", StringComparison.OrdinalIgnoreCase) || 
+                 role.Equals("Nhân viên hỗ trợ", StringComparison.OrdinalIgnoreCase) || 
+                 role.Equals("KyThuat", StringComparison.OrdinalIgnoreCase);
+
+    if (isAuthenticated && isStaff)
+    {
+        Context.Response.Redirect(Url.Action("Dashboard", "Staff") ?? "/Staff/Dashboard");
+    }
+
     var currentController = ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
     var currentAction = ViewContext.RouteData.Values["action"]?.ToString() ?? "";
 
     bool isHomeActive = (currentController.Equals("Customers", StringComparison.OrdinalIgnoreCase) || currentController.Equals("Home", StringComparison.OrdinalIgnoreCase)) && 
                         (currentAction.Equals("TrangChu", StringComparison.OrdinalIgnoreCase) || currentAction.Equals("Index", StringComparison.OrdinalIgnoreCase));
     bool isTicketActive = currentController.Equals("Ticket", StringComparison.OrdinalIgnoreCase);
-    bool isContactActive = currentController.Equals("Customers", StringComparison.OrdinalIgnoreCase) && 
+    bool isContactActive = (currentController.Equals("Customers", StringComparison.OrdinalIgnoreCase) || currentController.Equals("Home", StringComparison.OrdinalIgnoreCase)) && 
                            currentAction.Equals("LienHe", StringComparison.OrdinalIgnoreCase);
+    bool isInfoActive = currentController.Equals("Home", StringComparison.OrdinalIgnoreCase) && 
+                        (currentAction.Equals("GioiThieu", StringComparison.OrdinalIgnoreCase) || 
+                         currentAction.Equals("TinTuc", StringComparison.OrdinalIgnoreCase) || 
+                         currentAction.Equals("HuongDan", StringComparison.OrdinalIgnoreCase) || 
+                         currentAction.Equals("FAQ", StringComparison.OrdinalIgnoreCase) || 
+                         currentAction.Equals("DieuKhoanSuDung", StringComparison.OrdinalIgnoreCase));
 }
-<!-- Header Component Container -->
+
 <div id="header-container">
-    <!-- 1. TOPBAR HEADER -->
-    <header class="top-header">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-lg-8 col-12 top-header-info d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-                    <span class="me-4">
-                        <i class="fa-solid fa-phone"></i> Hotline kỹ thuật: <a href="tel:18008119">
-                            1900
-                            8119
-                        </a> (Miễn phí)
-                    </span>
-                    <span class="me-4">
-                        <i class="fa-solid fa-envelope"></i> Email: <a href="mailto:support@viettel.com.vn">support@viettel.com.vn</a>
-                    </span>
-                    <span><i class="fa-solid fa-clock"></i> Hỗ trợ kỹ thuật 24/7/365</span>
-                </div>
-                <div class="col-lg-4 col-12 top-header-social d-flex align-items-center justify-content-center justify-content-lg-end mt-2 mt-lg-0">
-                    <span class="me-2 d-none d-sm-inline">Kết nối:</span>
-                    <a href="https://facebook.com" target="_blank" class="me-2" aria-label="Facebook">
+
+    <!-- ==========================================
+       1. TOP BAR (HEIGHT: 40px, BACKGROUND: #D71920)
+       ========================================== -->
+    <header class="top-header header-topbar" id="topHeader">
+        <div class="container container-header-wrapper header-topbar-container">
+            <!-- Left Info Section -->
+            <div class="topbar-left-group d-flex align-items-center gap-3">
+                <a href="tel:18008119" class="topbar-link">
+                    <i class="bi bi-telephone-fill me-1"></i> Hotline: <strong>1800 8119</strong> (Miễn phí)
+                </a>
+                <a href="mailto:support@viettel.com.vn" class="topbar-link d-none d-md-inline-flex">
+                    <i class="bi bi-envelope-fill me-1"></i> support@viettel.com.vn
+                </a>
+                <span class="topbar-text d-none d-xl-inline-flex">
+                    <i class="bi bi-clock-fill me-1"></i> Hỗ trợ 24/7/365
+                </span>
+                <span class="topbar-location d-none d-xxl-inline-flex">
+                    <i class="bi bi-geo-alt-fill me-1"></i> Viettel Cần Thơ
+                </span>
+            </div>
+
+            <!-- Right Social & Auth Section -->
+            <div class="topbar-right-group d-flex align-items-center gap-3">
+                <!-- Social Links -->
+                <div class="topbar-social-list d-none d-sm-flex align-items-center gap-2">
+                    <span class="me-1 d-none d-lg-inline topbar-social-label">Kết nối:</span>
+                    <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" class="topbar-social-btn" aria-label="Facebook">
                         <i class="bi bi-facebook"></i>
                     </a>
-                    <a href="https://youtube.com" target="_blank" class="me-2" aria-label="Youtube">
+                    <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" class="topbar-social-btn" aria-label="YouTube">
                         <i class="bi bi-youtube"></i>
                     </a>
-                    <a href="https://linkedin.com" target="_blank" class="me-2" aria-label="LinkedIn">
+                    <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="topbar-social-btn" aria-label="LinkedIn">
                         <i class="bi bi-linkedin"></i>
                     </a>
-                    <a href="https://instagram.com" target="_blank" aria-label="Instagram">
-                        <i class="bi bi-instagram"></i>
+                    <a href="https://zalo.me" target="_blank" rel="noopener noreferrer" class="topbar-social-btn" aria-label="Zalo">
+                        <i class="bi bi-chat-quote-fill"></i>
                     </a>
+                </div>
+
+                <!-- Auth Info / Greeting -->
+                <div class="topbar-auth-group">
+                    @if (isAuthenticated)
+                    {
+                        <span class="topbar-user-greeting">
+                            <i class="bi bi-person-circle me-1"></i> Xin chào, <strong>@hoTen</strong>
+                        </span>
+                    }
+                    else
+                    {
+                        <a asp-controller="Auth" asp-action="DangNhap" class="topbar-auth-link">
+                            <i class="bi bi-box-arrow-in-right me-1"></i> Đăng nhập
+                        </a>
+                        <span class="topbar-divider">|</span>
+                        <a asp-controller="Auth" asp-action="DangKy" class="topbar-auth-link">
+                            <i class="bi bi-person-plus me-1"></i> Đăng ký
+                        </a>
+                    }
                 </div>
             </div>
         </div>
     </header>
 
-    <!-- 2. NAVBAR STICKY (CUSTOM RESPONSIVE HEADER) -->
-    <header class="custom-header fixed-top" id="mainNavbar">
-        <div class="container container-header-wrapper">
-            <!-- Brand Logo -->
-            <a class="navbar-brand" asp-controller="Customers" asp-action="TrangChu" id="navBrand">
-                <i class="fa-solid fa-cpu-fill"></i>
-                <span>TechSupport</span>
+    <!-- ==========================================
+       2. MAIN HEADER (HEIGHT: 80px, WHITE, STICKY)
+       ========================================== -->
+    <header class="custom-header main-header" id="mainHeader">
+        <div class="container container-header-wrapper main-header-container">
+
+            <!-- BRAND LOGO -->
+            <a class="navbar-brand header-brand" asp-controller="Customers" asp-action="TrangChu">
+                <div class="brand-text">
+                    <span class="brand-name">TechSupport<span class="brand-dot">.</span></span>
+                    <span class="brand-sub">Website Quản Lý Phiếu Hỗ Trợ Kỹ Thuật</span>
+                </div>
             </a>
 
-            <!-- Desktop Menu (>=1200px) -->
-            <nav class="desktop-menu d-none d-xl-flex align-items-center justify-content-between flex-grow-1 ms-5">
-                <ul class="navbar-nav header-nav-list flex-row align-items-center gap-2">
+            <!-- DESKTOP MENU (Centered, Equal Spacing, Font 600, Padding 16px 22px) -->
+            <nav class="desktop-menu main-nav d-none d-lg-flex align-items-center" aria-label="Main Navigation">
+                <ul class="navbar-nav header-nav-list nav-menu flex-row align-items-center">
+                    <!-- 1. Trang chủ -->
                     <li class="nav-item">
-                        <a class="nav-link @(isHomeActive ? "active" : "")" asp-controller="Customers" asp-action="TrangChu" id="linkHome">
+                        <a class="nav-link @(isHomeActive ? "active" : "")" asp-controller="Customers" asp-action="TrangChu">
                             Trang chủ
                         </a>
                     </li>
-                    <li class="nav-item dropdown-custom">
-                        <a class="nav-link dropdown-toggle-custom d-inline-flex align-items-center @(isTicketActive ? "active" : "")" href="#"
-                           id="linkServices">
-                            Dịch vụ hỗ trợ <i class="fa-solid fa-chevron-down ms-1"
-                                              style="font-size: 0.8rem; transition: transform 0.3s ease;"></i>
+
+                    <!-- 2. Hỗ trợ (Custom Enterprise Card Dropdown) -->
+                    <li class="nav-item dropdown-mega">
+                        <a class="nav-link dropdown-toggle-mega @(isTicketActive ? "active" : "")" href="#" role="button" id="supportDropdownToggle" aria-haspopup="true" aria-expanded="false">
+                            <i class="bi bi-headset me-1 text-danger"></i> Hỗ trợ <i class="bi bi-chevron-down nav-arrow"></i>
                         </a>
-                        <ul class="dropdown-menu-custom">
-                            <li>
-                                <a class="dropdown-item-custom" asp-controller="Ticket" asp-action="ChonDMDichVu">
-                                    Chọn danh mục hỗ trợ
+                        <div class="mega-dropdown-menu support-dropdown-menu" role="menu" aria-labelledby="supportDropdownToggle">
+                            <div class="support-dropdown-list">
+                                <a class="support-item" asp-controller="Ticket" asp-action="ChonDMDichVu" role="menuitem">
+                                    <div class="support-icon-box">
+                                        <i class="bi bi-plus-circle"></i>
+                                    </div>
+                                    <div class="support-info">
+                                        <span class="support-title">Tạo phiếu hỗ trợ</span>
+                                        <span class="support-desc">Gửi yêu cầu báo hỏng & hỗ trợ kỹ thuật</span>
+                                    </div>
                                 </a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item-custom"
-                                   asp-controller="Ticket"
-                                   asp-action="TaoPhieu">
-                                    Tạo phiếu hỗ trợ
+                                <a class="support-item" asp-controller="Ticket" asp-action="TraCuuPhieu" role="menuitem">
+                                    <div class="support-icon-box">
+                                        <i class="bi bi-search"></i>
+                                    </div>
+                                    <div class="support-info">
+                                        <span class="support-title">Tra cứu phiếu</span>
+                                        <span class="support-desc">Theo dõi tiến độ & trạng thái phiếu</span>
+                                    </div>
                                 </a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item-custom" asp-controller="Ticket" asp-action="TraCuuPhieu">Tra cứu phiếu hỗ trợ</a>
-                            </li>
-                        </ul>
+                                <a class="support-item" asp-controller="Ticket" asp-action="TaoLichHen" role="menuitem">
+                                    <div class="support-icon-box">
+                                        <i class="bi bi-calendar-check"></i>
+                                    </div>
+                                    <div class="support-info">
+                                        <span class="support-title">Tạo lịch hẹn</span>
+                                        <span class="support-desc">Chủ động đặt lịch hẹn kỹ thuật viên</span>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
                     </li>
+
+                    <!-- 3. Liên hệ -->
                     <li class="nav-item">
-                        <a class="nav-link @(currentAction.Equals("ChonDMDichVu", StringComparison.OrdinalIgnoreCase) ? "active" : "")" asp-controller="Ticket" asp-action="ChonDMDichVu" id="linkDichVu">
-                            Dịch Vụ
+                        <a class="nav-link @(isContactActive ? "active" : "")" asp-controller="Home" asp-action="LienHe">
+                            Liên hệ
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link @(isContactActive ? "active" : "")" asp-controller="Customers" asp-action="LienHe" id="linkContact">Liên hệ</a>
+
+                    <!-- 5. Thông tin (Custom Enterprise Card Dropdown matching Hỗ trợ) -->
+                    <li class="nav-item dropdown-mega">
+                        <a class="nav-link dropdown-toggle-mega @(isInfoActive ? "active" : "")" href="#" role="button" id="infoDropdownToggle" aria-haspopup="true" aria-expanded="false">
+                            <i class="bi bi-info-circle me-1 text-danger"></i> Thông tin <i class="bi bi-chevron-down nav-arrow"></i>
+                        </a>
+                        <div class="mega-dropdown-menu support-dropdown-menu" role="menu" aria-labelledby="infoDropdownToggle">
+                            <div class="support-dropdown-list">
+                                <a class="support-item" asp-controller="Home" asp-action="GioiThieu" role="menuitem">
+                                    <div class="support-icon-box">
+                                        <i class="bi bi-building"></i>
+                                    </div>
+                                    <div class="support-info">
+                                        <span class="support-title">Giới thiệu</span>
+                                        <span class="support-desc">Về hệ thống TechSupport Viettel</span>
+                                    </div>
+                                </a>
+                                <a class="support-item" asp-controller="Home" asp-action="TinTuc" role="menuitem">
+                                    <div class="support-icon-box">
+                                        <i class="bi bi-newspaper"></i>
+                                    </div>
+                                    <div class="support-info">
+                                        <span class="support-title">Tin tức</span>
+                                        <span class="support-desc">Cập nhật tin công nghệ & thông báo</span>
+                                    </div>
+                                </a>
+                                <a class="support-item" asp-controller="Home" asp-action="HuongDan" role="menuitem">
+                                    <div class="support-icon-box">
+                                        <i class="bi bi-book-half"></i>
+                                    </div>
+                                    <div class="support-info">
+                                        <span class="support-title">Hướng dẫn</span>
+                                        <span class="support-desc">Quy trình sử dụng & tạo ticket</span>
+                                    </div>
+                                </a>
+                                <a class="support-item" asp-controller="Home" asp-action="FAQ" role="menuitem">
+                                    <div class="support-icon-box">
+                                        <i class="bi bi-patch-question-fill"></i>
+                                    </div>
+                                    <div class="support-info">
+                                        <span class="support-title">FAQ</span>
+                                        <span class="support-desc">Giải đáp thắc mắc thường gặp</span>
+                                    </div>
+                                </a>
+                                <a class="support-item" asp-controller="Home" asp-action="DieuKhoanSuDung" role="menuitem">
+                                    <div class="support-icon-box">
+                                        <i class="bi bi-shield-check"></i>
+                                    </div>
+                                    <div class="support-info">
+                                        <span class="support-title">Điều khoản sử dụng</span>
+                                        <span class="support-desc">Quy định & chính sách bảo mật</span>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
                     </li>
                 </ul>
-                <div class="header-buttons-group d-flex align-items-center gap-2">
-                    @if (isAuthenticated)
-                    {
-                        <div class="dropdown dropdown-custom">
-                            <a class="btn btn-login-custom btn-ripple rounded-pill px-4 dropdown-toggle d-inline-flex align-items-center" 
-                               href="#" role="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fa-solid fa-user me-2"></i> Xin chào, @hoTen
+            </nav>
+
+            <!-- RIGHT ACTIONS -->
+            <div class="header-right-actions d-flex align-items-center gap-3">
+
+                <!-- 🔔 Notification Center -->
+                <div class="notification-center-wrapper me-1 position-relative">
+                    <button type="button" class="notif-bell-btn" id="notifBellTrigger" title="Thông báo hệ thống">
+                        <i class="bi bi-bell-fill"></i>
+                        <span class="notif-badge-counter" id="notifBadgeCounter" style="display:none;">0</span>
+                    </button>
+
+                    <div class="notif-dropdown-menu" id="notifDropdownMenu">
+                        <div class="notif-dropdown-header d-flex align-items-center justify-content-between p-3 border-bottom">
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="bi bi-bell-fill text-danger fs-6"></i>
+                                <h6 class="m-0 fw-bold text-dark fs-7">Trung Tâm Thông Báo</h6>
+                            </div>
+                            <span class="badge bg-danger-subtle text-danger fs-8 fw-semibold">Realtime</span>
+                        </div>
+                        <div class="notif-list-container" id="notifListContainer" style="max-height: 360px; overflow-y: auto;">
+                            <!-- Dynamic Content Rendered by JS -->
+                        </div>
+                        <div class="notif-dropdown-footer p-2.5 text-center border-top bg-light">
+                            <a asp-controller="Notification" asp-action="Index" class="text-danger fw-bold fs-8 text-decoration-none">
+                                Xem tất cả thông báo <i class="bi bi-arrow-right me-1"></i>
                             </a>
-                            <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="userDropdown" style="border-radius: 12px; border: 1px solid #e2e8f0; padding: 8px 0;">
-                                @{
-                                    var role = Model?.GetString("Role") ?? User.FindFirst(ClaimTypes.Role)?.Value ?? User.FindFirst("VaiTro")?.Value;
-                                    var isStaff = role == "Admin" || role == "NhanVien" || role == "Nhân viên" || role == "Nhân viên hỗ trợ";
-                                }
-                                @if (isStaff)
-                                {
-                                    <li>
-                                        <a class="dropdown-item py-2 px-3" asp-controller="Staff" asp-action="Dashboard" style="font-size: 14px; color: #EE0033; font-weight: 600;">
-                                            <i class="bi bi-speedometer2 me-2"></i> Trang quản trị
-                                        </a>
-                                    </li>
-                                    <li><hr class="dropdown-divider" style="margin: 6px 0; border-color: #f1f5f9;"></li>
-                                }
+                        </div>
+                    </div>
+                </div>
+
+                @if (isAuthenticated)
+                {
+                    <a asp-controller="Auth" asp-action="DangXuat" class="btn-create-ticket-red btn-ripple">
+                        <i class="bi bi-box-arrow-right me-1"></i>
+                        <span>Đăng xuất</span>
+                    </a>
+                }
+                else
+                {
+                    <!-- CTA Button: Đăng ký -->
+                    <a asp-controller="Auth" asp-action="DangKy" class="btn-create-ticket-red btn-ripple">
+                        <i class="bi bi-person-plus-fill me-1"></i>
+                        <span>Đăng ký</span>
+                    </a>
+                }
+
+                <!-- User Account Dropdown (If Logged In) -->
+                @if (isAuthenticated)
+                {
+                    <div class="user-account-dropdown">
+                        <button type="button" class="user-dropdown-btn" id="userDropdownTrigger" aria-expanded="false" title="Tài khoản">
+                            <div class="user-avatar-circle">
+                                <i class="bi bi-person-fill"></i>
+                            </div>
+                            <span class="user-name-label d-none d-xl-inline">@hoTen</span>
+                            <i class="bi bi-chevron-down user-arrow-icon"></i>
+                        </button>
+
+                        @{
+                            var roleTitle = isStaff ? (role.Equals("Admin", StringComparison.OrdinalIgnoreCase) || role.Equals("Quản trị viên", StringComparison.OrdinalIgnoreCase) ? "Quản trị viên" : "Nhân viên hỗ trợ") : "Tài khoản khách hàng";
+                        }
+
+                        <div class="user-dropdown-menu" id="userDropdownMenu">
+                            <div class="user-dropdown-header">
+                                <div class="user-avatar-large">
+                                    <i class="bi bi-person-circle"></i>
+                                </div>
+                                <div class="user-header-info">
+                                    <span class="user-header-name">@hoTen</span>
+                                    <span class="user-header-role">@roleTitle</span>
+                                </div>
+                            </div>
+
+                            <ul class="user-menu-list">
                                 <li>
-                                    <a class="dropdown-item py-2 px-3" asp-controller="Customers" asp-action="ThongTinCaNhan" style="font-size: 14px; color: #1F2937;">
-                                        <i class="bi bi-person me-2 text-muted"></i> Thông tin cá nhân
+                                    <a class="user-menu-item" asp-controller="Customers" asp-action="ThongTinCaNhan">
+                                        <i class="bi bi-person me-2"></i> Thông tin cá nhân
                                     </a>
                                 </li>
                                 <li>
-                                    <a class="dropdown-item py-2 px-3"
-                                       asp-controller="Customers"
-                                       asp-action="PhieuCuaToi"
-                                       style="font-size: 14px; color: #1F2937;">
-                                        <i class="bi bi-ticket-perforated me-2 text-muted"></i> Phiếu hỗ trợ của tôi
+                                    <a class="user-menu-item" asp-controller="Customers" asp-action="PhieuCuaToi">
+                                        <i class="bi bi-ticket-perforated me-2"></i> Phiếu của tôi
                                     </a>
                                 </li>
+                                <li class="user-menu-divider"></li>
                                 <li>
-                                    <a class="dropdown-item py-2 px-3"
-                                       asp-controller="Customers"
-                                       asp-action="ChatTrucTuyen"
-                                       style="font-size: 14px; color: #1F2937;">
-                                        <i class="bi bi-chat-dots-fill me-2 text-muted"></i> Chat với nhân viên
-                                    </a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item py-2 px-3" href="/KhachHang/DoiMatKhau" style="font-size: 14px; color: #1F2937;">
-                                        <i class="bi bi-shield-lock me-2 text-muted"></i> Đổi mật khẩu
-                                    </a>
-                                </li>
-                                <li><hr class="dropdown-divider" style="margin: 6px 0; border-color: #f1f5f9;"></li>
-                                <li>
-                                    <a class="dropdown-item py-2 px-3 text-danger" asp-controller="Auth" asp-action="DangXuat" style="font-size: 14px;">
+                                    <a class="user-menu-item text-danger" asp-controller="Auth" asp-action="DangXuat">
                                         <i class="bi bi-box-arrow-right me-2"></i> Đăng xuất
                                     </a>
                                 </li>
                             </ul>
                         </div>
-                    }
-                    else
-                    {
-                        <a asp-controller="Auth" asp-action="DangNhap" class="btn btn-login-custom btn-ripple rounded-pill px-4"
-                           id="btnLogin">
-                            <i class="fa-solid fa-user me-1"></i> Đăng nhập
+                    </div>
+                }
+                else
+                {
+                    <div class="d-none d-sm-flex gap-2">
+                        <a asp-controller="Auth" asp-action="DangNhap" class="btn-login-outline">
+                            <i class="bi bi-box-arrow-in-right me-1"></i> Đăng nhập
                         </a>
-                        <a asp-controller="Auth" asp-action="DangKy" class="btn btn-create-ticket-custom btn-ripple px-4"
-                           id="btnCreateTicket">
-                            <i class="bi bi-person-plus-fill me-1"></i> Đăng ký
-                        </a>
-                    }
-                </div>
-            </nav>
+                    </div>
+                }
 
-            <!-- Hamburger Button (Tablet & Mobile <1200px) -->
-            <button class="navbar-hamburger d-xl-none" type="button" id="menuToggle" aria-label="Toggle navigation">
-                <div class="hamburger">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </div>
-            </button>
+                <!-- Hamburger Toggle Button (<992px) -->
+                <button type="button" class="hamburger-toggle-btn d-lg-none" id="mobileDrawerTrigger" aria-label="Toggle Navigation">
+                    <span class="hamburger-bar"></span>
+                    <span class="hamburger-bar"></span>
+                    <span class="hamburger-bar"></span>
+                </button>
+            </div>
+
         </div>
     </header>
+
+    <!-- ==========================================
+       3. FRONTEND SEARCH MODAL POPUP
+       ========================================== -->
+    <div class="search-modal-overlay" id="searchModalOverlay" aria-hidden="true">
+        <div class="search-modal-box" id="searchModalBox">
+            <div class="search-modal-header">
+                <div class="search-input-wrapper">
+                    <i class="bi bi-search search-input-icon"></i>
+                    <input type="text" id="searchInputField" class="search-modal-input" placeholder="Bạn cần hỗ trợ điều gì? (Ví dụ: báo hỏng wifi, tra cứu ticket...)" autocomplete="off">
+                    <button type="button" class="search-clear-btn" id="searchClearBtn" style="display:none;" aria-label="Xóa từ khóa"><i class="bi bi-x-circle-fill"></i></button>
+                </div>
+                <button type="button" class="search-modal-close" id="searchModalCloseBtn" aria-label="Đóng popup"><i class="bi bi-x-lg"></i></button>
+            </div>
+            <div class="search-modal-body">
+                <div class="search-suggestions">
+                    <span class="suggestions-label">Gợi ý tìm kiếm nhanh:</span>
+                    <div class="suggestions-tags">
+                        <a href="#" class="search-tag-chip" data-query="Tạo phiếu">Tạo phiếu hỗ trợ</a>
+                        <a href="#" class="search-tag-chip" data-query="Tra cứu">Tra cứu phiếu</a>
+                        <a href="#" class="search-tag-chip" data-query="Chat">Chat kỹ thuật</a>
+                        <a href="#" class="search-tag-chip" data-query="Internet">Báo hỏng Wifi</a>
+                        <a href="#" class="search-tag-chip" data-query="Lịch hẹn">Đặt lịch hẹn</a>
+                    </div>
+                </div>
+                <div class="search-results-list" id="searchResultsContainer">
+                    <!-- Dynamic Live Search results via JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+       4. MOBILE SLIDE-IN DRAWER
+       ========================================== -->
+    <div class="mobile-drawer-backdrop" id="drawerBackdrop"></div>
+    <aside class="mobile-drawer" id="mobileDrawer" aria-label="Menu di động">
+        <div class="drawer-header">
+            <div class="drawer-brand">
+                <i class="fa-solid fa-cpu brand-icon-red"></i>
+                <span class="drawer-brand-title">TechSupport</span>
+            </div>
+            <button type="button" class="drawer-close-btn" id="drawerCloseBtn" aria-label="Đóng menu"><i class="bi bi-x-lg"></i></button>
+        </div>
+        <div class="drawer-body">
+            @if (isAuthenticated)
+            {
+                <div class="drawer-user-card">
+                    <div class="drawer-avatar">
+                        <i class="bi bi-person-fill"></i>
+                    </div>
+                    <div class="drawer-user-info">
+                        <span class="drawer-user-name">@hoTen</span>
+                        <span class="drawer-user-status"><i class="bi bi-check-circle-fill text-danger me-1"></i>Khách hàng Viettel</span>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="drawer-auth-buttons">
+                    <a asp-controller="Auth" asp-action="DangNhap" class="btn-drawer-login"><i class="bi bi-box-arrow-in-right me-1"></i> Đăng nhập</a>
+                    <a asp-controller="Auth" asp-action="DangKy" class="btn-drawer-register"><i class="bi bi-person-plus-fill me-1"></i> Đăng ký</a>
+                </div>
+            }
+
+            <ul class="drawer-menu-list">
+                <li>
+                    <a class="drawer-menu-link @(isHomeActive ? "active" : "")" asp-controller="Customers" asp-action="TrangChu">
+                        <span class="drawer-icon-box"><i class="bi bi-house-door"></i></span>
+                        <span>Trang chủ</span>
+                    </a>
+                </li>
+                <!-- 2. Hỗ trợ (Accordion Dropdown) -->
+                <li class="drawer-accordion-item">
+                    <button type="button" class="drawer-accordion-btn @(isTicketActive ? "open" : "")" id="drawerSupportToggle">
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="drawer-icon-box bg-red-soft"></span>
+                            <span>Hỗ trợ</span>
+                        </div>
+                        <i class="bi bi-chevron-down accordion-arrow"></i>
+                    </button>
+                    <div class="drawer-submenu-wrapper @(isTicketActive ? "show" : "")" id="drawerSupportSubmenu">
+                        <ul class="drawer-submenu-list">
+                            <li>
+                                <a class="drawer-sub-link" asp-controller="Ticket" asp-action="ChonDMDichVu">
+                                    <span class="drawer-sub-icon bg-red-soft"><i class="bi bi-plus-circle"></i></span>
+                                    <div class="drawer-sub-text">
+                                        <span class="drawer-sub-title">Tạo phiếu hỗ trợ</span>
+                                        <span class="drawer-sub-desc">Gửi yêu cầu báo hỏng & hỗ trợ</span>
+                                    </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="drawer-sub-link" asp-controller="Ticket" asp-action="TraCuuPhieu">
+                                    <span class="drawer-sub-icon bg-blue-soft"><i class="bi bi-search"></i></span>
+                                    <div class="drawer-sub-text">
+                                        <span class="drawer-sub-title">Tra cứu phiếu</span>
+                                        <span class="drawer-sub-desc">Theo dõi tiến độ & lịch sử</span>
+                                    </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="drawer-sub-link" asp-controller="Ticket" asp-action="TaoLichHen">
+                                    <span class="drawer-sub-icon bg-orange-soft"><i class="bi bi-calendar-check"></i></span>
+                                    <div class="drawer-sub-text">
+                                        <span class="drawer-sub-title">Tạo lịch hẹn</span>
+                                        <span class="drawer-sub-desc">Đặt lịch hẹn KTV đến hỗ trợ</span>
+                                    </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="drawer-sub-link" asp-controller="Ticket" asp-action="TrangDanhGia">
+                                    <span class="drawer-sub-icon bg-purple-soft"><i class="bi bi-star-fill"></i></span>
+                                    <div class="drawer-sub-text">
+                                        <span class="drawer-sub-title">Đánh giá dịch vụ</span>
+                                        <span class="drawer-sub-desc">Nhận xét & chấm điểm chất lượng</span>
+                                    </div>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+
+                <!-- 3. Liên hệ -->
+                <li>
+                    <a class="drawer-menu-link @(isContactActive ? "active" : "")" asp-controller="Home" asp-action="LienHe">
+                        <span class="drawer-icon-box"><i class="bi bi-telephone"></i></span>
+                        <span>Liên hệ</span>
+                    </a>
+                </li>
+                <li class="drawer-accordion-item">
+                    <button type="button" class="drawer-accordion-btn" id="drawerInfoToggle">
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="drawer-icon-box bg-red-soft"></span>
+                            <span>Thông tin hỗ trợ</span>
+                        </div>
+                        <i class="bi bi-chevron-down accordion-arrow"></i>
+                    </button>
+                    <div class="drawer-submenu-wrapper" id="drawerInfoSubmenu">
+                        <ul class="drawer-submenu-list">
+                            <li>
+                                <a class="drawer-sub-link" asp-controller="Home" asp-action="GioiThieu">
+                                    <span class="drawer-sub-icon bg-red-soft"><i class="bi bi-building"></i></span>
+                                    <div class="drawer-sub-text">
+                                        <span class="drawer-sub-title">Giới thiệu </span>
+                                        <span class="drawer-sub-desc">Về TechSupport Viettel</span>
+                                    </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="drawer-sub-link" asp-controller="Home" asp-action="TinTuc">
+                                    <span class="drawer-sub-icon bg-blue-soft"><i class="bi bi-newspaper"></i></span>
+                                    <div class="drawer-sub-text">
+                                        <span class="drawer-sub-title">Tin tức </span>
+                                        <span class="drawer-sub-desc">Cập nhật tin tức & sự kiện</span>
+                                    </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="drawer-sub-link" asp-controller="Home" asp-action="HuongDan">
+                                    <span class="drawer-sub-icon bg-orange-soft"><i class="bi bi-book-half"></i></span>
+                                    <div class="drawer-sub-text">
+                                        <span class="drawer-sub-title">Hướng dẫn </span>
+                                        <span class="drawer-sub-desc">Quy trình sử dụng & tạo ticket</span>
+                                    </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="drawer-sub-link" asp-controller="Home" asp-action="FAQ">
+                                    <span class="drawer-sub-icon bg-purple-soft"><i class="bi bi-patch-question-fill"></i></span>
+                                    <div class="drawer-sub-text">
+                                        <span class="drawer-sub-title">FAQ </span>
+                                        <span class="drawer-sub-desc">Giải đáp thắc mắc</span>
+                                    </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="drawer-sub-link" asp-controller="Home" asp-action="DieuKhoanSuDung">
+                                    <span class="drawer-sub-icon bg-green-soft"><i class="bi bi-shield-check"></i></span>
+                                    <div class="drawer-sub-text">
+                                        <span class="drawer-sub-title">Điều khoản </span>
+                                        <span class="drawer-sub-desc">Quy định & chính sách</span>
+                                    </div>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+
+            @if (isAuthenticated)
+            {
+                <div class="drawer-section-title">TÀI KHOẢN CỦA TÔI</div>
+                <ul class="drawer-menu-list">
+                    <li><a class="drawer-menu-link" asp-controller="Customers" asp-action="ThongTinCaNhan"><i class="bi bi-person me-2"></i> Thông tin cá nhân</a></li>
+                    <li><a class="drawer-menu-link" asp-controller="LichHen" asp-action="TaoYeuCau"><i class="bi bi-calendar-event me-2"></i> Đặt lịch hẹn hỗ trợ</a></li>
+                    <li><a class="drawer-menu-link" asp-controller="Customers" asp-action="PhieuCuaToi"><i class="bi bi-ticket-perforated me-2"></i> Phiếu của tôi</a></li>
+                    <li><a class="drawer-menu-link" asp-controller="Customers" asp-action="ChatTrucTuyen"><i class="bi bi-chat-dots-fill me-2"></i> Chat trực tuyến</a></li>
+@*                     <li><a class="drawer-menu-link text-danger" asp-controller="Auth" asp-action="DangXuat"><i class="bi bi-box-arrow-right me-2"></i> Đăng xuất</a></li>
+ *@                </ul>
+            }
+
+            <div class="drawer-cta-wrapper mt-4">
+                @if (isAuthenticated)
+                {
+                    <a asp-controller="Auth" asp-action="DangXuat" class="btn-create-ticket-red w-100 justify-content-center">
+                        <i class="bi bi-box-arrow-right me-1"></i> Đăng xuất
+                    </a>
+                }
+                else
+                {
+                    <a asp-controller="Auth" asp-action="DangKy" class="btn-create-ticket-red w-100 justify-content-center">
+                        <i class="bi bi-person-plus-fill me-1"></i> Đăng ký
+                    </a>
+                }
+            </div>
+        </div>
+    </aside>
+
 </div>

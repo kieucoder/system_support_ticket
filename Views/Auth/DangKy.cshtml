@@ -193,11 +193,11 @@
                                         <label class="form-label fw-semibold" asp-for="MatKhau">Mật khẩu <span class="text-danger">*</span></label>
                                         <div class="input-group">
                                             <span class="input-group-text bg-light border-end-0">
-                                                <i class="bi bi-lock-fill text-danger"></i>
+                                                <i class="fa-solid fa-lock text-danger"></i>
                                             </span>
-                                            <input asp-for="MatKhau" type="password" id="password" class="form-control border-start-0" placeholder="••••••••" autocomplete="new-password" required>
-                                            <button class="btn btn-outline-secondary border-start-0 toggle-password" type="button" data-target="password">
-                                                <i class="bi bi-eye-slash"></i>
+                                            <input asp-for="MatKhau" type="password" id="password" class="form-control border-start-0 border-end-0" placeholder="••••••••" autocomplete="new-password" required>
+                                            <button class="btn btn-outline-secondary toggle-password" type="button" data-target="password" title="Hiển thị/Ẩn mật khẩu">
+                                                <i class="fa-solid fa-eye-slash text-secondary"></i>
                                             </button>
                                         </div>
                                         <span asp-validation-for="MatKhau" class="text-danger small"></span>
@@ -208,11 +208,11 @@
                                         <label class="form-label fw-semibold" asp-for="XacNhanMatKhau">Xác nhận mật khẩu <span class="text-danger">*</span></label>
                                         <div class="input-group">
                                             <span class="input-group-text bg-light border-end-0">
-                                                <i class="bi bi-lock-fill text-danger"></i>
+                                                <i class="fa-solid fa-lock text-danger"></i>
                                             </span>
-                                            <input asp-for="XacNhanMatKhau" type="password" id="confirmPassword" class="form-control border-start-0" placeholder="••••••••" autocomplete="new-password" required>
-                                            <button class="btn btn-outline-secondary border-start-0 toggle-password" type="button" data-target="confirmPassword">
-                                                <i class="bi bi-eye-slash"></i>
+                                            <input asp-for="XacNhanMatKhau" type="password" id="confirmPassword" class="form-control border-start-0 border-end-0" placeholder="••••••••" autocomplete="new-password" required>
+                                            <button class="btn btn-outline-secondary toggle-password" type="button" data-target="confirmPassword" title="Hiển thị/Ẩn mật khẩu">
+                                                <i class="fa-solid fa-eye-slash text-secondary"></i>
                                             </button>
                                         </div>
                                         <span asp-validation-for="XacNhanMatKhau" class="text-danger small"></span>

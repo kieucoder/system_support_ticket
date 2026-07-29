@@ -13,7 +13,7 @@
 <nav aria-label="breadcrumb" class="mb-4">
     <ol class="breadcrumb" style="font-size: 0.82rem; margin: 0; padding: 0;">
         <li class="breadcrumb-item">
-            <a href="/Staff/Dashboard" class="text-danger text-decoration-none">
+            <a asp-controller="Staff" asp-action="Dashboard" class="text-danger text-decoration-none">
                 <i class="fa-solid fa-gauge-high me-1"></i>Dashboard
             </a>
         </li>
@@ -21,19 +21,15 @@
     </ol>
 </nav>
 
-<!-- Hero Section -->
-<div class="row align-items-center mb-4 g-3">
-    <div class="col-12 col-md-8">
-        <h1 class="h3 fw-bold mb-1" style="color: var(--vt-dark-blue);">Quản lý dịch vụ hỗ trợ</h1>
-        <p class="text-muted mb-0" style="font-size: 0.9rem;">
-            Quản lý danh sách các dịch vụ hỗ trợ kỹ thuật thuộc từng danh mục sự cố.
-        </p>
+<!-- Header Section -->
+<div class="vt-header-container">
+    <div class="vt-header-left">
+        <h1>Quản lý dịch vụ hỗ trợ</h1>
+        <p>Quản lý danh sách các dịch vụ hỗ trợ kỹ thuật thuộc từng danh mục sự cố</p>
     </div>
-    <div class="col-12 col-md-4 text-md-end">
-        <button class="btn btn-danger" onclick="openAddModal()">
-            <i class="fa-solid fa-plus"></i> Thêm dịch vụ
-        </button>
-    </div>
+    <button id="btnOpenAdd" class="vt-btn-add" data-bs-toggle="modal" data-bs-target="#addServiceModal" onclick="openAddModal()">
+        <i class="fa-solid fa-plus"></i> Thêm dịch vụ
+    </button>
 </div>
 
 <!-- KPI Cards Dashboard -->
@@ -120,41 +116,10 @@
 @await Html.PartialAsync("_SuaDichVu", new SupportTicketSysterm.Data.DichVu())
 
 <!-- 3. VIEW SERVICE DETAIL DIALOG MODAL -->
-<div class="modal fade" id="viewServiceModal" tabindex="-1" aria-labelledby="viewServiceModalLabel" aria-hidden="true"></div>
+<div id="viewModalContainer"></div>
 
 <!-- 4. DELETE CONFIRMATION DIALOG MODAL -->
-<div class="modal fade" id="deleteServiceModal" tabindex="-1" aria-labelledby="deleteServiceModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-sm" style="max-width: 420px;">
-        <div class="modal-content border-0">
-            <div class="modal-header">
-                <div class="vt-modal-header-title">
-                    <div class="vt-modal-header-icon delete">
-                        <i class="bi bi-triangle-exclamation"></i>
-                    </div>
-                    <div class="vt-modal-header-text">
-                        <h3 id="deleteServiceModalLabel">Xác Nhận Xóa</h3>
-                        <p>Hành động này không thể hoàn tác</p>
-                    </div>
-                </div>
-                <button type="button" class="vt-modal-close" data-bs-dismiss="modal" aria-label="Đóng">
-                    <i class="fa-solid fa-times"></i>
-                </button>
-            </div>
-            <div class="modal-body p-4 text-center">
-                <div class="text-danger mb-3" style="font-size: 3rem;">
-                    <i class="fa-solid fa-circle-exclamation"></i>
-                </div>
-                <p class="text-dark-emphasis mb-0" id="deleteConfirmText" style="font-size: 0.95rem; line-height: 1.5;">
-                    Bạn có chắc chắn muốn xóa dịch vụ kỹ thuật này không?
-                </p>
-            </div>
-            <div class="modal-footer justify-content-center pb-4">
-                <button type="button" class="vt-btn cancel" data-bs-dismiss="modal">Hủy bỏ</button>
-                <button type="button" class="vt-btn danger" onclick="confirmDeleteService()"><i class="fa-solid fa-trash me-1"></i> Xóa</button>
-            </div>
-        </div>
-    </div>
-</div>
+@await Html.PartialAsync("_XoaDichVu", new SupportTicketSysterm.Data.DichVu())
 
 @section Scripts {
     <!-- Share category collection with script for lookup mappings -->

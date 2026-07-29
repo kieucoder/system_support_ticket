@@ -1,0 +1,739 @@
+/* ================================================================
+   THONG KE BAO CAO — Viettel Digital Dashboard Style
+   Primary: #D71920 | Dark: #1a1a2e | Card radius: 18px
+   ================================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+:root {
+    --vt-red:         #D71920;
+    --vt-red-light:   #ff4d57;
+    --vt-red-subtle:  rgba(215, 25, 32, 0.08);
+    --vt-dark:        #1a1a2e;
+    --vt-dark-blue:   #16213e;
+    --vt-navy:        #0f3460;
+    --vt-radius:      18px;
+    --vt-radius-sm:   10px;
+    --vt-shadow:      0 4px 24px rgba(0,0,0,0.08);
+    --vt-shadow-hover:0 8px 32px rgba(215,25,32,0.15);
+    --text-main:      #1a1a2e;
+    --text-muted:     #6c757d;
+    --bg-page:        #f4f6fb;
+    --bg-card:        #ffffff;
+    --border-color:   rgba(0,0,0,0.06);
+    --transition:     all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+[data-bs-theme="dark"] {
+    --text-main:   #e8eaf6;
+    --text-muted:  #9fa8da;
+    --bg-page:     #111827;
+    --bg-card:     #1e293b;
+    --border-color:rgba(255,255,255,0.07);
+}
+
+/* ================================================================
+   PAGE WRAPPER
+   ================================================================ */
+.tk-page {
+    background: var(--bg-page);
+    min-height: 100vh;
+    font-family: 'Inter', sans-serif;
+}
+
+/* ================================================================
+   FILTER BAR
+   ================================================================ */
+.tk-filter-card {
+    background: var(--bg-card);
+    border-radius: var(--vt-radius);
+    box-shadow: var(--vt-shadow);
+    border: 1px solid var(--border-color);
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+}
+
+.tk-filter-header {
+    background: linear-gradient(135deg, var(--vt-red) 0%, #a01218 100%);
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.9rem;
+    letter-spacing: 0.3px;
+}
+
+.tk-filter-body {
+    padding: 1.25rem 1.5rem;
+}
+
+.tk-filter-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    margin-bottom: 0.35rem;
+    display: block;
+}
+
+.tk-filter-body .form-control,
+.tk-filter-body .form-select {
+    border-radius: var(--vt-radius-sm);
+    border-color: var(--border-color);
+    font-size: 0.875rem;
+    background: var(--bg-page);
+    color: var(--text-main);
+    transition: var(--transition);
+}
+
+.tk-filter-body .form-control:focus,
+.tk-filter-body .form-select:focus {
+    border-color: var(--vt-red);
+    box-shadow: 0 0 0 3px rgba(215,25,32,0.12);
+}
+
+.btn-tk-primary {
+    background: linear-gradient(135deg, var(--vt-red), #a01218);
+    border: none;
+    color: #fff;
+    font-weight: 700;
+    border-radius: var(--vt-radius-sm);
+    padding: 0.55rem 1.5rem;
+    font-size: 0.875rem;
+    transition: var(--transition);
+    box-shadow: 0 4px 12px rgba(215,25,32,0.3);
+}
+
+.btn-tk-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(215,25,32,0.4);
+    color: #fff;
+}
+
+.btn-tk-secondary {
+    border-radius: var(--vt-radius-sm);
+    font-weight: 600;
+    font-size: 0.875rem;
+    padding: 0.55rem 1.25rem;
+    transition: var(--transition);
+}
+
+/* ================================================================
+   KPI CARDS
+   ================================================================ */
+.tk-kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.tk-kpi-card {
+    background: var(--bg-card);
+    border-radius: var(--vt-radius);
+    box-shadow: var(--vt-shadow);
+    border: 1px solid var(--border-color);
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: var(--transition);
+    cursor: default;
+    position: relative;
+    overflow: hidden;
+}
+
+.tk-kpi-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 4px;
+    height: 100%;
+    border-radius: 4px 0 0 4px;
+    background: var(--kpi-accent, var(--vt-red));
+    opacity: 0;
+    transition: var(--transition);
+}
+
+.tk-kpi-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--vt-shadow-hover);
+}
+
+.tk-kpi-card:hover::before {
+    opacity: 1;
+}
+
+.tk-kpi-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    flex-shrink: 0;
+    transition: var(--transition);
+}
+
+.tk-kpi-card:hover .tk-kpi-icon {
+    transform: scale(1.1) rotate(-5deg);
+}
+
+.tk-kpi-body {
+    flex: 1;
+    min-width: 0;
+}
+
+.tk-kpi-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--text-muted);
+    margin-bottom: 0.2rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.tk-kpi-value {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--text-main);
+    line-height: 1.1;
+    letter-spacing: -0.5px;
+}
+
+.tk-kpi-trend {
+    font-size: 0.7rem;
+    font-weight: 600;
+    margin-top: 0.2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
+}
+
+.tk-trend-up   { color: #16a34a; }
+.tk-trend-down { color: #dc2626; }
+.tk-trend-flat { color: var(--text-muted); }
+
+/* KPI accent variants */
+.tk-kpi-red    { --kpi-accent: #D71920; }
+.tk-kpi-orange { --kpi-accent: #f97316; }
+.tk-kpi-blue   { --kpi-accent: #3b82f6; }
+.tk-kpi-green  { --kpi-accent: #22c55e; }
+.tk-kpi-gray   { --kpi-accent: #94a3b8; }
+.tk-kpi-purple { --kpi-accent: #a855f7; }
+.tk-kpi-teal   { --kpi-accent: #14b8a6; }
+.tk-kpi-indigo { --kpi-accent: #6366f1; }
+.tk-kpi-amber  { --kpi-accent: #f59e0b; }
+.tk-kpi-pink   { --kpi-accent: #ec4899; }
+
+.tk-icon-red    { background: rgba(215,25,32,0.1);  color: #D71920; }
+.tk-icon-orange { background: rgba(249,115,22,0.1); color: #f97316; }
+.tk-icon-blue   { background: rgba(59,130,246,0.1); color: #3b82f6; }
+.tk-icon-green  { background: rgba(34,197,94,0.1);  color: #22c55e; }
+.tk-icon-gray   { background: rgba(148,163,184,0.1);color: #64748b; }
+.tk-icon-purple { background: rgba(168,85,247,0.1); color: #a855f7; }
+.tk-icon-teal   { background: rgba(20,184,166,0.1); color: #14b8a6; }
+.tk-icon-indigo { background: rgba(99,102,241,0.1); color: #6366f1; }
+.tk-icon-amber  { background: rgba(245,158,11,0.1); color: #f59e0b; }
+.tk-icon-pink   { background: rgba(236,72,153,0.1); color: #ec4899; }
+
+/* Rating special */
+.tk-kpi-rating {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: #f59e0b;
+    line-height: 1.1;
+}
+.tk-stars {
+    display: flex;
+    gap: 2px;
+    margin-top: 3px;
+}
+.tk-stars i {
+    font-size: 0.7rem;
+    color: #f59e0b;
+}
+.tk-stars i.empty {
+    color: #d1d5db;
+}
+
+/* ================================================================
+   SECTION HEADINGS
+   ================================================================ */
+.tk-section-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.tk-section-title::before {
+    content: '';
+    width: 4px;
+    height: 20px;
+    background: linear-gradient(180deg, var(--vt-red), #a01218);
+    border-radius: 4px;
+    flex-shrink: 0;
+}
+
+/* ================================================================
+   CHART CARDS
+   ================================================================ */
+.tk-chart-card {
+    background: var(--bg-card);
+    border-radius: var(--vt-radius);
+    box-shadow: var(--vt-shadow);
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+    height: 100%;
+    transition: var(--transition);
+}
+
+.tk-chart-card:hover {
+    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+}
+
+.tk-chart-header {
+    padding: 1rem 1.25rem 0.5rem;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+
+.tk-chart-header h6 {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.tk-chart-header h6 i {
+    color: var(--vt-red);
+}
+
+.tk-chart-body {
+    padding: 1rem 1.25rem 1.25rem;
+    position: relative;
+}
+
+.tk-chart-wrapper {
+    position: relative;
+    width: 100%;
+    height: 260px;
+}
+
+/* ================================================================
+   EXPORT BUTTONS
+   ================================================================ */
+.tk-export-bar {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.btn-export {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 0.45rem 1rem;
+    border-radius: var(--vt-radius-sm);
+    border: none;
+    transition: var(--transition);
+    cursor: pointer;
+}
+
+.btn-export-excel {
+    background: linear-gradient(135deg, #16a34a, #15803d);
+    color: #fff;
+    box-shadow: 0 3px 10px rgba(22,163,74,0.25);
+}
+.btn-export-excel:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 16px rgba(22,163,74,0.35);
+    color: #fff;
+}
+
+.btn-export-pdf {
+    background: linear-gradient(135deg, var(--vt-red), #a01218);
+    color: #fff;
+    box-shadow: 0 3px 10px rgba(215,25,32,0.25);
+}
+.btn-export-pdf:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 16px rgba(215,25,32,0.35);
+    color: #fff;
+}
+
+.btn-export-print {
+    background: linear-gradient(135deg, #475569, #334155);
+    color: #fff;
+    box-shadow: 0 3px 10px rgba(71,85,105,0.25);
+}
+.btn-export-print:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 16px rgba(71,85,105,0.35);
+    color: #fff;
+}
+
+/* ================================================================
+   TABLES
+   ================================================================ */
+.tk-table-card {
+    background: var(--bg-card);
+    border-radius: var(--vt-radius);
+    box-shadow: var(--vt-shadow);
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+}
+
+.tk-table-header {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.tk-table-title {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.tk-table-title i { color: var(--vt-red); }
+
+.tk-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+}
+
+.tk-table thead th {
+    padding: 0.75rem 1rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    background: var(--bg-page);
+    border-bottom: 1px solid var(--border-color);
+    white-space: nowrap;
+}
+
+.tk-table tbody td {
+    padding: 0.875rem 1rem;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-main);
+    vertical-align: middle;
+}
+
+.tk-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.tk-table tbody tr {
+    transition: var(--transition);
+}
+
+.tk-table tbody tr:hover {
+    background: var(--vt-red-subtle);
+}
+
+/* Avatar */
+.tk-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--border-color);
+    flex-shrink: 0;
+}
+
+.tk-avatar-placeholder {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--vt-red), #a01218);
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+/* Rank badge */
+.tk-rank {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 800;
+}
+.tk-rank-1 { background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff; }
+.tk-rank-2 { background: linear-gradient(135deg, #94a3b8, #64748b); color: #fff; }
+.tk-rank-3 { background: linear-gradient(135deg, #f97316, #c2410c); color: #fff; }
+.tk-rank-n { background: var(--bg-page); color: var(--text-muted); }
+
+/* Progress bar */
+.tk-progress {
+    height: 6px;
+    border-radius: 999px;
+    background: var(--bg-page);
+    overflow: hidden;
+    margin-top: 4px;
+}
+.tk-progress-bar {
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--vt-red), var(--vt-red-light));
+    transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ================================================================
+   RATING SECTION
+   ================================================================ */
+.tk-rating-card {
+    background: var(--bg-card);
+    border-radius: var(--vt-radius);
+    box-shadow: var(--vt-shadow);
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+}
+
+.tk-rating-score {
+    font-size: 3.5rem;
+    font-weight: 900;
+    color: #f59e0b;
+    line-height: 1;
+    letter-spacing: -2px;
+}
+
+.tk-rating-stars {
+    display: flex;
+    gap: 4px;
+    font-size: 1.1rem;
+    margin: 0.3rem 0;
+}
+
+.tk-rating-bar-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+}
+
+.tk-rating-bar-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    white-space: nowrap;
+    width: 36px;
+    text-align: right;
+}
+
+.tk-rating-bar-wrap {
+    flex: 1;
+    height: 8px;
+    background: var(--bg-page);
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.tk-rating-bar-fill {
+    height: 100%;
+    border-radius: 999px;
+    transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.tk-rating-bar-count {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    width: 28px;
+    text-align: right;
+}
+
+/* ================================================================
+   APPOINTMENT CARDS
+   ================================================================ */
+.tk-appt-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 1rem;
+}
+
+.tk-appt-card {
+    background: var(--bg-card);
+    border-radius: var(--vt-radius);
+    box-shadow: var(--vt-shadow);
+    border: 1px solid var(--border-color);
+    padding: 1.25rem;
+    text-align: center;
+    transition: var(--transition);
+}
+
+.tk-appt-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--vt-shadow-hover);
+}
+
+.tk-appt-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    margin: 0 auto 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+}
+
+.tk-appt-value {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: var(--text-main);
+    line-height: 1;
+}
+
+.tk-appt-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    margin-top: 0.3rem;
+}
+
+/* ================================================================
+   PAGE HEADER
+   ================================================================ */
+.tk-page-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.tk-page-title {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--text-main);
+    margin: 0;
+    letter-spacing: -0.5px;
+}
+
+.tk-page-subtitle {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin: 0.2rem 0 0;
+}
+
+/* ================================================================
+   LOADING OVERLAY
+   ================================================================ */
+.tk-loading {
+    position: fixed;
+    inset: 0;
+    background: rgba(255,255,255,0.75);
+    backdrop-filter: blur(4px);
+    z-index: 9999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.tk-loading.show { display: flex; }
+
+.tk-spinner {
+    width: 48px;
+    height: 48px;
+    border: 4px solid rgba(215,25,32,0.2);
+    border-top-color: var(--vt-red);
+    border-radius: 50%;
+    animation: tkSpin 0.8s linear infinite;
+}
+
+@keyframes tkSpin {
+    to { transform: rotate(360deg); }
+}
+
+/* ================================================================
+   COUNTER ANIMATION
+   ================================================================ */
+.tk-counter {
+    display: inline-block;
+}
+
+/* ================================================================
+   RESPONSIVE
+   ================================================================ */
+@media (max-width: 991.98px) {
+    .tk-kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 575.98px) {
+    .tk-kpi-grid {
+        grid-template-columns: 1fr;
+    }
+    .tk-kpi-value {
+        font-size: 1.5rem;
+    }
+    .tk-page-title {
+        font-size: 1.2rem;
+    }
+    .tk-appt-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* ================================================================
+   PRINT STYLES
+   ================================================================ */
+@media print {
+    .tk-filter-card,
+    .tk-export-bar,
+    .admin-sidebar,
+    .admin-topbar,
+    #sidebarMount { display: none !important; }
+
+    body, .admin-content { padding: 0 !important; margin: 0 !important; }
+    .tk-chart-card, .tk-table-card, .tk-kpi-card {
+        break-inside: avoid;
+        box-shadow: none !important;
+        border: 1px solid #ddd !important;
+    }
+}

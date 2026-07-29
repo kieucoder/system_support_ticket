@@ -57,76 +57,172 @@ namespace SupportTicketSysterm.Controllers
         public async Task<IActionResult> GuiOTP([FromForm] DangKyViewModel model)
         {
             NormalizeRegistrationModel(model);
-            await _otpService.DeleteExpiredOtpAsync();
 
             ModelState.Remove(nameof(DangKyViewModel.OTP));
             ModelState.Remove(nameof(DangKyViewModel.TenDangNhap));
             
-            // Server side validation
+            // Server side validation (Bước 1: Kiểm tra Email, Tên đăng nhập, Số điện thoại)
             if (!await ValidateRegistrationModelServerSideAsync(model))
             {
                 return BuildRegistrationValidationResponse(model);
             }
 
-            // Check hourly OTP request limit
-            if (await _otpService.IsHourlyLimitExceededAsync(model.Email.Trim()))
-            {
-                return BuildOtpErrorResponse(model, "Bạn đã vượt quá giới hạn gửi OTP (tối đa 5 lần một giờ). Vui lòng thử lại sau.");
-            }
+            // =====================================================
+            // BƯỚC 2: Tạo KhachHang (TrangThai = "Chờ xác thực")
+            // =====================================================
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            int idKhachHang;
+            string passwordHash = BCrypt.Net.BCrypt.HashPassword(model.MatKhau);
 
-            // Check resend cooldown
-            var (allowed, remainingSeconds) = await _otpService.CanResendOtpAsync(model.Email.Trim(), 60);
-            if (!allowed)
-            {
-                return BuildOtpErrorResponse(model, $"Vui lòng chờ {remainingSeconds} giây trước khi gửi lại OTP.");
-            }
-
-            // Generate & Save OTP
-            var otp = await _otpService.GenerateOtpAsync();
-            var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
-            var saved = await _otpService.SaveOtpAsync(model.Email.Trim(), otp, ipAddress);
-            if (!saved)
-            {
-                _logger.LogError("Không thể lưu OTP cho email {Email}", model.Email);
-                return BuildOtpErrorResponse(model, "Không thể khởi tạo mã OTP. Vui lòng thử lại.");
-            }
-
-            // Send Email OTP
             try
             {
-                await _emailService.SendOtpEmailAsync(model.Email.Trim(), model.HoTen.Trim(), otp);
+                // Kiểm tra lại lần cuối trước khi tạo (bên trong transaction để tránh race condition)
+                var existingEmail = await _context.KhachHangs
+                    .Where(x => x.Email == model.Email.Trim())
+                    .Select(x => new { x.IdKhachHang, x.TrangThai })
+                    .FirstOrDefaultAsync();
+
+                if (existingEmail != null)
+                {
+                    await transaction.RollbackAsync();
+                    
+                    // Nếu email đã tồn tại ở trạng thái "Chờ xác thực", cho phép gửi lại OTP cho tài khoản cũ
+                    if (existingEmail.TrangThai == "Chờ xác thực")
+                    {
+                        _logger.LogInformation("Email {Email} đã có tài khoản chờ xác thực (ID={IdKhachHang}). Cho phép gửi lại OTP.", 
+                            model.Email, existingEmail.IdKhachHang);
+                        
+                        // Gửi lại OTP cho tài khoản đang chờ xác thực
+                        return await GuiLaiOtpChoTaiKhoanCho(model, existingEmail.IdKhachHang);
+                    }
+                    
+                    return BuildOtpErrorResponse(model, "Email này đã được đăng ký.");
+                }
+
+                var existingSoDienThoai = await _context.KhachHangs
+                    .Where(x => x.SoDienThoai == model.SoDienThoai.Trim())
+                    .Select(x => new { x.IdKhachHang, x.TrangThai })
+                    .FirstOrDefaultAsync();
+
+                if (existingSoDienThoai != null)
+                {
+                    await transaction.RollbackAsync();
+                    
+                    // Nếu SĐT đã tồn tại ở trạng thái "Chờ xác thực"
+                    if (existingSoDienThoai.TrangThai == "Chờ xác thực")
+                    {
+                        return BuildOtpErrorResponse(model, "Số điện thoại này đã có tài khoản đang chờ xác thực. Vui lòng kiểm tra email để nhận mã OTP.");
+                    }
+                    
+                    return BuildOtpErrorResponse(model, "Số điện thoại này đã được đăng ký.");
+                }
+
+                var khachHang = new KhachHang
+                {
+                    MaKh = await TaoMaKhachHangAsync(),
+                    HoTen = model.HoTen.Trim(),
+                    SoDienThoai = model.SoDienThoai.Trim(),
+                    Email = model.Email.Trim(),
+                    DiaChi = string.IsNullOrWhiteSpace(model.DiaChi) ? null : model.DiaChi.Trim(),
+                    NgaySinh = model.NgaySinh.HasValue ? DateOnly.FromDateTime(model.NgaySinh.Value) : null,
+                    MatKhau = passwordHash,
+                    TrangThai = "Chờ xác thực",   // Chưa kích hoạt – chờ xác nhận OTP
+                    NgayTao = DateOnly.FromDateTime(DateTime.Now),
+                    TenDangNhap = model.TenDangNhap // Gán thuộc tính TenDangNhap tạm thời
+                };
+
+                _context.KhachHangs.Add(khachHang);
+                await _context.SaveChangesAsync();
+                idKhachHang = khachHang.IdKhachHang;  // Lấy ID sau khi SaveChanges
+
+                // Kiểm tra giới hạn gửi OTP theo IdKhachHang
+                if (await _otpService.IsHourlyLimitExceededAsync(idKhachHang))
+                {
+                    await transaction.RollbackAsync();
+                    return BuildOtpErrorResponse(model, "Bạn đã vượt quá giới hạn gửi OTP (tối đa 5 lần một giờ). Vui lòng thử lại sau.");
+                }
+
+                // Kiểm tra cooldown theo IdKhachHang
+                var (allowed, remainingSeconds) = await _otpService.CanResendOtpAsync(idKhachHang, 60);
+                if (!allowed)
+                {
+                    await transaction.RollbackAsync();
+                    return BuildOtpErrorResponse(model, $"Vui lòng chờ {remainingSeconds} giây trước khi gửi lại OTP.");
+                }
+
+                // BƯỚC 3: Sinh mã OTP ngẫu nhiên
+                var otp = await _otpService.GenerateOtpAsync();
+
+                // BƯỚC 4: Lưu OTP vào TaiKhoan_OTP
+                var saved = await _otpService.SaveOtpAsync(idKhachHang, otp);
+                if (!saved)
+                {
+                    await transaction.RollbackAsync();
+                    _logger.LogError("Không thể lưu OTP cho khách hàng ID {IdKhachHang}", idKhachHang);
+                    return BuildOtpErrorResponse(model, "Không thể khởi tạo mã OTP. Vui lòng thử lại.");
+                }
+
+                await transaction.CommitAsync();
+                _logger.LogInformation("Đã tạo KhachHang tạm (Chờ xác thực) cho {Email}, IdKhachHang={IdKhachHang} và lưu OTP vào TaiKhoan_OTP",
+                    model.Email, idKhachHang);
+
+                // Gửi Email OTP
+                try
+                {
+                    await _emailService.SendOtpEmailAsync(model.Email.Trim(), model.HoTen.Trim(), otp);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Gửi Email OTP thất bại tới {Email}. Chi tiết: {Message}", model.Email, ex.Message);
+                    await _otpService.DeletePreviousOtpAsync(idKhachHang);
+                    var smtpError = $"Không thể gửi OTP: {ex.Message}";
+                    return BuildOtpErrorResponse(model, smtpError);
+                }
+
+                // Store in Session (Pending Registration)
+                var nowUtc = DateTime.UtcNow;
+                var pendingRegistration = new PendingRegistrationModel
+                {
+                    HoTen = model.HoTen.Trim(),
+                    SoDienThoai = model.SoDienThoai.Trim(),
+                    Email = model.Email.Trim(),
+                    DiaChi = string.IsNullOrWhiteSpace(model.DiaChi) ? null : model.DiaChi.Trim(),
+                    NgaySinh = model.NgaySinh,
+                    PasswordHash = passwordHash,
+                    OtpSentAtUtc = nowUtc,
+                    OtpExpiresAtUtc = nowUtc.AddMinutes(5),
+                    IdKhachHang = idKhachHang
+                };
+                SetPendingRegistration(pendingRegistration);
+
+                _logger.LogInformation("OTP gửi thành công tới {Email}", model.Email);
+
+                return Json(new
+                {
+                    success = true,
+                    message = "Mã OTP đã được gửi thành công đến Email của bạn."
+                });
+            }
+            catch (DbUpdateException dbEx)
+            {
+                await transaction.RollbackAsync();
+                _logger.LogError(dbEx, "Lỗi database khi tạo KhachHang cho {Email}. Chi tiết: {Message}", model.Email, dbEx.InnerException?.Message ?? dbEx.Message);
+                
+                // Kiểm tra lỗi unique constraint violation
+                if (dbEx.InnerException?.Message.Contains("UQ__KhachHan__A9D10534") == true || 
+                    dbEx.InnerException?.Message.Contains("duplicate") == true)
+                {
+                    return BuildOtpErrorResponse(model, "Email hoặc số điện thoại này đã được đăng ký. Vui lòng kiểm tra lại.");
+                }
+                
+                return BuildOtpErrorResponse(model, "Không thể khởi tạo tài khoản do lỗi hệ thống. Vui lòng thử lại sau.");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Gửi Email OTP thất bại tới {Email}. Chi tiết: {Message}", model.Email, ex.Message);
-                await _otpService.InvalidatePreviousOtpAsync(model.Email.Trim());
-                // Trả về thông điệp lỗi thực tế từ SMTP để dễ debug trên frontend
-                var smtpError = $"Không thể gửi OTP: {ex.Message}";
-                return BuildOtpErrorResponse(model, smtpError);
+                await transaction.RollbackAsync();
+                _logger.LogError(ex, "Lỗi tạo KhachHang tạm cho {Email}. Chi tiết: {Message}", model.Email, ex.Message);
+                return BuildOtpErrorResponse(model, "Không thể khởi tạo tài khoản. Vui lòng thử lại hoặc liên hệ quản trị viên.");
             }
-
-            // Store in Session (Pending Registration)
-            var nowUtc = DateTime.UtcNow;
-            var pendingRegistration = new PendingRegistrationModel
-            {
-                HoTen = model.HoTen.Trim(),
-                SoDienThoai = model.SoDienThoai.Trim(),
-                Email = model.Email.Trim(),
-                DiaChi = string.IsNullOrWhiteSpace(model.DiaChi) ? null : model.DiaChi.Trim(),
-                NgaySinh = model.NgaySinh,
-                PasswordHash = BCrypt.Net.BCrypt.HashPassword(model.MatKhau),
-                OtpSentAtUtc = nowUtc,
-                OtpExpiresAtUtc = nowUtc.AddMinutes(5)
-            };
-            SetPendingRegistration(pendingRegistration);
-
-            _logger.LogInformation("OTP gửi thành công tới {Email}", model.Email);
-
-            return Json(new
-            {
-                success = true,
-                message = "Mã OTP đã được gửi thành công đến Email của bạn."
-            });
         }
 
         [HttpPost]
@@ -165,42 +261,39 @@ namespace SupportTicketSysterm.Controllers
                 return Content("<div class='alert-danger'>Vui lòng nhập đầy đủ mã OTP gồm 6 chữ số.</div>", "text/html");
             }
 
-            // Verify OTP
-            var verifyResult = await _otpService.VerifyOtpAsync(pendingRegistration.Email, model.OTP.Trim());
-            if (!verifyResult.IsSuccess)
+            // =====================================================
+            // BƯỚC 5: Xác thực OTP theo IdKhachHang + OTP + Hạn sử dụng
+            // =====================================================
+            var idKhachHang = pendingRegistration.IdKhachHang;
+            var otpRecord = await _context.TaiKhoanOtps
+                .Where(x => x.IdKhachHang == idKhachHang)
+                .Where(x => x.Otp == model.OTP.Trim())
+                .Where(x => x.HanSuDung > DateTime.Now)
+                .OrderByDescending(x => x.ThoiGianTao)
+                .FirstOrDefaultAsync();
+
+            if (otpRecord == null)
             {
-                _logger.LogWarning("OTP xác thực thất bại cho {Email} với trạng thái {Status}", pendingRegistration.Email, verifyResult.Status);
-                return Content($"<div class='alert-danger'>{verifyResult.Message}</div>", "text/html");
+                return Content("<div class='alert-danger'>Mã OTP không chính xác hoặc đã hết hạn.</div>", "text/html");
             }
 
-            // Save to database
+            // OTP hợp lệ — kích hoạt tài khoản
             using var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
-                // Validate once again
-                if (await _context.KhachHangs.AnyAsync(x => x.Email == pendingRegistration.Email))
+                var khachHang = await _context.KhachHangs.FindAsync(idKhachHang);
+                if (khachHang == null)
                 {
-                    return Content("<div class='alert-danger'>Email này đã được đăng ký trước đó.</div>", "text/html");
-                }
-                if (await _context.KhachHangs.AnyAsync(x => x.SoDienThoai == pendingRegistration.SoDienThoai))
-                {
-                    return Content("<div class='alert-danger'>Số điện thoại này đã được đăng ký trước đó.</div>", "text/html");
+                    return Content("<div class='alert-danger'>Không tìm thấy tài khoản đăng ký. Vui lòng thử lại.</div>", "text/html");
                 }
 
-                var khachHang = new KhachHang
-                {
-                    MaKh = TaoMaKhachHang(),
-                    HoTen = pendingRegistration.HoTen,
-                    SoDienThoai = pendingRegistration.SoDienThoai,
-                    Email = pendingRegistration.Email,
-                    DiaChi = pendingRegistration.DiaChi,
-                    NgaySinh = pendingRegistration.NgaySinh.HasValue ? DateOnly.FromDateTime(pendingRegistration.NgaySinh.Value) : null,
-                    MatKhau = pendingRegistration.PasswordHash,
-                    TrangThai = "Đã kích hoạt",
-                    NgayTao = DateOnly.FromDateTime(DateTime.Now)
-                };
+                // Kích hoạt tài khoản
+                khachHang.TrangThai = "Đã kích hoạt";
+                khachHang.DaXacThucEmail = true;
 
-                _context.KhachHangs.Add(khachHang);
+                // Xóa OTP cũ của khách hàng
+                await _otpService.DeletePreviousOtpAsync(idKhachHang);
+
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
 
@@ -224,16 +317,16 @@ namespace SupportTicketSysterm.Controllers
                 // Automatically sign in the user
                 await SignInCustomerAsync(khachHang);
 
-                _logger.LogInformation("Tạo tài khoản khách hàng thành công sau OTP cho {Email}", khachHang.Email);
+                _logger.LogInformation("Xác thực OTP thành công, tài khoản đã kích hoạt cho {Email} (IdKhachHang={IdKhachHang})",
+                    khachHang.Email, khachHang.IdKhachHang);
                 TempData["Success"] = "Đăng ký và xác thực OTP thành công. Chào mừng bạn!";
 
-                // Return redirect to home
                 return RedirectToAction("TrangChu", "Customers");
             }
             catch (Exception ex)
             {
                 await transaction.RollbackAsync();
-                _logger.LogError(ex, "Lỗi tạo tài khoản sau khi OTP hợp lệ cho {Email}", pendingRegistration.Email);
+                _logger.LogError(ex, "Lỗi kích hoạt tài khoản sau OTP hợp lệ cho {Email}", pendingRegistration.Email);
                 return Content("<div class='alert-danger'>Không thể hoàn tất đăng ký tài khoản do lỗi hệ thống. Vui lòng thử lại sau.</div>", "text/html");
             }
         }
@@ -248,14 +341,16 @@ namespace SupportTicketSysterm.Controllers
                 return Json(new { success = false, redirectUrl = Url.Action(nameof(DangKy)), message = "Phiên đăng ký đã hết hạn." });
             }
 
+            var idKhachHang = pendingRegistration.IdKhachHang;
+
             // Check hourly limit
-            if (await _otpService.IsHourlyLimitExceededAsync(pendingRegistration.Email))
+            if (await _otpService.IsHourlyLimitExceededAsync(idKhachHang))
             {
                 return Json(new { success = false, message = "Bạn đã vượt quá giới hạn gửi OTP (tối đa 5 lần một giờ). Vui lòng thử lại sau." });
             }
 
             // Check resend cooldown
-            var (allowed, remainingSeconds) = await _otpService.CanResendOtpAsync(pendingRegistration.Email, 60);
+            var (allowed, remainingSeconds) = await _otpService.CanResendOtpAsync(idKhachHang, 60);
             if (!allowed)
             {
                 return Json(new
@@ -266,10 +361,9 @@ namespace SupportTicketSysterm.Controllers
                 });
             }
 
-            // Generate & Save
+            // Generate & Save OTP mới (SaveOtpAsync tự động xóa OTP cũ của khách hàng)
             var otp = await _otpService.GenerateOtpAsync();
-            var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
-            var saved = await _otpService.SaveOtpAsync(pendingRegistration.Email, otp, ipAddress);
+            var saved = await _otpService.SaveOtpAsync(idKhachHang, otp);
             if (!saved)
             {
                 return Json(new { success = false, message = "Không thể tạo OTP mới. Vui lòng thử lại." });
@@ -283,7 +377,7 @@ namespace SupportTicketSysterm.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Gửi lại Email OTP thất bại tới {Email}", pendingRegistration.Email);
-                await _otpService.InvalidatePreviousOtpAsync(pendingRegistration.Email);
+                await _otpService.DeletePreviousOtpAsync(idKhachHang);
                 return Json(new { success = false, message = "Không thể gửi email chứa mã OTP mới." });
             }
 
@@ -291,7 +385,8 @@ namespace SupportTicketSysterm.Controllers
             pendingRegistration.OtpExpiresAtUtc = DateTime.UtcNow.AddMinutes(5);
             SetPendingRegistration(pendingRegistration);
 
-            _logger.LogInformation("Đã gửi lại OTP thành công tới {Email}", pendingRegistration.Email);
+            _logger.LogInformation("Đã gửi lại OTP thành công tới {Email} (IdKhachHang={IdKhachHang})",
+                pendingRegistration.Email, idKhachHang);
             return Json(new
             {
                 success = true,
@@ -302,7 +397,105 @@ namespace SupportTicketSysterm.Controllers
         }
         #endregion
 
+        /// <summary>
+        /// Gửi lại OTP cho tài khoản đang ở trạng thái "Chờ xác thực".
+        /// Dùng khi người dùng đăng ký lại cùng email nhưng chưa xác thực lần trước.
+        /// </summary>
+        private async Task<IActionResult> GuiLaiOtpChoTaiKhoanCho(DangKyViewModel model, int idKhachHang)
+        {
+            try
+            {
+                // Kiểm tra giới hạn gửi OTP
+                if (await _otpService.IsHourlyLimitExceededAsync(idKhachHang))
+                {
+                    return BuildOtpErrorResponse(model, "Bạn đã vượt quá giới hạn gửi OTP (tối đa 5 lần một giờ). Vui lòng thử lại sau.");
+                }
+
+                var (allowed, remainingSeconds) = await _otpService.CanResendOtpAsync(idKhachHang, 60);
+                if (!allowed)
+                {
+                    return BuildOtpErrorResponse(model, $"Mã OTP đã được gửi trước đó. Vui lòng chờ {remainingSeconds} giây trước khi gửi lại.");
+                }
+
+                // Cập nhật mật khẩu nếu người dùng nhập mật khẩu mới
+                var khachHang = await _context.KhachHangs.FindAsync(idKhachHang);
+                if (khachHang != null)
+                {
+                    string newPasswordHash = BCrypt.Net.BCrypt.HashPassword(model.MatKhau);
+                    khachHang.MatKhau = newPasswordHash;
+                    khachHang.HoTen = model.HoTen.Trim();
+                    khachHang.DiaChi = string.IsNullOrWhiteSpace(model.DiaChi) ? null : model.DiaChi.Trim();
+                    khachHang.NgaySinh = model.NgaySinh.HasValue ? DateOnly.FromDateTime(model.NgaySinh.Value) : null;
+                    await _context.SaveChangesAsync();
+                }
+
+                // Sinh và lưu OTP mới
+                var otp = await _otpService.GenerateOtpAsync();
+                var saved = await _otpService.SaveOtpAsync(idKhachHang, otp);
+                if (!saved)
+                {
+                    return BuildOtpErrorResponse(model, "Không thể khởi tạo mã OTP. Vui lòng thử lại.");
+                }
+
+                // Gửi email OTP
+                try
+                {
+                    await _emailService.SendOtpEmailAsync(model.Email.Trim(), model.HoTen.Trim(), otp);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Gửi Email OTP thất bại tới {Email}. Chi tiết: {Message}", model.Email, ex.Message);
+                    await _otpService.DeletePreviousOtpAsync(idKhachHang);
+                    return BuildOtpErrorResponse(model, $"Không thể gửi OTP: {ex.Message}");
+                }
+
+                // Lưu vào session
+                var nowUtc = DateTime.UtcNow;
+                var pendingRegistration = new PendingRegistrationModel
+                {
+                    HoTen = model.HoTen.Trim(),
+                    SoDienThoai = model.SoDienThoai.Trim(),
+                    Email = model.Email.Trim(),
+                    DiaChi = string.IsNullOrWhiteSpace(model.DiaChi) ? null : model.DiaChi.Trim(),
+                    NgaySinh = model.NgaySinh,
+                    PasswordHash = BCrypt.Net.BCrypt.HashPassword(model.MatKhau),
+                    OtpSentAtUtc = nowUtc,
+                    OtpExpiresAtUtc = nowUtc.AddMinutes(5),
+                    IdKhachHang = idKhachHang
+                };
+                SetPendingRegistration(pendingRegistration);
+
+                _logger.LogInformation("Gửi lại OTP cho tài khoản chờ xác thực {Email} (IdKhachHang={IdKhachHang})", model.Email, idKhachHang);
+
+                return Json(new
+                {
+                    success = true,
+                    message = "Mã OTP đã được gửi thành công đến Email của bạn."
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Lỗi khi gửi lại OTP cho tài khoản chờ xác thực {Email}", model.Email);
+                return BuildOtpErrorResponse(model, "Không thể gửi OTP. Vui lòng thử lại sau.");
+            }
+        }
+
+        /// <summary>Tự sinh mã KH001, KH002, ... (async để tránh blocking)</summary>
+        private async Task<string> TaoMaKhachHangAsync()
+        {
+            var danhSachMa = await _context.KhachHangs.Select(x => x.MaKh).ToListAsync();
+            int maxSo = 0;
+            foreach (var ma in danhSachMa)
+            {
+                if (!string.IsNullOrEmpty(ma) && ma.StartsWith("KH") && ma.Length > 2)
+                    if (int.TryParse(ma.Substring(2), out int so) && so > maxSo)
+                        maxSo = so;
+            }
+            return $"KH{maxSo + 1:D3}";
+        }
+
         /// <summary>Tự sinh mã KH001, KH002, ...</summary>
+        [Obsolete("Dùng TaoMaKhachHangAsync() thay thế")]
         private string TaoMaKhachHang()
         {
             var danhSachMa = _context.KhachHangs.Select(x => x.MaKh).ToList();
@@ -542,9 +735,22 @@ namespace SupportTicketSysterm.Controllers
 
         // ===================== ĐĂNG NHẬP =====================
 
+        private string SanitizeReturnUrl(string? returnUrl)
+        {
+            if (string.IsNullOrWhiteSpace(returnUrl)) return string.Empty;
+            var decoded = System.Net.WebUtility.HtmlDecode(returnUrl);
+            return System.Text.RegularExpressions.Regex.Replace(
+                decoded,
+                @"[^\x00-\x7F]",
+                m => Uri.EscapeDataString(m.Value)
+            );
+        }
+
         [HttpGet]
         public IActionResult DangNhap(string? returnUrl = null)
         {
+            var cleanReturnUrl = SanitizeReturnUrl(returnUrl);
+
             if (User.Identity != null && User.Identity.IsAuthenticated)
             {
                 var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? User.FindFirstValue("UserId");
@@ -560,9 +766,9 @@ namespace SupportTicketSysterm.Controllers
                 }
 
                 var role = User.FindFirstValue(ClaimTypes.Role) ?? HttpContext.Session.GetString("Role");
-                if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+                if (!string.IsNullOrEmpty(cleanReturnUrl) && Url.IsLocalUrl(cleanReturnUrl))
                 {
-                    return Redirect(returnUrl);
+                    return Redirect(cleanReturnUrl);
                 }
                 if (role == "Admin" || role == "NhanVien" || role == "Nhân viên" || role == "Nhân viên hỗ trợ")
                 {
@@ -573,7 +779,7 @@ namespace SupportTicketSysterm.Controllers
                     return RedirectToAction("TrangChu", "Customers");
                 }
             }
-            ViewBag.ReturnUrl = returnUrl;
+            ViewBag.ReturnUrl = cleanReturnUrl;
             return View();
         }
 
@@ -581,7 +787,8 @@ namespace SupportTicketSysterm.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DangNhap(DangNhapViewModel model, string? returnUrl = null)
         {
-            ViewBag.ReturnUrl = returnUrl;
+            var cleanReturnUrl = SanitizeReturnUrl(returnUrl);
+            ViewBag.ReturnUrl = cleanReturnUrl;
             if (!ModelState.IsValid)
             {
                 return View(model);
@@ -656,15 +863,20 @@ namespace SupportTicketSysterm.Controllers
 
                 // Lưu Session
                 HttpContext.Session.SetInt32("UserId", nhanVien.IdNhanVien);
+                HttpContext.Session.SetInt32("NhanVienId", nhanVien.IdNhanVien);
                 HttpContext.Session.SetString("HoTen", nhanVien.HoTen?.Trim() ?? "");
                 HttpContext.Session.SetString("VaiTro", nhanVien.VaiTro?.Trim() ?? "");
                 HttpContext.Session.SetString("Role", nhanVien.VaiTro?.Trim() ?? "");
+                if (!string.IsNullOrEmpty(nhanVien.Avatar))
+                {
+                    HttpContext.Session.SetString("Avatar", nhanVien.Avatar.Trim());
+                }
 
                 _logger.LogInformation("Nhân viên đăng nhập thành công. Điều hướng về Dashboard.");
 
-                if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+                if (!string.IsNullOrEmpty(cleanReturnUrl) && Url.IsLocalUrl(cleanReturnUrl))
                 {
-                    return Redirect(returnUrl);
+                    return Redirect(cleanReturnUrl);
                 }
                 return RedirectToAction("Dashboard", "Staff");
             }
@@ -762,10 +974,10 @@ namespace SupportTicketSysterm.Controllers
 
                 _logger.LogInformation("Khách hàng đăng nhập thành công. Điều hướng về Trang chủ khách hàng.");
 
-                if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+                if (!string.IsNullOrEmpty(cleanReturnUrl) && Url.IsLocalUrl(cleanReturnUrl))
                 {
                     // If returnUrl has query string, append autoOpen=true or handle it
-                    var redirectUrl = returnUrl;
+                    var redirectUrl = cleanReturnUrl;
                     if (!redirectUrl.Contains("openChat="))
                     {
                         redirectUrl = redirectUrl.Contains("?") ? $"{redirectUrl}&openChat=true" : $"{redirectUrl}?openChat=true";

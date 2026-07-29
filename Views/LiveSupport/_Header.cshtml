@@ -49,17 +49,7 @@
             </div>
         </div>
 
-        <button type="button" class="btn btn-sm btn-outline-danger rounded-pill px-3 py-1.5 fw-bold d-inline-flex align-items-center gap-1.5 shadow-xs" data-bs-toggle="modal" data-bs-target="#ticketModal" style="transition: all 0.2s ease;">
-            <i class="bi bi-file-earmark-text-fill"></i>
-            <span>Chi tiết phiếu</span>
-        </button>
         
-        @if (Model.CanRate)
-        {
-            <button type="button" class="btn btn-sm btn-warning text-dark rounded-pill px-3 py-1.5 fw-bold shadow-xs d-inline-flex align-items-center gap-1" id="btnHeaderRating">
-                <i class="bi bi-star-fill text-dark me-1"></i> Đánh giá
-            </button>
-        }
 
         <div class="dropdown">
             <button class="btn btn-sm btn-light rounded-circle p-2 text-secondary shadow-xs" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Tùy chọn">
@@ -68,7 +58,8 @@
             <ul class="dropdown-menu dropdown-menu-end shadow-md border-0 mt-2 rounded-3" style="min-width:190px;">
                 <li><a class="dropdown-item py-2 small" href="#" onclick="location.reload();"><i class="bi bi-arrow-clockwise me-2 text-danger"></i>Tải lại trò chuyện</a></li>
                 <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item py-2 small text-danger fw-semibold" href="/Ticket/TraCuuPhieu"><i class="bi bi-door-open me-2"></i>Thoát hội thoại</a></li>
+                <li><a class="dropdown-item py-2 small text-dark fw-semibold" href="/Ticket/TraCuuPhieu"><i class="bi bi-door-open me-2 text-secondary"></i>Thoát hội thoại</a></li>
+                <li><a class="dropdown-item py-2 small text-danger fw-semibold" asp-controller="Auth" asp-action="DangXuat"><i class="bi bi-box-arrow-right me-2"></i>Đăng xuất</a></li>
             </ul>
         </div>
     </div>

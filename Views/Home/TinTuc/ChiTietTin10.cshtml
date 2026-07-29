@@ -1,0 +1,111 @@
+@{
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+    ViewData["Title"] = "Thông Báo Bảo Trì Máy Chủ Dữ Liệu - Viettel Cần Thơ";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/assets/css/news-detail.css" asp-append-version="true" />
+}
+
+<div class="reading-progress-bar"></div>
+
+<div class="news-detail-wrapper">
+
+    <section class="detail-header-section">
+        <div class="container">
+            <div class="detail-breadcrumb">
+                <a asp-controller="Customers" asp-action="TrangChu"><i class="bi bi-house-door-fill me-1"></i> Trang chủ</a>
+                <span>></span>
+                <a asp-controller="Home" asp-action="TinTuc">Tin tức</a>
+                <span>></span>
+                <span class="text-dark">Thông báo bảo trì</span>
+            </div>
+
+            <h1 class="detail-article-title">
+                Thông Báo Lịch Bảo Trì Định Kỳ Hệ Thống Máy Chủ Tổng Đài & Trung Tâm Dữ Liệu Cloud Server
+            </h1>
+
+            <div class="detail-meta-bar">
+                <span class="detail-author-badge">
+                    <i class="bi bi-server"></i> Ban Quản Trị Hệ Thống
+                </span>
+                <span class="detail-meta-item"><i class="bi bi-calendar3 text-danger"></i> 11/07/2026</span>
+                <span class="detail-meta-item"><i class="bi bi-clock text-danger"></i> 4 phút đọc</span>
+                <span class="detail-meta-item"><i class="bi bi-eye text-danger"></i> 1,450 lượt xem</span>
+                <span class="badge bg-warning text-dark">Bảo Trì</span>
+            </div>
+        </div>
+    </section>
+
+    <div class="container py-5">
+        <div class="row g-4">
+
+            <div class="col-lg-8 col-12">
+                <article class="article-content">
+
+                    <div class="detail-cover-container">
+                        <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&q=80&w=1200" alt="Bảo trì máy chủ trung tâm dữ liệu" />
+                    </div>
+                    <p class="detail-cover-caption">Hoạt động bảo dưỡng và tối ưu hóa cụm máy chủ dữ liệu Data Center Viettel</p>
+
+                    <p class="lead fw-bold text-dark mb-4">
+                        Để đảm bảo tính liên tục, khả năng chịu tải và bảo mật dữ liệu cho hệ thống phần mềm quản lý ticket, Trung tâm Dữ liệu Viettel xin thông báo kế hoạch <span class="text-highlight">Bảo Trì Máy Chủ Định Kỳ</span> khu vực Tây Nam Bộ.
+                    </p>
+
+                    <h2>1. Thời Gian & Phạm Vi Bảo Trì</h2>
+                    <div class="callout-box">
+                        <h5><i class="bi bi-calendar-event me-2"></i> Chi Tiết Khung Giờ</h5>
+                        <p>
+                            • <strong>Thời gian:</strong> Từ 01:00 đến 03:30 sáng ngày 28/07/2026.<br />
+                            • <strong>Dịch vụ nâng cấp:</strong> Cụm server cơ sở dữ liệu SQL Server và máy chủ API ChatBox Gemini.<br />
+                            • <strong>Tác động:</strong> Trang web có thể tạm ngưng nhận phiếu mới trong khoảng 20 phút.
+                        </p>
+                    </div>
+
+                    <h2>2. Khuyến Cáo Dành Cho Khách Hàng</h2>
+                    <p>
+                        Quý khách hàng có nhu cầu gửi phiếu báo hỏng khẩn cấp trong thời gian bảo trì vui lòng liên hệ tổng đài đường dây nóng hoặc tạo phiếu sau 03:30 sáng cùng ngày. Trân trọng cảm ơn!
+                    </p>
+
+                    <!-- Share Section -->
+                    <div class="article-share-section">
+                        <span class="share-title"><i class="bi bi-share-fill me-2 text-danger"></i> Chia sẻ thông báo:</span>
+                        <div class="share-buttons-list">
+                            <a href="#" class="btn-share btn-share-facebook"><i class="bi bi-facebook"></i></a>
+                            <a href="#" class="btn-share btn-share-email"><i class="bi bi-envelope-fill"></i></a>
+                        </div>
+                    </div>
+
+                </article>
+            </div>
+
+            <!-- SIDEBAR -->
+            <div class="col-lg-4 col-12">
+                <aside class="news-sidebar">
+                    <div class="sidebar-widget">
+                        <h4 class="widget-title"><i class="bi bi-fire text-danger me-2"></i> Bài Viết Nổi Bật</h4>
+                        <a asp-controller="Home" asp-action="ChiTietTin1" class="text-decoration-none text-dark d-block">
+                            <div class="mini-post-item">
+                                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=200" class="mini-post-img" alt="Tạo phiếu" />
+                                <div>
+                                    <h5 class="mini-post-title">Hướng Dẫn Tạo Phiếu Báo Sự Cố Nhanh</h5>
+                                    <span class="mini-post-date"><i class="bi bi-calendar3"></i> 20/07/2026</span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </aside>
+            </div>
+
+        </div>
+    </div>
+
+    
+
+</div>
+
+<partial name="~/Views/Shared/_Footer.cshtml" />
+
+@section Scripts {
+    <script src="~/assets/js/news-detail.js" asp-append-version="true"></script>
+}

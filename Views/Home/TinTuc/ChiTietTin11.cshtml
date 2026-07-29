@@ -1,0 +1,115 @@
+@{
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+    ViewData["Title"] = "Giới Thiệu Tính Năng Mới TechSupport 2026 - Viettel Cần Thơ";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/assets/css/news-detail.css" asp-append-version="true" />
+}
+
+<div class="reading-progress-bar"></div>
+
+<div class="news-detail-wrapper">
+
+    <section class="detail-header-section">
+        <div class="container">
+            <div class="detail-breadcrumb">
+                <a asp-controller="Customers" asp-action="TrangChu"><i class="bi bi-house-door-fill me-1"></i> Trang chủ</a>
+                <span>></span>
+                <a asp-controller="Home" asp-action="TinTuc">Tin tức</a>
+                <span>></span>
+                <span class="text-dark">Giới thiệu tính năng mới</span>
+            </div>
+
+            <h1 class="detail-article-title">
+                Đón Chờ Các Tính Năng Đột Phá Sắp Ra Mắt Trên Nền Tảng TechSupport Viettel 2026
+            </h1>
+
+            <div class="detail-meta-bar">
+                <span class="detail-author-badge">
+                    <i class="bi bi-stars"></i> Ban Phát Triển Sản Phẩm
+                </span>
+                <span class="detail-meta-item"><i class="bi bi-calendar3 text-danger"></i> 10/07/2026</span>
+                <span class="detail-meta-item"><i class="bi bi-clock text-danger"></i> 5 phút đọc</span>
+                <span class="detail-meta-item"><i class="bi bi-eye text-danger"></i> 2,670 lượt xem</span>
+                <span class="badge bg-danger">Hệ Thống</span>
+            </div>
+        </div>
+    </section>
+
+    <div class="container py-5">
+        <div class="row g-4">
+
+            <div class="col-lg-8 col-12">
+                <article class="article-content">
+
+                    <div class="detail-cover-container">
+                        <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=1200" alt="Tính năng mới TechSupport 2026" />
+                    </div>
+                    <p class="detail-cover-caption">Phiên bản TechSupport 2026 mang đến trải nghiệm định vị bản đồ và đánh giá sao trực quan</p>
+
+                    <p class="lead fw-bold text-dark mb-4">
+                        Nhằm không ngừng cải tiến trải nghiệm dịch vụ khách hàng, Viettel Telecom trân trọng bật mí những tính năng công nghệ vượt trội dự kiến ra mắt trong bản nâng cấp <span class="text-highlight">TechSupport 2026</span> quý III tới.
+                    </p>
+
+                    <h2>1. Theo Dõi Vị Trí Kỹ Thuật Viên Trên Bản Đồ Thời Gian Thực (GPS Tracking)</h2>
+                    <p>
+                        Giống như các ứng dụng đặt xe công nghệ, khi ticket của bạn chuyển sang trạng thái "Kỹ thuật đang di chuyển", bạn có thể xem vị trí thực tế của kỹ thuật viên trên bản đồ kèm thời gian dự kiến đến nhà.
+                    </p>
+
+                    <h2>2. Đánh Giá Đóng Góp 5 Sao & Nhận Quà Tặng Xu Viettel</h2>
+                    <p>
+                        Mỗi phiếu kỹ thuật sau khi hoàn thành nghiệm thu sẽ đi kèm khảo sát ngắn 5 sao. Khách hàng tham gia đánh giá sẽ nhận ngay quà tặng điểm thưởng Viettel Cộng Cộng tích lũy đổi cước data.
+                    </p>
+
+                    <div class="callout-box">
+                        <h5><i class="bi bi-rocket-takeoff me-2"></i> Lộ Trình Ra Mắt</h5>
+                        <p>
+                            • Quý III/2026: Thử nghiệm tính năng Bản đồ GPS cho khu vực Ninh Kiều & Cái Răng.<br />
+                            • Quý IV/2026: Cập nhật đồng bộ trên toàn bộ địa bàn các tỉnh Tây Nam Bộ.
+                        </p>
+                    </div>
+
+                    <!-- Share Section -->
+                    <div class="article-share-section">
+                        <span class="share-title"><i class="bi bi-share-fill me-2 text-danger"></i> Chia sẻ thông tin này:</span>
+                        <div class="share-buttons-list">
+                            <a href="#" class="btn-share btn-share-facebook"><i class="bi bi-facebook"></i></a>
+                            <a href="#" class="btn-share btn-share-zalo"><i class="bi bi-chat-quote-fill"></i></a>
+                            <a href="#" class="btn-share btn-share-email"><i class="bi bi-envelope-fill"></i></a>
+                        </div>
+                    </div>
+
+                </article>
+            </div>
+
+            <!-- SIDEBAR -->
+            <div class="col-lg-4 col-12">
+                <aside class="news-sidebar">
+                    <div class="sidebar-widget">
+                        <h4 class="widget-title"><i class="bi bi-fire text-danger me-2"></i> Bài Viết Nổi Bật</h4>
+                        <a asp-controller="Home" asp-action="ChiTietTin1" class="text-decoration-none text-dark d-block">
+                            <div class="mini-post-item">
+                                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=200" class="mini-post-img" alt="Tạo phiếu" />
+                                <div>
+                                    <h5 class="mini-post-title">Hướng Dẫn Tạo Phiếu Báo Sự Cố Nhanh</h5>
+                                    <span class="mini-post-date"><i class="bi bi-calendar3"></i> 20/07/2026</span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </aside>
+            </div>
+
+        </div>
+    </div>
+
+  
+
+</div>
+
+<partial name="~/Views/Shared/_Footer.cshtml" />
+
+@section Scripts {
+    <script src="~/assets/js/news-detail.js" asp-append-version="true"></script>
+}

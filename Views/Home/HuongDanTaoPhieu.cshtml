@@ -1,0 +1,301 @@
+@{
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+    ViewData["Title"] = "Hướng Dẫn Tạo & Theo Dõi Phiếu Hỗ Trợ - Viettel TechSupport";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/assets/css/knowledge.css" asp-append-version="true" />
+}
+
+<!-- ==================== HERO BANNER (SYNCHRONIZED WITH PHIEUCUATOI & HUONGDAN) ==================== -->
+<section class="hero-section knowledge-hero-sync">
+    <div class="container hero-content">
+        <div class="row align-items-center g-4">
+            <!-- Left Text Column -->
+            <div class="col-lg-7 col-12 text-start hero-text-col animate-fade-up">
+                <nav class="hero-breadcrumb-sync" aria-label="breadcrumb">
+                    <ol class="breadcrumb m-0">
+                        <li class="breadcrumb-item"><a asp-controller="Customers" asp-action="TrangChu"><i class="fa-solid fa-house-door-fill me-1"></i>Trang chủ</a></li>
+                        <li class="breadcrumb-item"><a href="#">Cẩm nang</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Hướng dẫn tạo phiếu</li>
+                    </ol>
+                </nav>
+                <span class="hero-badge-sync"><i class="bi bi-journal-check me-1"></i> Hướng dẫn kỹ thuật</span>
+                <h1 class="hero-title-sync text-uppercase">HƯỚNG DẪN <span class="text-primary">TẠO & THEO DÕI PHIẾU</span></h1>
+                <p class="hero-desc-sync">
+                    Quy trình 6 bước chi tiết giúp bạn khởi tạo ticket sự cố nhanh chóng, đính kèm hình ảnh lỗi và tương tác trực tiếp với đội ngũ kỹ sư Viettel Telecom 24/7.
+                </p>
+
+                <!-- CTA Buttons -->
+                <div class="hero-cta-buttons d-flex flex-wrap gap-3 mt-3">
+                    <a asp-controller="Ticket" asp-action="ChonDMDichVu" class="btn btn-hero-create-sync">
+                        <i class="bi bi-plus-circle me-1"></i> Tạo Phiếu Mới
+                    </a>
+                    <a asp-controller="Ticket" asp-action="TraCuuPhieu" class="btn btn-hero-contact-sync">
+                        <i class="bi bi-search me-1"></i> Tra Cứu Tiến Độ
+                    </a>
+                </div>
+            </div>
+
+            <!-- Right Graphic / Icon Illustration Column -->
+            <div class="col-lg-5 col-12 text-center animate-fade-up delay-1 d-none d-lg-block">
+                <div class="p-4 rounded-4 bg-white border shadow-sm d-inline-block text-start position-relative overflow-hidden" style="max-width: 380px;">
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <div class="p-3 bg-danger-subtle text-danger rounded-circle fs-3"><i class="bi bi-ticket-detailed-fill"></i></div>
+                        <div>
+                            <h6 class="fw-bold text-dark mb-0">TechSupport Ticket #2026</h6>
+                            <span class="text-muted small">Thời gian SLA: &lt; 30 Phút</span>
+                        </div>
+                    </div>
+                    <div class="p-3 bg-light rounded-3 small text-secondary">
+                        <div class="d-flex justify-content-between mb-1"><span>Trạng thái:</span><span class="text-success fw-bold">Đang xử lý</span></div>
+                        <div class="d-flex justify-content-between"><span>Kỹ thuật viên:</span><span class="fw-semibold text-dark">Tổ KT Viettel</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ==================== MAIN CONTENT SECTION ==================== -->
+<section class="knowledge-body-section">
+    <div class="container">
+        <div class="row g-4">
+            <!-- Left Main Column (8 Cols) -->
+            <div class="col-lg-8 col-12">
+                
+                <!-- 1. GIỚI THIỆU -->
+                <div class="kn-card-box">
+                    <h3 class="kn-section-heading">
+                        <i class="bi bi-info-circle-fill"></i> Giới Thiệu Hệ Thống Phiếu Hỗ Trợ
+                    </h3>
+                    <p class="text-secondary style-intro" style="line-height: 1.65; font-size: 0.96rem;">
+                        Hệ thống <strong>TechSupport Viettel</strong> được thiết kế theo tiêu chuẩn quản trị dịch vụ CNTT (ITIL), giúp chuẩn hóa toàn bộ quy trình báo hỏng và xử lý sự cố. Việc tạo phiếu hỗ trợ chuẩn xác giúp hệ thống tự động phân loại mức độ ưu tiên và chuyển ngay yêu cầu của bạn đến kỹ thuật viên chuyên trách gần nhất.
+                    </p>
+                </div>
+
+                <!-- 2. QUY TRÌNH TẠO PHIẾU (TIMELINE 6 BƯỚC) -->
+                <div class="kn-card-box">
+                    <h3 class="kn-section-heading">
+                        <i class="bi bi-diagram-3-fill"></i> Quy Trình 6 Bước Tạo & Theo Dõi Phiếu
+                    </h3>
+                    
+                    <div class="kn-timeline">
+                        <!-- Bước 1 -->
+                        <div class="kn-timeline-step">
+                            <div class="kn-step-number">01</div>
+                            <div class="kn-step-content">
+                                <h5>Đăng Nhập Tài Khoản</h5>
+                                <p>Sử dụng số điện thoại hoặc email đã đăng ký dịch vụ để đăng nhập vào portal TechSupport. Nếu chưa có tài khoản, bạn có thể bấm <strong>Đăng ký</strong> nhanh chỉ trong 1 phút.</p>
+                            </div>
+                        </div>
+
+                        <!-- Bước 2 -->
+                        <div class="kn-timeline-step">
+                            <div class="kn-step-number">02</div>
+                            <div class="kn-step-content">
+                                <h5>Chọn Danh Mục Dịch Vụ</h5>
+                                <p>Truy cập mục <strong>Hỗ trợ &gt; Tạo phiếu hỗ trợ</strong> và chọn đúng dịch vụ gặp sự cố (Wifi/Internet FTI, Camera Giám sát, Server/Cloud, Thiết bị định tuyến...).</p>
+                            </div>
+                        </div>
+
+                        <!-- Bước 3 -->
+                        <div class="kn-timeline-step">
+                            <div class="kn-step-number">03</div>
+                            <div class="kn-step-content">
+                                <h5>Mô Tả Chi Tiết Lỗi</h5>
+                                <p>Nhập ngắn gọn tiêu đề sự cố và mô tả cụ thể hiện tượng (Ví dụ: <em>"Đèn LOS báo đỏ trên modem"</em>, <em>"Không kết nối được wifi băng tần 5GHz"</em>...).</p>
+                            </div>
+                        </div>
+
+                        <!-- Bước 4 -->
+                        <div class="kn-timeline-step">
+                            <div class="kn-step-number">04</div>
+                            <div class="kn-step-content">
+                                <h5>Đính Kèm Hình Ảnh / Video Lỗi</h5>
+                                <p>Tải lên ảnh chụp màn hình thông báo lỗi hoặc ảnh chụp thực tế thiết bị/modem. Hình ảnh rõ ràng sẽ giúp kỹ thuật viên chẩn đoán lỗi ngay lập tức mà không cần hỏi lại.</p>
+                            </div>
+                        </div>
+
+                        <!-- Bước 5 -->
+                        <div class="kn-timeline-step">
+                            <div class="kn-step-number">05</div>
+                            <div class="kn-step-content">
+                                <h5>Xác Nhận & Gửi Phiếu</h5>
+                                <p>Kiểm tra lại số điện thoại liên hệ và địa chỉ lắp đặt, sau đó nhấn <strong>Gửi Yêu Cầu</strong>. Hệ thống sẽ cấp ngay một <strong>Mã Phiếu (Ticket ID)</strong> duy nhất.</p>
+                            </div>
+                        </div>
+
+                        <!-- Bước 6 -->
+                        <div class="kn-timeline-step">
+                            <div class="kn-step-number">06</div>
+                            <div class="kn-step-content">
+                                <h5>Theo Dõi Tiến Độ & Đánh Giá</h5>
+                                <p>Vào mục <strong>Tra cứu phiếu</strong> để xem trạng thái (Đã tiếp nhận, Đang xử lý, Đã hoàn thành). Sau khi sự cố khắc phục xong, bạn có thể chấm điểm sao chất lượng dịch vụ.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. MẸO GIÚP XỬ LÝ NHANH (GRID CARDS) -->
+                <div class="kn-card-box">
+                    <h3 class="kn-section-heading">
+                        <i class="bi bi-lightning-charge-fill"></i> Mẹo Giúp Sự Cố Được Xử Lý Nhanh Hơn
+                    </h3>
+                    <div class="row g-3 mt-1">
+                        <div class="col-md-6 col-12">
+                            <div class="tip-card-item">
+                                <div class="tip-check-icon"><i class="bi bi-check-lg"></i></div>
+                                <div>
+                                    <h6>Mô Tả Lỗi Rõ Ràng</h6>
+                                    <p>Ghi rõ mã lỗi hiển thị hoặc trạng thái đèn báo trên thiết bị kỹ thuật.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-12">
+                            <div class="tip-card-item">
+                                <div class="tip-check-icon"><i class="bi bi-check-lg"></i></div>
+                                <div>
+                                    <h6>Đính Kèm Ảnh Thực Tế</h6>
+                                    <p>Ảnh đính kèm sắc nét giúp kỹ thuật viên chuẩn bị sẵn thiết bị thay thế trước khi đến.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-12">
+                            <div class="tip-card-item">
+                                <div class="tip-check-icon"><i class="bi bi-check-lg"></i></div>
+                                <div>
+                                    <h6>Chọn Đúng Danh Mục</h6>
+                                    <p>Chọn đúng loại dịch vụ giúp ticket tự động chuyển thẳng tới đội kỹ thuật chuyên môn.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-12">
+                            <div class="tip-card-item">
+                                <div class="tip-check-icon"><i class="bi bi-check-lg"></i></div>
+                                <div>
+                                    <h6>Số Điện Thoại Mở Máy</h6>
+                                    <p>Giữ điện thoại luôn sẵn sàng để kỹ thuật viên cuộc gọi xác nhận thời gian sửa chữa.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. FAQ (ACCORDION) -->
+                <div class="kn-card-box">
+                    <h3 class="kn-section-heading">
+                        <i class="bi bi-patch-question-fill"></i> Câu Hỏi Thường Gặp (FAQ)
+                    </h3>
+
+                    <div class="accordion kn-accordion" id="faqGuideAccordion">
+                        <!-- FAQ 1 -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingOne">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                    <i class="bi bi-clock-history me-2 text-danger"></i> Phiếu hỗ trợ của tôi được xử lý trong bao lâu?
+                                </button>
+                            </h2>
+                            <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#faqGuideAccordion">
+                                <div class="accordion-body">
+                                    Thời gian tiếp nhận ticket trung bình dưới <strong>15 - 30 phút</strong>. Đối với các sự cố hạ tầng mạng thông thường, kỹ thuật viên Viettel sẽ khắc phục xong trong vòng 2 - 4 giờ làm việc theo đúng cam kết chuẩn SLA.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FAQ 2 -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingTwo">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                    <i class="bi bi-pencil-square me-2 text-danger"></i> Tôi có thể sửa hoặc bổ sung thông tin phiếu sau khi gửi không?
+                                </button>
+                            </h2>
+                            <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#faqGuideAccordion">
+                                <div class="accordion-body">
+                                    Có. Bạn truy cập vào trang <strong>Tra cứu phiếu</strong>, mở chi tiết phiếu của mình và nhập thêm nội dung ghi chú hoặc gửi thêm đính kèm vào phần trao đổi trực tuyến với kỹ thuật viên.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FAQ 3 -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingThree">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                    <i class="bi bi-currency-dollar me-2 text-danger"></i> Tôi có phải trả chi phí sửa chữa hay kiểm tra thiết bị không?
+                                </button>
+                            </h2>
+                            <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#faqGuideAccordion">
+                                <div class="accordion-body">
+                                    Tất cả hoạt động kiểm tra, tư vấn và hỗ trợ kỹ thuật tận nơi đối với dịch vụ mạng Internet/TV của Viettel Telecom là <strong>HOÀN TOÀN MIỄN PHÍ</strong>.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CTA BANNER -->
+                <div class="kn-cta-banner">
+                    <div>
+                        <h4>Bạn đang gặp sự cố kỹ thuật?</h4>
+                        <p>Tạo phiếu ngay bây giờ để được kỹ thuật viên Viettel hỗ trợ kịp thời!</p>
+                    </div>
+                    <a asp-controller="Ticket" asp-action="ChonDMDichVu" class="kn-cta-btn">
+                        <i class="bi bi-plus-circle-fill me-1"></i> Tạo Phiếu Ngay
+                    </a>
+                </div>
+
+            </div>
+
+            <!-- Right Sidebar Column (4 Cols) -->
+            <div class="col-lg-4 col-12">
+                <!-- Widget 1: Danh mục cẩm nang -->
+                <div class="kn-sidebar-widget">
+                    <h5 class="widget-title">
+                        <i class="bi bi-folder2-open"></i> Danh Mục Cẩm Nang
+                    </h5>
+                    <ul class="sidebar-category-list">
+                        <li>
+                            <a asp-controller="Home" asp-action="HuongDanTaoPhieu" class="sidebar-category-link active">
+                                <span><i class="bi bi-journal-text me-2"></i> Hướng dẫn tạo phiếu</span>
+                                <i class="bi bi-chevron-right small"></i>
+                            </a>
+                        </li>
+                        <li>
+                            <a asp-controller="Home" asp-action="ThongBaoBaoTri" class="sidebar-category-link">
+                                <span><i class="bi bi-bell-fill me-2"></i> Thông báo bảo trì</span>
+                                <i class="bi bi-chevron-right small"></i>
+                            </a>
+                        </li>
+                        <li>
+                            <a asp-controller="Home" asp-action="MeoXuLyMang" class="sidebar-category-link">
+                                <span><i class="bi bi-wifi me-2"></i> Mẹo xử lý mạng Wifi</span>
+                                <i class="bi bi-chevron-right small"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Widget 2: Liên hệ hỗ trợ khẩn cấp -->
+                <div class="sidebar-contact-card">
+                    <h5><i class="bi bi-headset me-2 text-danger"></i> Cần Hỗ Trợ Khẩn Cấp?</h5>
+                    <p>Tổng đài kỹ thuật viên Viettel hoạt động 24/7/365 sẵn sàng giải đáp mọi thắc mắc.</p>
+                    <a href="tel:18008119" class="sidebar-contact-btn mb-2">
+                        <i class="bi bi-telephone-fill"></i> Hotline: 1800 8119 (Miễn phí)
+                    </a>
+                    <a asp-controller="Customers" asp-action="ChatTrucTuyen" class="sidebar-contact-btn" style="background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3);">
+                        <i class="bi bi-chat-dots-fill"></i> Chat Online Trực Tuyến
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Back To Top Button -->
+<button type="button" id="knBackToTop" title="Lên đầu trang">
+    <i class="bi bi-arrow-up-short" style="font-size: 1.5rem;"></i>
+</button>
+
+@section Scripts {
+    <script src="~/assets/js/knowledge.js" asp-append-version="true"></script>
+}

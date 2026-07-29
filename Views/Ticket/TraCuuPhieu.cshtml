@@ -5,20 +5,34 @@
     // Helper functions for badge HTML generation
     string GetStatusBadgeHtml(string trangThai)
     {
-        var status = trangThai?.ToLower() ?? "";
-        if (status.Contains("chờ tiếp nhận") || status == "pending")
+        var status = (trangThai ?? "").Trim();
+        var s = status.ToLower();
+
+        if (s.Contains("chờ tiếp nhận") || s == "chotiepnhan" || s == "pending")
         {
             return "<span class=\"badge-status pending\"><i class=\"bi bi-clock\"></i> Chờ tiếp nhận</span>";
         }
-        else if (status.Contains("đang xử lý") || status == "processing")
+        else if (s.Contains("chờ phản hồi") || s == "chophanhoi")
+        {
+            return "<span class=\"badge-status pending\" style=\"background-color: #FEF3C7; color: #D97706; border-color: #FCD34D;\"><i class=\"bi bi-chat-dots-fill\"></i> Chờ phản hồi</span>";
+        }
+        else if (s.Contains("đang xử lý") || s.Contains("đang hỗ trợ") || s == "dangxuly" || s == "danghotro" || s == "processing")
         {
             return "<span class=\"badge-status processing\"><i class=\"bi bi-arrow-repeat\"></i> Đang xử lý</span>";
         }
-        else if (status.Contains("hoàn thành") || status == "completed")
+        else if (s.Contains("chờ đánh giá") || s == "chodanhgia")
+        {
+            return "<span class=\"badge-status completed\" style=\"background-color: #E0E7FF; color: #4F46E5; border-color: #C7D2FE;\"><i class=\"bi bi-star-fill\"></i> Chờ đánh giá</span>";
+        }
+        else if (s.Contains("hoàn thành") || s == "dahoanthanh" || s == "completed")
         {
             return "<span class=\"badge-status completed\"><i class=\"bi bi-check-circle\"></i> Đã hoàn thành</span>";
         }
-        return "<span class=\"badge-status cancelled\"><i class=\"bi bi-x-circle\"></i> Đã hủy</span>";
+        else if (s.Contains("hủy") || s == "dahuy" || s == "cancelled")
+        {
+            return "<span class=\"badge-status cancelled\"><i class=\"bi bi-x-circle\"></i> Đã hủy</span>";
+        }
+        return $"<span class=\"badge-status pending\"><i class=\"bi bi-info-circle\"></i> {status}</span>";
     }
 
     string GetPriorityBadgeHtml(int mucDoUuTien)
@@ -36,7 +50,7 @@
 
     string GetTimelineHtml(string trangThai)
     {
-        var status = trangThai?.ToLower() ?? "";
+        var s = (trangThai ?? "").ToLower();
         var steps = new[]
         {
             new { key = "created", label = "Đã tạo phiếu", icon = "bi-plus-circle-fill" },
@@ -46,19 +60,23 @@
         };
 
         int doneUpTo = 1;
-        if (status.Contains("chờ tiếp nhận") || status == "pending")
+        if (s.Contains("chờ tiếp nhận") || s == "pending")
         {
             doneUpTo = 1;
         }
-        else if (status.Contains("đang xử lý") || status == "processing")
+        else if (s.Contains("chờ phản hồi") || s.Contains("đang xử lý") || s.Contains("đang hỗ trợ") || s == "dangxuly" || s == "processing")
         {
             doneUpTo = 3;
         }
-        else if (status.Contains("hoàn thành") || status == "completed")
+        else if (s.Contains("hoàn thành") || s.Contains("chờ đánh giá") || s == "dahoanthanh" || s == "completed")
         {
             doneUpTo = 4;
         }
-        else if (status.Contains("hủy") || status == "cancelled")
+        else if (s.Contains("hủy") || s == "dahuy" || s == "cancelled")
+        {
+            doneUpTo = 2;
+        }
+        else
         {
             doneUpTo = 2;
         }
@@ -192,10 +210,8 @@
                         </ol>
                     </nav>
 
-                    <!-- Badge -->
-                    <span class="hero-badge">
-                        <i class="bi bi-search me-1"></i> Tra cứu trạng thái xử lý 24/7
-                    </span>
+                   
+                 
 
                     <!-- Title -->
                     <h1 class="hero-title text-uppercase">Tra Cứu <span class="accent">Phiếu Hỗ Trợ</span></h1>
@@ -219,22 +235,22 @@
                     <!-- Quick Stats Row (compact, inline) -->
                     <div class="lk-hero-stats d-flex flex-wrap gap-3 mt-4">
                         <div class="lk-hero-stat-item">
-                            <span class="lk-hero-stat-num text-danger" data-target="2348">0</span>
+                            <span class="lk-hero-stat-num text-danger" data-target="@Model.TongSoPhieu">0</span>
                             <span class="lk-hero-stat-label">Tổng phiếu</span>
                         </div>
                         <div class="lk-hero-stat-sep"></div>
                         <div class="lk-hero-stat-item">
-                            <span class="lk-hero-stat-num" style="color:#3B82F6" data-target="12">0</span>
+                            <span class="lk-hero-stat-num" style="color:#3B82F6" data-target="@Model.DangXuLyCount">0</span>
                             <span class="lk-hero-stat-label">Đang xử lý</span>
                         </div>
                         <div class="lk-hero-stat-sep"></div>
                         <div class="lk-hero-stat-item">
-                            <span class="lk-hero-stat-num" style="color:#16A34A" data-target="2315">0</span>
+                            <span class="lk-hero-stat-num" style="color:#16A34A" data-target="@Model.DaHoanThanhCount">0</span>
                             <span class="lk-hero-stat-label">Đã hoàn thành</span>
                         </div>
                         <div class="lk-hero-stat-sep"></div>
                         <div class="lk-hero-stat-item">
-                            <span class="lk-hero-stat-num" style="color:#F59E0B" data-target="8">0</span>
+                            <span class="lk-hero-stat-num" style="color:#F59E0B" data-target="@Model.LichHenHomNayCount">0</span>
                             <span class="lk-hero-stat-label">Lịch hẹn hôm nay</span>
                         </div>
                     </div>
@@ -605,25 +621,23 @@
                             </div>
                         </div>
 
-                        <!-- DESKTOP: Card Grid Layout (≥768px) -->
+                        <!-- DESKTOP: Full-Width Card Grid Layout (≥768px) -->
                         <div class="lk-info-card-body d-none d-md-block" id="desktopTableContainer">
                             <div class="row g-4" id="ticketTableBody">
                                 @foreach (var ticket in Model.DanhSachPhieu)
                                 {
-                                    <div class="col-lg-6 col-md-6 col-12">
+                                    <div class="col-12">
                                         <div class="lk-ticket-card">
                                             <!-- Top Header -->
                                             <div class="lk-ticket-card-top">
-                                                <div>
+                                                <div class="d-flex flex-wrap align-items-center gap-3">
                                                     <span class="lk-ticket-code"><i class="bi bi-hash"></i>@ticket.MaPhieu</span>
-                                                    <h3 class="lk-ticket-title mt-1">@ticket.TieuDe</h3>
-                                                </div>
-                                                <div>
                                                     @Html.Raw(GetStatusBadgeHtml(ticket.TrangThai))
                                                 </div>
+                                                <h3 class="lk-ticket-title mt-2">@ticket.TieuDe</h3>
                                             </div>
 
-                                            <!-- Meta Info Grid -->
+                                            <!-- Meta Info Grid (4 columns) -->
                                             <div class="lk-ticket-meta-grid">
                                                 <div class="lk-ticket-meta-item">
                                                     <span class="lk-ticket-meta-label"><i class="bi bi-folder2-open me-1"></i>Danh mục</span>
@@ -651,7 +665,7 @@
                                             </div>
 
                                             <!-- Staff Info Card -->
-                                            <div class="lk-staff-card">
+                                            <div class="lk-staff-card w-100">
                                                 <div class="lk-staff-header">
                                                     <i class="bi bi-person-badge-fill text-danger me-1"></i>
                                                     <span class="fw-bold text-dark">Nhân viên phụ trách:</span>
@@ -671,12 +685,12 @@
                                                                 }
                                                             </div>
                                                             <div class="lk-staff-contacts">
-                                                                <a href="tel:@ticket.SoDienThoaiNV" class="lk-staff-contact-link phone">
+                                                                <a href="tel:@ticket.SoDienThoaiNV" class="lk-staff-contact-link phone me-3">
                                                                     <i class="bi bi-telephone-fill me-1"></i>@ticket.SoDienThoaiNV
                                                                 </a>
                                                                 @if (!string.IsNullOrEmpty(ticket.EmailNV))
                                                                 {
-                                                                    <span class="lk-staff-contact-link email ms-2">
+                                                                    <span class="lk-staff-contact-link email">
                                                                         <i class="bi bi-envelope-fill me-1"></i>@ticket.EmailNV
                                                                     </span>
                                                                 }
@@ -692,11 +706,11 @@
                                                 }
                                             </div>
 
-                                            <!-- Card Footer -->
-                                            <div class="lk-ticket-card-footer mt-auto pt-2">
-                                                <a href="/Ticket/ChiTietPhieu/@ticket.IdPhieu" class="lk-btn-detail">
+                                            <!-- Card Action Button Footer (Full-width below staff info) -->
+                                            <div class="lk-ticket-action-footer pt-1">
+                                                <a href="/Ticket/ChiTietPhieu/@ticket.IdPhieu" class="lk-btn-detail w-100 py-3 justify-content-center">
                                                     <span>Xem chi tiết phiếu</span>
-                                                    <i class="bi bi-arrow-right-short fs-5"></i>
+                                                    <i class="bi bi-arrow-right-circle-fill ms-2 fs-5"></i>
                                                 </a>
                                             </div>
                                         </div>
@@ -806,7 +820,7 @@
     </main>
 
     <!-- ==================== FOOTER ==================== -->
-    @await Html.PartialAsync("_Footer")
+    @* @await Html.PartialAsync("_Footer") *@
 
     <!-- ==================== CHATBOX CONTAINER ==================== -->
     <div id="chatbox-container"></div>

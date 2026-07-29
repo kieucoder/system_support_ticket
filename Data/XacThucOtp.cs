@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SupportTicketSysterm.Data
 {
@@ -7,6 +8,8 @@ namespace SupportTicketSysterm.Data
     {
         [Key]
         public int Id { get; set; }
+
+        public int? IdKhachHang { get; set; }
 
         [Required]
         [MaxLength(255)]
@@ -24,11 +27,12 @@ namespace SupportTicketSysterm.Data
 
         public bool DaSuDung { get; set; } = false;
 
-
-
         public int SoLanThu { get; set; } = 0;
 
         [MaxLength(100)]
         public string? NguoiTao { get; set; }
+
+        [ForeignKey(nameof(IdKhachHang))]
+        public virtual KhachHang? IdKhachHangNavigation { get; set; }
     }
 }

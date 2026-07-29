@@ -19,9 +19,19 @@ namespace SupportTicketSysterm.Repositories
         public async Task<PhieuHoTro?> GetTicketByCodeAsync(string maPhieu)
         {
             return await _context.PhieuHoTros
+                .AsNoTracking()
                 .Include(p => p.IdKhachHangNavigation)
                 .Include(p => p.IdNhanVienNavigation)
                 .FirstOrDefaultAsync(p => p.MaPhieu == maPhieu);
+        }
+
+        public async Task<PhieuHoTro?> GetTicketByIdAsync(int idPhieu)
+        {
+            return await _context.PhieuHoTros
+                .AsNoTracking()
+                .Include(p => p.IdKhachHangNavigation)
+                .Include(p => p.IdNhanVienNavigation)
+                .FirstOrDefaultAsync(p => p.IdPhieu == idPhieu);
         }
 
         public async Task<LienHe?> GetLienHeByTicketIdAsync(int idPhieu)
@@ -42,6 +52,7 @@ namespace SupportTicketSysterm.Repositories
         public async Task<List<TinNhan>> GetMessagesByLienHeIdAsync(int idLienHe)
         {
             return await _context.TinNhans
+                .AsNoTracking()
                 .Include(t => t.FileDinhKems)
                 .Where(t => t.IdLienHe == idLienHe)
                 .OrderBy(t => t.ThoiGian)

@@ -630,4 +630,132 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     };
+
+    // ==========================================
+    // 8. AI INTENT DETECTION & AUTO UI SELECT
+    // ==========================================
+    window.addEventListener('ai_intent_detected', function(e) {
+        const detail = e.detail;
+        if (!detail) return;
+        console.log("AI Intent Detected:", detail);
+
+        const categorySelect = document.querySelector('select[name="IdDanhMuc"], select[name="categoryId"], #IdDanhMuc, #categoryId');
+        const serviceSelect = document.querySelector('select[name="IdDichVu"], select[name="serviceId"], #IdDichVu, #serviceId');
+
+        if (categorySelect && detail.categoryId) {
+            categorySelect.value = detail.categoryId;
+            categorySelect.dispatchEvent(new Event('change'));
+        }
+        if (serviceSelect && detail.serviceId) {
+            setTimeout(() => {
+                serviceSelect.value = detail.serviceId;
+                serviceSelect.dispatchEvent(new Event('change'));
+            }, 250);
+        }
+    });
+
+    // ==========================================
+    // 9. DYNAMIC SERVICE CARD LOADER
+    // ==========================================
+    function loadServiceCards() {
+        document.querySelectorAll('.ai-service-card-slot[data-service-id]').forEach(slot => {
+            const serviceId = slot.getAttribute('data-service-id');
+            if (slot.dataset.loaded === 'true') return;
+            slot.dataset.loaded = 'true';
+
+            fetch(`/api/service/card-data/${serviceId}`)
+                .then(res => res.json())
+                .then(res => {
+                    if (res.success) {
+                        slot.innerHTML = `
+                            <div class="card border-0 shadow-sm rounded-4 overflow-hidden bg-white" style="border: 1px solid #fee2e2 !important;">
+                                <div class="position-relative">
+                                    <img src="${res.hinhAnh}" class="card-img-top" style="height:140px; object-fit:cover; width:100%;" alt="${res.tenDichVu}" onerror="this.src='https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&w=600&q=80';" />
+                                    <span class="badge bg-danger position-absolute top-0 end-0 m-2 shadow-sm">${res.tenDanhMuc}</span>
+                                </div>
+                                <div class="card-body p-3">
+                                    <h6 class="fw-bold text-dark mb-1" style="font-size:0.95rem;">${res.tenDichVu}</h6>
+                                    <p class="small text-muted mb-2" style="font-size:0.78rem; line-height:1.4;">${res.moTa}</p>
+                                    <div class="d-flex justify-content-between align-items-center mb-3 text-secondary small" style="font-size:0.75rem;">
+                                        <span><i class="bi bi-clock-history me-1 text-danger"></i>Thời gian: <strong>${res.thoiGianXuLy}</strong></span>
+                                    </div>
+                                    <div class="d-flex gap-2">
+                                        <a href="/Ticket/TaoPhieu?serviceId=${res.idDichVu}&categoryId=${res.idDanhMuc}" class="btn btn-danger btn-sm rounded-pill flex-grow-1 fw-bold text-white shadow-sm" style="background-color:#D71920;">
+                                            <i class="bi bi-file-earmark-plus-fill me-1"></i>Tạo Phiếu
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    } else {
+                        slot.innerHTML = `<div class="text-danger small p-2"><i class="bi bi-exclamation-circle me-1"></i>Không thể tải thông tin dịch vụ.</div>`;
+                    }
+                })
+                .catch(err => {
+                    console.error("Error loading service card:", err);
+                });
+        });
+    }
+
+    const observer = new MutationObserver(() => loadServiceCards());
+    if (chatAiMessagesContainer) {
+        observer.observe(chatAiMessagesContainer, { childList: true, subtree: true });
+    }
+    loadServiceCards();
+
+    // ==========================================
+    // 10. APPOINTMENT SLOT SELECTION HELPER
+    // ==========================================
+    window.selectAiAppointmentSlot = function(time, btn) {
+        if (!config.isLoggedIn) {
+            if (loginModal) loginModal.style.display = 'flex';
+            return;
+        }
+
+        const cardContainer = btn.closest('.ai-appointment-slots-card');
+        if (confirm(`Bạn muốn xác nhận đặt lịch hẹn kỹ thuật vào lúc ${time}?`)) {
+            btn.disabled = true;
+            btn.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span>Đang đặt...`;
+
+            fetch('/api/appointment/create-ai', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    ngayHen: new Date(Date.now() + 86400000).toISOString().split('T')[0],
+                    gioHen: time,
+                    ghiChu: 'Khách hàng đặt lịch trực tiếp qua Chatbox AI TechSupport'
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    if (cardContainer) {
+                        cardContainer.innerHTML = `
+                            <div class="alert alert-success m-0 rounded-4 border-0 shadow-sm p-3 style="border-left: 4px solid #198754 !important;">
+                                <h6 class="fw-bold mb-2 text-success" style="font-size:0.9rem;"><i class="bi bi-check-circle-fill me-2"></i>ĐẶT LỊCH HẸN THÀNH CÔNG!</h6>
+                                <div class="small text-dark" style="font-size:0.8rem; line-height:1.5;">
+                                    <div><strong>Mã lịch hẹn:</strong> LH#${data.idLichHen}</div>
+                                    <div><strong>Ngày hẹn:</strong> ${data.ngayHen}</div>
+                                    <div><strong>Giờ hẹn:</strong> ${data.gioHen}</div>
+                                    <div><strong>Kỹ thuật viên:</strong> ${data.tenKtv} (SĐT: ${data.sdtKtv})</div>
+                                    <div><strong>Địa chỉ:</strong> ${data.diaChi}</div>
+                                    <div class="mt-2"><span class="badge bg-success-subtle text-success fw-bold px-2 py-1">${data.trangThai}</span></div>
+                                </div>
+                            </div>
+                        `;
+                    }
+                } else {
+                    btn.disabled = false;
+                    btn.innerHTML = `${time}`;
+                    alert(data.message || 'Lỗi đặt lịch hẹn.');
+                }
+            })
+            .catch(err => {
+                btn.disabled = false;
+                btn.innerHTML = `${time}`;
+                console.error(err);
+                alert('Lỗi kết nối khi đặt lịch.');
+            });
+        }
+    };
 });

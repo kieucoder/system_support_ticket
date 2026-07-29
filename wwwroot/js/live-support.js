@@ -71,6 +71,7 @@ document.addEventListener("DOMContentLoaded", () => {
             img.onclick = () => {
                 if (lightboxModal && lightboxImg) {
                     lightboxImg.src = img.src;
+                    lightboxModal.style.display = "flex";
                     lightboxModal.classList.add("active");
                 }
             };
@@ -79,7 +80,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (lightboxClose) {
         lightboxClose.onclick = () => {
-            if (lightboxModal) lightboxModal.classList.remove("active");
+            if (lightboxModal) {
+                lightboxModal.classList.remove("active");
+                lightboxModal.style.display = "none";
+            }
+        };
+    }
+
+    if (lightboxModal) {
+        lightboxModal.onclick = (e) => {
+            if (e.target === lightboxModal) {
+                lightboxModal.classList.remove("active");
+                lightboxModal.style.display = "none";
+            }
         };
     }
 
@@ -318,6 +331,61 @@ document.addEventListener("DOMContentLoaded", () => {
                     typingIndicator.style.display = "none";
                 }
             }
+        }
+    });
+
+    // Receive ticket status changed realtime event via SignalR
+    connection.on("TicketStatusChanged", (data) => {
+        console.log("SignalR TicketStatusChanged received:", data);
+        if (!data) return;
+
+        const statusMap = {
+            "Chờ tiếp nhận": { text: "🟡 Chờ tiếp nhận", badgeClass: "badge-status-warning" },
+            "Đang xử lý": { text: "🔵 Đang xử lý", badgeClass: "badge-status-primary" },
+            "Chờ lịch hẹn": { text: "🟣 Chờ lịch hẹn", badgeClass: "badge-status-purple" },
+            "Hoàn thành": { text: "🟢 Hoàn thành", badgeClass: "badge-status-success" },
+            "Đã hủy": { text: "🔴 Đã hủy", badgeClass: "badge-status-danger" }
+        };
+
+        const stInfo = statusMap[data.trangThaiMoi] || { text: data.trangThaiMoi, badgeClass: "badge-status-warning" };
+
+        const card = document.querySelector(`.conv-card[data-convo-id="${data.idLienHe}"]`) ||
+                     document.querySelector(`.conv-card[data-ticket="${(data.ticketCode||'').toLowerCase()}"]`);
+        if (card) {
+            card.setAttribute('data-status', data.trangThaiMoi);
+            const badge = card.querySelector('.status-badge-target');
+            if (badge) {
+                badge.className = `badge ${stInfo.badgeClass} status-badge-target`;
+                badge.textContent = stInfo.text;
+            }
+        }
+
+        const headerBadge = document.getElementById('chatHeaderBadge');
+        if (headerBadge) {
+            headerBadge.className = `badge ${stInfo.badgeClass}`;
+            headerBadge.textContent = stInfo.text;
+        }
+
+        const panelBadge = document.getElementById('panelTicketStatusBadge');
+        if (panelBadge) {
+            panelBadge.className = `badge ${stInfo.badgeClass}`;
+            panelBadge.textContent = stInfo.text;
+        }
+
+        if (data.trangThaiMoi === "Hoàn thành" || data.trangThaiMoi === "Đã hủy") {
+            const inputWrapper = document.getElementById('chatInputAreaWrapper');
+            if (inputWrapper) {
+                const noticeColor = data.trangThaiMoi === "Hoàn thành" ? "text-success" : "text-danger";
+                const noticeIcon = data.trangThaiMoi === "Hoàn thành" ? "✅" : "🔴";
+                inputWrapper.innerHTML = `
+                    <div class="chat-readonly-banner p-3 text-center rounded-3 bg-light border shadow-sm my-1" id="readOnlyChatNotice">
+                        <div class="${noticeColor} fw-bold mb-1 fs-6">${noticeIcon} Phiếu hỗ trợ đã ${data.trangThaiMoi === "Hoàn thành" ? "hoàn thành" : "bị hủy"}.</div>
+                        <p class="small text-muted mb-0">Cuộc trò chuyện chỉ còn chế độ xem. Vui lòng tạo Phiếu hỗ trợ mới nếu cần hỗ trợ thêm.</p>
+                    </div>
+                `;
+            }
+            const actionBtns = document.getElementById('ticketActionButtonsContainer');
+            if (actionBtns) actionBtns.innerHTML = '';
         }
     });
 

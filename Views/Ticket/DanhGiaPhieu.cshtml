@@ -1,248 +1,452 @@
 @model SupportTicketSysterm.ViewModels.DanhGiaPhieuViewModel
 @{
-    Layout = null;
-    ViewData["Title"] = "Đánh giá chất lượng dịch vụ";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+    ViewData["Title"] = "Đánh Giá Chất Lượng Dịch Vụ - TechSupport Viettel Telecom";
 }
 
-<!DOCTYPE html>
-<html lang="vi">
+@section Styles {
+    <link rel="stylesheet" href="~/assets/css/review.css" asp-append-version="true" />
+    <style>
+        .star-rating-group { display: flex; gap: 4px; cursor: pointer; }
+        .star-icon { font-size: 1.5rem; color: #CBD5E1; transition: color 0.2s ease, transform 0.2s ease; }
+        .star-icon.active { color: #F59E0B; }
+        .star-icon:hover { transform: scale(1.15); }
+        .alert-already-rated { background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: 12px; }
+        .alert-not-completed { background: #FFFBEB; border: 1px solid #FDE68A; border-radius: 12px; }
+        @@keyframes modalPopIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+    </style>
+}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Đánh Giá Phiếu Hỗ Trợ - TechSupport Viettel</title>
+<div class="review-page-wrapper">
 
-    <!-- SEO Optimization -->
-    <meta name="description" content="Đánh giá dịch vụ và kỹ thuật viên TechSupport Viettel.">
-    <meta name="robots" content="noindex, nofollow">
-
-    <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="https://viettel.com.vn/favicon.ico">
-
-    <!-- Bootstrap 5.3 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-
-    <!-- Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-
-    <!-- Font Awesome 6.6.0 CDN -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-
-    <!-- Google Fonts Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-
-    <!-- Core Stylesheets -->
-    <link rel="stylesheet" href="~/assets/css/style.css">
-    <link rel="stylesheet" href="~/assets/css/responsive.css">
-    <link rel="stylesheet" href="~/assets/css/header.css">
-    <link rel="stylesheet" href="~/assets/css/sidebar.css">
-    <link rel="stylesheet" href="~/assets/css/footer.css">
-
-    <!-- Custom Page CSS -->
-    <link rel="stylesheet" href="~/assets/css/ticket-detail.css">
-</head>
-
-<body>
-
-    <!-- ==================== HEADER ==================== -->
-    @await Html.PartialAsync("_Header", Context.Session)
-
-    <!-- ==================== SIDEBAR ==================== -->
-    @await Html.PartialAsync("_Sidebar")
-
-    <!-- MAIN WORKSPACE -->
-    <main class="workspace-area">
-        <div class="container" style="max-width: 900px;">
-
-            <!-- BREADCRUMBS & HEADER BLOCK -->
-            <div class="detail-header-card animate-fade-up">
-                <nav aria-label="breadcrumb" class="detail-breadcrumb mb-3">
-                    <ol class="breadcrumb m-0">
-                        <li class="breadcrumb-item">
-                            <a href="/">
-                                <i class="fa-solid fa-house-door-fill me-1"></i> Trang chủ
-                            </a>
-                        </li>
-                        <li class="breadcrumb-item">
-                            <a asp-controller="Customers" asp-action="PhieuCuaToi">Phiếu của tôi</a>
-                        </li>
-                        <li class="breadcrumb-item">
-                            <a asp-controller="Ticket" asp-action="ChiTietPhieu" asp-route-id="@Model.IdPhieu">Chi tiết phiếu</a>
-                        </li>
-                        <li class="breadcrumb-item active" aria-current="page">Đánh giá dịch vụ</li>
-                    </ol>
-                </nav>
-
-                <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
-                    <div>
-                        <span class="text-danger fw-bold fs-6"><i class="fa-solid fa-star"></i> Đánh giá chất lượng dịch vụ</span>
-                        <h1 class="detail-main-title">Gửi phản hồi cho phiếu: @Model.MaPhieu</h1>
-                    </div>
-                </div>
+    <!-- ==========================================
+       1. HERO BANNER SECTION
+       ========================================== -->
+    <section class="rev-hero">
+        <div class="rev-hero-overlay"></div>
+        <div class="rev-hero-particles"></div>
+        <div class="rev-hero-content">
+            <span class="rev-hero-subtitle">
+                <i class="bi bi-star-fill me-1 text-warning"></i> VIETTEL TELECOM CẦN THƠ
+            </span>
+            <h1 class="rev-hero-title">
+                ĐÁNH GIÁ <span>CHẤT LƯỢNG DỊCH VỤ</span>
+            </h1>
+            <p class="rev-hero-desc">
+                Ý kiến đánh giá của quý khách là cơ sở giúp Viettel Telecom nâng cao chất lượng mạng và tác phong phục vụ.
+            </p>
+            <div class="rev-hero-breadcrumb">
+                <a asp-controller="Customers" asp-action="TrangChu">
+                    <i class="bi bi-house-door-fill me-1"></i> Trang chủ
+                </a>
+                <span class="separator">></span>
+                <a asp-controller="Customers" asp-action="PhieuCuaToi">Phiếu của tôi</a>
+                <span class="separator">></span>
+                <span class="current">Đánh giá</span>
             </div>
+        </div>
+    </section>
 
-            <!-- FORM CARD -->
-            <div class="detail-card animate-fade-up">
-                <div class="detail-card-head">
-                    <div class="card-icon red">
-                        <i class="fa-solid fa-ticket-fill"></i>
-                    </div>
-                    <h2 class="detail-card-title">Thông tin phiếu hỗ trợ đã hoàn thành</h2>
-                </div>
-                
-                <div class="detail-card-body">
-                    <div class="data-grid mb-4">
-                        <div class="data-cell">
-                            <span class="cell-lbl"><i class="bi bi-tag-fill"></i> Tiêu đề phiếu</span>
-                            <span class="cell-val">@Model.TieuDe</span>
+    <!-- ==========================================
+       2. MAIN CONTENT SECTION (2 COLUMNS)
+       ========================================== -->
+    <section class="rev-main-section">
+        <div class="container">
+
+            <!-- ALERT BANNER MESSAGES -->
+            @if (!Model.IsCompleted)
+            {
+                <div class="alert alert-not-completed p-4 mb-4 shadow-sm" data-aos="fade-up">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="rounded-circle bg-warning text-dark d-flex align-items-center justify-content-center flex-shrink-0" style="width: 48px; height: 48px;">
+                            <i class="bi bi-exclamation-triangle-fill fs-4"></i>
                         </div>
-                        <div class="data-cell">
-                            <span class="cell-lbl"><i class="bi bi-folder-fill"></i> Danh mục & Dịch vụ</span>
-                            <span class="cell-val">@Model.TenDanhMuc / @Model.TenDichVu</span>
-                        </div>
-                        <div class="data-cell">
-                            <span class="cell-lbl"><i class="bi bi-person-badge-fill"></i> Kỹ thuật viên xử lý</span>
-                            <span class="cell-val text-danger">@Model.TenNhanVien</span>
-                        </div>
-                        <div class="data-cell">
-                            <span class="cell-lbl"><i class="bi bi-check-circle-fill"></i> Trạng thái</span>
-                            <span class="badge bg-success-subtle text-success border border-success fw-bold py-1 px-3" style="width: fit-content;">@Model.TrangThai</span>
+                        <div>
+                            <h5 class="fw-bold text-dark mb-1">Phiếu hỗ trợ chưa hoàn thành</h5>
+                            <p class="text-secondary m-0">Phiếu hỗ trợ chưa hoàn thành nên chưa thể đánh giá.</p>
                         </div>
                     </div>
                 </div>
-            </div>
-
-            <!-- EVALUATION FORM -->
-            <form asp-controller="Ticket" asp-action="DanhGiaPhieu" asp-route-id="@Model.IdPhieu" method="post" enctype="multipart/form-data" class="detail-card animate-fade-up">
-                @Html.AntiForgeryToken()
-                
-                @Html.HiddenFor(m => m.IdPhieu)
-                @Html.HiddenFor(m => m.MaPhieu)
-                @Html.HiddenFor(m => m.TieuDe)
-                @Html.HiddenFor(m => m.TrangThai)
-                @Html.HiddenFor(m => m.TenDanhMuc)
-                @Html.HiddenFor(m => m.TenDichVu)
-                @Html.HiddenFor(m => m.TenNhanVien)
-                
-                <div class="detail-card-head">
-                    <div class="card-icon red">
-                        <i class="fa-solid fa-pen-to-square"></i>
+            }
+            else if (Model.IsAlreadyRated)
+            {
+                <div class="alert alert-already-rated p-4 mb-4 shadow-sm" data-aos="fade-up">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center flex-shrink-0" style="width: 48px; height: 48px;">
+                            <i class="bi bi-patch-check-fill fs-4"></i>
+                        </div>
+                        <div>
+                            <h5 class="fw-bold text-primary mb-1">Bạn đã đánh giá phiếu này</h5>
+                            <p class="text-secondary m-0">Dưới đây là chi tiết ý kiến đánh giá đã được lưu trên hệ thống SQL Server.</p>
+                        </div>
                     </div>
-                    <h2 class="detail-card-title">Mẫu khảo sát & ý kiến đóng góp</h2>
                 </div>
+            }
 
-                <div class="detail-card-body">
-                    
-                    @if (!ViewData.ModelState.IsValid)
+            <div class="row g-4">
+
+                <!-- LEFT COLUMN: Ticket Details & Form -->
+                <div class="col-lg-8 col-12">
+
+                    <!-- CARD 1: THÔNG TIN PHIẾU HỖ TRỢ (SQL SERVER DATA) -->
+                    <div class="rev-card rev-ticket-card mb-4" data-aos="fade-up">
+                        <div class="rev-card-header d-flex align-items-center justify-content-between">
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="rev-icon-circle bg-red-soft">
+                                    <i class="bi bi-ticket-detailed-fill"></i>
+                                </div>
+                                <div>
+                                    <h2 class="rev-card-title m-0">Thông Tin Phiếu Đánh Giá</h2>
+                                    <span class="rev-card-subtitle">Thông tin chi tiết phiếu kỹ thuật đọc trực tiếp từ CSDL SQL Server</span>
+                                </div>
+                            </div>
+                            <span class="rev-status-badge @(Model.TrangThai == "Hoàn thành" || Model.TrangThai == "DaHoanThanh" ? "badge-success" : "badge-warning")">
+                                <i class="bi bi-check-circle-fill me-1"></i> @Model.TrangThai
+                            </span>
+                        </div>
+                        <div class="rev-card-body">
+                            <div class="row g-3">
+                                <div class="col-sm-6 col-12">
+                                    <div class="rev-info-item">
+                                        <span class="info-label">Mã phiếu hỗ trợ</span>
+                                        <span class="info-value font-mono text-danger fw-bold">@Model.MaPhieu</span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-12">
+                                    <div class="rev-info-item">
+                                        <span class="info-label">Tiêu đề sự cố</span>
+                                        <span class="info-value fw-bold">@Model.TieuDe</span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-12">
+                                    <div class="rev-info-item">
+                                        <span class="info-label">Khách hàng</span>
+                                        <span class="info-value fw-bold text-dark">@Model.TenKhachHang</span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-12">
+                                    <div class="rev-info-item">
+                                        <span class="info-label">Danh mục dịch vụ</span>
+                                        <span class="info-value">@Model.TenDanhMuc</span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-12">
+                                    <div class="rev-info-item">
+                                        <span class="info-label">Gói dịch vụ</span>
+                                        <span class="info-value">@Model.TenDichVu</span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-12">
+                                    <div class="rev-info-item">
+                                        <span class="info-label">Kỹ thuật viên hỗ trợ</span>
+                                        <span class="info-value text-primary font-weight-bold">
+                                            <i class="bi bi-person-badge-fill me-1"></i> @Model.TenNhanVien
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-12">
+                                    <div class="rev-info-item">
+                                        <span class="info-label">Thời gian hoàn thành</span>
+                                        <span class="info-value text-success fw-bold">@Model.NgayHoanThanhText</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CARD 2: FORM ĐÁNH GIÁ (HOẶC READ-ONLY VIEW NẾU ĐÃ ĐÁNH GIÁ) -->
+                    @if (Model.IsCompleted && !Model.IsAlreadyRated)
                     {
-                        <div class="alert alert-danger border-0 rounded-3 mb-4">
-                            <h5 class="fw-bold mb-2"><i class="bi bi-exclamation-triangle-fill"></i> Vui lòng sửa các lỗi sau:</h5>
-                            <div asp-validation-summary="All" class="small m-0"></div>
+                        <div class="rev-card rev-form-card mb-4" data-aos="fade-up" data-aos-delay="100">
+                            <div class="rev-card-header d-flex align-items-center gap-2">
+                                <div class="rev-icon-circle bg-gold-soft">
+                                    <i class="bi bi-stars"></i>
+                                </div>
+                                <div>
+                                    <h2 class="rev-card-title m-0">Đánh Giá 5 Tiêu Chí Dịch Vụ</h2>
+                                    <span class="rev-card-subtitle">Nhấp chọn số sao cho 5 tiêu chí để gửi phản hồi lên hệ thống</span>
+                                </div>
+                            </div>
+                            <div class="rev-card-body">
+                                <form id="reviewForm" method="post" asp-controller="Ticket" asp-action="DanhGiaPhieu">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" asp-for="IdPhieu" />
+                                    <input type="hidden" asp-for="ChatLuongDichVu" id="inputQuality" value="@Model.ChatLuongDichVu" />
+                                    <input type="hidden" asp-for="ThaiDoNhanVien" id="inputAttitude" value="@Model.ThaiDoNhanVien" />
+                                    <input type="hidden" asp-for="TocDoXuLy" id="inputSpeed" value="@Model.TocDoXuLy" />
+                                    <input type="hidden" asp-for="KhaNangGiaiQuyet" id="inputSolving" value="@Model.KhaNangGiaiQuyet" />
+                                    <input type="hidden" asp-for="MucDoHaiLong" id="inputSatisfaction" value="@Model.MucDoHaiLong" />
+
+                                    <!-- Tiêu chí 1 -->
+                                    <div class="rating-criterion-row mb-4" data-criterion="quality">
+                                        <div class="criterion-info">
+                                            <span class="criterion-num">1</span>
+                                            <div class="criterion-text">
+                                                <span class="criterion-name">Chất lượng dịch vụ</span>
+                                                <span class="criterion-desc">Hiệu quả xử lý sự cố & độ ổn định thiết bị</span>
+                                            </div>
+                                        </div>
+                                        <div class="criterion-stars-wrapper">
+                                            <div class="star-rating-group" data-target="inputQuality" data-score="5">
+                                                <i class="bi bi-star-fill star-icon active" data-value="1"></i>
+                                                <i class="bi bi-star-fill star-icon active" data-value="2"></i>
+                                                <i class="bi bi-star-fill star-icon active" data-value="3"></i>
+                                                <i class="bi bi-star-fill star-icon active" data-value="4"></i>
+                                                <i class="bi bi-star-fill star-icon active" data-value="5"></i>
+                                            </div>
+                                            <span class="score-display-badge">5/5</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Tiêu chí 2 -->
+                                    <div class="rating-criterion-row mb-4" data-criterion="attitude">
+                                        <div class="criterion-info">
+                                            <span class="criterion-num">2</span>
+                                            <div class="criterion-text">
+                                                <span class="criterion-name">Thái độ phục vụ</span>
+                                                <span class="criterion-desc">Tác phong lịch sự, nhiệt tình & văn minh</span>
+                                            </div>
+                                        </div>
+                                        <div class="criterion-stars-wrapper">
+                                            <div class="star-rating-group" data-target="inputAttitude" data-score="5">
+                                                <i class="bi bi-star-fill star-icon active" data-value="1"></i>
+                                                <i class="bi bi-star-fill star-icon active" data-value="2"></i>
+                                                <i class="bi bi-star-fill star-icon active" data-value="3"></i>
+                                                <i class="bi bi-star-fill star-icon active" data-value="4"></i>
+                                                <i class="bi bi-star-fill star-icon active" data-value="5"></i>
+                                            </div>
+                                            <span class="score-display-badge">5/5</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Tiêu chí 3 -->
+                                    <div class="rating-criterion-row mb-4" data-criterion="speed">
+                                        <div class="criterion-info">
+                                            <span class="criterion-num">3</span>
+                                            <div class="criterion-text">
+                                                <span class="criterion-name">Tốc độ xử lý</span>
+                                                <span class="criterion-desc">Thời gian tiếp nhận & có mặt hỗ trợ</span>
+                                            </div>
+                                        </div>
+                                        <div class="criterion-stars-wrapper">
+                                            <div class="star-rating-group" data-target="inputSpeed" data-score="5">
+                                                <i class="bi bi-star-fill star-icon active" data-value="1"></i>
+                                                <i class="bi bi-star-fill star-icon active" data-value="2"></i>
+                                                <i class="bi bi-star-fill star-icon active" data-value="3"></i>
+                                                <i class="bi bi-star-fill star-icon active" data-value="4"></i>
+                                                <i class="bi bi-star-fill star-icon active" data-value="5"></i>
+                                            </div>
+                                            <span class="score-display-badge">5/5</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Tiêu chí 4 -->
+                                    <div class="rating-criterion-row mb-4" data-criterion="solving">
+                                        <div class="criterion-info">
+                                            <span class="criterion-num">4</span>
+                                            <div class="criterion-text">
+                                                <span class="criterion-name">Khả năng giải quyết</span>
+                                                <span class="criterion-desc">Trình độ chuyên môn & tư vấn giải pháp</span>
+                                            </div>
+                                        </div>
+                                        <div class="criterion-stars-wrapper">
+                                            <div class="star-rating-group" data-target="inputSolving" data-score="5">
+                                                <i class="bi bi-star-fill star-icon active" data-value="1"></i>
+                                                <i class="bi bi-star-fill star-icon active" data-value="2"></i>
+                                                <i class="bi bi-star-fill star-icon active" data-value="3"></i>
+                                                <i class="bi bi-star-fill star-icon active" data-value="4"></i>
+                                                <i class="bi bi-star-fill star-icon active" data-value="5"></i>
+                                            </div>
+                                            <span class="score-display-badge">5/5</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Tiêu chí 5 -->
+                                    <div class="rating-criterion-row mb-4" data-criterion="satisfaction">
+                                        <div class="criterion-info">
+                                            <span class="criterion-num">5</span>
+                                            <div class="criterion-text">
+                                                <span class="criterion-name">Mức độ hài lòng chung</span>
+                                                <span class="criterion-desc">Đánh giá tổng thể trải nghiệm dịch vụ</span>
+                                            </div>
+                                        </div>
+                                        <div class="criterion-stars-wrapper">
+                                            <div class="star-rating-group" data-target="inputSatisfaction" data-score="5">
+                                                <i class="bi bi-star-fill star-icon active" data-value="1"></i>
+                                                <i class="bi bi-star-fill star-icon active" data-value="2"></i>
+                                                <i class="bi bi-star-fill star-icon active" data-value="3"></i>
+                                                <i class="bi bi-star-fill star-icon active" data-value="4"></i>
+                                                <i class="bi bi-star-fill star-icon active" data-value="5"></i>
+                                            </div>
+                                            <span class="score-display-badge">5/5</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- NHẬN XÉT -->
+                                    <div class="form-group mb-4">
+                                        <div class="d-flex align-items-center justify-content-between mb-2">
+                                            <label for="reviewComments" class="form-label fw-bold m-0">
+                                                <i class="bi bi-chat-right-quote-fill me-1 text-danger"></i> Ý kiến nhận xét & góp ý chi tiết
+                                            </label>
+                                            <span class="char-count-badge">
+                                                <span id="charCount">0</span>/1000 ký tự
+                                            </span>
+                                        </div>
+                                        <textarea id="reviewComments" asp-for="NhanXet" class="form-control rev-custom-textarea" rows="4" maxlength="1000" placeholder="Hãy chia sẻ trải nghiệm của bạn về dịch vụ kỹ thuật Viettel..."></textarea>
+                                    </div>
+
+                                    <!-- ACTION BUTTONS -->
+                                    <div class="rev-action-buttons d-flex flex-wrap gap-3 mt-4 pt-2">
+                                        <button type="button" class="btn btn-rev-submit btn-ripple" id="btnSubmitReview">
+                                            <i class="bi bi-send-fill me-1"></i> Gửi Đánh Giá Dịch Vụ
+                                        </button>
+                                        <a asp-controller="Customers" asp-action="PhieuCuaToi" class="btn btn-rev-back">
+                                            <i class="bi bi-arrow-left-circle me-1"></i> Quay Lại Danh Sách
+                                        </a>
+                                    </div>
+
+                                </form>
+                            </div>
+                        </div>
+                    }
+                    else if (Model.IsAlreadyRated)
+                    {
+                        <!-- READ ONLY RATED CARD -->
+                        <div class="rev-card mb-4" data-aos="fade-up">
+                            <div class="rev-card-header bg-light">
+                                <h4 class="rev-card-title m-0 text-success">
+                                    <i class="bi bi-check-circle-fill me-2"></i>Chi Tiết Đánh Giá Đã Lưu
+                                </h4>
+                            </div>
+                            <div class="rev-card-body">
+                                <div class="d-flex align-items-center justify-content-between mb-3 pb-2 border-bottom">
+                                    <span class="text-muted fs-8">Ngày gửi đánh giá:</span>
+                                    <strong class="text-dark font-mono">@(Model.NgayDanhGia?.ToString("dd/MM/yyyy HH:mm") ?? "Mới đây")</strong>
+                                </div>
+                                <div class="mb-3">
+                                    <span class="text-muted d-block fs-8 mb-1">Nội dung nhận xét:</span>
+                                    <div class="p-3 bg-light rounded-3 text-dark italic">
+                                        "@(string.IsNullOrWhiteSpace(Model.NhanXet) ? "Không có nhận xét thêm." : Model.NhanXet)"
+                                    </div>
+                                </div>
+                                <a asp-controller="Customers" asp-action="PhieuCuaToi" class="btn btn-outline-danger btn-sm rounded-pill px-4">
+                                    <i class="bi bi-arrow-left me-1"></i> Quay lại danh sách phiếu
+                                </a>
+                            </div>
                         </div>
                     }
 
-                    <!-- 1. Chất lượng dịch vụ -->
-                    <div class="mb-4">
-                        <label class="form-label fw-bold d-block text-dark mb-2">1. Đánh giá chất lượng xử lý sự cố <span class="text-danger">*</span></label>
-                        <span class="small text-muted d-block mb-3">Chất lượng khôi phục dịch vụ, đường truyền ổn định hay không.</span>
-                        <div class="rating-stars-picker">
-                            <input type="radio" id="quality-5" name="ChatLuongDichVu" value="5" @(Model.ChatLuongDichVu == 5 ? "checked" : "") />
-                            <label for="quality-5" title="5 sao"><i class="fa-solid fa-star"></i></label>
-                            <input type="radio" id="quality-4" name="ChatLuongDichVu" value="4" @(Model.ChatLuongDichVu == 4 ? "checked" : "") />
-                            <label for="quality-4" title="4 sao"><i class="fa-solid fa-star"></i></label>
-                            <input type="radio" id="quality-3" name="ChatLuongDichVu" value="3" @(Model.ChatLuongDichVu == 3 ? "checked" : "") />
-                            <label for="quality-3" title="3 sao"><i class="fa-solid fa-star"></i></label>
-                            <input type="radio" id="quality-2" name="ChatLuongDichVu" value="2" @(Model.ChatLuongDichVu == 2 ? "checked" : "") />
-                            <label for="quality-2" title="2 sao"><i class="fa-solid fa-star"></i></label>
-                            <input type="radio" id="quality-1" name="ChatLuongDichVu" value="1" @(Model.ChatLuongDichVu == 1 ? "checked" : "") />
-                            <label for="quality-1" title="1 sao"><i class="fa-solid fa-star"></i></label>
-                        </div>
-                        <span asp-validation-for="ChatLuongDichVu" class="text-danger small"></span>
-                    </div>
-
-                    <hr class="my-4 border-light">
-
-                    <!-- 2. Thái độ nhân viên -->
-                    <div class="mb-4">
-                        <label class="form-label fw-bold d-block text-dark mb-2">2. Đánh giá thái độ phục vụ của nhân viên <span class="text-danger">*</span></label>
-                        <span class="small text-muted d-block mb-3">Sự nhiệt tình, chu đáo, thân thiện và chuyên nghiệp của kỹ thuật viên.</span>
-                        <div class="rating-stars-picker">
-                            <input type="radio" id="attitude-5" name="ThaiDoNhanVien" value="5" @(Model.ThaiDoNhanVien == 5 ? "checked" : "") />
-                            <label for="attitude-5" title="5 sao"><i class="fa-solid fa-star"></i></label>
-                            <input type="radio" id="attitude-4" name="ThaiDoNhanVien" value="4" @(Model.ThaiDoNhanVien == 4 ? "checked" : "") />
-                            <label for="attitude-4" title="4 sao"><i class="fa-solid fa-star"></i></label>
-                            <input type="radio" id="attitude-3" name="ThaiDoNhanVien" value="3" @(Model.ThaiDoNhanVien == 3 ? "checked" : "") />
-                            <label for="attitude-3" title="3 sao"><i class="fa-solid fa-star"></i></label>
-                            <input type="radio" id="attitude-2" name="ThaiDoNhanVien" value="2" @(Model.ThaiDoNhanVien == 2 ? "checked" : "") />
-                            <label for="attitude-2" title="2 sao"><i class="fa-solid fa-star"></i></label>
-                            <input type="radio" id="attitude-1" name="ThaiDoNhanVien" value="1" @(Model.ThaiDoNhanVien == 1 ? "checked" : "") />
-                            <label for="attitude-1" title="1 sao"><i class="fa-solid fa-star"></i></label>
-                        </div>
-                        <span asp-validation-for="ThaiDoNhanVien" class="text-danger small"></span>
-                    </div>
-
-                    <hr class="my-4 border-light">
-
-                    <!-- 3. Tốc độ xử lý -->
-                    <div class="mb-4">
-                        <label class="form-label fw-bold d-block text-dark mb-2">3. Đánh giá thời gian tiếp nhận & xử lý sự cố <span class="text-danger">*</span></label>
-                        <span class="small text-muted d-block mb-3">Tốc độ phản hồi, thời gian khắc phục mạng nhanh hay chậm.</span>
-                        <div class="rating-stars-picker">
-                            <input type="radio" id="speed-5" name="TocDoXuLy" value="5" @(Model.TocDoXuLy == 5 ? "checked" : "") />
-                            <label for="speed-5" title="5 sao"><i class="fa-solid fa-star"></i></label>
-                            <input type="radio" id="speed-4" name="TocDoXuLy" value="4" @(Model.TocDoXuLy == 4 ? "checked" : "") />
-                            <label for="speed-4" title="4 sao"><i class="fa-solid fa-star"></i></label>
-                            <input type="radio" id="speed-3" name="TocDoXuLy" value="3" @(Model.TocDoXuLy == 3 ? "checked" : "") />
-                            <label for="speed-3" title="3 sao"><i class="fa-solid fa-star"></i></label>
-                            <input type="radio" id="speed-2" name="TocDoXuLy" value="2" @(Model.TocDoXuLy == 2 ? "checked" : "") />
-                            <label for="speed-2" title="2 sao"><i class="fa-solid fa-star"></i></label>
-                            <input type="radio" id="speed-1" name="TocDoXuLy" value="1" @(Model.TocDoXuLy == 1 ? "checked" : "") />
-                            <label for="speed-1" title="1 sao"><i class="fa-solid fa-star"></i></label>
-                        </div>
-                        <span asp-validation-for="TocDoXuLy" class="text-danger small"></span>
-                    </div>
-
-                    <hr class="my-4 border-light">
-
-                    <!-- Nhận xét ý kiến -->
-                    <div class="mb-4">
-                        <label asp-for="NhanXet" class="form-label fw-bold text-dark mb-2">Ý kiến nhận xét đóng góp (Không bắt buộc)</label>
-                        <textarea asp-for="NhanXet" class="form-control" rows="4" maxlength="1000" placeholder="Hãy viết ý kiến nhận xét của bạn để giúp chúng tôi cải tiến dịch vụ..." style="border-radius: 12px; padding: 12px; resize: none;" oninput="document.getElementById('charLeft').textContent = (1000 - this.value.length)"></textarea>
-                        <div class="d-flex justify-content-between mt-2">
-                            <span asp-validation-for="NhanXet" class="text-danger small"></span>
-                            <span class="text-muted small">Còn lại <strong id="charLeft">1000</strong> ký tự.</span>
-                        </div>
-                    </div>
-
-                    <!-- File đính kèm hình ảnh minh chứng -->
-                    <div class="mb-4">
-                        <label asp-for="Files" class="form-label fw-bold text-dark mb-2">Đính kèm ảnh minh họa hoặc tài liệu (Không bắt buộc)</label>
-                        <input asp-for="Files" type="file" multiple class="form-control" accept=".jpg,.png,.jpeg,.pdf,.doc,.docx,.xls,.xlsx" style="border-radius: 10px; padding: 10px;" />
-                        <span class="small text-muted mt-2 d-block"><i class="bi bi-info-circle"></i> Chấp nhận file định dạng JPG, PNG, PDF, Word, Excel.</span>
-                        <span asp-validation-for="Files" class="text-danger small"></span>
-                    </div>
-
-                    <!-- SUBMIT BUTTONS -->
-                    <div class="action-buttons-layout mt-4 border-top pt-3">
-                        <a asp-controller="Customers" asp-action="PhieuCuaToi" class="btn btn-viettel btn-outline">
-                            <i class="bi bi-x-circle"></i> Hủy bỏ
-                        </a>
-                        <button type="submit" class="btn btn-viettel btn-red">
-                            <i class="bi bi-send-fill"></i> Gửi đánh giá dịch vụ
-                        </button>
-                    </div>
-
                 </div>
-            </form>
 
+                <!-- RIGHT COLUMN: SCORE SIDEBAR (DỮ LIỆU TÍNH TOÁN SERVER/CLIENT REALTIME) -->
+                <div class="col-lg-4 col-12">
+                    <div class="rev-sticky-sidebar">
+
+                        <div class="rev-card rev-score-card mb-4" data-aos="fade-up" data-aos-delay="100">
+                            <div class="score-card-header text-center">
+                                <span class="score-header-tag"><i class="bi bi-award-fill me-1"></i> ĐIỂM TRUNG BÌNH</span>
+                                <div class="score-big-number" id="overallScoreVal">@Model.DiemTrungBinh.ToString("0.0")</div>
+                                <div class="score-stars-display" id="overallStarsDisplay">
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                </div>
+                                <div class="score-level-badge badge-excellent" id="overallLevelBadge">
+                                    <i class="bi bi-emoji-smile-fill me-1"></i> Mức độ: Xuất Sắc
+                                </div>
+                            </div>
+                            <div class="score-card-body">
+                                <div class="score-progress-list">
+                                    <div class="progress-item mb-3">
+                                        <div class="d-flex justify-content-between font-size-xs mb-1">
+                                            <span class="progress-label">Chất lượng dịch vụ</span>
+                                            <span class="progress-val fw-bold text-danger" id="progValQuality">@Model.ChatLuongDichVu.ToString("0.0")</span>
+                                        </div>
+                                        <div class="progress rev-progress-bar">
+                                            <div class="progress-bar bg-danger" id="progBarQuality" style="width: @(Model.ChatLuongDichVu * 20)%"></div>
+                                        </div>
+                                    </div>
+                                    <div class="progress-item mb-3">
+                                        <div class="d-flex justify-content-between font-size-xs mb-1">
+                                            <span class="progress-label">Thái độ phục vụ</span>
+                                            <span class="progress-val fw-bold text-danger" id="progValAttitude">@Model.ThaiDoNhanVien.ToString("0.0")</span>
+                                        </div>
+                                        <div class="progress rev-progress-bar">
+                                            <div class="progress-bar bg-danger" id="progBarAttitude" style="width: @(Model.ThaiDoNhanVien * 20)%"></div>
+                                        </div>
+                                    </div>
+                                    <div class="progress-item mb-3">
+                                        <div class="d-flex justify-content-between font-size-xs mb-1">
+                                            <span class="progress-label">Tốc độ xử lý</span>
+                                            <span class="progress-val fw-bold text-danger" id="progValSpeed">@Model.TocDoXuLy.ToString("0.0")</span>
+                                        </div>
+                                        <div class="progress rev-progress-bar">
+                                            <div class="progress-bar bg-danger" id="progBarSpeed" style="width: @(Model.TocDoXuLy * 20)%"></div>
+                                        </div>
+                                    </div>
+                                    <div class="progress-item mb-3">
+                                        <div class="d-flex justify-content-between font-size-xs mb-1">
+                                            <span class="progress-label">Khả năng giải quyết</span>
+                                            <span class="progress-val fw-bold text-danger" id="progValSolving">@Model.KhaNangGiaiQuyet.ToString("0.0")</span>
+                                        </div>
+                                        <div class="progress rev-progress-bar">
+                                            <div class="progress-bar bg-danger" id="progBarSolving" style="width: @(Model.KhaNangGiaiQuyet * 20)%"></div>
+                                        </div>
+                                    </div>
+                                    <div class="progress-item">
+                                        <div class="d-flex justify-content-between font-size-xs mb-1">
+                                            <span class="progress-label">Mức độ hài lòng</span>
+                                            <span class="progress-val fw-bold text-danger" id="progValSatisfaction">@Model.MucDoHaiLong.ToString("0.0")</span>
+                                        </div>
+                                        <div class="progress rev-progress-bar">
+                                            <div class="progress-bar bg-danger" id="progBarSatisfaction" style="width: @(Model.MucDoHaiLong * 20)%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
         </div>
-    </main>
+    </section>
 
-    <!-- ==================== FOOTER ==================== -->
-    @await Html.PartialAsync("_Footer")
+</div>
 
-</body>
+<!-- =========================================================
+   VIETTEL SUCCESS RATING MODAL (SPA EXPERIENCE)
+   ========================================================= -->
+<div class="modal fade" id="ratingSuccessModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered modal-md">
+        <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden" style="animation: modalPopIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);">
+            <div class="modal-header border-0 bg-danger text-white p-4 text-center d-flex flex-column align-items-center position-relative">
+                <div class="rounded-circle bg-white text-danger d-flex align-items-center justify-content-center shadow mb-2" style="width: 64px; height: 64px;">
+                    <i class="bi bi-star-fill display-5 fw-bold text-warning"></i>
+                </div>
+                <h4 class="fw-bold m-0 text-white">Đánh Giá Thành Công</h4>
+                <p class="small text-white-50 m-0 mt-1">Viettel Telecom chân thành cảm ơn ý kiến đóng góp của quý khách</p>
+            </div>
+            <div class="modal-body p-4 bg-light text-center">
+                <p class="text-secondary fs-7 mb-3">
+                    Hệ thống đã lưu thành công đánh giá cho phiếu <strong class="text-danger font-mono" id="ratingModalMaPhieu">@Model.MaPhieu</strong> với số điểm trung bình là <strong class="text-danger" id="ratingModalScore">5.0/5.0</strong>.
+                </p>
+                <div class="d-flex justify-content-center gap-2 mt-3">
+                    <a asp-controller="Customers" asp-action="PhieuCuaToi" class="btn btn-danger rounded-pill px-4 py-2 font-weight-bold btn-ripple">
+                        <i class="bi bi-card-checklist me-1"></i> Về danh sách phiếu của tôi
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-</html>
+@section Scripts {
+    <script src="~/assets/js/review.js" asp-append-version="true"></script>
+}

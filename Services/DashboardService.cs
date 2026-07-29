@@ -17,45 +17,67 @@ namespace SupportTicketSysterm.Services
             _context = context;
         }
 
-        public async Task<DashboardViewModel> GetDashboardDataAsync()
+        public async Task<DashboardViewModel> GetDashboardDataAsync(int? idNhanVien = null, string? role = null)
         {
             var model = new DashboardViewModel();
 
+            bool isStaff = (role == "NhanVien" || role == "Nhân viên" || role == "Nhân viên hỗ trợ") && idNhanVien.HasValue;
+
+            var baseTicketsQuery = _context.PhieuHoTros.AsQueryable();
+            if (isStaff)
+            {
+                baseTicketsQuery = baseTicketsQuery.Where(x => x.IdNhanVien == idNhanVien.Value);
+            }
+
             // 1. Thống kê nhanh
-            model.TongPhieu = await _context.PhieuHoTros.CountAsync();
+            model.TongPhieu = await baseTicketsQuery.CountAsync();
             
-            model.ChoTiepNhan = await _context.PhieuHoTros.CountAsync(x => 
+            model.ChoTiepNhan = await baseTicketsQuery.CountAsync(x => 
                 x.TrangThai == "Chờ tiếp nhận" || 
                 x.TrangThai == "ChoTiepNhan" || 
                 x.TrangThai == "waiting" || 
                 x.TrangThai == "Chờ xử lý");
 
-            model.DangXuLy = await _context.PhieuHoTros.CountAsync(x => 
+            model.DangXuLy = await baseTicketsQuery.CountAsync(x => 
                 x.TrangThai == "Đang xử lý" || 
                 x.TrangThai == "DangXuLy" || 
                 x.TrangThai == "processing");
 
-            model.DaHoanThanh = await _context.PhieuHoTros.CountAsync(x => 
+            model.DaHoanThanh = await baseTicketsQuery.CountAsync(x => 
                 x.TrangThai == "Hoàn thành" || 
                 x.TrangThai == "DaHoanThanh" || 
                 x.TrangThai == "Đã hoàn thành" || 
                 x.TrangThai == "completed");
 
-            model.SoKhachHang = await _context.KhachHangs.CountAsync();
-            model.LichHenKyThuat = await _context.LichHens.CountAsync(x => x.TrangThai != "Đã hủy");
+            model.SoKhachHang = isStaff
+                ? await baseTicketsQuery.Select(x => x.IdKhachHang).Distinct().CountAsync()
+                : await _context.KhachHangs.CountAsync();
+
+            var baseAppointmentsQuery = _context.LichHens.AsQueryable();
+            if (isStaff)
+            {
+                baseAppointmentsQuery = baseAppointmentsQuery.Where(x => x.IdNhanVien == idNhanVien.Value || (x.IdPhieuNavigation != null && x.IdPhieuNavigation.IdNhanVien == idNhanVien.Value));
+            }
+            model.LichHenKyThuat = await baseAppointmentsQuery.CountAsync(x => x.TrangThai != "Đã hủy");
+
             model.SoDichVu = await _context.DichVus.CountAsync();
             model.SoDanhMuc = await _context.DanhMucs.CountAsync();
             
             // Tính số lượng tin nhắn chưa đọc
-            model.ChatChuaDoc = await _context.LienHes.AnyAsync() 
-                ? await _context.LienHes.SumAsync(x => (x.SoTinChuaDoc ?? 0) + (x.TinChuaDocKhach ?? 0))
+            var baseContactsQuery = _context.LienHes.AsQueryable();
+            if (isStaff)
+            {
+                baseContactsQuery = baseContactsQuery.Where(x => x.IdNhanVien == idNhanVien.Value);
+            }
+            model.ChatChuaDoc = await baseContactsQuery.AnyAsync() 
+                ? await baseContactsQuery.SumAsync(x => (x.SoTinChuaDoc ?? 0) + (x.TinChuaDocKhach ?? 0))
                 : 0;
 
             // 2. Biểu đồ 6 tháng gần nhất
             var today = DateTime.Today;
             var startMonthDate = new DateOnly(today.Year, today.Month, 1).AddMonths(-5);
 
-            var monthlyTickets = await _context.PhieuHoTros
+            var monthlyTickets = await baseTicketsQuery
                 .Where(x => x.NgayTao != null && x.NgayTao >= startMonthDate)
                 .Select(x => x.NgayTao.Value)
                 .ToListAsync();
@@ -72,7 +94,7 @@ namespace SupportTicketSysterm.Services
             }
 
             // 3. Biểu đồ Dịch vụ
-            var ticketServices = await _context.PhieuHoTros
+            var ticketServices = await baseTicketsQuery
                 .Where(x => x.IdDichVu != null)
                 .GroupBy(x => x.IdDichVu)
                 .Select(g => new 
@@ -91,7 +113,12 @@ namespace SupportTicketSysterm.Services
             }).ToList();
 
             // 4. Đánh giá sao
-            var evaluations = await _context.DanhGia.ToListAsync();
+            var evaluationsQuery = _context.DanhGia.AsQueryable();
+            if (isStaff)
+            {
+                evaluationsQuery = evaluationsQuery.Where(x => x.IdPhieuNavigation != null && x.IdPhieuNavigation.IdNhanVien == idNhanVien.Value);
+            }
+            var evaluations = await evaluationsQuery.ToListAsync();
             var ratings = evaluations
                 .Where(x => x.ChatLuongDichVu.HasValue || x.ThaiDoNhanVien.HasValue || x.TocDoXuLy.HasValue)
                 .Select(x => 
@@ -113,7 +140,7 @@ namespace SupportTicketSysterm.Services
             };
 
             // 5. 5 Phiếu mới nhất
-            var newestTickets = await _context.PhieuHoTros
+            var newestTickets = await baseTicketsQuery
                 .Include(p => p.IdKhachHangNavigation)
                 .Include(p => p.IdDichVuNavigation)
                 .OrderByDescending(p => p.NgayTao)

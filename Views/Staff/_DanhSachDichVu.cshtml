@@ -1,6 +1,6 @@
 @model List<SupportTicketSysterm.Data.DichVu>
 
-<div class="table-responsive">
+<div class="table-responsive d-none d-md-block">
     <table class="table table-hover align-middle mb-0" id="servicesMainTable" aria-label="Bảng quản lý dịch vụ">
         <thead class="table-light">
             <tr>
@@ -29,6 +29,7 @@
                 int stt = ViewBag.StartItem ?? 1;
                 @foreach (var item in Model)
                 {
+                    var isActive = item.TrangThai == "Hoạt động" || item.TrangThai == "Hoạt Động";
                     <tr>
                         <td style="padding-left: 20px;">@stt</td>
                         <td><strong>DV@(item.IdDichVu.ToString("D3"))</strong></td>
@@ -45,7 +46,7 @@
                             </div>
                         </td>
                         <td>
-                            @if (item.TrangThai == "Hoạt động")
+                            @if (isActive)
                             {
                                 <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2.5 py-1">
                                     <i class="fa-solid fa-circle-check me-1"></i>Hoạt động
@@ -60,20 +61,27 @@
                         </td>
                         <td>@(item.NgayTao?.ToString("dd/MM/yyyy") ?? "—")</td>
                         <td style="padding-right: 20px; text-align: center;">
-                            <div class="d-flex justify-content-center gap-1">
-                                <button class="btn-action-custom view" onclick="viewServiceDetail(@item.IdDichVu)" title="Xem chi tiết">
+                            <div class="vt-action-wrap" style="justify-content: center;">
+                                <button type="button" class="vt-btn-action view" data-action="view" data-id="@item.IdDichVu" data-tooltip="Chi tiết" onclick="viewServiceDetail(@item.IdDichVu)">
                                     <i class="fa-solid fa-eye"></i>
                                 </button>
-                                <button class="btn-action-custom edit" onclick="openEditModal(@item.IdDichVu)" title="Chỉnh sửa">
-                                    <i class="fa-solid fa-pen"></i>
+                                <button type="button" class="vt-btn-action edit" data-action="edit" data-id="@item.IdDichVu" data-tooltip="Chỉnh sửa" onclick="openEditModal(@item.IdDichVu)">
+                                    <i class="fa-solid fa-pen-to-square"></i>
                                 </button>
-                                <button class="btn-action-custom @(item.TrangThai == "Hoạt động" ? "lock" : "unlock")" 
-                                        onclick="toggleServiceStatus(@item.IdDichVu, '@item.TrangThai', '@(item.IdDanhMucNavigation?.TrangThai)')"
-                                        title="@(item.TrangThai == "Hoạt động" ? "Tạm khóa dịch vụ" : "Kích hoạt dịch vụ")">
-                                    <i class="fa-solid @(item.TrangThai == "Hoạt động" ? "fa-lock" : "fa-lock-open")"></i>
-                                </button>
-                                <button class="btn-action-custom delete" onclick="openDeleteModal(@item.IdDichVu)" title="Xóa">
-                                    <i class="fa-solid fa-trash"></i>
+                                @if (isActive)
+                                {
+                                    <button type="button" class="vt-btn-action lock text-warning" data-action="toggle-status" data-id="@item.IdDichVu" data-status="@item.TrangThai" data-cat-status="@(item.IdDanhMucNavigation?.TrangThai)" data-tooltip="Tạm khóa" onclick="toggleServiceStatus(@item.IdDichVu, '@item.TrangThai', '@(item.IdDanhMucNavigation?.TrangThai)')">
+                                        <i class="fa-solid fa-lock-open"></i>
+                                    </button>
+                                }
+                                else
+                                {
+                                    <button type="button" class="vt-btn-action unlock text-success" data-action="toggle-status" data-id="@item.IdDichVu" data-status="@item.TrangThai" data-cat-status="@(item.IdDanhMucNavigation?.TrangThai)" data-tooltip="Kích hoạt" onclick="toggleServiceStatus(@item.IdDichVu, '@item.TrangThai', '@(item.IdDanhMucNavigation?.TrangThai)')">
+                                        <i class="fa-solid fa-lock"></i>
+                                    </button>
+                                }
+                                <button type="button" class="vt-btn-action delete" data-action="delete" data-id="@item.IdDichVu" data-name="@item.TenDichVu" data-tooltip="Xóa" onclick="openDeleteModal(@item.IdDichVu, '@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(item.TenDichVu ?? ""))')">
+                                    <i class="fa-solid fa-trash-can"></i>
                                 </button>
                             </div>
                         </td>
@@ -86,15 +94,16 @@
 </div>
 
 <!-- Mobile Card List View -->
-<div id="servicesMobileContainer" class="d-lg-none px-3 pb-3 mt-3">
+<div id="servicesMobileContainer" class="d-md-none px-3 pb-3 mt-3">
     @if (Model != null && Model.Any())
     {
         @foreach (var item in Model)
         {
+            var isActive = item.TrangThai == "Hoạt động" || item.TrangThai == "Hoạt Động";
             <div class="card border border-light-subtle shadow-sm mb-3" style="border-radius: 12px; overflow: hidden;">
                 <div class="card-header bg-light d-flex justify-content-between align-items-center py-2 px-3">
                     <span class="fw-bold font-monospace" style="color: var(--vt-red);">DV@(item.IdDichVu.ToString("D3"))</span>
-                    @if (item.TrangThai == "Hoạt động")
+                    @if (isActive)
                     {
                         <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill">Hoạt động</span>
                     }
@@ -119,13 +128,30 @@
                         </div>
                     </div>
                 </div>
-                <div class="card-footer bg-transparent d-flex justify-content-end gap-1 p-2">
-                    <button class="btn btn-sm btn-outline-primary" onclick="viewServiceDetail(@item.IdDichVu)"><i class="fa-solid fa-eye me-1"></i> Xem</button>
-                    <button class="btn btn-sm btn-outline-warning" onclick="openEditModal(@item.IdDichVu)"><i class="fa-solid fa-pen me-1"></i> Sửa</button>
-                    <button class="btn btn-sm btn-outline-secondary" onclick="toggleServiceStatus(@item.IdDichVu, '@item.TrangThai', '@(item.IdDanhMucNavigation?.TrangThai)')">
-                        <i class="fa-solid @(item.TrangThai == "Hoạt động" ? "fa-lock" : "fa-lock-open")"></i> Status
-                    </button>
-                    <button class="btn btn-sm btn-outline-danger" onclick="openDeleteModal(@item.IdDichVu)"><i class="fa-solid fa-trash me-1"></i> Xóa</button>
+                <div class="card-footer bg-transparent d-flex justify-content-end p-2">
+                    <div class="vt-action-wrap">
+                        <button type="button" class="vt-btn-action view" data-action="view" data-id="@item.IdDichVu" data-tooltip="Chi tiết" onclick="viewServiceDetail(@item.IdDichVu)">
+                            <i class="fa-solid fa-eye"></i>
+                        </button>
+                        <button type="button" class="vt-btn-action edit" data-action="edit" data-id="@item.IdDichVu" data-tooltip="Sửa" onclick="openEditModal(@item.IdDichVu)">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </button>
+                        @if (isActive)
+                        {
+                            <button type="button" class="vt-btn-action lock text-warning" data-action="toggle-status" data-id="@item.IdDichVu" data-status="@item.TrangThai" data-cat-status="@(item.IdDanhMucNavigation?.TrangThai)" data-tooltip="Tạm khóa" onclick="toggleServiceStatus(@item.IdDichVu, '@item.TrangThai', '@(item.IdDanhMucNavigation?.TrangThai)')">
+                                <i class="fa-solid fa-lock-open"></i>
+                            </button>
+                        }
+                        else
+                        {
+                            <button type="button" class="vt-btn-action unlock text-success" data-action="toggle-status" data-id="@item.IdDichVu" data-status="@item.TrangThai" data-cat-status="@(item.IdDanhMucNavigation?.TrangThai)" data-tooltip="Kích hoạt" onclick="toggleServiceStatus(@item.IdDichVu, '@item.TrangThai', '@(item.IdDanhMucNavigation?.TrangThai)')">
+                                <i class="fa-solid fa-lock"></i>
+                            </button>
+                        }
+                        <button type="button" class="vt-btn-action delete" data-action="delete" data-id="@item.IdDichVu" data-name="@item.TenDichVu" data-tooltip="Xóa" onclick="openDeleteModal(@item.IdDichVu, '@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(item.TenDichVu ?? ""))')">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
         }
@@ -137,10 +163,10 @@
     <div class="d-flex align-items-center gap-2">
         <label for="pageSizeSelect" class="text-muted mb-0" style="font-size: 0.82rem; white-space: nowrap;">Hiển thị:</label>
         <select id="pageSizeSelect" class="form-select form-select-sm border" style="width: 75px; border-radius: 6px;" onchange="changePageSize(this.value)">
+            <option value="5" selected="@(ViewBag.PageSize == 5 ? "selected" : null)">5</option>
             <option value="10" selected="@(ViewBag.PageSize == 10 ? "selected" : null)">10</option>
             <option value="25" selected="@(ViewBag.PageSize == 25 ? "selected" : null)">25</option>
             <option value="50" selected="@(ViewBag.PageSize == 50 ? "selected" : null)">50</option>
-            <option value="100" selected="@(ViewBag.PageSize == 100 ? "selected" : null)">100</option>
         </select>
         <span class="text-muted" style="font-size: 0.82rem; white-space: nowrap;">
             bản ghi từ @ViewBag.StartItem - @ViewBag.EndItem trong tổng số @ViewBag.TotalItems
@@ -154,22 +180,22 @@
             }
             
             <li class="page-item @(currentPage == 1 ? "disabled" : "")">
-                <a class="page-link" href="javascript:void(0)" onclick="goPage(@(currentPage - 1))" aria-label="Previous">
+                <button type="button" class="page-link" onclick="goPage(@(currentPage - 1))" aria-label="Previous">
                     <span aria-hidden="true">&laquo;</span>
-                </a>
+                </button>
             </li>
 
             @for (int i = 1; i <= totalPages; i++)
             {
                 <li class="page-item @(currentPage == i ? "active" : "")">
-                    <a class="page-link" href="javascript:void(0)" onclick="goPage(@i)">@i</a>
+                    <button type="button" class="page-link" onclick="goPage(@i)">@i</button>
                 </li>
             }
 
             <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
-                <a class="page-link" href="javascript:void(0)" onclick="goPage(@(currentPage + 1))" aria-label="Next">
+                <button type="button" class="page-link" onclick="goPage(@(currentPage + 1))" aria-label="Next">
                     <span aria-hidden="true">&raquo;</span>
-                </a>
+                </button>
             </li>
         </ul>
     </nav>

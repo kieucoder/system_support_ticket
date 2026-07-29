@@ -147,22 +147,13 @@
                                         <span class="status-dot online"></span>
                                     </div>
                                     <div>
-                                        <h6 class="chat-header-title mb-0 fw-bold">@Model.ActiveConversation.TieuDe</h6>
-                                        <div class="chat-header-subtext d-flex align-items-center gap-2">
-                                            <span><i class="bi bi-person-fill text-danger me-1"></i>KTV: @Model.ActiveConversation.TenNhanVien</span>
-                                            <span class="status-pill-online"><i class="bi bi-circle-fill me-1" style="font-size:0.4rem;"></i>Trực tuyến 24/7</span>
+                                        <h6 class="chat-header-title mb-0 fw-bold">Chat hỗ trợ — Phiếu: @(string.IsNullOrEmpty(Model.ActiveConversation.MaPhieu) ? ("PH" + Model.ActiveConversation.IdPhieu) : Model.ActiveConversation.MaPhieu)</h6>
+                                        <div class="chat-header-subtext d-flex align-items-center gap-2 mt-1">
+                                            <span><i class="bi bi-person-fill text-danger me-1"></i>Nhân viên phụ trách: <strong>@Model.ActiveConversation.TenNhanVien</strong></span>
+                                            <span class="ms-2"><i class="bi bi-info-circle me-1"></i>Trạng thái: <strong class="text-danger">@Model.ActiveConversation.TrangThaiText</strong></span>
+                                            <span class="status-pill-online ms-2"><i class="bi bi-circle-fill me-1" style="font-size:0.4rem;"></i>Trực tuyến 24/7</span>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="d-flex align-items-center gap-2">
-                                    @if (Model.ActiveConversation.IdPhieu.HasValue)
-                                    {
-                                        <span class="ticket-chip badge bg-danger-subtle text-danger rounded-pill px-3 py-1.5 fw-bold">@Model.ActiveConversation.MaPhieu</span>
-                                        <a href="@Url.Action("ChiTietPhieu", "Ticket", new { id = Model.ActiveConversation.IdPhieu })"
-                                           class="btn btn-outline-danger btn-sm rounded-pill px-3 fw-bold" style="font-size:0.75rem;">
-                                            <i class="bi bi-ticket-detailed-fill me-1"></i>Xem phiếu
-                                        </a>
-                                    }
                                 </div>
                             </div>
 
@@ -202,6 +193,7 @@
                                 <form asp-controller="Chat" asp-action="GuiTinNhan" method="post" enctype="multipart/form-data" id="chatFormCustomer">
                                     @Html.AntiForgeryToken()
                                     <input type="hidden" name="idLienHe" value="@Model.SelectedIdLienHe" />
+                                    <input type="hidden" name="idPhieu" id="customerIdPhieu" value="@Model.ActiveConversation?.IdPhieu" />
 
                                     <!-- Upload Preview -->
                                     <div class="file-preview-bar" id="filePreviewBarCustomer" style="display:none;">
@@ -293,11 +285,6 @@ else
                     <button class="topbar-action-btn" id="toggleTheme" title="Chuyển chế độ tối/sáng" aria-label="Toggle theme">
                         <i class="bi bi-moon"></i>
                     </button>
-                    <!-- Notifications Bell -->
-                    <button class="topbar-action-btn" title="Thông báo hệ thống" aria-label="Notifications">
-                        <i class="fa-solid fa-bell"></i>
-                        <span class="notification-badge">@(Model.Conversations?.Sum(c => c.SoTinChuaDoc) ?? 0)</span>
-                    </button>
                     <!-- User Profile Dropdown -->
                     <div class="dropdown">
                         <a class="user-profile-dropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -363,8 +350,11 @@ else
                             <!-- Filter tabs -->
                             <div class="conv-filter-scroll">
                                 <button class="conv-filter-btn active" data-filter="all">Tất cả</button>
-                                <button class="conv-filter-btn" data-filter="waiting">Chờ xử lý</button>
-                                <button class="conv-filter-btn" data-filter="processing">Đang trao đổi</button>
+                                <button class="conv-filter-btn" data-filter="Chờ tiếp nhận">🟡 Chờ tiếp nhận</button>
+                                <button class="conv-filter-btn" data-filter="Đang xử lý">🔵 Đang xử lý</button>
+                                <button class="conv-filter-btn" data-filter="Chờ lịch hẹn">🟣 Chờ lịch hẹn</button>
+                                <button class="conv-filter-btn" data-filter="Hoàn thành">🟢 Hoàn thành</button>
+                                <button class="conv-filter-btn" data-filter="Đã hủy">🔴 Đã hủy</button>
                             </div>
                         </div>
 
@@ -382,26 +372,30 @@ else
                                 {
                                     var isActive = Model.SelectedIdLienHe == conv.IdLienHe;
                                     var initial = !string.IsNullOrEmpty(conv.TenKhachHang) ? conv.TenKhachHang.Substring(0, 1).ToUpper() : "K";
-                                    var statusClass = conv.TrangThai == "Đang trao đổi" ? "online" : (conv.TrangThai == "Chờ" ? "waiting" : "offline");
                                     <a asp-controller="Chat" asp-action="Index" asp-route-id="@conv.IdLienHe"
                                        class="conv-card @(isActive ? "active" : "")" style="text-decoration:none;"
                                        data-name="@conv.TenKhachHang.ToLower()"
-                                       data-status="@conv.TrangThai">
+                                       data-status="@conv.TrangThai"
+                                       data-ticket="@conv.MaPhieu.ToLower()"
+                                       data-convo-id="@conv.IdLienHe">
                                         <div class="avatar-wrapper">
                                             <img src="https://ui-avatars.com/api/?name=@(Uri.EscapeDataString(initial))&background=E2E8F0&color=475569"
                                                  alt="@conv.TenKhachHang" class="avatar-img">
-                                            <span class="status-dot @statusClass"></span>
                                         </div>
                                         <div class="conv-details">
                                             <div class="conv-meta">
-                                                <span class="conv-name">@conv.TenKhachHang</span>
+                                                <span class="conv-name fw-bold">@conv.TenKhachHang</span>
                                                 @if (conv.ThoiGianGui.HasValue)
                                                 {
                                                     <span class="conv-time">@conv.ThoiGianGui.Value.ToString("HH:mm")</span>
                                                 }
                                             </div>
+                                            <div class="d-flex align-items-center justify-content-between gap-1 my-1">
+                                                <small class="text-danger fw-bold" style="font-size:0.74rem;"><i class="bi bi-ticket-detailed me-1"></i>@(string.IsNullOrEmpty(conv.MaPhieu) ? "LH-" + conv.IdLienHe : conv.MaPhieu)</small>
+                                                <span class="badge @conv.BadgeCssClass status-badge-target" style="font-size:0.68rem;">@conv.TrangThaiText</span>
+                                            </div>
                                             <div class="conv-message-row">
-                                                <p class="conv-last-msg">@conv.TieuDe — @conv.LastMessage</p>
+                                                <p class="conv-last-msg">@(string.IsNullOrEmpty(conv.DichVuPhieu) ? "" : conv.DichVuPhieu + " — ")@conv.LastMessage</p>
                                                 @if (conv.SoTinChuaDoc > 0)
                                                 {
                                                     <span class="conv-unread-badge">@conv.SoTinChuaDoc</span>
@@ -422,39 +416,28 @@ else
                         @if (Model.SelectedIdLienHe.HasValue && Model.ActiveConversation != null)
                         {
                             <!-- Chat Header -->
-                            <div class="chat-header">
-                                <div class="chat-customer-details">
+                            <div class="chat-header justify-content-between align-items-center px-3 py-2 border-bottom bg-white" id="activeChatHeader">
+                                <div class="chat-customer-details d-flex align-items-center">
                                     <div class="avatar-wrapper me-2">
                                         <img src="https://ui-avatars.com/api/?name=@(Uri.EscapeDataString(Model.ActiveConversation.TenKhachHang?.Substring(0,1) ?? "K"))&background=E2E8F0&color=475569"
                                              alt="Customer Avatar" class="avatar-img-round-44" id="chatHeaderAvatar">
-                                        <span class="status-dot online"></span>
                                     </div>
                                     <div class="chat-customer-info">
-                                        <h6 class="chat-header-title mb-0 fw-bold" id="chatHeaderName">@Model.ActiveConversation.TenKhachHang</h6>
-                                        <div class="chat-header-subtext d-flex align-items-center gap-2" id="chatHeaderContacts">
-                                            <span><i class="bi bi-tag-fill me-1 text-danger"></i>@Model.ActiveConversation.TieuDe</span>
-                                            @if (!string.IsNullOrEmpty(Model.ActiveConversation.TrangThai))
+                                        <div class="d-flex align-items-center gap-2">
+                                            <h6 class="chat-header-title mb-0 fw-bold" id="chatHeaderName">@Model.ActiveConversation.TenKhachHang</h6>
+                                            <span class="badge @Model.ActiveConversation.BadgeCssClass" id="chatHeaderBadge">@Model.ActiveConversation.TrangThaiText</span>
+                                        </div>
+                                        <div class="chat-header-subtext d-flex align-items-center gap-2 mt-1" id="chatHeaderContacts">
+                                            <span class="fw-bold text-danger" style="font-size:0.8rem;"><i class="bi bi-ticket-detailed me-1"></i>Mã phiếu: @(string.IsNullOrEmpty(Model.ActiveConversation.MaPhieu) ? "LH-" + Model.ActiveConversation.IdLienHe : Model.ActiveConversation.MaPhieu)</span>
+                                            @if (!string.IsNullOrEmpty(Model.ActiveConversation.DichVuPhieu))
                                             {
-                                                <span class="status-pill-online badge rounded-pill"
-                                                      style="background:@(Model.ActiveConversation.TrangThai == "Đang trao đổi" ? "#DCFCE7" : "#FEF9C3"); color:@(Model.ActiveConversation.TrangThai == "Đang trao đổi" ? "#16A34A" : "#92400E");">
-                                                    @Model.ActiveConversation.TrangThai
-                                                </span>
+                                                <span class="text-muted" style="font-size:0.8rem;"><i class="bi bi-gear-fill me-1"></i>@Model.ActiveConversation.DichVuPhieu</span>
                                             }
                                         </div>
                                     </div>
                                 </div>
-                                <div class="chat-header-actions d-flex align-items-center gap-2">
-                                    @if (Model.ActiveConversation.IdPhieu.HasValue)
-                                    {
-                                        <a href="@Url.Action("ChiTietPhieu", "Ticket", new { id = Model.ActiveConversation.IdPhieu })"
-                                           class="btn btn-outline-danger btn-sm fw-bold rounded-pill px-3 ticket-chip" style="font-size:0.75rem;" target="_blank">
-                                            <i class="bi bi-ticket-detailed-fill me-1"></i>@Model.ActiveConversation.MaPhieu
-                                        </a>
-                                    }
-                                    <span class="badge bg-danger text-white rounded-pill px-3 py-1.5 fw-bold" style="font-size:0.75rem;">
-                                        @(Model.ActiveConversation.TrangThai ?? "Đang trao đổi")
-                                    </span>
-                                </div>
+
+                                
                             </div>
 
                             <!-- Chat Messages Area -->
@@ -478,93 +461,105 @@ else
                                 </div>
                             </div>
 
-                            <!-- Chat Input -->
+                            <!-- Chat Input Area (Requirement VI) -->
                             <div class="chat-input-container" id="chatInputAreaWrapper">
-
-                                <!-- Drag & Drop Overlay -->
-                                <div class="drag-drop-area" id="chatDragDropZone">
-                                    <i class="bi bi-cloud-arrow-up fs-1 mb-2 text-danger"></i>
-                                    <span class="fw-bold text-dark">Thả tệp tin tại đây để đính kèm</span>
-                                    <small class="text-muted">(Hỗ trợ ảnh, PDF, Excel, Word, ZIP)</small>
-                                </div>
-
-                                <form asp-controller="Chat" asp-action="GuiTinNhan" method="post" enctype="multipart/form-data" id="chatFormStaff">
-                                    @Html.AntiForgeryToken()
-                                    <input type="hidden" name="idLienHe" value="@Model.SelectedIdLienHe" />
-
-                                    <!-- Upload Preview -->
-                                    <div class="file-preview-bar" id="filePreviewBar">
-                                        <i class="bi bi-file-earmark-fill text-danger fs-5"></i>
-                                        <div class="file-preview-info">
-                                            <span class="file-preview-name" id="filePreviewName">file.pdf</span>
-                                            <span class="file-preview-size" id="filePreviewSize"></span>
-                                        </div>
-                                        <button class="btn-remove-preview" type="button" id="btnRemovePreview" title="Hủy file đính kèm">
-                                            <i class="bi bi-x"></i>
-                                        </button>
+                                @if (Model.ActiveConversation.IsReadOnly)
+                                {
+                                    <!-- Read-Only Banner for Closed/Completed Tickets -->
+                                    <div class="chat-readonly-banner p-3 text-center rounded-3 bg-light border shadow-sm my-1" id="readOnlyChatNotice">
+                                        @if (Model.ActiveConversation.TrangThai == "Hoàn thành")
+                                        {
+                                            <div class="text-success fw-bold mb-1 fs-6"><i class="bi bi-check-circle-fill me-2"></i>✅ Phiếu hỗ trợ đã hoàn thành.</div>
+                                        }
+                                        else
+                                        {
+                                            <div class="text-danger fw-bold mb-1 fs-6"><i class="bi bi-x-circle-fill me-2"></i>🔴 Phiếu hỗ trợ đã bị hủy.</div>
+                                        }
+                                        <p class="small text-muted mb-0">Cuộc trò chuyện chỉ còn chế độ xem. Vui lòng tạo Phiếu hỗ trợ mới nếu cần hỗ trợ thêm.</p>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <!-- Drag & Drop Overlay -->
+                                    <div class="drag-drop-area" id="chatDragDropZone">
+                                        <i class="bi bi-cloud-arrow-up fs-1 mb-2 text-danger"></i>
+                                        <span class="fw-bold text-dark">Thả tệp tin tại đây để đính kèm</span>
+                                        <small class="text-muted">(Hỗ trợ ảnh, PDF, Excel, Word, ZIP)</small>
                                     </div>
 
-                                    <!-- Quick Reply Drawer / Dropdown -->
-                                    <div class="quick-reply-popover d-none shadow-lg border rounded-4 p-2 bg-white position-absolute mb-2" id="quickReplyPopover" style="bottom:100%; left:20px; z-index:1050; min-width:320px; max-width:420px;">
-                                        <div class="d-flex justify-content-between align-items-center px-2 py-1 mb-2 border-bottom">
-                                            <span class="fw-bold small text-dark"><i class="bi bi-lightning-charge-fill text-warning me-1"></i>Câu trả lời nhanh</span>
-                                            <button type="button" class="btn-close btn-sm" id="btnCloseQuickReply"></button>
-                                        </div>
-                                        <div class="quick-reply-list d-flex flex-direction-column gap-1 overflow-auto" style="max-height:200px;">
-                                            <button type="button" class="btn btn-light btn-sm text-start text-truncate w-100 quick-reply-item" data-text="Dạ em chào anh/chị! Em đã tiếp nhận thông tin và đang tiến hành kiểm tra xử lý.">👋 Dạ em chào anh/chị! Em đã tiếp nhận...</button>
-                                            <button type="button" class="btn btn-light btn-sm text-start text-truncate w-100 quick-reply-item" data-text="Anh/chị hỗ trợ kiểm tra lại đèn tín hiệu PON/Optical trên thiết bị Modem giúp em ạ.">⚡ Kiểm tra đèn tín hiệu Modem</button>
-                                            <button type="button" class="btn btn-light btn-sm text-start text-truncate w-100 quick-reply-item" data-text="Anh/chị thử rút nguồn Modem khoảng 30 giây rồi khởi động lại giúp em nhé.">🔄 Khởi động lại Modem Wi-Fi</button>
-                                            <button type="button" class="btn btn-light btn-sm text-start text-truncate w-100 quick-reply-item" data-text="Yêu cầu của anh/chị đã được khởi tạo thành phiếu hỗ trợ kỹ thuật và phân công kỹ sư khu vực.">📌 Đã tạo phiếu kỹ thuật</button>
-                                            <button type="button" class="btn btn-light btn-sm text-start text-truncate w-100 quick-reply-item" data-text="Sự cố kỹ thuật của anh/chị đã được khắc phục hoàn tất. Cảm ơn anh/chị đã liên hệ Viettel Telecom!">✅ Xử lý sự cố hoàn tất</button>
-                                        </div>
-                                    </div>
+                                    <form asp-controller="Chat" asp-action="GuiTinNhan" method="post" enctype="multipart/form-data" id="chatFormStaff">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="idLienHe" value="@Model.SelectedIdLienHe" />
+                                        <input type="hidden" name="idPhieu" id="staffIdPhieu" value="@Model.ActiveConversation?.IdPhieu" />
 
-                                    <!-- Emoji Popover -->
-                                    <div class="emoji-popover d-none shadow-lg border rounded-4 p-2 bg-white position-absolute mb-2" id="emojiPopover" style="bottom:100%; left:60px; z-index:1050; width:260px;">
-                                        <div class="d-flex justify-content-between align-items-center px-2 py-1 mb-2 border-bottom">
-                                            <span class="fw-bold small text-dark"><i class="bi bi-emoji-smile text-warning me-1"></i>Emoji</span>
-                                            <button type="button" class="btn-close btn-sm" id="btnCloseEmoji"></button>
-                                        </div>
-                                        <div class="d-flex flex-wrap gap-2 p-1" style="font-size:1.25rem;">
-                                            <span class="emoji-item" style="cursor:pointer;">😊</span>
-                                            <span class="emoji-item" style="cursor:pointer;">👍</span>
-                                            <span class="emoji-item" style="cursor:pointer;">📶</span>
-                                            <span class="emoji-item" style="cursor:pointer;">🔧</span>
-                                            <span class="emoji-item" style="cursor:pointer;">💻</span>
-                                            <span class="emoji-item" style="cursor:pointer;">📞</span>
-                                            <span class="emoji-item" style="cursor:pointer;">⚠️</span>
-                                            <span class="emoji-item" style="cursor:pointer;">✅</span>
-                                            <span class="emoji-item" style="cursor:pointer;">❌</span>
-                                            <span class="emoji-item" style="cursor:pointer;">💡</span>
-                                            <span class="emoji-item" style="cursor:pointer;">📋</span>
-                                            <span class="emoji-item" style="cursor:pointer;">⭐</span>
-                                            <span class="emoji-item" style="cursor:pointer;">🚀</span>
-                                            <span class="emoji-item" style="cursor:pointer;">❤️</span>
-                                        </div>
-                                    </div>
-
-                                    <!-- Input bar -->
-                                    <div class="chat-input-bar">
-                                        <div class="chat-input-tools">
-                                            <input type="file" name="file" id="chatFileInput" class="d-none" accept=".jpg,.png,.pdf,.docx,.xlsx,.zip">
-                                            <button type="button" class="chat-tool-btn" id="btnChatUpload" title="Tải tệp đính kèm">
-                                                <i class="bi bi-paperclip"></i>
-                                            </button>
-                                            <button type="button" class="chat-tool-btn" id="btnQuickReplyToggle" title="Câu trả lời nhanh">
-                                                <i class="bi bi-lightning-charge"></i>
-                                            </button>
-                                            <button type="button" class="chat-tool-btn" id="btnEmojiToggle" title="Chèn Emoji">
-                                                <i class="bi bi-emoji-smile"></i>
+                                        <!-- Upload Preview -->
+                                        <div class="file-preview-bar" id="filePreviewBar">
+                                            <i class="bi bi-file-earmark-fill text-danger fs-5"></i>
+                                            <div class="file-preview-info">
+                                                <span class="file-preview-name" id="filePreviewName">file.pdf</span>
+                                                <span class="file-preview-size" id="filePreviewSize"></span>
+                                            </div>
+                                            <button class="btn-remove-preview" type="button" id="btnRemovePreview" title="Hủy file đính kèm">
+                                                <i class="bi bi-x"></i>
                                             </button>
                                         </div>
-                                        <textarea class="chat-textarea" id="chatInputText" name="messageText"
-                                                  placeholder="Nhập nội dung hỗ trợ... (Enter gửi, Shift+Enter xuống dòng)"
-                                                  rows="1"></textarea>
-                                        <button type="submit" class="btn-chat-send" id="btnChatSend" title="Gửi tin nhắn">
-                                            <i class="bi bi-send-fill"></i>
-                                        </button>
-                                    </div>
-                                </form>
+
+                                        <!-- Quick Reply Drawer -->
+                                        <div class="quick-reply-popover d-none shadow-lg border rounded-4 p-2 bg-white position-absolute mb-2" id="quickReplyPopover" style="bottom:100%; left:20px; z-index:1050; min-width:320px; max-width:420px;">
+                                            <div class="d-flex justify-content-between align-items-center px-2 py-1 mb-2 border-bottom">
+                                                <span class="fw-bold small text-dark"><i class="bi bi-lightning-charge-fill text-warning me-1"></i>Câu trả lời nhanh</span>
+                                                <button type="button" class="btn-close btn-sm" id="btnCloseQuickReply"></button>
+                                            </div>
+                                            <div class="quick-reply-list d-flex flex-direction-column gap-1 overflow-auto" style="max-height:200px;">
+                                                <button type="button" class="btn btn-light btn-sm text-start text-truncate w-100 quick-reply-item" data-text="Dạ em chào anh/chị! Em đã tiếp nhận thông tin và đang tiến hành kiểm tra xử lý.">👋 Dạ em chào anh/chị! Em đã tiếp nhận...</button>
+                                                <button type="button" class="btn btn-light btn-sm text-start text-truncate w-100 quick-reply-item" data-text="Anh/chị hỗ trợ kiểm tra lại đèn tín hiệu PON/Optical trên thiết bị Modem giúp em ạ.">⚡ Kiểm tra đèn tín hiệu Modem</button>
+                                                <button type="button" class="btn btn-light btn-sm text-start text-truncate w-100 quick-reply-item" data-text="Anh/chị thử rút nguồn Modem khoảng 30 giây rồi khởi động lại giúp em nhé.">🔄 Khởi động lại Modem Wi-Fi</button>
+                                                <button type="button" class="btn btn-light btn-sm text-start text-truncate w-100 quick-reply-item" data-text="Yêu cầu của anh/chị đã được khởi tạo thành phiếu hỗ trợ kỹ thuật và phân công kỹ sư khu vực.">📌 Đã tạo phiếu kỹ thuật</button>
+                                                <button type="button" class="btn btn-light btn-sm text-start text-truncate w-100 quick-reply-item" data-text="Sự cố kỹ thuật của anh/chị đã được khắc phục hoàn tất. Cảm ơn anh/chị đã liên hệ Viettel Telecom!">✅ Xử lý sự cố hoàn tất</button>
+                                            </div>
+                                        </div>
+
+                                        <!-- Emoji Popover -->
+                                        <div class="emoji-popover d-none shadow-lg border rounded-4 p-2 bg-white position-absolute mb-2" id="emojiPopover" style="bottom:100%; left:60px; z-index:1050; width:260px;">
+                                            <div class="d-flex justify-content-between align-items-center px-2 py-1 mb-2 border-bottom">
+                                                <span class="fw-bold small text-dark"><i class="bi bi-emoji-smile text-warning me-1"></i>Emoji</span>
+                                                <button type="button" class="btn-close btn-sm" id="btnCloseEmoji"></button>
+                                            </div>
+                                            <div class="d-flex flex-wrap gap-2 p-1" style="font-size:1.25rem;">
+                                                <span class="emoji-item" style="cursor:pointer;">😊</span>
+                                                <span class="emoji-item" style="cursor:pointer;">👍</span>
+                                                <span class="emoji-item" style="cursor:pointer;">📶</span>
+                                                <span class="emoji-item" style="cursor:pointer;">🔧</span>
+                                                <span class="emoji-item" style="cursor:pointer;">💻</span>
+                                                <span class="emoji-item" style="cursor:pointer;">📞</span>
+                                                <span class="emoji-item" style="cursor:pointer;">⚠️</span>
+                                                <span class="emoji-item" style="cursor:pointer;">✅</span>
+                                                <span class="emoji-item" style="cursor:pointer;">❌</span>
+                                                <span class="emoji-item" style="cursor:pointer;">💡</span>
+                                                <span class="emoji-item" style="cursor:pointer;">📋</span>
+                                                <span class="emoji-item" style="cursor:pointer;">⭐</span>
+                                                <span class="emoji-item" style="cursor:pointer;">🚀</span>
+                                                <span class="emoji-item" style="cursor:pointer;">❤️</span>
+                                            </div>
+                                        </div>
+
+                                        <!-- Input bar -->
+                                        <div class="chat-input-bar">
+                                            <div class="chat-input-tools">
+                                                <input type="file" name="file" id="chatFileInput" class="d-none" accept=".jpg,.png,.pdf,.docx,.xlsx,.zip">
+                                                <button type="button" class="chat-tool-btn" id="btnChatUpload" title="Tải tệp đính kèm">
+                                                    <i class="bi bi-paperclip"></i>
+                                                </button>
+                                            </div>
+                                            <textarea class="chat-textarea" id="chatInputText" name="messageText"
+                                                      placeholder="Nhập nội dung hỗ trợ... (Enter gửi, Shift+Enter xuống dòng)"
+                                                      rows="1"></textarea>
+                                            <button type="submit" class="btn-chat-send" id="btnChatSend" title="Gửi tin nhắn">
+                                                <i class="bi bi-send-fill"></i>
+                                            </button>
+                                        </div>
+                                    </form>
+                                }
                             </div>
                         }
                         else
@@ -601,20 +596,24 @@ else
                                         <table class="table table-sm table-borderless info-table-panel mb-0" style="font-size:0.8rem;">
                                             <tbody>
                                                 <tr>
-                                                    <td class="text-muted py-1" style="width:120px;">Mã phiếu:</td>
-                                                    <td class="fw-bold py-1 text-danger">@(Model.ActiveConversation.MaPhieu ?? "—")</td>
+                                                    <td class="text-muted py-1" style="width:110px;">Mã phiếu:</td>
+                                                    <td class="fw-bold py-1 text-danger" id="panelTicketCode">@(string.IsNullOrEmpty(Model.ActiveConversation.MaPhieu) ? "LH-" + Model.ActiveConversation.IdLienHe : Model.ActiveConversation.MaPhieu)</td>
                                                 </tr>
                                                 <tr>
                                                     <td class="text-muted py-1">Trạng thái:</td>
-                                                    <td class="py-1"><span class="badge bg-danger-subtle text-danger fw-bold rounded-pill">@(Model.ActiveConversation.TrangThaiPhieu ?? "—")</span></td>
+                                                    <td class="py-1"><span class="badge @Model.ActiveConversation.BadgeCssClass" id="panelTicketStatusBadge">@Model.ActiveConversation.TrangThaiText</span></td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="text-muted py-1">Danh mục:</td>
+                                                    <td class="py-1 text-dark fw-medium" id="panelTicketCategory">@(string.IsNullOrEmpty(Model.ActiveConversation.TenDanhMuc) ? "Kỹ thuật Viettel" : Model.ActiveConversation.TenDanhMuc)</td>
                                                 </tr>
                                                 <tr>
                                                     <td class="text-muted py-1">Dịch vụ:</td>
-                                                    <td class="py-1 text-muted">@(Model.ActiveConversation.DichVuPhieu ?? "—")</td>
+                                                    <td class="py-1 text-muted" id="panelTicketService">@(string.IsNullOrEmpty(Model.ActiveConversation.DichVuPhieu) ? "Hỗ trợ sự cố" : Model.ActiveConversation.DichVuPhieu)</td>
                                                 </tr>
                                                 <tr>
                                                     <td class="text-muted py-1">Ngày tạo:</td>
-                                                    <td class="py-1">@(Model.ActiveConversation.ThoiGianGui?.ToString("dd/MM/yyyy") ?? "—")</td>
+                                                    <td class="py-1" id="panelTicketDate">@(Model.ActiveConversation.ThoiGianGui?.ToString("dd/MM/yyyy HH:mm") ?? "—")</td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -629,21 +628,7 @@ else
                                                 <div class="fw-bold" style="font-size:0.85rem;">@Model.ActiveConversation.TenKhachHang</div>
                                             </div>
                                         </div>
-                                    </div>
-
-                                    <!-- Thao tác Ticket -->
-                                    <div class="p-3 border-bottom">
-                                        <h6 class="fw-bold mb-3"><i class="bi bi-gear text-danger me-2"></i>Thao tác</h6>
-                                        <div class="d-grid gap-2">
-                                            @if (Model.ActiveConversation.IdPhieu.HasValue)
-                                            {
-                                                <a href="@Url.Action("ChiTietPhieu", "Ticket", new { id = Model.ActiveConversation.IdPhieu })"
-                                                   class="btn btn-outline-danger btn-sm text-start rounded-pill fw-bold">
-                                                    <i class="bi bi-ticket-detailed-fill me-2"></i>Xem chi tiết phiếu
-                                                </a>
-                                            }
-                                        </div>
-                                    </div>
+                                    </div>                                   
                                 }
                                 else
                                 {
@@ -959,19 +944,102 @@ else
             });
         }
 
+        // ── Status Filter Tabs ──
+        document.querySelectorAll('.conv-filter-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.conv-filter-btn').forEach(function(b) { b.classList.remove('active'); });
+                this.classList.add('active');
+                var filter = this.getAttribute('data-filter');
+                filterConversations(filter);
+            });
+        });
+
+        function normalizeStatus(st) {
+            if (!st) return 'Chờ tiếp nhận';
+            var s = st.toString().trim();
+            if (['0', 'Chờ tiếp nhận', 'ChoTiepNhan', 'Chờ xử lý', 'ChoXuLy', 'Chờ', 'Cho', 'waiting'].indexOf(s) !== -1) return 'Chờ tiếp nhận';
+            if (['1', 'Đang xử lý', 'DangXuLy', 'Đang trao đổi', 'DangTraoDoi', 'processing'].indexOf(s) !== -1) return 'Đang xử lý';
+            if (['2', 'Chờ lịch hẹn', 'ChoLichHen', 'appointment'].indexOf(s) !== -1) return 'Chờ lịch hẹn';
+            if (['3', 'Hoàn thành', 'HoanThanh', 'Đã đóng', 'DaDong', 'closed', 'completed'].indexOf(s) !== -1) return 'Hoàn thành';
+            if (['4', 'Đã hủy', 'DaHuy', 'Hủy', 'Huy', 'cancelled', 'canceled'].indexOf(s) !== -1) return 'Đã hủy';
+            return s;
+        }
+
+        function filterConversations(filterVal) {
+            var searchVal = (document.getElementById('searchConvInput')?.value || '').toLowerCase().trim();
+            var isAll = (!filterVal || filterVal === 'all');
+            var normFilter = isAll ? 'all' : normalizeStatus(filterVal);
+
+            document.querySelectorAll('.conv-card').forEach(function(card) {
+                var rawStatus = card.getAttribute('data-status') || '';
+                var normCardStatus = normalizeStatus(rawStatus);
+                var cardName = (card.getAttribute('data-name') || '').toLowerCase();
+                var cardTicket = (card.getAttribute('data-ticket') || '').toLowerCase();
+
+                var matchesStatus = (isAll || normCardStatus === normFilter);
+                var matchesSearch = (!searchVal || cardName.includes(searchVal) || cardTicket.includes(searchVal));
+
+                card.style.display = (matchesStatus && matchesSearch) ? '' : 'none';
+            });
+        }
+
         // ── Client-side search filter ──
         var searchInput = document.getElementById('searchConvInput');
         var searchCustomer = document.getElementById('searchConvInputCustomer');
-        [searchInput, searchCustomer].forEach(function(input) {
-            if (input) {
-                input.addEventListener('input', function () {
-                    var q = this.value.toLowerCase().trim();
-                    document.querySelectorAll('.conv-card').forEach(function (card) {
-                        var name = (card.getAttribute('data-name') || '').toLowerCase();
-                        card.style.display = (!q || name.includes(q)) ? '' : 'none';
-                    });
+        if (searchInput) {
+            searchInput.addEventListener('input', function() {
+                var activeBtn = document.querySelector('.conv-filter-btn.active');
+                var activeFilter = activeBtn ? activeBtn.getAttribute('data-filter') : 'all';
+                filterConversations(activeFilter);
+            });
+        }
+        if (searchCustomer) {
+            searchCustomer.addEventListener('input', function () {
+                var q = this.value.toLowerCase().trim();
+                document.querySelectorAll('.conv-card').forEach(function (card) {
+                    var name = (card.getAttribute('data-name') || '').toLowerCase();
+                    card.style.display = (!q || name.includes(q)) ? '' : 'none';
                 });
+            });
+        }
+
+        // ── Action Buttons: Change Ticket Status ──
+        document.addEventListener('click', function(e) {
+            var targetBtn = e.target.closest('.btn-change-status');
+            if (!targetBtn) return;
+            e.preventDefault();
+
+            var lienHeId = targetBtn.getAttribute('data-lienhe');
+            var trangThaiMoi = targetBtn.getAttribute('data-status');
+
+            if (!lienHeId || !trangThaiMoi) return;
+
+            if (!confirm('Bạn có chắc chắn muốn chuyển trạng thái phiếu sang "' + trangThaiMoi + '" không?')) {
+                return;
             }
+
+            var token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
+
+            fetch('/Chat/CapNhatTrangThaiPhieu', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'RequestVerificationToken': token || ''
+                },
+                body: 'idLienHe=' + encodeURIComponent(lienHeId) + '&trangThaiMoi=' + encodeURIComponent(trangThaiMoi)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert(data.message || 'Cập nhật trạng thái thất bại.');
+                }
+            })
+            .catch(err => {
+                console.error('Lỗi cập nhật trạng thái:', err);
+                alert('Đã xảy ra lỗi khi gửi yêu cầu.');
+            });
         });
     });
 </script>

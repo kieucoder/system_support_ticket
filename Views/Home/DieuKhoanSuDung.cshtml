@@ -1,0 +1,569 @@
+@{
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+    ViewData["Title"] = "Điều Khoản Sử Dụng - Hệ Thống Hỗ Trợ Kỹ Thuật Viettel Telecom";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/assets/css/terms.css" asp-append-version="true" />
+}
+
+<div class="terms-page-wrapper">
+
+    <!-- Reading Progress Bar -->
+    <div class="terms-progress-bar" id="readingProgress"></div>
+
+    <!-- ==========================================
+         HERO SECTION — Light theme (đồng bộ LienHe / PhieuCuaToi)
+         ========================================== -->
+    <section class="terms-hero-light">
+        <div class="container terms-hero-light__content">
+            <div class="row align-items-center g-5">
+
+                <!-- LEFT: Text + Stats -->
+                <div class="col-lg-7 col-12">
+
+                    <!-- Breadcrumb -->
+                    <nav aria-label="breadcrumb" class="terms-hero-light__breadcrumb">
+                        <ol class="breadcrumb m-0">
+                            <li class="breadcrumb-item">
+                                <a asp-controller="Customers" asp-action="TrangChu"
+                                   class="text-decoration-none d-inline-flex align-items-center gap-1">
+                                    <i class="bi bi-house-door-fill"></i> Trang chủ
+                                </a>
+                            </li>
+                            <li class="breadcrumb-item active" aria-current="page">Điều khoản sử dụng</li>
+                        </ol>
+                    </nav>
+
+                    <!-- Badge -->
+                    <span class="terms-hero-light__badge">
+                        <i class="bi bi-shield-check me-1"></i> VIETTEL TELECOM CẦN THƠ
+                    </span>
+
+                    <!-- Title -->
+                    <h1 class="terms-hero-light__title">
+                        Điều Khoản <span class="terms-hero-light__title-accent">Sử Dụng Dịch Vụ</span>
+                    </h1>
+
+                    <!-- Description -->
+                    <p class="terms-hero-light__desc">
+                        Quy định chi tiết về quyền lợi, nghĩa vụ và chính sách bảo mật thông tin khi bạn sử dụng hệ thống TechSupport để tạo phiếu hỗ trợ kỹ thuật và tra cứu tiến độ xử lý.
+                    </p>
+
+                    <!-- CTA Buttons -->
+                    <div class="d-flex flex-wrap gap-3 mt-4 mb-4">
+                        <a asp-controller="Ticket" asp-action="ChonDMDichVu"
+                           class="btn terms-hero-light__btn-primary">
+                            <i class="bi bi-plus-circle me-1"></i> Tạo Phiếu Hỗ Trợ
+                        </a>
+                        <a asp-controller="Home" asp-action="LienHe"
+                           class="btn terms-hero-light__btn-secondary">
+                            <i class="bi bi-headset me-1"></i> Liên Hệ Hỗ Trợ
+                        </a>
+                    </div>
+
+                    <!-- Quick Stats -->
+                    <div class="terms-hero-light__stats">
+                        <div class="terms-hero-light__stat">
+                            <span class="terms-hero-light__stat-num" style="color:#D71920">5</span>
+                            <span class="terms-hero-light__stat-label">Phần điều khoản</span>
+                        </div>
+                        <div class="terms-hero-light__stat-sep"></div>
+                        <div class="terms-hero-light__stat">
+                            <span class="terms-hero-light__stat-num" style="color:#3B82F6">24/7</span>
+                            <span class="terms-hero-light__stat-label">Hỗ trợ kỹ thuật</span>
+                        </div>
+                        <div class="terms-hero-light__stat-sep"></div>
+                        <div class="terms-hero-light__stat">
+                            <span class="terms-hero-light__stat-num" style="color:#10B981">ISO</span>
+                            <span class="terms-hero-light__stat-label">27001 Bảo mật</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RIGHT: SVG Illustration -->
+                <div class="col-lg-5 col-12 d-none d-lg-flex justify-content-center">
+                    <svg class="terms-hero-light__svg" viewBox="0 0 460 400"
+                         xmlns="http://www.w3.org/2000/svg" aria-label="Điều khoản sử dụng Viettel">
+                        <defs>
+                            <linearGradient id="tkGradRed" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#D71920" />
+                                <stop offset="100%" stop-color="#ff4d57" />
+                            </linearGradient>
+                            <linearGradient id="tkGradDark" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#1f2937" />
+                                <stop offset="100%" stop-color="#111827" />
+                            </linearGradient>
+                            <linearGradient id="tkGradGreen" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#10B981" />
+                                <stop offset="100%" stop-color="#059669" />
+                            </linearGradient>
+                            <linearGradient id="tkGradBlue" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#3B82F6" />
+                                <stop offset="100%" stop-color="#2563EB" />
+                            </linearGradient>
+                        </defs>
+
+                        <!-- Background glow -->
+                        <circle cx="230" cy="200" r="170" fill="url(#tkGradRed)" opacity="0.04" />
+                        <circle cx="380" cy="70"  r="60"  fill="url(#tkGradRed)" opacity="0.06" />
+
+                        <!-- Main document card -->
+                        <rect x="60" y="40" width="300" height="320" rx="20"
+                              fill="#ffffff" stroke="rgba(15,17,21,0.06)" stroke-width="1.5"
+                              filter="drop-shadow(0 18px 36px rgba(0,0,0,0.06))" />
+
+                        <!-- Document top bar -->
+                        <path d="M60 60 C60 48.95 68.95 40 80 40 L340 40 C351.05 40 360 48.95 360 60 L360 82 L60 82 Z"
+                              fill="url(#tkGradDark)" />
+                        <circle cx="82"  cy="61" r="5" fill="#D71920" />
+                        <circle cx="97"  cy="61" r="5" fill="#eab308" />
+                        <circle cx="112" cy="61" r="5" fill="#10b981" />
+                        <!-- Shield icon in header -->
+                        <text x="195" y="68" font-size="16" text-anchor="middle" fill="rgba(255,255,255,0.7)">🛡</text>
+
+                        <!-- Section rows — 5 sections -->
+                        <!-- Section 1 -->
+                        <rect x="80" y="100" width="20" height="20" rx="6" fill="url(#tkGradRed)" opacity="0.9" />
+                        <rect x="110" y="104" width="120" height="8" rx="3" fill="#1f2937" opacity="0.8" />
+                        <rect x="110" y="115" width="180" height="5" rx="2" fill="#CBD5E0" />
+
+                        <!-- Section 2 -->
+                        <rect x="80" y="138" width="20" height="20" rx="6" fill="url(#tkGradBlue)" opacity="0.9" />
+                        <rect x="110" y="142" width="100" height="8" rx="3" fill="#1f2937" opacity="0.8" />
+                        <rect x="110" y="153" width="200" height="5" rx="2" fill="#CBD5E0" />
+
+                        <!-- Section 3 -->
+                        <rect x="80" y="176" width="20" height="20" rx="6" fill="url(#tkGradGreen)" opacity="0.9" />
+                        <rect x="110" y="180" width="140" height="8" rx="3" fill="#1f2937" opacity="0.8" />
+                        <rect x="110" y="191" width="170" height="5" rx="2" fill="#CBD5E0" />
+
+                        <!-- Section 4 -->
+                        <rect x="80" y="214" width="20" height="20" rx="6" fill="#F59E0B" opacity="0.9" />
+                        <rect x="110" y="218" width="110" height="8" rx="3" fill="#1f2937" opacity="0.8" />
+                        <rect x="110" y="229" width="190" height="5" rx="2" fill="#CBD5E0" />
+
+                        <!-- Section 5 -->
+                        <rect x="80" y="252" width="20" height="20" rx="6" fill="#8B5CF6" opacity="0.9" />
+                        <rect x="110" y="256" width="130" height="8" rx="3" fill="#1f2937" opacity="0.8" />
+                        <rect x="110" y="267" width="160" height="5" rx="2" fill="#CBD5E0" />
+
+                        <!-- Divider -->
+                        <rect x="80" y="290" width="240" height="1" fill="#E5E7EB" />
+
+                        <!-- Confirm / Agree button at bottom of doc -->
+                        <rect x="80" y="306" width="120" height="32" rx="16"
+                              fill="url(#tkGradRed)"
+                              filter="drop-shadow(0 4px 8px rgba(215,25,32,0.25))" />
+                        <text x="140" y="326" font-size="11" text-anchor="middle"
+                              fill="#ffffff" font-weight="700">✓ Đồng ý</text>
+
+                        <!-- Floating shield badge -->
+                        <g transform="translate(340, 155)">
+                            <circle cx="0" cy="0" r="26"
+                                    fill="#ffffff"
+                                    filter="drop-shadow(0 6px 16px rgba(16,185,129,0.25))" />
+                            <circle cx="0" cy="0" r="20" fill="url(#tkGradGreen)" opacity="0.15" />
+                            <text x="0" y="6" font-size="18" text-anchor="middle">🛡️</text>
+                        </g>
+
+                        <!-- Floating lock badge -->
+                        <g transform="translate(50, 230)">
+                            <circle cx="0" cy="0" r="22"
+                                    fill="#ffffff"
+                                    filter="drop-shadow(0 4px 12px rgba(59,130,246,0.2))" />
+                            <circle cx="0" cy="0" r="16" fill="url(#tkGradBlue)" opacity="0.1" />
+                            <text x="0" y="6" font-size="16" text-anchor="middle">🔒</text>
+                        </g>
+                    </svg>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================
+         STICKY NAVIGATION
+         ========================================== -->
+    <div class="terms-sticky-nav-wrapper">
+        <div class="container">
+            <div class="terms-quick-nav">
+                <a href="#dieu-khoan-chung" class="terms-toc-link active">
+                    <i class="bi bi-file-earmark-text"></i> Điều Khoản Chung
+                </a>
+                <a href="#quyen-nghia-vu" class="terms-toc-link">
+                    <i class="bi bi-person-badge"></i> Quyền & Nghĩa Vụ
+                </a>
+                <a href="#chinh-sach-bao-mat" class="terms-toc-link">
+                    <i class="bi bi-shield-lock"></i> Chính Sách Bảo Mật
+                </a>
+                <a href="#giai-quyet-tranh-chap" class="terms-toc-link">
+                    <i class="bi bi-diagram-3"></i> Giải Quyết Tranh Chấp
+                </a>
+                <a href="#dieu-khoan-cap-nhat" class="terms-toc-link">
+                    <i class="bi bi-arrow-clockwise"></i> Cập Nhật
+                </a>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ==========================================
+         MAIN CONTENT
+         ========================================== -->
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-10 col-xl-9">
+
+                <!-- ==========================================
+                     1. ĐIỀU KHOẢN CHUNG
+                     ========================================== -->
+                <section id="dieu-khoan-chung" class="terms-card-section terms-reveal">
+                    <div class="terms-card">
+                        <div class="terms-card-header">
+                            <div class="terms-card-icon">
+                                <i class="bi bi-file-earmark-text-fill"></i>
+                            </div>
+                            <div>
+                                <span class="terms-section-tag">PHẦN 01</span>
+                                <h2 class="terms-card-title">Điều Khoản Chung</h2>
+                            </div>
+                        </div>
+
+                        <p class="lead fw-semibold text-dark mb-3">
+                            Chào mừng bạn đến với Hệ thống Quản lý Phiếu Hỗ Trợ Kỹ Thuật (TechSupport) của Viettel Telecom Cần Thơ.
+                        </p>
+                        <p class="terms-text-p">
+                            Khi bạn truy cập, đăng ký tài khoản, gửi yêu cầu hỗ trợ kỹ thuật hoặc tra cứu tiến độ xử lý phiếu trên hệ thống, bạn được xem là đã đọc, hiểu rõ và chấp nhận tuân thủ toàn bộ các điều khoản quy định dưới đây.
+                        </p>
+
+                        <div class="terms-highlight-box">
+                            <h6><i class="bi bi-exclamation-triangle-fill me-2"></i>Phạm Vi Áp Dụng</h6>
+                            <p>
+                                Các điều khoản này áp dụng cho toàn bộ cá nhân, doanh nghiệp và tổ chức đang sử dụng dịch vụ viễn thông Viettel như Internet Cáp Quang, Truyền hình TV360, Camera AI và các Giải pháp CNTT doanh nghiệp tại khu vực Tây Nam Bộ.
+                            </p>
+                        </div>
+
+                        <h5 class="fw-bold mt-4 mb-3 text-dark">
+                            <i class="bi bi-shield-check text-danger me-2"></i>Quy Định Sử Dụng
+                        </h5>
+                        <div class="terms-rules-list">
+                            <div class="terms-rule-item">
+                                <div class="terms-rule-icon">
+                                    <i class="bi bi-check-circle-fill"></i>
+                                </div>
+                                <div class="terms-rule-text">
+                                    <strong>Mục đích chính đáng:</strong> Hệ thống chỉ tiếp nhận các yêu cầu hỗ trợ kỹ thuật, sự cố báo hỏng thực tế liên quan đến đường truyền và thiết bị Viettel.
+                                </div>
+                            </div>
+                            <div class="terms-rule-item">
+                                <div class="terms-rule-icon">
+                                    <i class="bi bi-check-circle-fill"></i>
+                                </div>
+                                <div class="terms-rule-text">
+                                    <strong>Bảo mật thông tin:</strong> Bạn có nghĩa vụ tự bảo quản thông tin đăng nhập và không chia sẻ mã xác thực OTP cho bất kỳ ai.
+                                </div>
+                            </div>
+                            <div class="terms-rule-item">
+                                <div class="terms-rule-icon">
+                                    <i class="bi bi-check-circle-fill"></i>
+                                </div>
+                                <div class="terms-rule-text">
+                                    <strong>Chống vi phạm:</strong> Viettel có quyền ngưng hỗ trợ và tạm khóa tài khoản đối với các yêu cầu spam, thông tin sai sự thật hoặc cố ý gây rối.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+
+                <!-- ==========================================
+                     2. QUYỀN VÀ NGHĨA VỤ
+                     ========================================== -->
+                <section id="quyen-nghia-vu" class="terms-card-section terms-reveal">
+                    <div class="terms-card">
+                        <div class="terms-card-header">
+                            <div class="terms-card-icon">
+                                <i class="bi bi-person-badge-fill"></i>
+                            </div>
+                            <div>
+                                <span class="terms-section-tag">PHẦN 02</span>
+                                <h2 class="terms-card-title">Quyền Và Nghĩa Vụ</h2>
+                            </div>
+                        </div>
+
+                        <p class="terms-text-p mb-4">
+                            Đảm bảo sự cân bằng giữa quyền lợi của khách hàng và trách nhiệm phối hợp với đội ngũ kỹ thuật Viettel:
+                        </p>
+
+                        <div class="row g-4">
+                            <!-- Quyền của Khách hàng -->
+                            <div class="col-md-6">
+                                <div class="rights-card user-rights-card">
+                                    <div class="rights-header green-header">
+                                        <i class="bi bi-shield-check"></i>
+                                        <span>Quyền Của Khách Hàng</span>
+                                    </div>
+                                    <ul class="rights-list">
+                                        <li class="rights-item">
+                                            <i class="bi bi-check2-circle text-success"></i>
+                                            <span>Được hỗ trợ khắc phục sự cố 24/7 theo đúng cam kết SLA.</span>
+                                        </li>
+                                        <li class="rights-item">
+                                            <i class="bi bi-check2-circle text-success"></i>
+                                            <span>Tra cứu tiến độ xử lý phiếu minh bạch và liên hệ trực tiếp kỹ thuật viên.</span>
+                                        </li>
+                                        <li class="rights-item">
+                                            <i class="bi bi-check2-circle text-success"></i>
+                                            <span>Được bảo mật dữ liệu cá nhân theo chuẩn ISO/IEC 27001.</span>
+                                        </li>
+                                        <li class="rights-item">
+                                            <i class="bi bi-check2-circle text-success"></i>
+                                            <span>Đánh giá chất lượng phục vụ sau khi hoàn tất xử lý phiếu.</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Trách nhiệm của Người dùng -->
+                            <div class="col-md-6">
+                                <div class="rights-card user-duties-card">
+                                    <div class="rights-header red-header">
+                                        <i class="bi bi-shield-exclamation"></i>
+                                        <span>Trách Nhiệm Người Dùng</span>
+                                    </div>
+                                    <ul class="rights-list">
+                                        <li class="rights-item">
+                                            <i class="bi bi-x-circle text-danger"></i>
+                                            <span>Cung cấp chính xác thông tin hợp đồng, số điện thoại và địa chỉ sự cố.</span>
+                                        </li>
+                                        <li class="rights-item">
+                                            <i class="bi bi-x-circle text-danger"></i>
+                                            <span>Tạo điều kiện cho kỹ thuật viên tiếp cận thiết bị tại địa điểm lắp đặt.</span>
+                                        </li>
+                                        <li class="rights-item">
+                                            <i class="bi bi-x-circle text-danger"></i>
+                                            <span>Không tự ý tháo gỡ, thay đổi cấu hình hạ tầng mạng Viettel.</span>
+                                        </li>
+                                        <li class="rights-item">
+                                            <i class="bi bi-x-circle text-danger"></i>
+                                            <span>Không sử dụng từ ngữ xúc phạm hoặc gửi thông tin sai sự thật.</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+
+                <!-- ==========================================
+                     3. CHÍNH SÁCH BẢO MẬT
+                     ========================================== -->
+                <section id="chinh-sach-bao-mat" class="terms-card-section terms-reveal">
+                    <div class="terms-card">
+                        <div class="terms-card-header">
+                            <div class="terms-card-icon">
+                                <i class="bi bi-shield-lock-fill"></i>
+                            </div>
+                            <div>
+                                <span class="terms-section-tag">PHẦN 03</span>
+                                <h2 class="terms-card-title">Chính Sách Bảo Mật Dữ Liệu</h2>
+                            </div>
+                        </div>
+
+                        <p class="terms-text-p mb-4">
+                            Viettel Telecom cam kết bảo vệ tuyệt đối thông tin cá nhân của khách hàng:
+                        </p>
+
+                        <!-- Accordion -->
+                        <div class="privacy-accordion">
+                            <div class="privacy-accordion-item active">
+                                <div class="privacy-accordion-header">
+                                    <span><i class="bi bi-database-fill-check me-2 text-danger"></i>Thu Thập Thông Tin</span>
+                                    <i class="bi bi-chevron-down privacy-accordion-icon"></i>
+                                </div>
+                                <div class="privacy-accordion-body">
+                                    Hệ thống chỉ thu thập các thông tin tối thiểu phục vụ kỹ thuật: Họ tên, Số điện thoại, Địa chỉ sự cố, Mã hợp đồng và Hình ảnh mô tả lỗi thiết bị.
+                                </div>
+                            </div>
+
+                            <div class="privacy-accordion-item">
+                                <div class="privacy-accordion-header">
+                                    <span><i class="bi bi-bullseye me-2 text-danger"></i>Mục Đích Sử Dụng</span>
+                                    <i class="bi bi-chevron-down privacy-accordion-icon"></i>
+                                </div>
+                                <div class="privacy-accordion-body">
+                                    Thông tin chỉ được sử dụng cho: Điều phối kỹ thuật viên, gửi tin nhắn cập nhật trạng thái phiếu và đo lường chỉ số hài lòng khách hàng.
+                                </div>
+                            </div>
+
+                            <div class="privacy-accordion-item">
+                                <div class="privacy-accordion-header">
+                                    <span><i class="bi bi-lock-fill me-2 text-danger"></i>Mã Hóa & Bảo Mật</span>
+                                    <i class="bi bi-chevron-down privacy-accordion-icon"></i>
+                                </div>
+                                <div class="privacy-accordion-body">
+                                    Toàn bộ dữ liệu được mã hóa qua giao thức TLS 1.3 và lưu trữ trên hạ tầng Cloud Server bảo mật của Viettel, đảm bảo an toàn tuyệt đối.
+                                </div>
+                            </div>
+
+                            <div class="privacy-accordion-item">
+                                <div class="privacy-accordion-header">
+                                    <span><i class="bi bi-person-x-fill me-2 text-danger"></i>Không Chia Sẻ Bên Thứ Ba</span>
+                                    <i class="bi bi-chevron-down privacy-accordion-icon"></i>
+                                </div>
+                                <div class="privacy-accordion-body">
+                                    Viettel cam kết không mua bán, thương mại hóa hay cung cấp dữ liệu của bạn cho bất kỳ bên thứ ba nào khi chưa có sự đồng ý của bạn.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+
+                <!-- ==========================================
+                     4. GIẢI QUYẾT TRANH CHẤP
+                     ========================================== -->
+                <section id="giai-quyet-tranh-chap" class="terms-card-section terms-reveal">
+                    <div class="terms-card">
+                        <div class="terms-card-header">
+                            <div class="terms-card-icon">
+                                <i class="bi bi-diagram-3-fill"></i>
+                            </div>
+                            <div>
+                                <span class="terms-section-tag">PHẦN 04</span>
+                                <h2 class="terms-card-title">Quy Trình Giải Quyết Tranh Chấp</h2>
+                            </div>
+                        </div>
+
+                        <p class="terms-text-p mb-4">
+                            Mọi khiếu nại về chất lượng dịch vụ được xử lý công khai theo 5 bước tiêu chuẩn:
+                        </p>
+
+                        <div class="dispute-timeline-grid">
+                            <div class="dispute-line-connector d-none d-lg-block"></div>
+
+                            <div class="dispute-step-item">
+                                <div class="dispute-step-num">1</div>
+                                <div class="dispute-step-box">
+                                    <i class="bi bi-inbox-fill dispute-step-icon"></i>
+                                    <h5>Tiếp Nhận</h5>
+                                    <p>Ghi nhận phản ánh từ khách hàng qua Web hoặc Tổng đài.</p>
+                                </div>
+                            </div>
+
+                            <div class="dispute-step-item">
+                                <div class="dispute-step-num">2</div>
+                                <div class="dispute-step-box">
+                                    <i class="bi bi-search dispute-step-icon"></i>
+                                    <h5>Xác Minh</h5>
+                                    <p>Kiểm tra nhật ký hệ thống và lịch sử thao tác kỹ thuật.</p>
+                                </div>
+                            </div>
+
+                            <div class="dispute-step-item">
+                                <div class="dispute-step-num">3</div>
+                                <div class="dispute-step-box">
+                                    <i class="bi bi-chat-dots-fill dispute-step-icon"></i>
+                                    <h5>Trao Đổi</h5>
+                                    <p>Liên hệ khách hàng giải trình rõ nguyên nhân phát sinh.</p>
+                                </div>
+                            </div>
+
+                            <div class="dispute-step-item">
+                                <div class="dispute-step-num">4</div>
+                                <div class="dispute-step-box">
+                                    <i class="bi bi-tools dispute-step-icon"></i>
+                                    <h5>Xử Lý</h5>
+                                    <p>Triển khai phương án khắc phục hoặc đền bù phù hợp.</p>
+                                </div>
+                            </div>
+
+                            <div class="dispute-step-item">
+                                <div class="dispute-step-num">5</div>
+                                <div class="dispute-step-box">
+                                    <i class="bi bi-check-circle-fill dispute-step-icon"></i>
+                                    <h5>Hoàn Tất</h5>
+                                    <p>Đóng khiếu nại và nhận đánh giá hài lòng từ khách hàng.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+
+                <!-- ==========================================
+                     5. ĐIỀU KHOẢN CẬP NHẬT
+                     ========================================== -->
+                <section id="dieu-khoan-cap-nhat" class="terms-card-section terms-reveal">
+                    <div class="terms-card">
+                        <div class="terms-card-header">
+                            <div class="terms-card-icon">
+                                <i class="bi bi-arrow-clockwise"></i>
+                            </div>
+                            <div>
+                                <span class="terms-section-tag">PHẦN 05</span>
+                                <h2 class="terms-card-title">Điều Khoản Cập Nhật & Sửa Đổi</h2>
+                            </div>
+                        </div>
+
+                        <div class="terms-update-badge">
+                            <i class="bi bi-calendar3"></i>
+                            Cập nhật lần cuối: 21/07/2026
+                        </div>
+
+                        <p class="terms-text-p">
+                            Viettel Telecom có quyền chỉnh sửa, bổ sung nội dung các điều khoản để đáp ứng quy định pháp luật hiện hành và nâng cao chất lượng dịch vụ. Mọi thay đổi sẽ có hiệu lực ngay khi được đăng tải trên hệ thống TechSupport.
+                        </p>
+                        <p class="terms-text-p mb-0">
+                            Việc bạn tiếp tục sử dụng dịch vụ sau khi điều khoản được cập nhật đồng nghĩa với việc bạn chấp thuận toàn bộ các thay đổi đó.
+                        </p>
+                    </div>
+                </section>
+
+                <!-- ==========================================
+                     HỘP XÁC NHẬN
+                     ========================================== -->
+                <div class="terms-confirm-box terms-reveal">
+                    <span class="terms-confirm-icon">
+                        <i class="bi bi-patch-check-fill"></i>
+                    </span>
+                    <p class="terms-confirm-text">
+                        "Bằng việc tiếp tục truy cập và sử dụng hệ thống TechSupport Viettel, bạn xác nhận đã đọc, hiểu rõ và đồng ý tuân thủ toàn bộ các điều khoản dịch vụ được nêu trên."
+                    </p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         CTA SECTION
+         ========================================== -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <div class="cta-banner-wrapper terms-reveal">
+                <h2 class="cta-title">Bạn Cần Hỗ Trợ Kỹ Thuật?</h2>
+                <p class="cta-subtitle">
+                    Gửi ngay phiếu yêu cầu hoặc liên hệ trực tiếp với chúng tôi để được xử lý 24/7.
+                </p>
+                <div class="cta-buttons">
+                    <a asp-controller="Ticket" asp-action="ChonDMDichVu" class="btn-cta-white">
+                        <i class="bi bi-plus-circle-fill"></i> Tạo Phiếu Hỗ Trợ
+                    </a>
+                    <a asp-controller="Home" asp-action="LienHe" class="btn-cta-outline">
+                        <i class="bi bi-headset"></i> Liên Hệ Chúng Tôi
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</div>
+
+<partial name="~/Views/Shared/_Footer.cshtml" />
+
+@section Scripts {
+    <script src="~/assets/js/terms.js" asp-append-version="true"></script>
+}

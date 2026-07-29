@@ -1,0 +1,117 @@
+@{
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+    ViewData["Title"] = "Kinh Nghiệm Xử Lý Suy Hao Quang & Mesh Wifi 6 - Viettel Cần Thơ";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/assets/css/news-detail.css" asp-append-version="true" />
+}
+
+<div class="reading-progress-bar"></div>
+
+<div class="news-detail-wrapper">
+
+    <section class="detail-header-section">
+        <div class="container">
+            <div class="detail-breadcrumb">
+                <a asp-controller="Customers" asp-action="TrangChu"><i class="bi bi-house-door-fill me-1"></i> Trang chủ</a>
+                <span>></span>
+                <a asp-controller="Home" asp-action="TinTuc">Tin tức</a>
+                <span>></span>
+                <span class="text-dark">Kinh nghiệm xử lý sự cố</span>
+            </div>
+
+            <h1 class="detail-article-title">
+                Kinh Nghiệm Đo Kiểm Suy Hao Tín Hiệu Quang & Tối Ưu Hóa Phủ Sóng Hệ Thống Mesh Wifi 6
+            </h1>
+
+            <div class="detail-meta-bar">
+                <span class="detail-author-badge">
+                    <i class="bi bi-tools"></i> Ban Hạ Tầng Cáp Quang Viettel
+                </span>
+                <span class="detail-meta-item"><i class="bi bi-calendar3 text-danger"></i> 13/07/2026</span>
+                <span class="detail-meta-item"><i class="bi bi-clock text-danger"></i> 6 phút đọc</span>
+                <span class="detail-meta-item"><i class="bi bi-eye text-danger"></i> 2,190 lượt xem</span>
+                <span class="badge bg-danger">Hướng Dẫn</span>
+            </div>
+        </div>
+    </section>
+
+    <div class="container py-5">
+        <div class="row g-4">
+
+            <div class="col-lg-8 col-12">
+                <article class="article-content">
+
+                    <div class="detail-cover-container">
+                        <img src="https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&q=80&w=1200" alt="Suy hao tín hiệu quang và Wifi Mesh 6" />
+                    </div>
+                    <p class="detail-cover-caption">Đo kiểm công suất quang dBm bằng máy đo công suất chuyên dụng của Viettel</p>
+
+                    <p class="lead fw-bold text-dark mb-4">
+                        Chất lượng đường truyền cáp quang phụ thuộc lớn vào chỉ số công suất tín hiệu thu quang (Rx Optical Power) tính bằng dBm. Bài viết chia sẻ kinh nghiệm kỹ thuật giúp khách hàng hiểu rõ về chỉ số suy hao quang và cách tối ưu hệ thống <span class="text-highlight">Mesh Wifi 6</span> trong ngôi nhà nhiều tầng.
+                    </p>
+
+                    <h2>1. Chỉ Số Suy Hao Quang Bao Nhiêu Là Chuẩn Đẹp?</h2>
+                    <p>
+                        Trên trang quản trị Modem ONT Viettel (truy cập địa chỉ <code>192.168.1.1</code>), khách hàng có thể kiểm tra chỉ số Optical Power. Ngưỡng tiêu chuẩn cho đường truyền cáp quang GPON ổn định là từ <strong>-15 dBm đến -25 dBm</strong>.
+                    </p>
+                    <ul>
+                        <li><strong>Từ -15 dBm đến -22 dBm:</strong> Tín hiệu cực mạnh, đường truyền hoàn hảo.</li>
+                        <li><strong>Từ -23 dBm đến -26 dBm:</strong> Tín hiệu chấp nhận được.</li>
+                        <li><strong>Dưới -27 dBm:</strong> Suy hao quang cao, Modem bắt đầu báo chập chờn hoặc đèn LOS nháy đỏ.</li>
+                    </ul>
+
+                    <h2>2. Mẹo Sắp Xếp Vị Trí Node Mesh Wifi 6 Phủ Sóng Xuyên Tường</h2>
+                    <div class="callout-box">
+                        <h5><i class="bi bi-broadcast-pin me-2"></i> Nguyên Tắc Lắp Đặt Mesh Wifi</h5>
+                        <p>
+                            • Đặt Node chính ở trung tâm phòng khách, cách mặt đất ít nhất 1.2 mét.<br />
+                            • Không đặt Node Wifi sát tủ sắt, lò vi sóng hoặc sau tivi.<br />
+                            • Kết nối dây cáp LAN giữa Modem chính và Node phụ nếu nhà có nhiều tầng để truyền tải 100% tốc độ gói cước.
+                        </p>
+                    </div>
+
+                    <!-- Share Section -->
+                    <div class="article-share-section">
+                        <span class="share-title"><i class="bi bi-share-fill me-2 text-danger"></i> Chia sẻ bài viết:</span>
+                        <div class="share-buttons-list">
+                            <a href="#" class="btn-share btn-share-facebook"><i class="bi bi-facebook"></i></a>
+                            <a href="#" class="btn-share btn-share-zalo"><i class="bi bi-chat-quote-fill"></i></a>
+                            <a href="#" class="btn-share btn-share-email"><i class="bi bi-envelope-fill"></i></a>
+                        </div>
+                    </div>
+
+                </article>
+            </div>
+
+            <!-- SIDEBAR -->
+            <div class="col-lg-4 col-12">
+                <aside class="news-sidebar">
+                    <div class="sidebar-widget">
+                        <h4 class="widget-title"><i class="bi bi-fire text-danger me-2"></i> Bài Viết Nổi Bật</h4>
+                        <a asp-controller="Home" asp-action="ChiTietTin1" class="text-decoration-none text-dark d-block">
+                            <div class="mini-post-item">
+                                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=200" class="mini-post-img" alt="Tạo phiếu" />
+                                <div>
+                                    <h5 class="mini-post-title">Hướng Dẫn Tạo Phiếu Báo Sự Cố Nhanh</h5>
+                                    <span class="mini-post-date"><i class="bi bi-calendar3"></i> 20/07/2026</span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </aside>
+            </div>
+
+        </div>
+    </div>
+
+    
+
+</div>
+
+<partial name="~/Views/Shared/_Footer.cshtml" />
+
+@section Scripts {
+    <script src="~/assets/js/news-detail.js" asp-append-version="true"></script>
+}

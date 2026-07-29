@@ -337,29 +337,33 @@
 }
 
 .vt-btn-refresh {
-    width: 44px;
     height: 44px;
+    padding: 0 18px;
     border-radius: var(--vt-border-radius-sm);
     border: 1.5px solid var(--border-color);
-    background-color: var(--bg-body);
+    background-color: var(--bg-card);
     color: var(--text-main);
-    display: flex;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
+    gap: 8px;
     cursor: pointer;
-    font-size: 0.95rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    white-space: nowrap;
     transition: var(--vt-transition);
 }
 
 .vt-btn-refresh:hover {
     border-color: var(--vt-red);
     color: var(--vt-red);
-    background-color: var(--bg-card);
+    background-color: rgba(238, 0, 51, 0.04);
+    box-shadow: 0 2px 8px rgba(238, 0, 51, 0.12);
 }
 
 .vt-btn-refresh:active i {
     transform: rotate(180deg);
-    transition: transform 0.2s ease;
+    transition: transform 0.3s ease;
 }
 
 /* ── Table Card ── */

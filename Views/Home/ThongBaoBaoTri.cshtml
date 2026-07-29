@@ -1,0 +1,242 @@
+@{
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+    ViewData["Title"] = "Thông Báo Bảo Trì Hệ Thống Máy Chủ - Viettel TechSupport";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/assets/css/knowledge.css" asp-append-version="true" />
+}
+
+<!-- ==================== HERO BANNER (SYNCHRONIZED WITH PHIEUCUATOI & HUONGDAN) ==================== -->
+<section class="hero-section knowledge-hero-sync">
+    <div class="container hero-content">
+        <div class="row align-items-center g-4">
+            <!-- Left Text Column -->
+            <div class="col-lg-7 col-12 text-start hero-text-col animate-fade-up">
+                <nav class="hero-breadcrumb-sync" aria-label="breadcrumb">
+                    <ol class="breadcrumb m-0">
+                        <li class="breadcrumb-item"><a asp-controller="Customers" asp-action="TrangChu"><i class="fa-solid fa-house-door-fill me-1"></i>Trang chủ</a></li>
+                        <li class="breadcrumb-item"><a href="#">Cẩm nang</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Thông báo bảo trì</li>
+                    </ol>
+                </nav>
+                <span class="hero-badge-sync"><i class="bi bi-cpu-fill me-1"></i> Thông báo hệ thống</span>
+                <h1 class="hero-title-sync text-uppercase">THÔNG BÁO <span class="text-primary">BẢO TRÌ MÁY CHỦ</span></h1>
+                <p class="hero-desc-sync">
+                    Nhằm nâng cao chất lượng dịch vụ, tối ưu tốc độ xử lý ticket và mở rộng băng thông hạ tầng Cloud, Viettel TechSupport trân trọng thông báo lịch nâng cấp máy chủ định kỳ.
+                </p>
+
+                <!-- CTA Buttons -->
+                <div class="hero-cta-buttons d-flex flex-wrap gap-3 mt-3">
+                    <a href="tel:18008119" class="btn btn-hero-create-sync">
+                        <i class="bi bi-telephone-fill me-1"></i> Hotline 1800 8119
+                    </a>
+                    <a asp-controller="Ticket" asp-action="TaoPhieu" class="btn btn-hero-contact-sync">
+                        <i class="bi bi-plus-circle me-1"></i> Tạo Phiếu Khẩn Cấp
+                    </a>
+                </div>
+            </div>
+
+            <!-- Right Graphic / Icon Illustration Column -->
+            <div class="col-lg-5 col-12 text-center animate-fade-up delay-1 d-none d-lg-block">
+                <div class="p-4 rounded-4 bg-white border shadow-sm d-inline-block text-start position-relative overflow-hidden" style="max-width: 380px;">
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <div class="p-3 bg-danger-subtle text-danger rounded-circle fs-3"><i class="bi bi-hdd-rack-fill"></i></div>
+                        <div>
+                            <h6 class="fw-bold text-dark mb-0">Viettel Cloud Server Cluster</h6>
+                            <span class="badge bg-warning-subtle text-warning border px-2 py-0.5 mt-1" style="font-size:0.75rem;">Lịch bảo trì 00:00 - 04:00</span>
+                        </div>
+                    </div>
+                    <div class="p-3 bg-light rounded-3 small text-secondary">
+                        <div class="d-flex justify-content-between mb-1"><span>Hạ tầng:</span><span class="text-dark fw-bold">Cloud Ticket Center</span></div>
+                        <div class="d-flex justify-content-between"><span>Cam kết:</span><span class="fw-semibold text-success">Hoàn tất đúng SLA</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ==================== MAIN CONTENT SECTION ==================== -->
+<section class="knowledge-body-section">
+    <div class="container">
+        <div class="row g-4">
+            <!-- Left Main Column (8 Cols) -->
+            <div class="col-lg-8 col-12">
+                
+                <!-- 1. THÔNG TIN BẢO TRÌ CHI TIẾT -->
+                <div class="kn-card-box">
+                    <div class="maint-status-card">
+                        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+                            <h4 class="fw-bold text-dark mb-0">
+                                <i class="bi bi-shield-lock-fill text-danger me-2"></i> Lịch Bảo Trì Định Kỳ Hệ Thống
+                            </h4>
+                            <span class="badge bg-danger-subtle text-danger px-3 py-2 rounded-pill fw-bold" style="font-size:0.82rem;">
+                                <i class="bi bi-gear-wide-connected me-1"></i> Đang lên kế hoạch
+                            </span>
+                        </div>
+                        <p class="text-secondary small mb-4" style="line-height: 1.6;">
+                            Hệ thống tổng đài kỹ thuật Viettel sẽ tiến hành bảo dưỡng và nâng cấp cụm máy chủ trung tâm nhằm tăng năng lực xử lý dữ liệu phiếu hỗ trợ theo chuẩn ISO/IEC 20000.
+                        </p>
+
+                        <!-- Maint Info Grid -->
+                        <div class="maint-grid-info">
+                            <div class="maint-info-item">
+                                <label><i class="bi bi-calendar-event me-1"></i> Ngày thực hiện</label>
+                                <div class="val text-danger">15 Tháng 06, 2026</div>
+                            </div>
+                            <div class="maint-info-item">
+                                <label><i class="bi bi-clock me-1"></i> Khung giờ bảo trì</label>
+                                <div class="val">00:00 - 04:00 sáng</div>
+                            </div>
+                            <div class="maint-info-item">
+                                <label><i class="bi bi-hdd-network me-1"></i> Phạm vi nâng cấp</label>
+                                <div class="val">Cloud Ticket Cluster</div>
+                            </div>
+                            <div class="maint-info-item">
+                                <label><i class="bi bi-check2-circle me-1"></i> Dự kiến xong</label>
+                                <div class="val text-success">04:00 (Cùng ngày)</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. PHẠM VI & DỊCH VỤ ẢNH HƯỞNG -->
+                <div class="kn-card-box">
+                    <h3 class="kn-section-heading">
+                        <i class="bi bi-exclamation-triangle-fill text-warning"></i> Phạm Vi Dịch Vụ Mạng Bị Ảnh Hưởng
+                    </h3>
+                    <p class="text-muted small mb-3">Trong khoảng thời gian nâng cấp máy chủ từ 00:00 đến 04:00, một số tính năng sau có thể tạm thời gián đoạn đoạn ngắn:</p>
+                    
+                    <div class="row g-3">
+                        <div class="col-md-6 col-12">
+                            <div class="p-3 border rounded-3 bg-light">
+                                <h6 class="fw-bold text-dark mb-1"><i class="bi bi-x-circle-fill text-danger me-2"></i> Tạo phiếu hỗ trợ online</h6>
+                                <p class="text-muted small mb-0">Cổng tiếp nhận ticket trực tuyến trên website có thể phản hồi chậm hoặc tạm dừng nhận yêu cầu trong 15-20 phút.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-12">
+                            <div class="p-3 border rounded-3 bg-light">
+                                <h6 class="fw-bold text-dark mb-1"><i class="bi bi-x-circle-fill text-danger me-2"></i> Tra cứu ticket realtime</h6>
+                                <p class="text-muted small mb-0">Tính năng tra cứu trạng thái tiến độ phiếu sự cố qua API tạm thời dừng cập nhật vị trí kỹ thuật viên.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. TIMELINE BẢO TRÌ (4 MỐC THỜI GIAN) -->
+                <div class="kn-card-box">
+                    <h3 class="kn-section-heading">
+                        <i class="bi bi-hourglass-split"></i> Timeline Tiến Trình Bảo Trì Máy Chủ
+                    </h3>
+
+                    <div class="maint-schedule-timeline mt-4">
+                        <!-- Mốc 1 -->
+                        <div class="maint-schedule-item">
+                            <div class="maint-dot"></div>
+                            <div class="maint-time">00:00 - Khởi động sao lưu dữ liệu</div>
+                            <div class="maint-event">Tạm dừng kết nối cổng Ticket API để thực hiện sao lưu (Backup) toàn vẹn dữ liệu khách hàng.</div>
+                        </div>
+
+                        <!-- Mốc 2 -->
+                        <div class="maint-schedule-item">
+                            <div class="maint-dot"></div>
+                            <div class="maint-time">01:00 - Nâng cấp phần cứng Cloud Server</div>
+                            <div class="maint-event">Bổ sung dung lượng RAM và nâng cấp bộ tăng tốc xử lý cho máy chủ dữ liệu chính.</div>
+                        </div>
+
+                        <!-- Mốc 3 -->
+                        <div class="maint-schedule-item">
+                            <div class="maint-dot"></div>
+                            <div class="maint-time">02:30 - Kiểm tra độ ổn định & bảo mật</div>
+                            <div class="maint-event">Chạy các kịch bản kiểm thử tải trọng, rà soát lỗ hổng bảo mật và đồng bộ hóa lại cụm dữ liệu dự phòng.</div>
+                        </div>
+
+                        <!-- Mốc 4 -->
+                        <div class="maint-schedule-item">
+                            <div class="maint-dot" style="border-color:#22C55E;"></div>
+                            <div class="maint-time text-success">04:00 - Mở lại toàn bộ hệ thống</div>
+                            <div class="maint-event">Khôi phục hoàn toàn hoạt động của cổng thông tin TechSupport Viettel. Tất cả tính năng trở lại bình thường.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. ALERT KHẨN CẤP BOOTSTRAP -->
+                <div class="alert alert-danger d-flex align-items-center rounded-3 shadow-xs p-4 border-0 mb-4" style="background: linear-gradient(135deg, #FEF2F2 0%, #FFF 100%); border-left: 5px solid #D71920 !important;">
+                    <div class="flex-shrink-0 me-3 text-danger fs-2">
+                        <i class="bi bi-telephone-outbound-fill"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <h6 class="fw-bold text-danger mb-1" style="font-size: 1.05rem;">Bạn cần hỗ trợ xử lý sự cố mạng khẩn cấp?</h6>
+                        <p class="mb-0 text-secondary small">
+                            Nếu xảy ra sự cố gián đoạn kết nối đường truyền mạng trong thời gian bảo trì, xin vui lòng gọi trực tiếp Hotline <strong>1800 8119</strong> (Miễn phí) hoặc tạo phiếu hỗ trợ ngay sau khi hệ thống hoàn tất bảo trì.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- CTA BANNER -->
+                <div class="kn-cta-banner">
+                    <div>
+                        <h4>Hệ thống đã hoạt động bình thường?</h4>
+                        <p>Nếu bạn gặp sự cố kỹ thuật, hãy gửi ticket ngay để nhận trợ giúp!</p>
+                    </div>
+                    <a asp-controller="Ticket" asp-action="TaoPhieu" class="kn-cta-btn">
+                        <i class="bi bi-plus-circle-fill me-1"></i> Tạo Phiếu Ngay
+                    </a>
+                </div>
+
+            </div>
+
+            <!-- Right Sidebar Column (4 Cols) -->
+            <div class="col-lg-4 col-12">
+                <!-- Widget 1: Danh mục cẩm nang -->
+                <div class="kn-sidebar-widget">
+                    <h5 class="widget-title">
+                        <i class="bi bi-folder2-open"></i> Danh Mục Cẩm Nang
+                    </h5>
+                    <ul class="sidebar-category-list">
+                        <li>
+                            <a asp-controller="Home" asp-action="HuongDanTaoPhieu" class="sidebar-category-link">
+                                <span><i class="bi bi-journal-text me-2"></i> Hướng dẫn tạo phiếu</span>
+                                <i class="bi bi-chevron-right small"></i>
+                            </a>
+                        </li>
+                        <li>
+                            <a asp-controller="Home" asp-action="ThongBaoBaoTri" class="sidebar-category-link active">
+                                <span><i class="bi bi-bell-fill me-2"></i> Thông báo bảo trì</span>
+                                <i class="bi bi-chevron-right small"></i>
+                            </a>
+                        </li>
+                        <li>
+                            <a asp-controller="Home" asp-action="MeoXuLyMang" class="sidebar-category-link">
+                                <span><i class="bi bi-wifi me-2"></i> Mẹo xử lý mạng Wifi</span>
+                                <i class="bi bi-chevron-right small"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Widget 2: Liên hệ hỗ trợ khẩn cấp -->
+                <div class="sidebar-contact-card">
+                    <h5><i class="bi bi-headset me-2 text-danger"></i> Hotline Kỹ Thuật 24/7</h5>
+                    <p>Bộ phận tổng đài viên Viettel luôn trực chiến xử lý sự cố khẩn cấp cho khách hàng 24/7/365.</p>
+                    <a href="tel:18008119" class="sidebar-contact-btn mb-2">
+                        <i class="bi bi-telephone-fill"></i> Gọi 1800 8119 (Miễn Phí)
+                    </a>
+                    <a asp-controller="Customers" asp-action="ChatTrucTuyen" class="sidebar-contact-btn" style="background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3);">
+                        <i class="bi bi-chat-dots-fill"></i> Chat Trực Tuyến
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Back To Top Button -->
+<button type="button" id="knBackToTop" title="Lên đầu trang">
+    <i class="bi bi-arrow-up-short" style="font-size: 1.5rem;"></i>
+</button>
+
+@section Scripts {
+    <script src="~/assets/js/knowledge.js" asp-append-version="true"></script>
+}

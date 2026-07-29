@@ -82,6 +82,7 @@
     <link rel="stylesheet" href="~/assets/css/chatbox.css" asp-append-version="true">
     <link rel="stylesheet" href="~/assets/css/chatbox-responsive.css" asp-append-version="true">
     <link rel="stylesheet" href="~/assets/css/chat-message.css" asp-append-version="true">
+    <link rel="stylesheet" href="~/assets/css/notification.css" asp-append-version="true">
     @if (isHomePage)
     {
         <link rel="stylesheet" href="~/assets/css/issue-category.css" asp-append-version="true" />
@@ -622,102 +623,7 @@
         </div>
     </section>
 
-    <!-- 9. CUSTOMER FEEDBACK -->
-    <section class="testimonial-section" id="feedbackSection">
-        <div class="container">
-            <div class="row justify-content-center text-center">
-                <div class="col-lg-8 col-md-10">
-                    <span class="text-danger fw-bold text-uppercase d-block mb-2">Phản Hồi Thực Tế</span>
-                    <h2 class="section-title center">Đánh Giá Từ Khách Hàng</h2>
-                    <p class="subtitle">Động lực to lớn để chúng tôi cải thiện chất lượng dịch vụ vận hành mỗi ngày.</p>
-                </div>
-            </div>
-
-            <div class="testimonial-wrapper reveal">
-                <div id="testimonialCarousel" class="carousel slide testimonial-carousel" data-bs-ride="carousel"
-                     data-bs-interval="5000">
-
-                    <!-- Indicators -->
-                    <div class="carousel-indicators">
-                        <button type="button" data-bs-target="#testimonialCarousel" data-bs-slide-to="0" class="active"
-                                aria-current="true" aria-label="Slide 1"></button>
-                        <button type="button" data-bs-target="#testimonialCarousel" data-bs-slide-to="1"
-                                aria-label="Slide 2"></button>
-                        <button type="button" data-bs-target="#testimonialCarousel" data-bs-slide-to="2"
-                                aria-label="Slide 3"></button>
-                    </div>
-
-                    <!-- Slides -->
-                    <div class="carousel-inner">
-                        <!-- Slide 1 -->
-                        <div class="carousel-item active">
-                            <div class="testimonial-card">
-                                <div class="avatar-wrapper">
-                                    <svg width="90" height="90" viewBox="0 0 100 100" class="testimonial-avatar"
-                                         aria-hidden="true">
-                                        <circle cx="50" cy="50" r="46" fill="#f3f4f6" stroke="#ee0033"
-                                                stroke-width="3" />
-                                        <path d="M50 30 A18 18 0 0 1 50 66 A18 18 0 0 1 50 30" fill="#6b7280" />
-                                        <path d="M22 84 C22 70, 34 68, 50 68 C66 68, 78 70, 78 84" fill="#6b7280" />
-                                    </svg>
-                                </div>
-                                <p class="testimonial-quote">
-                                    "Tôi rất ấn tượng với tốc độ phản hồi của hệ thống
-
-                                    thoại dễ dùng. Tôi có thể theo dõi vị trí kỹ thuật viên đang di chuyển tới nhà mình
-                                    trên bản đồ và cập nhật thời gian xử lý sự cố camera thực tế."
-                                </p>
-                                <div class="testimonial-info">
-                                    <h5>Võ Thị Mai Phương</h5>
-                                    <p>Quản lý Chuỗi Cửa Hàng - TP. Đà Nẵng</p>
-                                </div>
-                                <div class="testimonial-rating">
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Slide 3 -->
-                        <div class="carousel-item">
-                            <div class="testimonial-card">
-                                <div class="avatar-wrapper">
-                                    <svg width="90" height="90" viewBox="0 0 100 100" class="testimonial-avatar"
-                                         aria-hidden="true">
-                                        <circle cx="50" cy="50" r="46" fill="#f3f4f6" stroke="#ee0033"
-                                                stroke-width="3" />
-                                        <path d="M50 30 A18 18 0 0 1 50 66 A18 18 0 0 1 50 30" fill="#4b5563" />
-                                        <path d="M22 84 C22 70, 34 68, 50 68 C66 68, 78 70, 78 84" fill="#4b5563" />
-                                    </svg>
-                                </div>
-                                <p class="testimonial-quote">
-                                    "Chất lượng hỗ trợ server cực kỳ chuyên nghiệp. Đội ngũ kỹ
-                                    sư hệ thống làm việc có trách nhiệm, giải thích sự cố rõ ràng và tư vấn cho công ty
-                                    chúng tôi phương án dự phòng tốt hơn. Rất cám ơn Viettel!"
-                                </p>
-                                <div class="testimonial-info">
-                                    <h5>Lâm Minh Hoàng</h5>
-                                    <p>Trưởng bộ phận IT - Tổng công ty Bán lẻ</p>
-                                </div>
-                                <div class="testimonial-rating">
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    </section>
-
+    
     <!-- 10. NEWS SECTION -->
     <section id="newsSection">
         <div class="container">
@@ -744,7 +650,7 @@
                         <div class="news-card-body">
                             <div class="news-category">Hướng dẫn</div>
                             <h3 class="news-title">
-                                <a href="#">
+                                <a asp-controller="Home" asp-action="HuongDanTaoPhieu">
                                     Hướng dẫn chi tiết quy trình tạo và theo dõi phiếu hỗ trợ trên hệ thống
                                     TechSupport
                                 </a>
@@ -753,7 +659,7 @@
                                 Tìm hiểu cách đính kèm ảnh lỗi, viết mô tả và tương tác trực tiếp với
                                 đội ngũ kỹ sư xử lý để rút ngắn thời gian.
                             </p>
-                            <a href="#"
+                            <a asp-controller="Home" asp-action="HuongDanTaoPhieu"
                                class="text-danger fw-bold text-decoration-none d-inline-flex align-items-center">
                                 Xem
                                 thêm <i class="fa-solid fa-chevron-right ms-2"></i>
@@ -773,7 +679,7 @@
                         <div class="news-card-body">
                             <div class="news-category">Thông báo</div>
                             <h3 class="news-title">
-                                <a href="#">
+                                <a asp-controller="Home" asp-action="ThongBaoBaoTri">
                                     Thông báo lịch bảo trì định kỳ hệ thống máy chủ tổng đài kỹ thuật tháng
                                     06/2026
                                 </a>
@@ -782,7 +688,7 @@
                                 Lịch bảo trì nâng cấp hạ tầng Cloud Server nhằm tăng gấp đôi tốc độ tải
                                 trang và chịu tải dữ liệu của hệ thống ticket.
                             </p>
-                            <a href="#"
+                            <a asp-controller="Home" asp-action="ThongBaoBaoTri"
                                class="text-danger fw-bold text-decoration-none d-inline-flex align-items-center">
                                 Xem
                                 thêm <i class="fa-solid fa-chevron-right ms-2"></i>
@@ -802,13 +708,13 @@
                         <div class="news-card-body">
                             <div class="news-category">Kinh nghiệm</div>
                             <h3 class="news-title">
-                                <a href="#">5 mẹo xử lý nhanh sự cố mạng chập chờn hoặc rớt kết nối Wifi tại nhà</a>
+                                <a asp-controller="Home" asp-action="MeoXuLyMang">5 mẹo xử lý nhanh sự cố mạng chập chờn hoặc rớt kết nối Wifi tại nhà</a>
                             </h3>
                             <p class="news-desc">
                                 Hướng dẫn khởi động lại modem, đặt lại kênh truyền sóng nhiễu và thiết
                                 lập vị trí thiết bị phát chuẩn kỹ thuật số.
                             </p>
-                            <a href="#"
+                            <a asp-controller="Home" asp-action="MeoXuLyMang"
                                class="text-danger fw-bold text-decoration-none d-inline-flex align-items-center">
                                 Xem
                                 thêm <i class="fa-solid fa-chevron-right ms-2"></i>
@@ -862,12 +768,17 @@
             integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
             crossorigin="anonymous"></script>
 
+    <!-- Microsoft SignalR JS Client -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.0/signalr.min.js"></script>
+
     <!-- Component-Based JS -->
     <script src="~/assets/js/header.js?v=2.6.0"></script>
     <script src="~/assets/js/sidebar.js?v=2.6.0"></script>
     <script src="~/assets/js/footer.js?v=2.6.0"></script>
     <script src="~/assets/js/chatbox.js" asp-append-version="true"></script>
     <script src="~/assets/js/chat-message.js" asp-append-version="true"></script>
+    <script src="~/assets/js/notification.js" asp-append-version="true"></script>
+    <script src="~/assets/js/notification-center.js" asp-append-version="true"></script>
     <script src="~/assets/js/main.js?v=2.6.0"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>

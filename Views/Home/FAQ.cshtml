@@ -1,0 +1,564 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+    ViewData["Title"] = "Câu hỏi thường gặp - Hỗ trợ kỹ thuật Viettel";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/assets/css/faq.css" asp-append-version="true" />
+}
+
+<div class="faq-page-wrapper">
+
+    @* Reading Progress Bar *@
+    <div class="faq-progress-bar" id="faqReadingProgress"></div>
+
+    @* ================================================
+       HERO HEADER
+       ================================================ *@
+    <section class="faq-header">
+        <div class="faq-header-particles"></div>
+        <div class="faq-header-content faq-reveal">
+            
+            <h1>Câu Hỏi <span>Thường Gặp</span></h1>
+            <p class="faq-header-desc">
+                Tổng hợp các câu hỏi phổ biến nhất về hệ thống TechSupport. Tìm kiếm nhanh theo từ khóa hoặc chọn danh mục để tra cứu.
+            </p>
+            <div class="faq-header-breadcrumb">
+                <a asp-controller="Customers" asp-action="TrangChu">
+                    <i class="bi bi-house-door-fill"></i> Trang chủ
+                </a>
+                <span class="sep">/</span>
+                <span class="cur">Câu hỏi thường gặp</span>
+            </div>
+        </div>
+    </section>
+
+    @* ================================================
+       SEARCH BAR (floats over hero)
+       ================================================ *@
+    <div class="faq-search-wrapper">
+        <div class="container">
+            <div class="faq-search-inner faq-reveal">
+                <label class="faq-search-label" for="faqSearchInput">
+                    <i class="bi bi-search me-1"></i> Tìm kiếm câu hỏi
+                </label>
+                <div class="faq-search-box">
+                    <div class="faq-search-input-wrap">
+                        <i class="bi bi-search search-icon"></i>
+                        <input
+                            type="text"
+                            id="faqSearchInput"
+                            class="faq-search-input"
+                            placeholder="Nhập từ khóa tìm kiếm... (VD: đăng ký, phiếu hỗ trợ, mật khẩu)"
+                            autocomplete="off"
+                            aria-label="Tìm kiếm câu hỏi thường gặp" />
+                        <button class="faq-search-clear" id="faqSearchClear" aria-label="Xóa tìm kiếm">
+                            <i class="bi bi-x-circle-fill"></i>
+                        </button>
+                    </div>
+                    <button class="faq-search-btn" id="faqSearchBtn" type="button">
+                        <i class="bi bi-search"></i> Tìm kiếm
+                    </button>
+                </div>
+                <div class="faq-search-stats" id="faqSearchStats"></div>
+            </div>
+        </div>
+    </div>
+
+    @* ================================================
+       STATS BAR
+       ================================================ *@
+    <div class="faq-stats-bar">
+        <div class="container">
+            <div class="faq-stats-inner">
+                <div class="faq-stat-item">
+                    <div class="faq-stat-icon"><i class="bi bi-patch-question-fill"></i></div>
+                    <div class="faq-stat-info">
+                        <strong>26</strong>
+                        <span>Câu hỏi</span>
+                    </div>
+                </div>
+                <div class="faq-stat-item">
+                    <div class="faq-stat-icon"><i class="bi bi-grid-fill"></i></div>
+                    <div class="faq-stat-info">
+                        <strong>6</strong>
+                        <span>Danh mục</span>
+                    </div>
+                </div>
+                <div class="faq-stat-item">
+                    <div class="faq-stat-icon"><i class="bi bi-clock-fill"></i></div>
+                    <div class="faq-stat-info">
+                        <strong>24/7</strong>
+                        <span>Hỗ trợ</span>
+                    </div>
+                </div>
+                <div class="faq-stat-item">
+                    <div class="faq-stat-icon"><i class="bi bi-telephone-fill"></i></div>
+                    <div class="faq-stat-info">
+                        <strong>1800 8098</strong>
+                        <span>Tổng đài miễn phí</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @* ================================================
+       CATEGORY FILTER TABS (Sticky)
+       ================================================ *@
+    <div class="faq-categories-wrapper">
+        <div class="container">
+            <div class="faq-categories-inner" id="faqCategoryBar" role="tablist">
+                <button class="faq-cat-btn active" data-cat="all" role="tab" aria-selected="true">
+                    <i class="bi bi-grid-fill"></i> Tất cả
+                    <span class="cat-count">26</span>
+                </button>
+                <button class="faq-cat-btn" data-cat="account" role="tab" aria-selected="false">
+                    <i class="bi bi-person-circle"></i> Tài khoản
+                    <span class="cat-count">5</span>
+                </button>
+                <button class="faq-cat-btn" data-cat="ticket" role="tab" aria-selected="false">
+                    <i class="bi bi-ticket-detailed-fill"></i> Phiếu hỗ trợ
+                    <span class="cat-count">5</span>
+                </button>
+                <button class="faq-cat-btn" data-cat="service" role="tab" aria-selected="false">
+                    <i class="bi bi-wifi"></i> Dịch vụ
+                    <span class="cat-count">3</span>
+                </button>
+                <button class="faq-cat-btn" data-cat="appointment" role="tab" aria-selected="false">
+                    <i class="bi bi-calendar-check-fill"></i> Lịch hẹn
+                    <span class="cat-count">3</span>
+                </button>
+                <button class="faq-cat-btn" data-cat="feedback" role="tab" aria-selected="false">
+                    <i class="bi bi-star-fill"></i> Đánh giá
+                    <span class="cat-count">3</span>
+                </button>
+                <button class="faq-cat-btn" data-cat="security" role="tab" aria-selected="false">
+                    <i class="bi bi-shield-lock-fill"></i> Bảo mật
+                    <span class="cat-count">3</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    @* ================================================
+       MAIN FAQ CONTENT
+       ================================================ *@
+    <div class="faq-content-wrapper">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-10 col-xl-9">
+
+                    @* === CATEGORY 1: TÀI KHOẢN & ĐĂNG NHẬP === *@
+                    <div class="faq-group faq-reveal" data-category="account">
+                        <div class="faq-section-header">
+                            <div class="faq-section-icon">
+                                <i class="bi bi-person-circle"></i>
+                            </div>
+                            <h2 class="faq-section-title">Tài khoản & Đăng nhập</h2>
+                            <span class="faq-section-count">5 câu hỏi</span>
+                        </div>
+
+                        <div class="faq-accordion-wrap">
+                            <div class="faq-item" data-category="account" data-keywords="đăng ký tài khoản mới otp email">
+                                <div class="faq-question">
+                                    <span class="faq-q-index">01</span>
+                                    <span class="faq-q-text">Làm thế nào để đăng ký tài khoản mới?</span>
+                                    <span class="faq-toggle-icon"><i class="bi bi-plus-lg"></i></span>
+                                </div>
+                                <div class="faq-answer">
+                                    <div class="faq-answer-inner">
+                                        <p>Bạn có thể đăng ký tài khoản bằng cách nhấn nút "Đăng ký" trên trang đăng nhập, nhập đầy đủ thông tin (họ tên, số điện thoại, email, mật khẩu) và xác thực qua mã OTP gửi đến email của bạn. Quá trình đăng ký chỉ mất từ 2-3 phút.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="faq-item" data-category="account" data-keywords="quên mật khẩu reset password khôi phục">
+                                <div class="faq-question">
+                                    <span class="faq-q-index">02</span>
+                                    <span class="faq-q-text">Tôi quên mật khẩu, phải làm sao?</span>
+                                    <span class="faq-toggle-icon"><i class="bi bi-plus-lg"></i></span>
+                                </div>
+                                <div class="faq-answer">
+                                    <div class="faq-answer-inner">
+                                        <p>Bạn vui lòng nhấn vào liên kết "Quên mật khẩu" trên trang đăng nhập, nhập email đã đăng ký để nhận mã OTP xác thực và tiến hành đặt lại mật khẩu mới. Đảm bảo mật khẩu mới có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="faq-item" data-category="account" data-keywords="không nhận otp xác thực email spam">
+                                <div class="faq-question">
+                                    <span class="faq-q-index">03</span>
+                                    <span class="faq-q-text">Tôi không nhận được mã OTP xác thực?</span>
+                                    <span class="faq-toggle-icon"><i class="bi bi-plus-lg"></i></span>
+                                </div>
+                                <div class="faq-answer">
+                                    <div class="faq-answer-inner">
+                                        <p>Vui lòng kiểm tra hộp thư spam hoặc thư rác trong email của bạn. Nếu vẫn không nhận được sau 5 phút, bạn có thể yêu cầu gửi lại mã OTP bằng cách nhấn nút "Gửi lại mã" hoặc liên hệ tổng đài hỗ trợ 1800 8098 để được trợ giúp trực tiếp.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="faq-item" data-category="account" data-keywords="thay đổi thông tin cá nhân hồ sơ profile">
+                                <div class="faq-question">
+                                    <span class="faq-q-index">04</span>
+                                    <span class="faq-q-text">Tôi có thể thay đổi thông tin cá nhân không?</span>
+                                    <span class="faq-toggle-icon"><i class="bi bi-plus-lg"></i></span>
+                                </div>
+                                <div class="faq-answer">
+                                    <div class="faq-answer-inner">
+                                        <p>Có, sau khi đăng nhập, bạn có thể vào mục "Hồ sơ cá nhân" hoặc "Quản lý tài khoản" để cập nhật thông tin họ tên, số điện thoại, địa chỉ, ngày sinh và ảnh đại diện. Một số thông tin quan trọng như email có thể yêu cầu xác thực OTP khi thay đổi.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="faq-item" data-category="account" data-keywords="đổi mật khẩu change password bảo mật">
+                                <div class="faq-question">
+                                    <span class="faq-q-index">05</span>
+                                    <span class="faq-q-text">Làm sao để đổi mật khẩu?</span>
+                                    <span class="faq-toggle-icon"><i class="bi bi-plus-lg"></i></span>
+                                </div>
+                                <div class="faq-answer">
+                                    <div class="faq-answer-inner">
+                                        <p>Sau khi đăng nhập, bạn chọn "Quản lý tài khoản" → "Đổi mật khẩu", nhập mật khẩu cũ và mật khẩu mới (tối thiểu 8 ký tự, có chữ hoa, chữ thường, số và ký tự đặc biệt) để cập nhật. Hệ thống khuyến nghị bạn thay đổi mật khẩu định kỳ để đảm bảo an toàn tài khoản.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    @* === CATEGORY 2: PHIẾU HỖ TRỢ === *@
+                    <div class="faq-group faq-reveal" data-category="ticket">
+                        <div class="faq-section-header">
+                            <div class="faq-section-icon">
+                                <i class="bi bi-ticket-detailed-fill"></i>
+                            </div>
+                            <h2 class="faq-section-title">Phiếu hỗ trợ</h2>
+                            <span class="faq-section-count">5 câu hỏi</span>
+                        </div>
+
+                        <div class="faq-accordion-wrap">
+                            <div class="faq-item" data-category="ticket" data-keywords="tạo phiếu hỗ trợ mới ticket sự cố">
+                                <div class="faq-question">
+                                    <span class="faq-q-index">06</span>
+                                    <span class="faq-q-text">Làm thế nào để tạo một phiếu hỗ trợ mới?</span>
+                                    <span class="faq-toggle-icon"><i class="bi bi-plus-lg"></i></span>
+                                </div>
+                                <div class="faq-answer">
+                                    <div class="faq-answer-inner">
+                                        <p>Đăng nhập vào hệ thống, chọn "Tạo phiếu hỗ trợ", nhập đầy đủ thông tin: tiêu đề, chọn danh mục (Internet, Truyền hình, Di động...), chọn dịch vụ cụ thể, mô tả chi tiết sự cố và đính kèm hình ảnh minh họa nếu có. Sau đó nhấn "Gửi" để hoàn tất.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="faq-item" data-category="ticket" data-keywords="theo dõi trạng thái phiếu tracking status">
+                                <div class="faq-question">
+                                    <span class="faq-q-index">07</span>
+                                    <span class="faq-q-text">Tôi có thể theo dõi trạng thái phiếu ở đâu?</span>
+                                    <span class="faq-toggle-icon"><i class="bi bi-plus-lg"></i></span>
+                                </div>
+                                <div class="faq-answer">
+                                    <div class="faq-answer-inner">
+                                        <p>Bạn có thể theo dõi trạng thái phiếu trong mục "Phiếu của tôi" sau khi đăng nhập. Hệ thống hiển thị chi tiết tiến độ xử lý, nhân viên phụ trách, lịch sử cập nhật và bạn cũng có thể nhận thông báo qua email/SMS khi có thay đổi trạng thái.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="faq-item" data-category="ticket" data-keywords="hủy phiếu cancel ticket xóa">
+                                <div class="faq-question">
+                                    <span class="faq-q-index">08</span>
+                                    <span class="faq-q-text">Tôi có thể hủy phiếu hỗ trợ đã gửi không?</span>
+                                    <span class="faq-toggle-icon"><i class="bi bi-plus-lg"></i></span>
+                                </div>
+                                <div class="faq-answer">
+                                    <div class="faq-answer-inner">
+                                        <p>Có, bạn có thể hủy phiếu đang ở trạng thái "Chờ xử lý" hoặc "Đang xử lý" bằng cách nhấn nút "Hủy phiếu" trên trang chi tiết phiếu. Tuy nhiên, phiếu đã hoàn thành hoặc đang có nhân viên kỹ thuật đến hỗ trợ tại địa điểm sẽ không thể hủy.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="faq-item" data-category="ticket" data-keywords="thời gian xử lý phiếu sla deadline">
+                                <div class="faq-question">
+                                    <span class="faq-q-index">09</span>
+                                    <span class="faq-q-text">Thời gian xử lý phiếu hỗ trợ là bao lâu?</span>
+                                    <span class="faq-toggle-icon"><i class="bi bi-plus-lg"></i></span>
+                                </div>
+                                <div class="faq-answer">
+                                    <div class="faq-answer-inner">
+                                        <p>Thời gian xử lý phụ thuộc vào mức độ ưu tiên và loại sự cố. Thông thường, phiếu Khẩn cấp được xử lý trong 2-4 giờ, phiếu Cao trong 12-24 giờ, và phiếu Thường trong 24-48 giờ làm việc. Bạn sẽ nhận thông báo qua email khi có cập nhật.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="faq-item" data-category="ticket" data-keywords="đính kèm file hình ảnh attachment upload">
+                                <div class="faq-question">
+                                    <span class="faq-q-index">10</span>
+                                    <span class="faq-q-text">Tôi có thể đính kèm file vào phiếu hỗ trợ không?</span>
+                                    <span class="faq-toggle-icon"><i class="bi bi-plus-lg"></i></span>
+                                </div>
+                                <div class="faq-answer">
+                                    <div class="faq-answer-inner">
+                                        <p>Có, bạn có thể đính kèm hình ảnh (JPG, PNG, JPEG) hoặc tài liệu minh họa (PDF, DOCX) khi tạo phiếu hỗ trợ. Kích thước file tối đa 5MB mỗi file. Việc đính kèm hình ảnh sự cố giúp nhân viên kỹ thuật xem xét và xử lý nhanh hơn.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    @* === CATEGORY 3: DỊCH VỤ HỖ TRỢ === *@
+                    <div class="faq-group faq-reveal" data-category="service">
+                        <div class="faq-section-header">
+                            <div class="faq-section-icon">
+                                <i class="bi bi-wifi"></i>
+                            </div>
+                            <h2 class="faq-section-title">Dịch vụ hỗ trợ</h2>
+                            <span class="faq-section-count">3 câu hỏi</span>
+                        </div>
+
+                        <div class="faq-accordion-wrap">
+                            <div class="faq-item" data-category="service" data-keywords="loại dịch vụ internet truyền hình camera sim">
+                                <div class="faq-question">
+                                    <span class="faq-q-index">11</span>
+                                    <span class="faq-q-text">Có những loại dịch vụ hỗ trợ nào?</span>
+                                    <span class="faq-toggle-icon"><i class="bi bi-plus-lg"></i></span>
+                                </div>
+                                <div class="faq-answer">
+                                    <div class="faq-answer-inner">
+                                        <p>Hệ thống hỗ trợ đầy đủ các dịch vụ Viettel: Internet Cáp quang FTTH, Truyền hình TV360, Di động (SIM 4G/5G), Camera giám sát AI, Tổng đài doanh nghiệp và các Giải pháp CNTT doanh nghiệp. Mỗi dịch vụ có các loại sự cố cụ thể để bạn lựa chọn khi tạo phiếu.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="faq-item" data-category="service" data-keywords="internet cáp quang mất kết nối chậm ftth">
+                                <div class="faq-question">
+                                    <span class="faq-q-index">12</span>
+                                    <span class="faq-q-text">Tôi cần hỗ trợ về Internet cáp quang, phải làm sao?</span>
+                                    <span class="faq-toggle-icon"><i class="bi bi-plus-lg"></i></span>
+                                </div>
+                                <div class="faq-answer">
+                                    <div class="faq-answer-inner">
+                                        <p>Bạn chọn danh mục "Internet cáp quang" khi tạo phiếu hỗ trợ, sau đó chọn loại sự cố cụ thể (mất kết nối hoàn toàn, chập chờn, tốc độ chậm, đèn modem...), mô tả chi tiết tình trạng và đính kèm ảnh modem/đèn tín hiệu nếu có. Nhân viên kỹ thuật sẽ hỗ trợ xử lý trong thời gian sớm nhất.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="faq-item" data-category="service" data-keywords="kỹ thuật viên tại nhà on-site support địa điểm">
+                                <div class="faq-question">
+                                    <span class="faq-q-index">13</span>
+                                    <span class="faq-q-text">Tôi có thể yêu cầu hỗ trợ kỹ thuật tại nhà không?</span>
+                                    <span class="faq-toggle-icon"><i class="bi bi-plus-lg"></i></span>
+                                </div>
+                                <div class="faq-answer">
+                                    <div class="faq-answer-inner">
+                                        <p>Có, khi tạo phiếu hỗ trợ bạn có thể chọn "Cần đặt lịch hẹn" hoặc "Yêu cầu kỹ thuật viên đến tận nơi" để yêu cầu nhân viên đến hỗ trợ trực tiếp tại địa chỉ của bạn. Vui lòng cung cấp địa chỉ chi tiết, số điện thoại liên hệ và khung giờ thuận tiện.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    @* === CATEGORY 4: LỊCH HẸN === *@
+                    <div class="faq-group faq-reveal" data-category="appointment">
+                        <div class="faq-section-header">
+                            <div class="faq-section-icon">
+                                <i class="bi bi-calendar-check-fill"></i>
+                            </div>
+                            <h2 class="faq-section-title">Lịch hẹn</h2>
+                            <span class="faq-section-count">3 câu hỏi</span>
+                        </div>
+
+                        <div class="faq-accordion-wrap">
+                            <div class="faq-item" data-category="appointment" data-keywords="đặt lịch hẹn kỹ thuật viên appointment booking">
+                                <div class="faq-question">
+                                    <span class="faq-q-index">14</span>
+                                    <span class="faq-q-text">Làm thế nào để đặt lịch hẹn với kỹ thuật viên?</span>
+                                    <span class="faq-toggle-icon"><i class="bi bi-plus-lg"></i></span>
+                                </div>
+                                <div class="faq-answer">
+                                    <div class="faq-answer-inner">
+                                        <p>Khi tạo phiếu hỗ trợ, bạn chọn "Cần đặt lịch hẹn" và nhập thông tin thời gian mong muốn (ngày, giờ), địa điểm cụ thể và số điện thoại liên hệ. Hệ thống sẽ chuyển yêu cầu đến quản trị viên để xem xét và xác nhận lịch hẹn phù hợp với lịch làm việc của kỹ thuật viên.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="faq-item" data-category="appointment" data-keywords="thay đổi hủy lịch hẹn reschedule cancel">
+                                <div class="faq-question">
+                                    <span class="faq-q-index">15</span>
+                                    <span class="faq-q-text">Tôi có thể thay đổi hoặc hủy lịch hẹn đã đặt không?</span>
+                                    <span class="faq-toggle-icon"><i class="bi bi-plus-lg"></i></span>
+                                </div>
+                                <div class="faq-answer">
+                                    <div class="faq-answer-inner">
+                                        <p>Có, bạn có thể yêu cầu thay đổi hoặc hủy lịch hẹn bằng cách liên hệ với nhân viên hỗ trợ qua kênh chat trực tuyến trong phiếu hoặc gọi tổng đài 1800 8098. Vui lòng thông báo trước ít nhất 2 giờ để chúng tôi có thể sắp xếp lại lịch làm việc cho kỹ thuật viên.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="faq-item" data-category="appointment" data-keywords="xác nhận lịch hẹn notification sms email">
+                                <div class="faq-question">
+                                    <span class="faq-q-index">16</span>
+                                    <span class="faq-q-text">Làm sao để biết lịch hẹn đã được xác nhận?</span>
+                                    <span class="faq-toggle-icon"><i class="bi bi-plus-lg"></i></span>
+                                </div>
+                                <div class="faq-answer">
+                                    <div class="faq-answer-inner">
+                                        <p>Bạn sẽ nhận được thông báo qua email và SMS khi lịch hẹn được xác nhận bởi quản trị viên. Đồng thời, trạng thái lịch hẹn cũng được cập nhật trong phiếu hỗ trợ. Hệ thống sẽ gửi nhắc nhở trước 1 ngày và 1 giờ trước khi kỹ thuật viên đến.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    @* === CATEGORY 5: ĐÁNH GIÁ & PHẢN HỒI === *@
+                    <div class="faq-group faq-reveal" data-category="feedback">
+                        <div class="faq-section-header">
+                            <div class="faq-section-icon">
+                                <i class="bi bi-star-fill"></i>
+                            </div>
+                            <h2 class="faq-section-title">Đánh giá & Phản hồi</h2>
+                            <span class="faq-section-count">3 câu hỏi</span>
+                        </div>
+
+                        <div class="faq-accordion-wrap">
+                            <div class="faq-item" data-category="feedback" data-keywords="đánh giá chất lượng dịch vụ rating review">
+                                <div class="faq-question">
+                                    <span class="faq-q-index">17</span>
+                                    <span class="faq-q-text">Tôi có thể đánh giá chất lượng dịch vụ ở đâu?</span>
+                                    <span class="faq-toggle-icon"><i class="bi bi-plus-lg"></i></span>
+                                </div>
+                                <div class="faq-answer">
+                                    <div class="faq-answer-inner">
+                                        <p>Sau khi phiếu hỗ trợ được hoàn thành và đóng, bạn có thể đánh giá chất lượng dịch vụ (từ 1-5 sao) tại mục "Đánh giá" trong trang chi tiết phiếu hỗ trợ. Phản hồi của bạn giúp chúng tôi cải thiện chất lượng phục vụ ngày càng tốt hơn.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="faq-item" data-category="feedback" data-keywords="đánh giá công khai public hiển thị ẩn danh">
+                                <div class="faq-question">
+                                    <span class="faq-q-index">18</span>
+                                    <span class="faq-q-text">Đánh giá của tôi có được công khai không?</span>
+                                    <span class="faq-toggle-icon"><i class="bi bi-plus-lg"></i></span>
+                                </div>
+                                <div class="faq-answer">
+                                    <div class="faq-answer-inner">
+                                        <p>Đánh giá của bạn sẽ được xem xét và có thể được hiển thị công khai trên website (ẩn tên hoặc chỉ hiển thị tên viết tắt) sau khi được quản trị viên duyệt. Thông tin cá nhân như số điện thoại, địa chỉ sẽ được bảo mật hoàn toàn.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="faq-item" data-category="feedback" data-keywords="chỉnh sửa đánh giá edit review sửa">
+                                <div class="faq-question">
+                                    <span class="faq-q-index">19</span>
+                                    <span class="faq-q-text">Tôi có thể chỉnh sửa đánh giá đã gửi không?</span>
+                                    <span class="faq-toggle-icon"><i class="bi bi-plus-lg"></i></span>
+                                </div>
+                                <div class="faq-answer">
+                                    <div class="faq-answer-inner">
+                                        <p>Không, sau khi đã gửi đánh giá, bạn không thể chỉnh sửa trực tiếp trên hệ thống. Tuy nhiên, bạn có thể gửi thêm phản hồi bổ sung cho quản trị viên qua kênh chat hỗ trợ hoặc liên hệ tổng đài 1800 8098 để được hỗ trợ cập nhật.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    @* === CATEGORY 6: BẢO MẬT & QUYỀN RIÊNG TƯ === *@
+                    <div class="faq-group faq-reveal" data-category="security">
+                        <div class="faq-section-header">
+                            <div class="faq-section-icon">
+                                <i class="bi bi-shield-lock-fill"></i>
+                            </div>
+                            <h2 class="faq-section-title">Bảo mật & Quyền riêng tư</h2>
+                            <span class="faq-section-count">3 câu hỏi</span>
+                        </div>
+
+                        <div class="faq-accordion-wrap">
+                            <div class="faq-item" data-category="security" data-keywords="bảo mật thông tin cá nhân privacy data">
+                                <div class="faq-question">
+                                    <span class="faq-q-index">20</span>
+                                    <span class="faq-q-text">Thông tin cá nhân của tôi có được bảo mật không?</span>
+                                    <span class="faq-toggle-icon"><i class="bi bi-plus-lg"></i></span>
+                                </div>
+                                <div class="faq-answer">
+                                    <div class="faq-answer-inner">
+                                        <p>Viettel cam kết bảo mật tuyệt đối thông tin cá nhân của khách hàng theo tiêu chuẩn ISO/IEC 27001. Mọi dữ liệu được mã hóa qua giao thức TLS 1.3 và chỉ sử dụng cho mục đích hỗ trợ kỹ thuật. Viettel không chia sẻ thông tin khách hàng cho bất kỳ bên thứ ba nào.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="faq-item" data-category="security" data-keywords="xóa tài khoản delete account hủy đăng ký">
+                                <div class="faq-question">
+                                    <span class="faq-q-index">21</span>
+                                    <span class="faq-q-text">Tôi có thể yêu cầu xóa tài khoản của mình không?</span>
+                                    <span class="faq-toggle-icon"><i class="bi bi-plus-lg"></i></span>
+                                </div>
+                                <div class="faq-answer">
+                                    <div class="faq-answer-inner">
+                                        <p>Có, bạn có thể yêu cầu xóa tài khoản bằng cách liên hệ với bộ phận hỗ trợ khách hàng qua tổng đài 1800 8098 hoặc gửi email đến địa chỉ hỗ trợ. Lưu ý rằng sau khi xóa, toàn bộ lịch sử phiếu hỗ trợ và dữ liệu liên quan sẽ không thể khôi phục.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="faq-item" data-category="security" data-keywords="thay đổi email đăng ký change email xác thực">
+                                <div class="faq-question">
+                                    <span class="faq-q-index">22</span>
+                                    <span class="faq-q-text">Tôi có thể thay đổi email đăng ký không?</span>
+                                    <span class="faq-toggle-icon"><i class="bi bi-plus-lg"></i></span>
+                                </div>
+                                <div class="faq-answer">
+                                    <div class="faq-answer-inner">
+                                        <p>Có, bạn có thể thay đổi email đăng ký trong mục "Hồ sơ cá nhân" sau khi đăng nhập. Để đảm bảo an toàn, hệ thống sẽ gửi mã OTP đến email mới để xác thực trước khi cập nhật. Email mới phải chưa được đăng ký trên hệ thống.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    @* NO RESULTS *@
+                    <div class="faq-no-results" id="faqNoResults">
+                        <div class="faq-no-results-icon">
+                            <i class="bi bi-search"></i>
+                        </div>
+                        <h4>Không tìm thấy kết quả</h4>
+                        <p>Không có câu hỏi nào khớp với từ khóa của bạn. Hãy thử tìm kiếm với từ khóa khác hoặc liên hệ trực tiếp với chúng tôi để được hỗ trợ.</p>
+                        <a asp-controller="Home" asp-action="LienHe" class="faq-no-results-btn">
+                            <i class="bi bi-headset"></i> Liên hệ hỗ trợ ngay
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @* ================================================
+       CTA SUPPORT SECTION
+       ================================================ *@
+    <div class="faq-cta-section">
+        <div class="container">
+            <div class="faq-cta-inner faq-reveal">
+                <div class="faq-cta-icon">
+                    <i class="bi bi-headset"></i>
+                </div>
+                <h2 class="faq-cta-title">Vẫn chưa tìm thấy câu trả lời?</h2>
+                <p class="faq-cta-desc">
+                    Đội ngũ hỗ trợ kỹ thuật Viettel sẵn sàng giải đáp mọi thắc mắc của bạn 24/7, kể cả ngày lễ và cuối tuần.
+                </p>
+                <div class="faq-cta-buttons">
+                    <a asp-controller="Ticket" asp-action="ChonDMDichVu" class="btn-faq-white">
+                        <i class="bi bi-plus-circle-fill"></i> Tạo phiếu hỗ trợ
+                    </a>
+                    <a asp-controller="Home" asp-action="LienHe" class="btn-faq-outline">
+                        <i class="bi bi-chat-dots-fill"></i> Liên hệ chúng tôi
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<partial name="~/Views/Shared/_Footer.cshtml" />
+
+@section Scripts {
+    <script src="~/assets/js/faq.js" asp-append-version="true"></script>
+}

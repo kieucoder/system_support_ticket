@@ -29,8 +29,27 @@ namespace SupportTicketSysterm.Controllers
                 throw new HubException("Bạn cần đăng nhập để tham gia phòng chat.");
             }
 
-            // Verify if the user owns or is assigned to this ticket
-            var ticket = await _liveSupportService.GetTicketByCodeAsync(ticketId);
+            if (string.IsNullOrWhiteSpace(ticketId))
+            {
+                throw new HubException("Mã hoặc Id phiếu hỗ trợ không hợp lệ.");
+            }
+
+            // Clean ticketId format if passed like Ticket_15 or Ticket_PH000125
+            string cleanId = ticketId.StartsWith("Ticket_", StringComparison.OrdinalIgnoreCase)
+                ? ticketId.Substring(7)
+                : ticketId;
+
+            Data.PhieuHoTro? ticket = null;
+            if (int.TryParse(cleanId, out int idPhieu))
+            {
+                ticket = await _liveSupportService.GetTicketByIdAsync(idPhieu);
+            }
+
+            if (ticket == null)
+            {
+                ticket = await _liveSupportService.GetTicketByCodeAsync(cleanId);
+            }
+
             if (ticket == null)
             {
                 throw new HubException("Phiếu hỗ trợ không tồn tại.");
@@ -44,7 +63,6 @@ namespace SupportTicketSysterm.Controllers
             }
             else if (role == "NhanVien" || role == "Nhân viên" || role == "Nhân viên hỗ trợ")
             {
-                // Staff can join if assigned or if they are admin
                 if (ticket.IdNhanVien == userId)
                 {
                     isAuthorized = true;
@@ -60,13 +78,23 @@ namespace SupportTicketSysterm.Controllers
 
             if (!isAuthorized)
             {
-                throw new HubException("Bạn không có quyền truy cập vào phòng chat này.");
+                throw new HubException("403 Forbidden: Bạn không có quyền truy cập vào phiếu hỗ trợ này.");
             }
 
-            await Groups.AddToGroupAsync(Context.ConnectionId, ticketId);
+            // Join both specific Ticket_{IdPhieu} and raw ticketId string for compatibility
+            string groupName = $"Ticket_{ticket.IdPhieu}";
+            await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
+            if (!string.Equals(ticketId, groupName, StringComparison.OrdinalIgnoreCase))
+            {
+                await Groups.AddToGroupAsync(Context.ConnectionId, ticketId);
+            }
+            if (!string.IsNullOrEmpty(ticket.MaPhieu) && !string.Equals(ticketId, ticket.MaPhieu, StringComparison.OrdinalIgnoreCase))
+            {
+                await Groups.AddToGroupAsync(Context.ConnectionId, ticket.MaPhieu);
+            }
             
             // Notify other users in the group that this user has joined/is online
-            await Clients.Group(ticketId).SendAsync("UserOnline", ticketId, role);
+            await Clients.Group(groupName).SendAsync("UserOnline", ticket.IdPhieu.ToString(), role);
         }
 
         // ==========================================
@@ -86,8 +114,13 @@ namespace SupportTicketSysterm.Controllers
         // ==========================================
         public async Task SendMessage(string ticketId, object messageData)
         {
-            // Simply broadcast the message data (containing content, files, time) to the room
-            await Clients.Group(ticketId).SendAsync("ReceiveMessage", ticketId, messageData);
+            if (string.IsNullOrEmpty(ticketId)) return;
+            string ticketGroup = ticketId.StartsWith("Ticket_", StringComparison.OrdinalIgnoreCase) ? ticketId : $"Ticket_{ticketId}";
+            await Clients.Group(ticketGroup).SendAsync("ReceiveMessage", ticketId, messageData);
+            if (!string.Equals(ticketGroup, ticketId, StringComparison.OrdinalIgnoreCase))
+            {
+                await Clients.Group(ticketId).SendAsync("ReceiveMessage", ticketId, messageData);
+            }
         }
 
         // ==========================================

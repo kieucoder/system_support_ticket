@@ -157,8 +157,8 @@ function initLayoutControls() {
         });
     }
 
-    // 2.4 Profile Info Header Sync
-    syncProfileHeader();
+    // 2.4 Profile Info Header Sync (Disabled automatic mock overwrite to preserve server-side Razor C# Session/Claims profile)
+    // syncProfileHeader();
 }
 
 function updateThemeIcon(btn, theme) {
@@ -174,16 +174,8 @@ function updateThemeIcon(btn, theme) {
 }
 
 function syncProfileHeader() {
-    const profile = JSON.parse(localStorage.getItem('viettel_profile'));
-    if (!profile) return;
-    
-    const headerName = document.querySelector('.user-profile-name');
-    const headerAvatar = document.querySelector('.user-profile-dropdown img');
-    
-    if (headerName) headerName.textContent = profile.name;
-    if (headerAvatar && profile.avatar) {
-        headerAvatar.src = profile.avatar;
-    }
+    // Preserved for server-rendered C# Razor profile in ASP.NET Core
+    // Only update if client-side local profile editing is active and not on server rendering
 }
 
 /* =============================================================

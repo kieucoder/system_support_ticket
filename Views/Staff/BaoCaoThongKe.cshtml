@@ -1,4 +1,4 @@
-﻿@{
+@{
     Layout = null;
 }
 
@@ -65,10 +65,6 @@
                     <button class="topbar-action-btn" id="toggleTheme" title="Toggle Dark Mode">
                         <i class="bi bi-moon"></i>
                     </button>
-                    <button class="topbar-action-btn" title="Thông báo">
-                        <i class="fa-solid fa-bell"></i>
-                        <span class="notification-badge" style="position: absolute; top: 6px; right: 6px; width: 18px; height: 18px; background-color: var(--viettel-red); color: #fff; border-radius: 50%; font-size: 0.6rem; font-weight: 700; display: flex; align-items: center; justify-content: center; border: 2px solid var(--bg-topbar);">5</span>
-                    </button>
                     <div class="dropdown">
                         <a class="user-profile-dropdown" href="#" data-bs-toggle="dropdown">
                             <img src="https://ui-avatars.com/api/?name=Admin+Viettel&background=EE0033&color=fff&size=38" alt="Avatar">
@@ -78,10 +74,10 @@
                             </div>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-2" style="border-radius:12px;">
-                            <li><a class="dropdown-item py-2" href="admin-profile.html"><i class="fa-solid fa-user me-2 text-primary"></i>Thông tin cá nhân</a></li>
-                            <li><a class="dropdown-item py-2" href="admin-profile.html#changePassword"><i class="fa-solid fa-key me-2 text-warning"></i>Đổi mật khẩu</a></li>
+                            <li><a class="dropdown-item py-2" asp-controller="Staff" asp-action="TaiKhoanNhanVien"><i class="fa-solid fa-user me-2 text-primary"></i>Thông tin cá nhân</a></li>
+                            <li><a class="dropdown-item py-2" asp-controller="Staff" asp-action="TaiKhoanNhanVien" asp-fragment="changePassword"><i class="fa-solid fa-key me-2 text-warning"></i>Đổi mật khẩu</a></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item py-2 text-danger" href="../login.html"><i class="fa-solid fa-right-from-bracket me-2"></i>Đăng xuất</a></li>
+                            <li><a class="dropdown-item py-2 text-danger" asp-controller="Auth" asp-action="DangXuat"><i class="fa-solid fa-right-from-bracket me-2"></i>Đăng xuất</a></li>
                         </ul>
                     </div>
                 </div>
@@ -94,7 +90,7 @@
                 <nav aria-label="breadcrumb" class="mb-4">
                     <ol class="breadcrumb" style="font-size: 0.82rem; margin: 0; padding: 0;">
                         <li class="breadcrumb-item">
-                            <a href="dashboard.html" class="text-danger text-decoration-none">
+                            <a asp-controller="Staff" asp-action="Dashboard" class="text-danger text-decoration-none">
                                 <i class="fa-solid fa-gauge-high me-1"></i>Dashboard
                             </a>
                         </li>

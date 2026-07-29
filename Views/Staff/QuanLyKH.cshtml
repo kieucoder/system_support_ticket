@@ -4,6 +4,9 @@
     ViewData["Title"] = "Quản Lý Khách Hàng";
     ViewData["HeaderTitle"] = "Quản Lý Khách Hàng";
     ViewData["HeaderSubtitle"] = "Hệ thống quản lý thông tin khách hàng, trạng thái tài khoản và lịch sử phiếu hỗ trợ";
+
+    string vaiTro = Context.Session?.GetString("Role") ?? Context.Session?.GetString("VaiTro") ?? User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value ?? User.FindFirst("VaiTro")?.Value ?? "";
+    bool isAdmin = ViewBag.IsAdmin ?? (vaiTro.Equals("Admin", StringComparison.OrdinalIgnoreCase) || vaiTro.Equals("Quản trị viên", StringComparison.OrdinalIgnoreCase));
 }
 
 @section Styles {
@@ -35,9 +38,12 @@
         <h1>Quản lý khách hàng</h1>
         <p>Quản lý thông tin khách hàng, trạng thái tài khoản và lịch sử phiếu hỗ trợ kỹ thuật</p>
     </div>
-    <button class="vt-btn-add" data-bs-toggle="modal" data-bs-target="#addCustomerModal">
-        <i class="fa-solid fa-plus"></i> Thêm khách hàng
-    </button>
+    @if (isAdmin)
+    {
+        <button class="vt-btn-add" data-bs-toggle="modal" data-bs-target="#addCustomerModal">
+            <i class="fa-solid fa-plus"></i> Thêm khách hàng
+        </button>
+    }
 </div>
 
 <!-- Statistics Cards -->
@@ -151,7 +157,12 @@
 </div>
 
 <!-- 1. ADD CUSTOMER DIALOG MODAL -->
-@await Html.PartialAsync("_ThemKH", new SupportTicketSysterm.Data.KhachHang())
+@if (isAdmin)
+{
+    @await Html.PartialAsync("_ThemKH", new SupportTicketSysterm.Data.KhachHang())
+    @await Html.PartialAsync("_SuaKH", new SupportTicketSysterm.Data.KhachHang())
+}
+
 <!-- 2. VIEW CUSTOMER DETAIL DIALOG MODAL (PROFILE CARD) -->
 <div class="modal fade" id="viewCustomerModal" tabindex="-1" aria-labelledby="viewCustomerModalLabel" aria-hidden="true">
     <div id="customerDetailContainer">

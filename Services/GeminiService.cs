@@ -50,7 +50,7 @@ namespace SupportTicketSysterm.Services
                 case 404:
                     return $"[Lỗi {statusCode} - Not Found] Model cấu hình '{_model}' không tồn tại hoặc không được tìm thấy ở phiên bản v1beta.";
                 case 429:
-                    return $"[Lỗi {statusCode} - Rate Limit] Tài khoản của bạn đã vượt quá giới hạn tần suất yêu cầu của Google. Vui lòng đợi và thử lại sau.";
+                    return $"⚠️ [Lỗi {statusCode} - Quota Limit Exceeded] Khóa API Google Gemini của bạn đã hết hạn ngạch truy cập miễn phí trong ngày (Free Tier Daily Limit Reached) hoặc bị giới hạn tần suất. Vui lòng tạo khóa API Key mới tại https://aistudio.google.com/app/apikey và cập nhật vào file appsettings.json.";
                 case 500:
                     return $"[Lỗi {statusCode} - Internal Error] Máy chủ Google Gemini gặp sự cố kỹ thuật nội bộ.";
                 case 503:
@@ -173,6 +173,129 @@ namespace SupportTicketSysterm.Services
             {
                 _logger.LogError(ex, "Exception parsing Gemini response payload");
                 return "Lỗi phân tích cú pháp phản hồi từ AI. Chi tiết: " + ex.Message;
+            }
+        }
+
+        public async Task<string> SendMultimodalPromptAsync(string systemInstruction, string userPrompt, byte[] fileBytes, string mimeType)
+        {
+            if (string.IsNullOrEmpty(_apiKey))
+            {
+                _logger.LogError("Gemini API Key is missing.");
+                return "Hệ thống AI chưa được cấu hình khóa truy cập (API Key) trong appsettings.json.";
+            }
+
+            if (fileBytes == null || fileBytes.Length == 0)
+            {
+                return await SendPromptAsync(systemInstruction, userPrompt);
+            }
+
+            var base64Data = Convert.ToBase64String(fileBytes);
+            var endpoint = BuildEndpoint();
+
+            var partsList = new List<object>();
+            if (!string.IsNullOrWhiteSpace(userPrompt))
+            {
+                partsList.Add(new { text = userPrompt });
+            }
+            partsList.Add(new
+            {
+                inlineData = new
+                {
+                    mimeType = string.IsNullOrWhiteSpace(mimeType) ? "image/jpeg" : mimeType,
+                    data = base64Data
+                }
+            });
+
+            var payload = new
+            {
+                contents = new[]
+                {
+                    new
+                    {
+                        role = "user",
+                        parts = partsList
+                    }
+                },
+                systemInstruction = new
+                {
+                    parts = new[]
+                    {
+                        new { text = systemInstruction }
+                    }
+                }
+            };
+
+            var jsonPayload = JsonSerializer.Serialize(payload);
+            HttpResponseMessage response = null;
+            int maxRetries = 3;
+            int delayMs = 1000;
+            string lastErrorDetails = "";
+            int lastStatusCode = 0;
+
+            _logger.LogInformation("Calling Multimodal Gemini... Model: {Model}, Mime: {Mime}, Size: {Size} bytes", _model, mimeType, fileBytes.Length);
+
+            for (int i = 0; i < maxRetries; i++)
+            {
+                var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
+
+                try
+                {
+                    response = await _httpClient.PostAsync(endpoint, content);
+                    var responseBody = await response.Content.ReadAsStringAsync();
+                    lastStatusCode = (int)response.StatusCode;
+                    lastErrorDetails = responseBody;
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        break;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogWarning(ex, "Multimodal Gemini API Attempt {Attempt} failed", i + 1);
+                    lastErrorDetails = ex.Message;
+                }
+
+                if (i < maxRetries - 1)
+                {
+                    await Task.Delay(delayMs);
+                    delayMs *= 2;
+                }
+            }
+
+            if (response == null || !response.IsSuccessStatusCode)
+            {
+                var errorMsg = MapHttpStatusCodeToErrorMessage(lastStatusCode, lastErrorDetails);
+                _logger.LogError("Multimodal Gemini API call failed: {Message}", errorMsg);
+                return errorMsg;
+            }
+
+            try
+            {
+                var jsonResponse = await response.Content.ReadAsStringAsync();
+                using (var doc = JsonDocument.Parse(jsonResponse))
+                {
+                    var root = doc.RootElement;
+                    if (root.TryGetProperty("candidates", out var candidates) && candidates.GetArrayLength() > 0)
+                    {
+                        var firstCandidate = candidates[0];
+                        if (firstCandidate.TryGetProperty("content", out var candidateContent))
+                        {
+                            if (candidateContent.TryGetProperty("parts", out var parts) && parts.GetArrayLength() > 0)
+                            {
+                                var text = parts[0].GetProperty("text").GetString();
+                                return text ?? "Tôi đã nhận được tệp nhưng không thể trích xuất câu trả lời.";
+                            }
+                        }
+                    }
+                }
+
+                return "Không tìm thấy nội dung phản hồi từ máy chủ AI cho tệp đính kèm.";
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Exception parsing Multimodal Gemini response payload");
+                return "Lỗi phân tích cú pháp tệp từ AI. Chi tiết: " + ex.Message;
             }
         }
 

@@ -323,6 +323,30 @@
 .badge-status-staff.active { background-color: var(--staff-success-light); color: var(--staff-success); }
 .badge-status-staff.blocked { background-color: var(--staff-danger-light); color: var(--staff-danger); }
 
+/* Standardized Viettel Status Badges */
+.vt-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.vt-badge.active {
+    background-color: rgba(16, 185, 129, 0.1);
+    color: #10B981;
+    border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.vt-badge.locked {
+    background-color: rgba(239, 68, 68, 0.1);
+    color: #EF4444;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
 /* Rating stars color */
 .rating-stars {
     color: #F59E0B;
