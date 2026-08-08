@@ -55,28 +55,70 @@
                 </div>
             </div>
 
-            <form asp-controller="Staff" asp-action="CapNhatTrangThai" asp-route-id="@Model.IdPhieu" method="post">
-                <div class="mb-3">
-                    <label for="trangThai" class="form-label fw-bold text-dark-emphasis">Chọn trạng thái mới</label>
-                    <select name="trangThai" id="trangThai" class="form-select border rounded-3 p-3" required>
-                        <option value="Chờ tiếp nhận" selected="@(Model.TrangThai == "Chờ tiếp nhận" || Model.TrangThai == "ChoTiepNhan")">Chờ tiếp nhận</option>
-                        <option value="Đang xử lý" selected="@(Model.TrangThai == "Đang xử lý" || Model.TrangThai == "DangXuLy")">Đang xử lý</option>
-                        <option value="Chờ phản hồi" selected="@(Model.TrangThai == "Chờ phản hồi" || Model.TrangThai == "ChoKhachHangPhanHoi")">Chờ khách hàng phản hồi</option>
-                        <option value="Hoàn thành" selected="@(Model.TrangThai == "Hoàn thành" || Model.TrangThai == "DaHoanThanh" || Model.TrangThai == "Đã hoàn thành")">Hoàn thành</option>
-                        <option value="Đã hủy" selected="@(Model.TrangThai == "Đã hủy" || Model.TrangThai == "DaHuy")">Hủy bỏ</option>
-                    </select>
+            @if (Model.TrangThai == "Đã hủy" || Model.TrangThai == "DaHuy")
+            {
+                var cancelLog = Model.LichSuHoTros?.OrderByDescending(x => x.IdLichSu).FirstOrDefault(x => x.TrangThaiMoi == "Đã hủy" || x.TrangThaiMoi == "DaHuy");
+                
+                <div class="alert alert-danger border-0 rounded-4 p-4 mb-4" style="background-color: #FFF5F5; border-left: 4px solid #E60012 !important;">
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        <i class="fa-solid fa-circle-xmark text-danger fs-4"></i>
+                        <h5 class="fw-bold text-danger mb-0">PHIẾU ĐÃ HỦY</h5>
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <span class="text-muted small d-block">Người hủy</span>
+                            <strong class="text-dark">@(cancelLog?.IdNhanVienNavigation?.HoTen ?? "Khách hàng")</strong>
+                        </div>
+                        <div class="col-md-6">
+                            <span class="text-muted small d-block">Ngày hủy</span>
+                            <strong class="text-dark">@(cancelLog?.NgayCapNhat?.ToString("dd/MM/yyyy") ?? Model.NgayCapNhat?.ToString("dd/MM/yyyy") ?? "--")</strong>
+                        </div>
+                        <div class="col-12">
+                            <span class="text-muted small d-block">Lý do hủy</span>
+                            <p class="mb-0 fw-semibold text-danger" style="white-space: pre-wrap;">@(cancelLog?.NoiDungCapNhat ?? "Phiếu đã bị hủy.")</p>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="mb-4">
-                    <label for="ghiChu" class="form-label fw-bold text-dark-emphasis">Ghi chú / Lý do cập nhật</label>
-                    <textarea name="ghiChu" id="ghiChu" class="form-control border rounded-3" rows="4" placeholder="Nhập chi tiết hoạt động kỹ thuật, lý do thay đổi trạng thái..."></textarea>
+                <div class="alert alert-warning border-0 rounded-3 mb-4 small text-dark d-flex align-items-center gap-2">
+                    <i class="fa-solid fa-lock text-warning fs-5 flex-shrink-0"></i>
+                    <div>Phiếu hỗ trợ đã hủy không thể thay đổi lại trạng thái, phân công nhân viên hay tạo lịch hẹn. Bạn chỉ có quyền xem thông tin.</div>
                 </div>
 
                 <div class="d-flex gap-2">
-                    <button type="submit" class="btn btn-viettel fw-bold px-4 py-2" style="border-radius:10px;">Cập nhật</button>
-                    <a href="/Staff/QuanLyPhieuHoTro" class="btn btn-outline-secondary fw-bold px-4 py-2" style="border-radius:10px;">Quay lại</a>
+                    <a href="/Staff/QuanLyPhieuHoTro" class="btn btn-outline-secondary fw-bold px-4 py-2" style="border-radius:10px;">
+                        <i class="fa-solid fa-chevron-left me-1"></i> Quay lại danh sách
+                    </a>
+                    <a href="/Staff/LichSuXuLy/@Model.IdPhieu" class="btn btn-outline-danger fw-bold px-4 py-2" style="border-radius:10px;">
+                        <i class="fa-solid fa-clock-rotate-left me-1"></i> Xem lịch sử xử lý
+                    </a>
                 </div>
-            </form>
+            }
+            else
+            {
+                <form asp-controller="Staff" asp-action="CapNhatTrangThai" asp-route-id="@Model.IdPhieu" method="post">
+                    <div class="mb-3">
+                        <label for="trangThai" class="form-label fw-bold text-dark-emphasis">Chọn trạng thái mới</label>
+                        <select name="trangThai" id="trangThai" class="form-select border rounded-3 p-3" required>
+                            <option value="Chờ tiếp nhận" selected="@(Model.TrangThai == "Chờ tiếp nhận" || Model.TrangThai == "ChoTiepNhan")">Chờ tiếp nhận</option>
+                            <option value="Đang xử lý" selected="@(Model.TrangThai == "Đang xử lý" || Model.TrangThai == "DangXuLy")">Đang xử lý</option>
+                            <option value="Chờ phản hồi" selected="@(Model.TrangThai == "Chờ phản hồi" || Model.TrangThai == "ChoKhachHangPhanHoi")">Chờ khách hàng phản hồi</option>
+                            <option value="Hoàn thành" selected="@(Model.TrangThai == "Hoàn thành" || Model.TrangThai == "DaHoanThanh" || Model.TrangThai == "Đã hoàn thành")">Hoàn thành</option>
+                            <option value="Đã hủy" selected="@(Model.TrangThai == "Đã hủy" || Model.TrangThai == "DaHuy")">Hủy bỏ</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="ghiChu" class="form-label fw-bold text-dark-emphasis">Ghi chú / Lý do cập nhật</label>
+                        <textarea name="ghiChu" id="ghiChu" class="form-control border rounded-3" rows="4" placeholder="Nhập chi tiết hoạt động kỹ thuật, lý do thay đổi trạng thái..."></textarea>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-viettel fw-bold px-4 py-2" style="border-radius:10px;">Cập nhật</button>
+                        <a href="/Staff/QuanLyPhieuHoTro" class="btn btn-outline-secondary fw-bold px-4 py-2" style="border-radius:10px;">Quay lại</a>
+                    </div>
+                </form>
+            }
         </div>
     </div>
 </div>

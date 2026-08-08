@@ -30,7 +30,7 @@ namespace SupportTicketSysterm.Services.Implementations
                 return new LookupTicketResponse
                 {
                     Success = false,
-                    Message = "Vui lòng đăng nhập tài khoản Khách hàng để tra cứu phiếu hỗ trợ.",
+                    Message = "Để đảm bảo an toàn thông tin, bạn cần đăng nhập bằng tài khoản đã tạo phiếu hỗ trợ trước khi tra cứu trạng thái xử lý.\n\n[ACTION_REQUIRE_LOGIN]",
                     Intent = "Unauthorized"
                 };
             }
@@ -41,6 +41,18 @@ namespace SupportTicketSysterm.Services.Implementations
             if (!string.IsNullOrWhiteSpace(targetCode))
             {
                 ticket = await _ticketRepository.GetByTicketCodeAsync(targetCode);
+                if (ticket != null && ticket.IdKhachHang != idKhachHang.Value)
+                {
+                    _logger.LogWarning("Access Denied: Customer {IdKhachHang} tried to view ticket {MaPhieu} of Customer {OwnerId}",
+                        idKhachHang.Value, targetCode, ticket.IdKhachHang);
+
+                    return new LookupTicketResponse
+                    {
+                        Success = false,
+                        Message = "Không tìm thấy phiếu hỗ trợ thuộc tài khoản của bạn. Vui lòng kiểm tra lại mã phiếu hoặc xem danh sách 'Phiếu của tôi'.",
+                        Intent = "Forbidden"
+                    };
+                }
             }
 
             // Fallback: If no code or code not found, get latest ticket for this customer
@@ -54,22 +66,8 @@ namespace SupportTicketSysterm.Services.Implementations
                 return new LookupTicketResponse
                 {
                     Success = false,
-                    Message = "Không tìm thấy phiếu hỗ trợ nào trong dữ liệu hệ thống.",
+                    Message = "Không tìm thấy phiếu hỗ trợ thuộc tài khoản của bạn. Vui lòng kiểm tra lại mã phiếu hoặc xem danh sách 'Phiếu của tôi'.",
                     Intent = "NotFound"
-                };
-            }
-
-            // Authorization check
-            if (ticket.IdKhachHang != idKhachHang.Value)
-            {
-                _logger.LogWarning("Access Denied: Customer {IdKhachHang} tried to view ticket {MaPhieu} of Customer {OwnerId}",
-                    idKhachHang.Value, ticket.MaPhieu, ticket.IdKhachHang);
-
-                return new LookupTicketResponse
-                {
-                    Success = false,
-                    Message = "Bạn không có quyền xem phiếu này.",
-                    Intent = "Forbidden"
                 };
             }
 

@@ -711,6 +711,8 @@ section {
 .support-timeline {
     position: relative;
     padding: 2rem 0;
+    max-width: 980px;
+    margin: 0 auto;
 }
 
 .relative-row {
@@ -822,7 +824,7 @@ section {
     background: var(--bg-card);
     border: 1px solid var(--border-color);
     border-radius: var(--radius);
-    padding: 2.25rem 1.25rem 1.75rem;
+    padding: 1.75rem 1.15rem 1.5rem;
     margin-top: 1.5rem;
     box-shadow: var(--shadow);
     transition: var(--transition-smooth);

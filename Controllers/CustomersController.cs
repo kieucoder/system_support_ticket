@@ -7,6 +7,8 @@ using SupportTicketSysterm.Services;
 using System.Security.Claims;
 using Microsoft.Extensions.Logging;
 
+using Microsoft.AspNetCore.Identity;
+
 namespace SupportTicketSysterm.Controllers
 {
     [Route("Customers")]
@@ -15,13 +17,16 @@ namespace SupportTicketSysterm.Controllers
     {
         private readonly TechSupportContext _context;
         private readonly ILogger<CustomersController> _logger;
+        private readonly IPasswordHasher<KhachHang> _khachHangPasswordHasher;
 
         public CustomersController(
             TechSupportContext context,
-            ILogger<CustomersController> logger)
+            ILogger<CustomersController> logger,
+            IPasswordHasher<KhachHang> khachHangPasswordHasher)
         {
             _context = context;
             _logger  = logger;
+            _khachHangPasswordHasher = khachHangPasswordHasher;
         }
 
         [HttpGet]
@@ -236,9 +241,9 @@ namespace SupportTicketSysterm.Controllers
             }
 
             // Kiểm tra mật khẩu cũ
-            bool checkPassword = BCrypt.Net.BCrypt.Verify(
-                model.MatKhauHienTai,
-                khachHang.MatKhau);
+            string dbHash = khachHang.MatKhau?.Trim() ?? "";
+            var verifyResult = _khachHangPasswordHasher.VerifyHashedPassword(khachHang, dbHash, model.MatKhauHienTai);
+            bool checkPassword = (verifyResult == PasswordVerificationResult.Success || verifyResult == PasswordVerificationResult.SuccessRehashNeeded) || (dbHash == model.MatKhauHienTai);
 
             if (!checkPassword)
             {
@@ -260,7 +265,7 @@ namespace SupportTicketSysterm.Controllers
             }
 
             // Hash mật khẩu mới
-            khachHang.MatKhau = BCrypt.Net.BCrypt.HashPassword(model.MatKhauMoi);
+            khachHang.MatKhau = _khachHangPasswordHasher.HashPassword(khachHang, model.MatKhauMoi);
 
             await _context.SaveChangesAsync();
 
@@ -272,11 +277,92 @@ namespace SupportTicketSysterm.Controllers
         }
 
         [HttpGet]
+        [Route("ChatNhanVien")]
+        [Route("Customers/ChatNhanVien")]
+        public async Task<IActionResult> ChatNhanVien()
+        {
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null)
+            {
+                var claim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? User.FindFirst("UserId")?.Value;
+                if (int.TryParse(claim, out int id))
+                {
+                    userId = id;
+                }
+            }
+
+            // 1. Kiểm tra đăng nhập
+            if (userId == null)
+            {
+                TempData["Error"] = "Bạn cần đăng nhập để chat với nhân viên hỗ trợ.";
+                return RedirectToAction("DangNhap", "Auth", new { returnUrl = "/Customers/ChatNhanVien" });
+            }
+
+            // 2. Kiểm tra cuộc chat đang mở (Trạng thái "Đang chờ" hoặc "Đang hỗ trợ")
+            var activeChat = await _context.LienHes
+                .Where(l => l.IdKhachHang == userId.Value && (l.TrangThai == "Đang chờ" || l.TrangThai == "Đang hỗ trợ"))
+                .OrderByDescending(l => l.ThoiGianGui)
+                .FirstOrDefaultAsync();
+
+            if (activeChat != null)
+            {
+                // Mở lại đúng cuộc chat đang mở
+                return RedirectToAction("Index", "Chat", new { id = activeChat.IdLienHe });
+            }
+
+            // 3. Nếu chưa có, tạo cuộc chat mới trong SQL Server (Bảng LienHe + TinNhan)
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                var newLienHe = new LienHe
+                {
+                    IdKhachHang = userId.Value,
+                    IdNhanVien = null,
+                    IdPhieu = null,
+                    TieuDe = "Hỗ trợ trực tuyến",
+                    NoiDung = "Khách hàng yêu cầu hỗ trợ trực tuyến.",
+                    TrangThai = "Đang chờ",
+                    NgayTao = DateOnly.FromDateTime(DateTime.Now),
+                    ThoiGianGui = DateTime.Now,
+                    SoTinChuaDoc = 1,
+                    TinChuaDocKhach = 0
+                };
+
+                _context.LienHes.Add(newLienHe);
+                await _context.SaveChangesAsync();
+
+                var firstMsg = new TinNhan
+                {
+                    IdLienHe = newLienHe.IdLienHe,
+                    LoaiNguoiGui = "Khách hàng",
+                    TinNhan1 = "Khách hàng đã bắt đầu cuộc trò chuyện.",
+                    TrangThai = "Chưa đọc",
+                    ThoiGian = DateTime.Now
+                };
+
+                _context.TinNhans.Add(firstMsg);
+                await _context.SaveChangesAsync();
+
+                await transaction.CommitAsync();
+
+                return RedirectToAction("Index", "Chat", new { id = newLienHe.IdLienHe });
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                _logger.LogError(ex, "Lỗi tạo cuộc trò chuyện hỗ trợ trực tuyến");
+                TempData["Error"] = "Không thể tạo cuộc trò chuyện: " + ex.Message;
+                return RedirectToAction("TrangChu", "Customers");
+            }
+        }
+
+        [HttpGet]
         [Route("LienHe")]
         public IActionResult LienHe()
         {
             return View(new GuiLienHeViewModel());
         }
+
 
         [HttpPost]
         [Route("LienHe")]
@@ -407,44 +493,27 @@ namespace SupportTicketSysterm.Controllers
                     .AsQueryable();
 
                 // ----------------------------------------------------------
-                //  4. Thống kê — tính trước khi áp search/filter
-                //     để thống kê phản ánh TẤT CẢ phiếu của khách hàng.
+                //  4. Thống kê — tính trực tiếp từ database cho khách hàng
                 // ----------------------------------------------------------
-
-                // Lấy snapshot dữ liệu thô để tính thống kê và danh sách dịch vụ
-                // Dùng Select tối thiểu — tránh kéo toàn bộ cột không cần
                 var thongKeRaw = await _context.PhieuHoTros
                     .AsNoTracking()
                     .Where(p => p.IdKhachHang == idKhachHang)
-                    .Include(p => p.LichHens)
-                    .Select(p => new
-                    {
-                        p.TrangThai,
-                        NgayHenXuLy = p.LichHens
-                                        .OrderByDescending(lh => lh.NgayHen)
-                                        .Select(lh => lh.NgayHen)
-                                        .FirstOrDefault()
-                    })
+                    .Select(p => p.TrangThai)
                     .ToListAsync();
 
                 int tongPhieu    = thongKeRaw.Count;
-                int dangXuLy     = thongKeRaw.Count(x => x.TrangThai == "DangXuLy");
-                int choTiepNhan  = thongKeRaw.Count(x => x.TrangThai == "ChoTiepNhan");
-                int daHoanThanh  = thongKeRaw.Count(x => x.TrangThai == "DaHoanThanh");
-                int daHuy        = thongKeRaw.Count(x => x.TrangThai == "DaHuy");
-                int quaHan       = thongKeRaw.Count(x =>
-                                       x.TrangThai != "DaHoanThanh"
-                                    && x.NgayHenXuLy.HasValue
-                                    && x.NgayHenXuLy.Value < today);
+                int dangXuLy     = thongKeRaw.Count(x => x == "DangXuLy" || x == "Đang xử lý");
+                int choTiepNhan  = thongKeRaw.Count(x => x == "ChoTiepNhan" || x == "Chờ tiếp nhận");
+                int daHoanThanh  = thongKeRaw.Count(x => x == "DaHoanThanh" || x == "Hoàn thành" || x == "Đã hoàn thành");
+                int daHuy        = thongKeRaw.Count(x => x == "DaHuy" || x == "Đã hủy");
 
                 // ----------------------------------------------------------
-                //  5. Danh sách dịch vụ (dùng cho dropdown filter)
+                //  5. Danh sách dịch vụ (lấy từ bảng DichVu)
                 // ----------------------------------------------------------
-                var danhSachDichVu = await _context.PhieuHoTros
+                var danhSachDichVu = await _context.DichVus
                     .AsNoTracking()
-                    .Where(p => p.IdKhachHang == idKhachHang
-                             && p.IdDichVuNavigation != null)
-                    .Select(p => p.IdDichVuNavigation!.TenDichVu)
+                    .Select(d => d.TenDichVu)
+                    .Where(t => !string.IsNullOrEmpty(t))
                     .Distinct()
                     .OrderBy(t => t)
                     .ToListAsync();
@@ -466,24 +535,20 @@ namespace SupportTicketSysterm.Controllers
                 //  7. Áp dụng Filter
                 // ----------------------------------------------------------
 
-                // 7a. Trạng thái
+                // 7a. Trạng thái (hỗ trợ cả mã trạng thái và tên hiển thị tiếng Việt)
                 if (!string.IsNullOrWhiteSpace(status))
                 {
-                    if (status == "QuaHan")
+                    baseQuery = status switch
                     {
-                        baseQuery = baseQuery.Where(p =>
-                            p.TrangThai != "DaHoanThanh"
-                         && p.LichHens.OrderByDescending(lh => lh.NgayHen).Select(lh => (DateOnly?)lh.NgayHen).FirstOrDefault() < today);
-                    }
-                    else
-                    {
-                        baseQuery = baseQuery.Where(p => p.TrangThai == status);
-                    }
+                        "ChoTiepNhan" => baseQuery.Where(p => p.TrangThai == "ChoTiepNhan" || p.TrangThai == "Chờ tiếp nhận"),
+                        "DangXuLy"    => baseQuery.Where(p => p.TrangThai == "DangXuLy" || p.TrangThai == "Đang xử lý"),
+                        "DaHoanThanh" => baseQuery.Where(p => p.TrangThai == "DaHoanThanh" || p.TrangThai == "Hoàn thành" || p.TrangThai == "Đã hoàn thành"),
+                        "DaHuy"       => baseQuery.Where(p => p.TrangThai == "DaHuy" || p.TrangThai == "Đã hủy"),
+                        _             => baseQuery.Where(p => p.TrangThai == status)
+                    };
                 }
 
-                // 7b. Mức ưu tiên — PhieuHoTro lưu MucDoUuTien (int?),
-                //     view dùng giá trị chuỗi Low/Medium/High/Critical
-                //     => ánh xạ sang số tương ứng
+                // 7b. Mức ưu tiên
                 if (!string.IsNullOrWhiteSpace(priority))
                 {
                     int? mucUuTienSo = priority switch
@@ -492,6 +557,10 @@ namespace SupportTicketSysterm.Controllers
                         "Medium"   => 2,
                         "High"     => 3,
                         "Critical" => 4,
+                        "1"        => 1,
+                        "2"        => 2,
+                        "3"        => 3,
+                        "4"        => 4,
                         _          => null
                     };
                     if (mucUuTienSo.HasValue)
@@ -500,9 +569,11 @@ namespace SupportTicketSysterm.Controllers
 
                 // 7c. Dịch vụ
                 if (!string.IsNullOrWhiteSpace(service))
+                {
                     baseQuery = baseQuery.Where(p =>
                         p.IdDichVuNavigation != null
                      && p.IdDichVuNavigation.TenDichVu == service);
+                }
 
                 // 7d. Khoảng ngày tạo
                 if (tuNgay.HasValue)
@@ -515,13 +586,13 @@ namespace SupportTicketSysterm.Controllers
                 // ----------------------------------------------------------
                 baseQuery = sortBy switch
                 {
-                    "date_asc"  => baseQuery.OrderBy(p => p.NgayTao),
-                    "priority"  => baseQuery.OrderByDescending(p => p.MucDoUuTien),
-                    "service"   => baseQuery.OrderBy(p => p.IdDichVuNavigation != null
-                                                        ? p.IdDichVuNavigation.TenDichVu
-                                                        : null),
-                    "maPhieu"   => baseQuery.OrderBy(p => p.MaPhieu),
-                    _           => baseQuery.OrderByDescending(p => p.NgayTao)  // mặc định mới nhất trước
+                    "date_asc"      => baseQuery.OrderBy(p => p.NgayTao),
+                    "priority"      => baseQuery.OrderByDescending(p => p.MucDoUuTien),
+                    "priority_desc" => baseQuery.OrderByDescending(p => p.MucDoUuTien),
+                    "status"        => baseQuery.OrderBy(p => p.TrangThai),
+                    "service"       => baseQuery.OrderBy(p => p.IdDichVuNavigation != null ? p.IdDichVuNavigation.TenDichVu : null),
+                    "maPhieu"       => baseQuery.OrderBy(p => p.MaPhieu),
+                    _               => baseQuery.OrderByDescending(p => p.NgayTao)  // mặc định mới nhất trước
                 };
 
                 // ----------------------------------------------------------
@@ -667,7 +738,6 @@ namespace SupportTicketSysterm.Controllers
                     ChoTiepNhan      = choTiepNhan,
                     DaHoanThanh      = daHoanThanh,
                     DaHuy            = daHuy,
-                    QuaHan           = quaHan,
 
                     DanhSachThongBao = thongBao,
                     HoatDongGanDay   = hoatDong,
@@ -695,6 +765,158 @@ namespace SupportTicketSysterm.Controllers
             }
         }
 
+        // ================================================================
+        //  POST  Customers/HuyPhieu
+        //  Hủy phiếu hỗ trợ dành cho Khách hàng khi phiếu ở trạng thái "Chờ tiếp nhận"
+        // ================================================================
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Route("HuyPhieu")]
+        [Route("Customers/HuyPhieu")]
+        public async Task<IActionResult> HuyPhieu([FromForm] int id, [FromForm] int? idPhieu, [FromForm] string? lyDoHuy)
+        {
+            int targetId = id > 0 ? id : (idPhieu ?? 0);
 
+            // 1 & 2: Lấy ID khách hàng từ Session hoặc Claims
+            var idKhachHang = HttpContext.Session.GetInt32("UserId")
+                           ?? HttpContext.Session.GetInt32("IdKhachHang");
+
+            if (idKhachHang == null)
+            {
+                var claimVal = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (int.TryParse(claimVal, out int claimId))
+                    idKhachHang = claimId;
+            }
+
+            if (idKhachHang == null || idKhachHang.Value <= 0)
+            {
+                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                {
+                    return Json(new { success = false, message = "Phiên làm việc đã hết hạn. Vui lòng đăng nhập lại." });
+                }
+                TempData["ErrorMessage"] = "Phiên làm việc đã hết hạn. Vui lòng đăng nhập lại.";
+                return RedirectToAction("DangNhap", "Auth");
+            }
+
+            if (targetId <= 0)
+            {
+                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                {
+                    return Json(new { success = false, message = "Không tìm thấy phiếu hỗ trợ." });
+                }
+                TempData["ErrorMessage"] = "Không tìm thấy phiếu hỗ trợ.";
+                return RedirectToAction("PhieuCuaToi");
+            }
+
+            // 3. Tìm phiếu theo ID
+            var phieu = await _context.PhieuHoTros
+                .Include(p => p.LichHens)
+                .FirstOrDefaultAsync(p => p.IdPhieu == targetId);
+
+            // 4. Kiểm tra phiếu có tồn tại không
+            if (phieu == null)
+            {
+                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                {
+                    return Json(new { success = false, message = "Không tìm thấy phiếu hỗ trợ." });
+                }
+                TempData["ErrorMessage"] = "Không tìm thấy phiếu hỗ trợ.";
+                return RedirectToAction("PhieuCuaToi");
+            }
+
+            // 5. Kiểm tra quyền sở hữu phiếu
+            if (phieu.IdKhachHang != idKhachHang.Value)
+            {
+                _logger.LogWarning("BẢO MẬT: Khách hàng Id={CurrentCustomerId} cố tình hủy phiếu Id={TicketId} thuộc Khách hàng Id={OwnerCustomerId}",
+                    idKhachHang.Value, targetId, phieu.IdKhachHang);
+
+                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                {
+                    return StatusCode(403, new { success = false, message = "Bạn không có quyền hủy phiếu hỗ trợ này." });
+                }
+                TempData["ErrorMessage"] = "Bạn không có quyền hủy phiếu hỗ trợ này.";
+                return RedirectToAction("PhieuCuaToi");
+            }
+
+            // 6. Kiểm tra trạng thái phiếu — chỉ cho phép "Chờ tiếp nhận" / "ChoTiepNhan"
+            string currentStatus = phieu.TrangThai?.Trim() ?? "";
+            bool isChoTiepNhan = currentStatus.Equals("Chờ tiếp nhận", StringComparison.OrdinalIgnoreCase)
+                              || currentStatus.Equals("ChoTiepNhan", StringComparison.OrdinalIgnoreCase);
+
+            if (!isChoTiepNhan)
+            {
+                string errorMsg = "Phiếu không thể hủy vì đã được tiếp nhận hoặc xử lý.";
+                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                {
+                    return Json(new { success = false, message = errorMsg });
+                }
+                TempData["ErrorMessage"] = errorMsg;
+                return RedirectToAction("PhieuCuaToi");
+            }
+
+            // 7. Thực hiện cập nhật trạng thái phiếu và ghi nhật ký
+            string trangThaiCu = phieu.TrangThai ?? "Chờ tiếp nhận";
+            phieu.TrangThai = "Đã hủy";
+            phieu.NgayCapNhat = DateOnly.FromDateTime(DateTime.Today);
+
+            string cleanReason = lyDoHuy?.Trim() ?? "";
+            string logDescription = !string.IsNullOrWhiteSpace(cleanReason)
+                ? $"Khách hàng đã hủy phiếu hỗ trợ. Lý do: {cleanReason}"
+                : "Khách hàng đã hủy phiếu hỗ trợ.";
+
+            // Ghi nhận vào bảng LichSuHoTro
+            var lichSuLog = new LichSuHoTro
+            {
+                IdPhieu = phieu.IdPhieu,
+                IdNhanVien = phieu.IdNhanVien,
+                TrangThaiCu = trangThaiCu,
+                TrangThaiMoi = "Đã hủy",
+                NoiDungCapNhat = logDescription,
+                NgayCapNhat = DateOnly.FromDateTime(DateTime.Today)
+            };
+            _context.LichSuHoTros.Add(lichSuLog);
+
+            // Đồng bộ hủy các lịch hẹn đính kèm nếu có
+            if (phieu.LichHens != null && phieu.LichHens.Any())
+            {
+                foreach (var lh in phieu.LichHens)
+                {
+                    if (lh.TrangThai != "DaHuy" && lh.TrangThai != "Đã hủy")
+                    {
+                        lh.TrangThai = "DaHuy";
+                        lh.LyDoHuy = !string.IsNullOrWhiteSpace(cleanReason)
+                            ? $"Lịch hẹn bị hủy do khách hàng hủy phiếu hỗ trợ ({cleanReason})."
+                            : "Lịch hẹn bị hủy do khách hàng hủy phiếu hỗ trợ.";
+                        lh.NgayHuy = DateTime.Now;
+                        lh.NguoiHuy = "KhachHang";
+
+                        _context.LichSuHoTros.Add(new LichSuHoTro
+                        {
+                            IdPhieu = phieu.IdPhieu,
+                            IdNhanVien = lh.IdNhanVien ?? phieu.IdNhanVien,
+                            TrangThaiCu = lh.TrangThai,
+                            TrangThaiMoi = "DaHuy",
+                            NoiDungCapNhat = "Lịch hẹn đã được hủy tự động do khách hàng hủy phiếu hỗ trợ.",
+                            NgayCapNhat = DateOnly.FromDateTime(DateTime.Today)
+                        });
+                    }
+                }
+            }
+
+            await _context.SaveChangesAsync();
+
+            _logger.LogInformation("Hủy phiếu hỗ trợ Id={TicketId} (MaPhieu={MaPhieu}) thành công cho Khách hàng Id={CustomerId}",
+                phieu.IdPhieu, phieu.MaPhieu, idKhachHang.Value);
+
+            string successMsg = $"Hủy phiếu hỗ trợ {phieu.MaPhieu} thành công.";
+
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            {
+                return Json(new { success = true, message = successMsg, idPhieu = phieu.IdPhieu, trangThai = "Đã hủy" });
+            }
+
+            TempData["SuccessMessage"] = successMsg;
+            return RedirectToAction("PhieuCuaToi");
+        }
     }
 }

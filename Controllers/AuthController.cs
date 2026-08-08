@@ -9,6 +9,8 @@ using System.Security.Claims;
 using SupportTicketSysterm.Services;
 using System.Text.RegularExpressions;
 
+using Microsoft.AspNetCore.Identity;
+
 namespace SupportTicketSysterm.Controllers
 {
     public class AuthController : Controller
@@ -19,19 +21,25 @@ namespace SupportTicketSysterm.Controllers
         private readonly IEmailService _emailService;
         private readonly IOtpService _otpService;
         private readonly IAuthService _authService;
+        private readonly IPasswordHasher<KhachHang> _khachHangPasswordHasher;
+        private readonly IPasswordHasher<NhanVien> _nhanVienPasswordHasher;
 
         public AuthController(
             TechSupportContext context,
             ILogger<AuthController> logger,
             IEmailService emailService,
             IOtpService otpService,
-            IAuthService authService)
+            IAuthService authService,
+            IPasswordHasher<KhachHang> khachHangPasswordHasher,
+            IPasswordHasher<NhanVien> nhanVienPasswordHasher)
         {
             _context = context;
             _logger = logger;
             _emailService = emailService;
             _otpService = otpService;
             _authService = authService;
+            _khachHangPasswordHasher = khachHangPasswordHasher;
+            _nhanVienPasswordHasher = nhanVienPasswordHasher;
         }
 
         // ===================== ĐĂNG KÝ =====================
@@ -72,7 +80,7 @@ namespace SupportTicketSysterm.Controllers
             // =====================================================
             using var transaction = await _context.Database.BeginTransactionAsync();
             int idKhachHang;
-            string passwordHash = BCrypt.Net.BCrypt.HashPassword(model.MatKhau);
+            string passwordHash = _khachHangPasswordHasher.HashPassword(new KhachHang(), model.MatKhau);
 
             try
             {
@@ -153,8 +161,8 @@ namespace SupportTicketSysterm.Controllers
                 // BƯỚC 3: Sinh mã OTP ngẫu nhiên
                 var otp = await _otpService.GenerateOtpAsync();
 
-                // BƯỚC 4: Lưu OTP vào TaiKhoan_OTP
-                var saved = await _otpService.SaveOtpAsync(idKhachHang, otp);
+                // BƯỚC 4: Lưu OTP vào TaiKhoan_OTP với loại "DangKy"
+                var saved = await _otpService.SaveOtpAsync(idKhachHang, otp, "DangKy");
                 if (!saved)
                 {
                     await transaction.RollbackAsync();
@@ -174,7 +182,7 @@ namespace SupportTicketSysterm.Controllers
                 catch (Exception ex)
                 {
                     _logger.LogError(ex, "Gửi Email OTP thất bại tới {Email}. Chi tiết: {Message}", model.Email, ex.Message);
-                    await _otpService.DeletePreviousOtpAsync(idKhachHang);
+                    await _otpService.InvalidatePreviousOtpAsync(idKhachHang, "DangKy");
                     var smtpError = $"Không thể gửi OTP: {ex.Message}";
                     return BuildOtpErrorResponse(model, smtpError);
                 }
@@ -262,19 +270,14 @@ namespace SupportTicketSysterm.Controllers
             }
 
             // =====================================================
-            // BƯỚC 5: Xác thực OTP theo IdKhachHang + OTP + Hạn sử dụng
+            // BƯỚC 5: Xác thực OTP loại "DangKy" qua OtpService
             // =====================================================
             var idKhachHang = pendingRegistration.IdKhachHang;
-            var otpRecord = await _context.TaiKhoanOtps
-                .Where(x => x.IdKhachHang == idKhachHang)
-                .Where(x => x.Otp == model.OTP.Trim())
-                .Where(x => x.HanSuDung > DateTime.Now)
-                .OrderByDescending(x => x.ThoiGianTao)
-                .FirstOrDefaultAsync();
+            var (otpValid, otpMessage) = await _otpService.ValidateOtpAsync(idKhachHang, model.OTP, "DangKy");
 
-            if (otpRecord == null)
+            if (!otpValid)
             {
-                return Content("<div class='alert-danger'>Mã OTP không chính xác hoặc đã hết hạn.</div>", "text/html");
+                return Content($"<div class='alert-danger'>{otpMessage}</div>", "text/html");
             }
 
             // OTP hợp lệ — kích hoạt tài khoản
@@ -291,8 +294,8 @@ namespace SupportTicketSysterm.Controllers
                 khachHang.TrangThai = "Đã kích hoạt";
                 khachHang.DaXacThucEmail = true;
 
-                // Xóa OTP cũ của khách hàng
-                await _otpService.DeletePreviousOtpAsync(idKhachHang);
+                // Vô hiệu hóa OTP cũ của khách hàng
+                await _otpService.InvalidatePreviousOtpAsync(idKhachHang, "DangKy");
 
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
@@ -361,9 +364,9 @@ namespace SupportTicketSysterm.Controllers
                 });
             }
 
-            // Generate & Save OTP mới (SaveOtpAsync tự động xóa OTP cũ của khách hàng)
+            // Generate & Save OTP mới với loại "DangKy"
             var otp = await _otpService.GenerateOtpAsync();
-            var saved = await _otpService.SaveOtpAsync(idKhachHang, otp);
+            var saved = await _otpService.SaveOtpAsync(idKhachHang, otp, "DangKy");
             if (!saved)
             {
                 return Json(new { success = false, message = "Không thể tạo OTP mới. Vui lòng thử lại." });
@@ -377,7 +380,7 @@ namespace SupportTicketSysterm.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Gửi lại Email OTP thất bại tới {Email}", pendingRegistration.Email);
-                await _otpService.DeletePreviousOtpAsync(idKhachHang);
+                await _otpService.InvalidatePreviousOtpAsync(idKhachHang, "DangKy");
                 return Json(new { success = false, message = "Không thể gửi email chứa mã OTP mới." });
             }
 
@@ -421,7 +424,7 @@ namespace SupportTicketSysterm.Controllers
                 var khachHang = await _context.KhachHangs.FindAsync(idKhachHang);
                 if (khachHang != null)
                 {
-                    string newPasswordHash = BCrypt.Net.BCrypt.HashPassword(model.MatKhau);
+                    string newPasswordHash = _khachHangPasswordHasher.HashPassword(khachHang, model.MatKhau);
                     khachHang.MatKhau = newPasswordHash;
                     khachHang.HoTen = model.HoTen.Trim();
                     khachHang.DiaChi = string.IsNullOrWhiteSpace(model.DiaChi) ? null : model.DiaChi.Trim();
@@ -429,9 +432,9 @@ namespace SupportTicketSysterm.Controllers
                     await _context.SaveChangesAsync();
                 }
 
-                // Sinh và lưu OTP mới
+                // Sinh và lưu OTP mới loại "DangKy"
                 var otp = await _otpService.GenerateOtpAsync();
-                var saved = await _otpService.SaveOtpAsync(idKhachHang, otp);
+                var saved = await _otpService.SaveOtpAsync(idKhachHang, otp, "DangKy");
                 if (!saved)
                 {
                     return BuildOtpErrorResponse(model, "Không thể khởi tạo mã OTP. Vui lòng thử lại.");
@@ -445,7 +448,7 @@ namespace SupportTicketSysterm.Controllers
                 catch (Exception ex)
                 {
                     _logger.LogError(ex, "Gửi Email OTP thất bại tới {Email}. Chi tiết: {Message}", model.Email, ex.Message);
-                    await _otpService.DeletePreviousOtpAsync(idKhachHang);
+                    await _otpService.InvalidatePreviousOtpAsync(idKhachHang, "DangKy");
                     return BuildOtpErrorResponse(model, $"Không thể gửi OTP: {ex.Message}");
                 }
 
@@ -458,7 +461,7 @@ namespace SupportTicketSysterm.Controllers
                     Email = model.Email.Trim(),
                     DiaChi = string.IsNullOrWhiteSpace(model.DiaChi) ? null : model.DiaChi.Trim(),
                     NgaySinh = model.NgaySinh,
-                    PasswordHash = BCrypt.Net.BCrypt.HashPassword(model.MatKhau),
+                    PasswordHash = khachHang != null ? khachHang.MatKhau : _khachHangPasswordHasher.HashPassword(new KhachHang(), model.MatKhau),
                     OtpSentAtUtc = nowUtc,
                     OtpExpiresAtUtc = nowUtc.AddMinutes(5),
                     IdKhachHang = idKhachHang
@@ -814,19 +817,27 @@ namespace SupportTicketSysterm.Controllers
                 try
                 {
                     string dbHash = nhanVien.MatKhau?.Trim() ?? "";
-                    if (dbHash.StartsWith("$2a$") || dbHash.StartsWith("$2b$") || dbHash.StartsWith("$2y$"))
+                    var result = _nhanVienPasswordHasher.VerifyHashedPassword(nhanVien, dbHash, matKhau);
+                    if (result == PasswordVerificationResult.Success || result == PasswordVerificationResult.SuccessRehashNeeded)
                     {
-                        dungMatKhau = BCrypt.Net.BCrypt.Verify(matKhau, dbHash);
+                        dungMatKhau = true;
+                        if (result == PasswordVerificationResult.SuccessRehashNeeded)
+                        {
+                            nhanVien.MatKhau = _nhanVienPasswordHasher.HashPassword(nhanVien, matKhau);
+                            await _context.SaveChangesAsync();
+                        }
                     }
-                    else
+                    else if (dbHash == matKhau)
                     {
-                        dungMatKhau = dbHash == matKhau;
+                        dungMatKhau = true;
+                        nhanVien.MatKhau = _nhanVienPasswordHasher.HashPassword(nhanVien, matKhau);
+                        await _context.SaveChangesAsync();
                     }
                     _logger.LogInformation("Kết quả xác thực mật khẩu nhân viên: {DungMatKhau}", dungMatKhau);
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, "Lỗi khi xác thực mật khẩu nhân viên. Sử dụng so sánh trực tiếp làm fallback.");
+                    _logger.LogError(ex, "Lỗi khi xác thực mật khẩu nhân viên.");
                     dungMatKhau = nhanVien.MatKhau == matKhau;
                 }
 
@@ -896,19 +907,27 @@ namespace SupportTicketSysterm.Controllers
                 try
                 {
                     string dbHash = khachHang.MatKhau?.Trim() ?? "";
-                    if (dbHash.StartsWith("$2a$") || dbHash.StartsWith("$2b$") || dbHash.StartsWith("$2y$"))
+                    var result = _khachHangPasswordHasher.VerifyHashedPassword(khachHang, dbHash, matKhau);
+                    if (result == PasswordVerificationResult.Success || result == PasswordVerificationResult.SuccessRehashNeeded)
                     {
-                        dungMatKhau = BCrypt.Net.BCrypt.Verify(matKhau, dbHash);
+                        dungMatKhau = true;
+                        if (result == PasswordVerificationResult.SuccessRehashNeeded)
+                        {
+                            khachHang.MatKhau = _khachHangPasswordHasher.HashPassword(khachHang, matKhau);
+                            await _context.SaveChangesAsync();
+                        }
                     }
-                    else
+                    else if (dbHash == matKhau)
                     {
-                        dungMatKhau = dbHash == matKhau;
+                        dungMatKhau = true;
+                        khachHang.MatKhau = _khachHangPasswordHasher.HashPassword(khachHang, matKhau);
+                        await _context.SaveChangesAsync();
                     }
                     _logger.LogInformation("Kết quả xác thực mật khẩu khách hàng: {DungMatKhau}", dungMatKhau);
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, "Lỗi khi xác thực mật khẩu khách hàng. Sử dụng so sánh trực tiếp làm fallback.");
+                    _logger.LogError(ex, "Lỗi khi xác thực mật khẩu khách hàng.");
                     dungMatKhau = khachHang.MatKhau == matKhau;
                 }
 

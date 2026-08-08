@@ -676,37 +676,57 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         // ============================================
-        // PHASE 2: Get AI response (slow, 3-10s)
+        // PHASE 2: Get AI response via POST /Chat/SendMessage
         // ============================================
-        const aiFormData = new FormData();
-        aiFormData.append('__RequestVerificationToken', token);
-        aiFormData.append('messageText', trimmedText);
-
-        fetch('/Chat/ChatAI_GetAiResponse', {
+        fetch('/Chat/SendMessage', {
             method: 'POST',
-            body: aiFormData
+            headers: {
+                'Content-Type': 'application/json',
+                'RequestVerificationToken': token
+            },
+            body: JSON.stringify({ message: trimmedText })
         })
         .then(res => {
-            if (res.ok) return res.text();
-            throw new Error("Lỗi phản hồi từ AI");
-        })
-        .then(aiBubbleHtml => {
-            // Hide typing indicator
-            hideTypingIndicator();
-
-            // Append ONLY the new AI bubble (no innerHTML replacement)
-            const tempContainer = document.createElement('div');
-            tempContainer.innerHTML = aiBubbleHtml.trim();
-
-            while (tempContainer.firstChild) {
-                const node = tempContainer.firstChild;
-                if (node.nodeType === Node.ELEMENT_NODE) {
-                    node.classList.add('optimistic-enter');
+            if (res.ok) {
+                const contentType = res.headers.get('content-type');
+                if (contentType && contentType.includes('application/json')) {
+                    return res.json();
+                } else {
+                    return res.text().then(txt => ({ success: true, message: txt, sender: "ai" }));
                 }
-                chatAiMessagesContainer.appendChild(node);
             }
+            throw new Error("Lỗi kết nối máy chủ AI");
+        })
+        .then(data => {
+            hideTypingIndicator();
+            if (data && data.success !== false) {
+                const aiContent = data.message || "Xin lỗi, hiện tại tôi chưa thể xử lý yêu cầu này.";
+                appendAiBubble(aiContent);
+                if (data.requiresLogin) {
+                    if (loginModal) loginModal.style.display = 'flex';
+                }
+            } else {
+                // Fallback to legacy partial view endpoint if JSON endpoint returns error
+                const aiFormData = new FormData();
+                aiFormData.append('__RequestVerificationToken', token);
+                aiFormData.append('messageText', trimmedText);
 
-            scrollContainerToBottom(chatAiMessagesContainer);
+                return fetch('/Chat/ChatAI_GetAiResponse', {
+                    method: 'POST',
+                    body: aiFormData
+                })
+                .then(res => res.text())
+                .then(aiBubbleHtml => {
+                    const tempContainer = document.createElement('div');
+                    tempContainer.innerHTML = aiBubbleHtml.trim();
+                    while (tempContainer.firstChild) {
+                        const node = tempContainer.firstChild;
+                        if (node.nodeType === Node.ELEMENT_NODE) node.classList.add('optimistic-enter');
+                        chatAiMessagesContainer.appendChild(node);
+                    }
+                    scrollContainerToBottom(chatAiMessagesContainer);
+                });
+            }
             finishProcessing();
         })
         .catch(err => {
@@ -715,6 +735,42 @@ document.addEventListener('DOMContentLoaded', function() {
             appendErrorBubble();
             finishProcessing();
         });
+    }
+
+    // ==========================================
+    // HELPER: Append AI message bubble
+    // ==========================================
+    function appendAiBubble(content) {
+        if (!chatAiMessagesContainer) return;
+        const timeStr = getCurrentTime();
+        const formattedContent = formatMessageText(content);
+        const aiBubble = document.createElement('div');
+        aiBubble.className = 'optimistic-enter';
+        aiBubble.innerHTML = `
+            <div class="chat-message-row staff d-flex justify-content-start align-items-end gap-2 mb-2" style="width:100%;">
+                <div style="background:#D71920; width:34px; height:34px; border-radius:50%; display:grid; place-items:center; font-size:0.85rem; color:#fff; flex-shrink:0; box-shadow: 0 2px 8px rgba(215,25,32,0.25);">
+                    <i class="bi bi-robot fs-6"></i>
+                </div>
+                <div style="width:fit-content !important; max-width:78% !important; display:flex !important; flex-direction:column !important; align-items:flex-start !important;">
+                    <div style="background-color:#FFFFFF !important; color:#1E293B !important; border:1px solid #ECECEC !important; border-radius:20px 20px 20px 4px !important; padding:10px 16px !important; font-size:0.92rem !important; line-height:1.5 !important; display:inline-block !important; width:fit-content !important; height:auto !important; max-width:100% !important; word-break:break-word !important; white-space:pre-wrap !important; overflow-wrap:anywhere !important; box-shadow:0 3px 12px rgba(0,0,0,0.06) !important; box-sizing:border-box !important;">
+                        ${formattedContent}
+                    </div>
+                    <div style="font-size:11.5px; color:#94A3B8; margin-top:4px; margin-left:4px;">${timeStr}</div>
+                </div>
+            </div>
+        `;
+        chatAiMessagesContainer.appendChild(aiBubble);
+        scrollContainerToBottom(chatAiMessagesContainer);
+    }
+
+    function formatMessageText(str) {
+        if (!str) return '';
+        let escaped = escapeHtml(str);
+        escaped = escaped.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        escaped = escaped.replace(/\n/g, '<br>');
+        escaped = escaped.replace(/\[\s*Đăng nhập\s*\]/gi, '<a href="/Auth/DangNhap" class="btn btn-sm btn-danger rounded-pill px-3 py-1 my-1 fw-bold text-decoration-none d-inline-block"><i class="bi bi-box-arrow-in-right me-1"></i> Đăng nhập</a>');
+        escaped = escaped.replace(/\[\s*Tạo phiếu hỗ trợ\s*\]/gi, '<a href="/Ticket/TaoPhieu" class="btn btn-sm btn-danger rounded-pill px-3 py-1 my-1 fw-bold text-decoration-none d-inline-block"><i class="bi bi-plus-circle me-1"></i> Tạo phiếu hỗ trợ</a>');
+        return escaped;
     }
 
     // ==========================================
@@ -742,18 +798,23 @@ document.addEventListener('DOMContentLoaded', function() {
     // ==========================================
     // HELPER: Append error bubble (not alert)
     // ==========================================
-    function appendErrorBubble() {
+    function appendErrorBubble(customMsg) {
         const errorBubble = document.createElement('div');
         errorBubble.className = 'optimistic-enter';
+        const msg = customMsg || 'Xin lỗi, hệ thống AI đang tạm thời không phản hồi. Bạn có thể thử lại sau hoặc liên hệ nhân viên hỗ trợ.';
         errorBubble.innerHTML = `
             <div class="chat-message-row staff d-flex justify-content-start align-items-end gap-2 mb-2" style="width:100%;">
                 <div style="background:#F59E0B; width:34px; height:34px; border-radius:50%; display:grid; place-items:center; font-size:0.78rem; color:#fff; flex-shrink:0;">
                     <i class="bi bi-robot fs-6"></i>
                 </div>
-                <div style="width:fit-content !important; max-width:75% !important; display:flex !important; flex-direction:column !important; align-items:flex-start !important;">
+                <div style="width:fit-content !important; max-width:78% !important; display:flex !important; flex-direction:column !important; align-items:flex-start !important;">
                     <div style="background-color:#FFF6E8 !important; color:#1E293B !important; border:1px solid #FDE68A !important; border-radius:20px 20px 20px 4px !important; padding:10px 16px !important; font-size:0.92rem !important; line-height:1.45 !important; display:inline-block !important; width:fit-content !important; height:auto !important; max-width:100% !important; word-break:break-word !important; white-space:pre-wrap !important; overflow-wrap:anywhere !important; box-sizing:border-box !important;">
                         <i class="bi bi-exclamation-triangle-fill me-1"></i>
-                        Xin lỗi, hệ thống đang bận. Vui lòng thử lại sau.
+                        ${escapeHtml(msg)}
+                        <div class="mt-2 pt-2 border-top border-warning border-opacity-25 d-flex gap-2">
+                            <button class="btn btn-xs btn-outline-warning text-dark py-1 px-2 rounded-pill" onclick="document.getElementById('btnAiSend').click();">🔄 Thử lại</button>
+                            <button class="btn btn-xs btn-outline-secondary py-1 px-2 rounded-pill" onclick="document.getElementById('btnGoStaffChat') ? document.getElementById('btnGoStaffChat').click() : null;">🎧 Liên hệ nhân viên</button>
+                        </div>
                     </div>
                     <div style="font-size:12px; color:#94A3B8; margin-top:4px;">${getCurrentTime()}</div>
                 </div>
@@ -791,6 +852,74 @@ document.addEventListener('DOMContentLoaded', function() {
             if (sendBtn) {
                 sendBtn.click();
             }
+        }
+    };
+
+    // ==========================================
+    // 11. CONFIRM TICKET CREATION HELPER
+    // ==========================================
+    window.confirmCreateTicket = function(btn, title, categoryId, serviceId, address, content) {
+        if (!config.isLoggedIn) {
+            if (loginModal) loginModal.style.display = 'flex';
+            return;
+        }
+
+        const cardContainer = btn.closest('.ai-confirm-ticket-card');
+        btn.disabled = true;
+        btn.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span>Đang tạo...`;
+
+        fetch('/api/ticket/create-ai', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                title: title,
+                categoryId: categoryId,
+                serviceId: serviceId,
+                address: address,
+                content: content
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                if (cardContainer) {
+                    cardContainer.innerHTML = `
+                        <div class="alert alert-success m-0 rounded-4 border-0 shadow-sm p-3" style="border-left: 4px solid #198754 !important; background-color: #f0fdf4;">
+                            <h6 class="fw-bold mb-2 text-success" style="font-size:0.95rem;">
+                                <i class="bi bi-check-circle-fill me-2"></i>PHIẾU HỖ TRỢ CỦA BẠN ĐÃ ĐƯỢC TẠO THÀNH CÔNG!
+                            </h6>
+                            <div class="small text-dark" style="font-size:0.85rem; line-height:1.6;">
+                                <div>• <strong>Mã phiếu:</strong> <span class="badge bg-danger text-white fw-bold px-2 py-1">${data.maPhieu}</span></div>
+                                <div>• <strong>Trạng thái:</strong> <span class="badge bg-warning-subtle text-dark fw-bold px-2 py-1">${data.trangThai}</span></div>
+                                <div>• <strong>Dịch vụ:</strong> ${data.tenDichVu}</div>
+                                <div>• <strong>Kỹ thuật viên:</strong> ${data.tenKtv}</div>
+                                <div class="mt-2 text-muted">Hệ thống sẽ tự động phân công kỹ thuật viên phù hợp và thông báo khi có cập nhật.</div>
+                            </div>
+                        </div>
+                    `;
+                }
+            } else {
+                btn.disabled = false;
+                btn.innerHTML = `<i class="bi bi-check-circle-fill me-1"></i> Tạo phiếu hỗ trợ`;
+                alert(data.message || "Lỗi khi tạo phiếu hỗ trợ.");
+            }
+        })
+        .catch(err => {
+            btn.disabled = false;
+            btn.innerHTML = `<i class="bi bi-check-circle-fill me-1"></i> Tạo phiếu hỗ trợ`;
+            console.error(err);
+            alert("Lỗi kết nối khi tạo phiếu.");
+        });
+    };
+
+    window.cancelConfirmTicket = function(btn) {
+        const cardContainer = btn.closest('.ai-confirm-ticket-card');
+        if (cardContainer) {
+            cardContainer.innerHTML = `
+                <div class="alert alert-secondary m-0 rounded-4 border-0 p-2 small text-muted">
+                    <i class="bi bi-info-circle me-1"></i> Đã hủy yêu cầu tạo phiếu hỗ trợ. Bạn có thể tiếp tục hỏi hoặc chọn dịch vụ khác.
+                </div>
+            `;
         }
     };
 });

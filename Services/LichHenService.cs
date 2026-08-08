@@ -494,11 +494,15 @@ public class LichHenService : ILichHenService
         if (lichHen.TrangThai == "DaHuy" || lichHen.TrangThai == "Đã hủy")
             throw new InvalidOperationException("Không thể hoàn thành lịch hẹn đã bị hủy.");
 
-        // Ràng buộc quy trình: Bắt buộc phải Đang thực hiện mới được Hoàn thành
-        if (lichHen.TrangThai != "DangThucHien" && lichHen.TrangThai != "Đang thực hiện" &&
-            lichHen.TrangThaiLich != "DangThucHien" && lichHen.TrangThaiLich != "Đang thực hiện")
+        // Ràng buộc quy trình: Phải ở trạng thái Đã xác nhận hoặc Đang thực hiện mới được Hoàn thành
+        var allowedStatuses = new[] { "DangThucHien", "Đang thực hiện", "DaXacNhan", "Đã xác nhận" };
+        bool statusOk = allowedStatuses.Any(s =>
+            string.Equals(lichHen.TrangThai, s, StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(lichHen.TrangThaiLich, s, StringComparison.OrdinalIgnoreCase));
+
+        if (!statusOk)
         {
-            throw new InvalidOperationException("Lịch hẹn chưa được chuyển sang trạng thái \"Đang thực hiện\".");
+            throw new InvalidOperationException($"Không thể hoàn thành lịch hẹn đang ở trạng thái \"{lichHen.TrangThai}\". Lịch hẹn phải ở trạng thái \"Đã xác nhận\" hoặc \"Đang thực hiện\".");
         }
 
         DateOnly today = DateOnly.FromDateTime(DateTime.Today);
@@ -528,32 +532,76 @@ public class LichHenService : ILichHenService
 
             if (!string.IsNullOrWhiteSpace(ghiChuKetQua))
             {
-                lichHen.GhiChu = string.IsNullOrWhiteSpace(lichHen.GhiChu) 
+                string combinedGhiChu = string.IsNullOrWhiteSpace(lichHen.GhiChu) 
                     ? ghiChuKetQua 
                     : $"{lichHen.GhiChu}\n[Ghi chú kết quả]: {ghiChuKetQua}";
+
+                if (combinedGhiChu.Length > 500)
+                {
+                    combinedGhiChu = combinedGhiChu.Substring(0, 497) + "...";
+                }
+                lichHen.GhiChu = combinedGhiChu;
             }
 
-            if (lichHen.IdPhieuNavigation != null)
+            // Đảm bảo lấy và cập nhật đúng Phiếu hỗ trợ
+            var phieu = lichHen.IdPhieuNavigation;
+            if (phieu == null && lichHen.IdPhieu.HasValue)
             {
-                lichHen.IdPhieuNavigation.TrangThai = "Hoàn thành";
-                lichHen.IdPhieuNavigation.NgayCapNhat = DateOnly.FromDateTime(DateTime.Now);
+                phieu = await _context.PhieuHoTros.FirstOrDefaultAsync(p => p.IdPhieu == lichHen.IdPhieu.Value);
+            }
+
+            if (phieu != null)
+            {
+                phieu.TrangThai = "Hoàn thành";
+                phieu.NgayCapNhat = DateOnly.FromDateTime(DateTime.Now);
+            }
+
+            // Kiểm tra FK hợp lệ cho IdNhanVien trong LichSuHoTro để tránh vi phạm FK constraint (IdNhanVien = 0)
+            int? validStaffIdForLog = null;
+            if (currentUserId > 0 && await _context.NhanViens.AnyAsync(n => n.IdNhanVien == currentUserId))
+            {
+                validStaffIdForLog = currentUserId;
+            }
+            else if (lichHen.IdNhanVien.HasValue && lichHen.IdNhanVien.Value > 0 && await _context.NhanViens.AnyAsync(n => n.IdNhanVien == lichHen.IdNhanVien.Value))
+            {
+                validStaffIdForLog = lichHen.IdNhanVien.Value;
+            }
+
+            string noiDungLog = string.IsNullOrWhiteSpace(ghiChuKetQua) 
+                ? $"Hoàn thành buổi lịch hẹn #{lichHen.IdLichHen}." 
+                : $"Hoàn thành buổi lịch hẹn #{lichHen.IdLichHen}. Kết quả: {ghiChuKetQua}";
+
+            if (noiDungLog.Length > 500)
+            {
+                noiDungLog = noiDungLog.Substring(0, 497) + "...";
             }
 
             var log = new LichSuHoTro
             {
                 IdPhieu = lichHen.IdPhieu,
-                IdNhanVien = currentUserId,
-                TrangThaiCu = oldStatus,
-                TrangThaiMoi = "HoanThanh",
-                NoiDungCapNhat = string.IsNullOrWhiteSpace(ghiChuKetQua) 
-                    ? $"Hoàn thành buổi lịch hẹn #{lichHen.IdLichHen}." 
-                    : $"Hoàn thành buổi lịch hẹn #{lichHen.IdLichHen}. Kết quả: {ghiChuKetQua}",
+                IdNhanVien = validStaffIdForLog,
+                TrangThaiCu = oldStatus.Length > 100 ? oldStatus.Substring(0, 100) : oldStatus,
+                TrangThaiMoi = "Hoàn thành",
+                NoiDungCapNhat = noiDungLog,
                 NgayCapNhat = DateOnly.FromDateTime(DateTime.Now)
             };
             _context.LichSuHoTros.Add(log);
 
             await _context.SaveChangesAsync();
             await transaction.CommitAsync();
+        }
+        catch (DbUpdateException dbEx)
+        {
+            await transaction.RollbackAsync();
+            var innerMsg = dbEx.InnerException?.Message ?? dbEx.Message;
+            Console.WriteLine($"[EF Core DbUpdateException in CompleteAppointmentAsync]: {innerMsg}");
+            throw new InvalidOperationException($"Lỗi lưu dữ liệu cơ sở dữ liệu: {innerMsg}", dbEx);
+        }
+        catch (Exception)
+        {
+            await transaction.RollbackAsync();
+            throw;
+        }
 
             if (lichHen.IdPhieuNavigation != null && _signalRService != null)
             {
@@ -579,12 +627,6 @@ public class LichHenService : ILichHenService
             }
 
             return lichHen;
-        }
-        catch
-        {
-            await transaction.RollbackAsync();
-            throw;
-        }
     }
 
     /// <summary>

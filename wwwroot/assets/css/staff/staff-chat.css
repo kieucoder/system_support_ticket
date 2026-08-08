@@ -1622,3 +1622,514 @@ body {
         pointer-events: auto;
     }
 }
+
+/* =========================================================================
+   ULTRA-PREMIUM OVERRIDES FOR LIVE SUPPORT CHAT (CUSTOMER & STAFF)
+   ========================================================================= */
+
+/* Floating Scroll To Bottom Button */
+#btnScrollToBottomCustomer,
+#btnScrollToBottomStaff,
+.btn-scroll-bottom {
+    position: absolute !important;
+    bottom: 90px !important;
+    right: 32px !important;
+    z-index: 99 !important;
+    width: 44px !important;
+    height: 44px !important;
+    border-radius: 50% !important;
+    background: #FFFFFF !important;
+    border: 1.5px solid #E2E8F0 !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15) !important;
+    color: #D71920 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 1.3rem !important;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    cursor: pointer !important;
+}
+
+#btnScrollToBottomCustomer:hover,
+#btnScrollToBottomStaff:hover,
+.btn-scroll-bottom:hover {
+    transform: translateY(-3px) scale(1.08) !important;
+    background: #D71920 !important;
+    color: #FFFFFF !important;
+    border-color: #D71920 !important;
+    box-shadow: 0 10px 28px rgba(215, 25, 32, 0.4) !important;
+}
+
+/* Send Button */
+.btn-chat-send {
+    width: 44px !important;
+    height: 44px !important;
+    min-width: 44px !important;
+    border-radius: 50% !important;
+    background: linear-gradient(135deg, #D71920 0%, #F43F5E 100%) !important;
+    color: #FFFFFF !important;
+    border: none !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-shadow: 0 4px 14px rgba(215, 25, 32, 0.35) !important;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    cursor: pointer !important;
+    margin-left: 8px !important;
+}
+
+.btn-chat-send:hover {
+    transform: translateY(-2px) scale(1.06) !important;
+    box-shadow: 0 6px 20px rgba(215, 25, 32, 0.5) !important;
+}
+
+.btn-chat-send i {
+    font-size: 1.1rem !important;
+}
+
+/* Outgoing (Customer) Bubble */
+.chat-message-row.outgoing .msg-bubble,
+.chat-message-item.viettel-bubble {
+    background: linear-gradient(135deg, #D71920 0%, #E53E3E 100%) !important;
+    color: #FFFFFF !important;
+    border-radius: 20px 20px 4px 20px !important;
+    padding: 13px 20px !important;
+    box-shadow: 0 4px 16px rgba(215, 25, 32, 0.22) !important;
+    font-size: 0.93rem !important;
+    line-height: 1.55 !important;
+    border: none !important;
+    word-break: break-word !important;
+}
+
+/* Incoming (Staff / AI) Bubble */
+.chat-message-row.incoming .msg-bubble {
+    background: #FFFFFF !important;
+    color: #0F172A !important;
+    border: 1px solid #E2E8F0 !important;
+    border-radius: 20px 20px 20px 4px !important;
+    padding: 13px 20px !important;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04) !important;
+    font-size: 0.93rem !important;
+    line-height: 1.55 !important;
+    word-break: break-word !important;
+}
+
+/* Avatars in Chat Messages */
+.chat-avatar.msg-avatar .rounded-circle {
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Left Conversation Cards */
+.conv-card {
+    padding: 14px 18px !important;
+    border-bottom: 1px solid #F1F5F9 !important;
+    transition: all 0.2s ease !important;
+    border-left: 4px solid transparent !important;
+}
+
+.conv-card:hover {
+    background: linear-gradient(135deg, rgba(215, 25, 32, 0.02) 0%, rgba(215, 25, 32, 0.06) 100%) !important;
+}
+
+.conv-card.active {
+    background: #FEF2F2 !important;
+    border-left: 4px solid #D71920 !important;
+}
+
+/* Input Bar Container */
+.chat-input-container {
+    background: #FFFFFF !important;
+    border-top: 1px solid #E2E8F0 !important;
+    padding: 14px 20px !important;
+    position: relative !important;
+}
+
+.chat-input-bar {
+    display: flex !important;
+    align-items: center !important;
+    background: #F8FAFC !important;
+    border: 1.5px solid #E2E8F0 !important;
+    border-radius: 28px !important;
+    padding: 6px 10px 6px 16px !important;
+    transition: all 0.2s ease !important;
+}
+
+.chat-input-bar:focus-within {
+    background: #FFFFFF !important;
+    border-color: #D71920 !important;
+    box-shadow: 0 0 0 3.5px rgba(215, 25, 32, 0.12) !important;
+}
+
+.chat-textarea {
+    border: none !important;
+    outline: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    font-size: 0.92rem !important;
+    color: #0F172A !important;
+    resize: none !important;
+    width: 100% !important;
+}
+
+.chat-textarea:focus {
+    box-shadow: none !important;
+    border: none !important;
+    outline: none !important;
+}
+
+/* Date Separators */
+.chat-date-pill {
+    background: #FFFFFF !important;
+    color: #64748B !important;
+    border: 1px solid #E2E8F0 !important;
+    font-size: 0.75rem !important;
+    font-weight: 600 !important;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.03) !important;
+}
+
+/* Technician Avatar Icon Centering Fix */
+.header-avatar, .avatar-circle, .avatar-img-circle, .technician-avatar-circle {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    border-radius: 50% !important;
+    overflow: hidden !important;
+    flex-shrink: 0 !important;
+}
+
+.header-avatar i, .avatar-circle i, .avatar-img-circle i, .technician-avatar-circle i {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    line-height: 1 !important;
+    width: auto !important;
+    height: auto !important;
+}
+
+/* =========================================================================
+   SAAS HELPDESK DESIGN SYSTEM (ZENDESK / INTERCOM / VIETTEL TELECOM)
+   ========================================================================= */
+:root {
+    --vt-primary: #E60012;
+    --vt-secondary: #FF4D4F;
+    --vt-bg-light: #F7F8FC;
+    --vt-card-bg: #FFFFFF;
+    --vt-border: #ECECEC;
+    --vt-success: #22C55E;
+    --vt-warning: #F59E0B;
+    --vt-card-radius: 20px;
+    --vt-btn-radius: 14px;
+    --vt-msg-radius: 18px;
+    --vt-input-radius: 30px;
+    --vt-shadow: 0 12px 40px rgba(0,0,0,0.08);
+    --vt-shadow-hover: 0 20px 50px rgba(0,0,0,0.12);
+}
+
+/* Glassmorphism Quick Stats */
+.glass-stat-card {
+    background: rgba(255, 255, 255, 0.85) !important;
+    backdrop-filter: blur(16px) !important;
+    -webkit-backdrop-filter: blur(16px) !important;
+    border: 1px solid rgba(230, 0, 18, 0.12) !important;
+    border-radius: 20px !important;
+    box-shadow: var(--vt-shadow) !important;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.glass-stat-card:hover {
+    transform: translateY(-5px) !important;
+    box-shadow: var(--vt-shadow-hover) !important;
+    border-color: rgba(230, 0, 18, 0.3) !important;
+}
+
+/* Card Styling */
+.saas-card {
+    background: #FFFFFF !important;
+    border: 1px solid var(--vt-border) !important;
+    border-radius: var(--vt-card-radius) !important;
+    box-shadow: var(--vt-shadow) !important;
+    transition: all 0.25s ease !important;
+}
+
+.saas-card:hover {
+    box-shadow: var(--vt-shadow-hover) !important;
+}
+
+/* Message Bubble Animation */
+@keyframes messageSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-message-appear {
+    animation: messageSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Ripple Send Button Effect */
+.btn-ripple-send {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-ripple-send:hover {
+    transform: scale(1.06);
+    box-shadow: 0 8px 20px rgba(230, 0, 18, 0.35) !important;
+}
+
+.btn-ripple-send:active {
+    transform: scale(0.95);
+}
+
+/* Conversation List Active / Hover Styles */
+.conv-card-saas {
+    border-radius: 14px !important;
+    margin-bottom: 6px !important;
+    transition: all 0.2s ease !important;
+    border: 1px solid transparent !important;
+}
+
+.conv-card-saas:hover {
+    background-color: #FFF5F5 !important;
+    border-color: #FEE2E2 !important;
+}
+
+.conv-card-saas.active {
+    background-color: #FFFFFF !important;
+    border-left: 4px solid var(--vt-primary) !important;
+    border-color: #ECECEC #ECECEC #ECECEC var(--vt-primary) !important;
+    box-shadow: 0 4px 14px rgba(230, 0, 18, 0.08) !important;
+}
+
+/* Pattern Background for Main Chat Pane */
+.saas-chat-stream {
+    background-color: #FAFAFA !important;
+    background-image: radial-gradient(#E2E8F0 0.8px, transparent 0.8px) !important;
+    background-size: 16px 16px !important;
+}
+
+/* Quick Action Top Bar Buttons */
+.saas-action-icon-btn {
+    width: 38px !important;
+    height: 38px !important;
+    border-radius: 50% !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: #F8FAFC !important;
+    color: #475569 !important;
+    border: 1px solid #E2E8F0 !important;
+    transition: all 0.2s ease !important;
+    line-height: 1 !important;
+    padding: 0 !important;
+}
+
+.saas-action-icon-btn:hover {
+    background: #FEF2F2 !important;
+    color: var(--vt-primary) !important;
+    border-color: #FCA5A5 !important;
+    transform: translateY(-2px);
+}
+
+/* =========================================================================
+   UNIVERSAL ICON ALIGNMENT & CENTERING FIXES
+   ========================================================================= */
+.saas-action-icon-btn i,
+.technician-avatar-circle i,
+.avatar-circle i,
+.avatar-img-circle i,
+.chat-send-btn i,
+.chat-toolbar-group button i,
+.glass-stat-card i {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    line-height: 1 !important;
+    vertical-align: middle !important;
+}
+
+.chat-send-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    line-height: 1 !important;
+    padding: 0 !important;
+}
+
+.chat-send-btn i {
+    transform: translate(1px, 0px) !important;
+}
+
+.chat-toolbar-group {
+    display: flex !important;
+    align-items: center !important;
+}
+
+.chat-toolbar-group button {
+    width: 36px !important;
+    height: 36px !important;
+    min-width: 36px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    line-height: 1 !important;
+}
+
+h6 i.bi, h5 i.bi, span i.bi {
+    display: inline-flex !important;
+    align-items: center !important;
+    vertical-align: -0.1em !important;
+}
+
+/* =========================================================================
+   FULL RESPONSIVE MEDIA QUERIES (MOBILE, TABLET, LAPTOP, DESKTOP)
+   ========================================================================= */
+
+/* Mobile Drawer Backdrop Overlay */
+#chatDarkOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(15, 23, 42, 0.5);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 1040;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+#chatDarkOverlay.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Tablet & Mobile Breakpoints (< 992px) */
+@media (max-width: 991.98px) {
+    .live-chat-workspace {
+        padding-left: 12px !important;
+        padding-right: 12px !important;
+    }
+
+    .live-chat-container .row {
+        height: 600px !important;
+    }
+    
+    #customerSidebarList {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        bottom: 0 !important;
+        width: 320px !important;
+        max-width: 85vw !important;
+        z-index: 1050 !important;
+        background: #FFFFFF !important;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.25) !important;
+        transform: translateX(-100%);
+        transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        border-right: none !important;
+    }
+    
+    #customerSidebarList.show-mobile {
+        transform: translateX(0) !important;
+    }
+    
+    .chat-main-pane {
+        width: 100% !important;
+        flex: 0 0 100% !important;
+        max-width: 100% !important;
+    }
+    
+    .chat-pane-header {
+        padding: 10px 14px !important;
+    }
+
+    .glass-stat-card {
+        flex: 1 1 calc(50% - 0.75rem);
+    }
+}
+
+/* Small Tablets & Mobile Devices (< 768px) */
+@media (max-width: 767.98px) {
+    .live-chat-container .row {
+        height: 560px !important;
+    }
+
+    .chat-message-wrapper {
+        max-width: 82% !important;
+    }
+
+    .chat-input-capsule {
+        min-height: 52px !important;
+    }
+
+    .chat-header-actions .status-card-badge {
+        display: none !important;
+    }
+}
+
+/* Phones & Small Mobile Screens (< 576px) */
+@media (max-width: 575.98px) {
+    .live-chat-workspace {
+        padding-left: 6px !important;
+        padding-right: 6px !important;
+    }
+
+    .live-chat-container {
+        border-radius: 16px !important;
+    }
+
+    .live-chat-container .row {
+        height: 520px !important;
+    }
+
+    .glass-stat-card {
+        flex: 1 1 100%;
+    }
+
+    .chat-header-actions .saas-action-icon-btn {
+        width: 32px !important;
+        height: 32px !important;
+    }
+
+    .chat-input-capsule {
+        padding: 4px 8px !important;
+        min-height: 48px !important;
+        border-radius: 24px !important;
+    }
+
+    .chat-send-btn {
+        width: 42px !important;
+        height: 42px !important;
+    }
+
+    .chat-message-wrapper {
+        max-width: 88% !important;
+    }
+
+    .chat-message-item {
+        font-size: 0.88rem !important;
+        padding: 9px 14px !important;
+        border-radius: 16px 16px 4px 16px !important;
+    }
+
+    .chat-pane-header h6 {
+        font-size: 0.88rem !important;
+    }
+}
+

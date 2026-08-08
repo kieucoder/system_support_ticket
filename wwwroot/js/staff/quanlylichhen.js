@@ -40,16 +40,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
     tableRows.forEach(row => {
         row.addEventListener("click", function (e) {
-            // If click was inside action menu dropdown, skip opening drawer
-            if (e.target.closest(".dropdown") || e.target.closest("button")) {
+            // If click was inside action menu dropdown or button/link, skip row navigation
+            if (e.target.closest(".dropdown") || e.target.closest("button") || e.target.closest("a")) {
                 return;
             }
 
-            tableRows.forEach(r => r.classList.remove("is-selected-row"));
-            this.classList.add("is-selected-row");
-
-            populateDrawerFromRow(this);
-            openDrawer();
+            const apptId = this.getAttribute("data-id");
+            if (apptId) {
+                window.location.href = "/Staff/ChiTietLichHen/" + apptId;
+            }
         });
     });
 
@@ -57,10 +56,8 @@ document.addEventListener("DOMContentLoaded", function () {
     document.querySelectorAll(".timeline-hour-step[data-id]").forEach(node => {
         node.addEventListener("click", function () {
             const apptId = this.getAttribute("data-id");
-            const targetRow = document.querySelector(`tbody tr[data-id="${apptId}"]`);
-            if (targetRow) {
-                targetRow.click();
-                targetRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            if (apptId) {
+                window.location.href = "/Staff/ChiTietLichHen/" + apptId;
             }
         });
     });
@@ -130,6 +127,57 @@ document.addEventListener("DOMContentLoaded", function () {
         document.querySelectorAll("input[name='id']").forEach(input => {
             input.value = id;
         });
+
+        // Dynamic Actions in Drawer based on appointment status
+        const actionsContainer = document.getElementById("dw-actions-container");
+        if (actionsContainer) {
+            let actionsHtml = "";
+
+            if (status === "Chờ xác nhận") {
+                actionsHtml += `
+                    <form method="post" action="/Staff/XacNhanLich" class="w-100 mb-2">
+                        <input type="hidden" name="id" value="${id}" />
+                        <button type="submit" class="btn btn-primary w-100 rounded-3 py-2 fw-bold">
+                            <i class="bi bi-calendar-check-fill me-1"></i> Xác nhận lịch
+                        </button>
+                    </form>`;
+            } else if (status === "Đã xác nhận") {
+                actionsHtml += `
+                    <form method="post" action="/Staff/BatDauHoTro" class="w-100 mb-2">
+                        <input type="hidden" name="id" value="${id}" />
+                        <button type="submit" class="btn btn-info text-white w-100 rounded-3 py-2 fw-bold">
+                            <i class="bi bi-play-circle-fill me-1"></i> Bắt đầu hỗ trợ
+                        </button>
+                    </form>`;
+            } else if (status === "Đang thực hiện") {
+                actionsHtml += `
+                    <button type="button" class="btn btn-success w-100 rounded-3 py-2 fw-bold mb-2" data-bs-toggle="modal" data-bs-target="#completeApptModal" onclick="prepareCompleteModal('${id}', '${code}')">
+                        <i class="bi bi-check-circle-fill me-1"></i> Hoàn thành hỗ trợ
+                    </button>`;
+            }
+
+            if (status !== "Hoàn thành" && status !== "Đã hủy") {
+                actionsHtml += `
+                    <div class="d-flex gap-2 w-100">
+                        <button type="button" class="btn btn-outline-primary btn-sm flex-fill rounded-3 py-2 fw-semibold" data-bs-toggle="modal" data-bs-target="#editTimeModal">
+                            <i class="bi bi-clock-history me-1"></i> Đổi giờ
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary btn-sm flex-fill rounded-3 py-2 fw-semibold" data-bs-toggle="modal" data-bs-target="#transferTechModal">
+                            <i class="bi bi-person-gear me-1"></i> Đổi KTV
+                        </button>
+                        <button type="button" class="btn btn-outline-danger btn-sm flex-fill rounded-3 py-2 fw-semibold" data-bs-toggle="modal" data-bs-target="#cancelModal">
+                            <i class="bi bi-x-circle-fill me-1"></i> Hủy lịch
+                        </button>
+                    </div>`;
+            } else {
+                actionsHtml += `
+                    <div class="alert alert-secondary border-0 mb-0 small text-muted text-center rounded-3 py-2">
+                        <i class="bi bi-info-circle me-1"></i> Lịch hẹn này đã <strong>${status}</strong>, không thể thao tác thêm.
+                    </div>`;
+            }
+
+            actionsContainer.innerHTML = actionsHtml;
+        }
     }
 
     function setText(elemId, value) {

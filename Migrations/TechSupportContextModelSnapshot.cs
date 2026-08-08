@@ -534,23 +534,38 @@ namespace SupportTicketSysterm.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdOtp"));
 
-                    b.Property<DateTime>("HanSuDung")
-                        .HasColumnType("datetime")
+                    b.Property<bool>("DaSuDung")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false)
+                        .HasColumnName("DaSuDung");
+
+                    b.Property<DateTime?>("HanSuDung")
+                        .HasColumnType("datetime2")
                         .HasColumnName("HanSuDung");
 
                     b.Property<int>("IdKhachHang")
                         .HasColumnType("int")
                         .HasColumnName("IdKhachHang");
 
-                    b.Property<string>("Otp")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(50)")
-                        .HasColumnName("OTP");
+                    b.Property<string>("LoaiOTP")
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)")
+                        .HasColumnName("LoaiOTP");
 
-                    b.Property<DateTime>("ThoiGianTao")
-                        .HasColumnType("datetime")
+                    b.Property<string>("MaOTPBam")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasColumnName("MaOTPBam");
+
+                    b.Property<int>("SoLanNhapSai")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0)
+                        .HasColumnName("SoLanNhapSai");
+
+                    b.Property<DateTime?>("ThoiGianTao")
+                        .HasColumnType("datetime2")
                         .HasColumnName("ThoiGianTao");
 
                     b.HasKey("IdOtp")
@@ -593,33 +608,6 @@ namespace SupportTicketSysterm.Migrations
                     b.HasIndex("IdLienHe");
 
                     b.ToTable("TinNhan", (string)null);
-                });
-
-            modelBuilder.Entity("SupportTicketSysterm.Models.ChatMessage", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("IdKhachHang")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Message")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Role")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ChatMessages", (string)null);
                 });
 
             modelBuilder.Entity("SupportTicketSysterm.Data.DanhGium", b =>

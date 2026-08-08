@@ -4,6 +4,7 @@ using SupportTicketSysterm.Data;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 
 namespace SupportTicketSysterm.Services
 {
@@ -13,17 +14,20 @@ namespace SupportTicketSysterm.Services
         private readonly IOtpService _otpService;
         private readonly IEmailService _emailService;
         private readonly ILogger<AuthService> _logger;
+        private readonly IPasswordHasher<KhachHang> _khachHangPasswordHasher;
 
         public AuthService(
             TechSupportContext context,
             IOtpService otpService,
             IEmailService emailService,
-            ILogger<AuthService> logger)
+            ILogger<AuthService> logger,
+            IPasswordHasher<KhachHang> khachHangPasswordHasher)
         {
             _context = context;
             _otpService = otpService;
             _emailService = emailService;
             _logger = logger;
+            _khachHangPasswordHasher = khachHangPasswordHasher;
         }
 
         public async Task<(bool Success, string Message)> ForgotPasswordAsync(string email, string? ipAddress)
@@ -51,19 +55,19 @@ namespace SupportTicketSysterm.Services
                     return (false, $"Vui lòng chờ {remainingSeconds} giây trước khi gửi lại OTP.");
                 }
 
-                // Generate and Save OTP
+                // Generate and Save OTP với loại "QuenMatKhau"
                 var otp = await _otpService.GenerateOtpAsync();
-                var saved = await _otpService.SaveOtpAsync(khachHang.IdKhachHang, otp);
+                var saved = await _otpService.SaveOtpAsync(khachHang.IdKhachHang, otp, "QuenMatKhau");
 
                 if (!saved)
                 {
                     return (false, "Lỗi hệ thống khi lưu mã OTP. Vui lòng thử lại.");
                 }
 
-                _logger.LogInformation("Đã sinh mã OTP thành công cho email {Email} (IdKhachHang={IdKhachHang})",
+                _logger.LogInformation("Đã sinh mã OTP băm thành công cho Quên mật khẩu email {Email} (IdKhachHang={IdKhachHang})",
                     cleanEmail, khachHang.IdKhachHang);
 
-                // Send email via service
+                // Send email via service (5 phút)
                 try
                 {
                     await _emailService.SendForgotPasswordEmailAsync(cleanEmail, khachHang.HoTen ?? "Khách hàng", otp, "5 phút");
@@ -72,7 +76,7 @@ namespace SupportTicketSysterm.Services
                 catch (Exception ex)
                 {
                     _logger.LogError(ex, "Lỗi gửi email chứa OTP tới {Email}", cleanEmail);
-                    await _otpService.DeletePreviousOtpAsync(khachHang.IdKhachHang);
+                    await _otpService.InvalidatePreviousOtpAsync(khachHang.IdKhachHang, "QuenMatKhau");
                     return (false, "Không thể gửi email chứa mã OTP. Vui lòng kiểm tra lại cấu hình SMTP.");
                 }
 
@@ -92,7 +96,6 @@ namespace SupportTicketSysterm.Services
                 var cleanEmail = email.Trim().ToLower();
                 var cleanOtp = otpCode.Trim();
 
-                // Tìm KhachHang để lấy IdKhachHang
                 var khachHang = await _context.KhachHangs
                     .FirstOrDefaultAsync(x => x.Email != null && x.Email.ToLower() == cleanEmail);
 
@@ -101,25 +104,14 @@ namespace SupportTicketSysterm.Services
                     return (false, "Tài khoản không tồn tại.");
                 }
 
-                // Lọc OTP theo IdKhachHang + OTP
-                var otpRecord = await _context.TaiKhoanOtps
-                    .Where(o => o.IdKhachHang == khachHang.IdKhachHang
-                             && o.Otp == cleanOtp
-                             && o.HanSuDung > DateTime.Now)
-                    .OrderByDescending(o => o.ThoiGianTao)
-                    .FirstOrDefaultAsync();
-
-                if (otpRecord == null)
-                {
-                    return (false, "Mã OTP không chính xác.");
-                }
-
-                return (true, "Xác minh OTP thành công.");
+                // Xác thực OTP loại "QuenMatKhau"
+                var result = await _otpService.ValidateOtpAsync(khachHang.IdKhachHang, cleanOtp, "QuenMatKhau");
+                return result;
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Lỗi khi xác thực OTP cho email {Email}", email);
-                return (false, "Đã xảy ra lỗi hệ thống khi xác thực.");
+                return (false, "Đã xảy ra lỗi hệ thống khi xác thực mã OTP.");
             }
         }
 
@@ -138,24 +130,29 @@ namespace SupportTicketSysterm.Services
                     return (false, "Tài khoản không tồn tại.");
                 }
 
-                // 2. Verify OTP lại
-                var otpRecord = await _context.TaiKhoanOtps
+                // 2. Kiểm tra lại OTP đã được xác minh trước đó (DaSuDung = true, loại QuenMatKhau, khớp Hash, trong vòng 15 phút)
+                var hashedInput = _otpService.HashOtp(cleanOtp);
+                var fifteenMinsAgo = DateTime.Now.AddMinutes(-15);
+
+                var verifiedOtpRecord = await _context.TaiKhoanOtps
                     .Where(o => o.IdKhachHang == khachHang.IdKhachHang
-                             && o.Otp == cleanOtp
-                             && o.HanSuDung > DateTime.Now)
+                             && o.LoaiOTP == "QuenMatKhau"
+                             && o.MaOTPBam == hashedInput
+                             && o.DaSuDung
+                             && o.ThoiGianTao >= fifteenMinsAgo)
                     .OrderByDescending(o => o.ThoiGianTao)
                     .FirstOrDefaultAsync();
 
-                if (otpRecord == null)
+                if (verifiedOtpRecord == null)
                 {
-                    return (false, "Mã OTP không chính xác.");
+                    return (false, "Xác minh OTP hết hạn hoặc không hợp lệ. Vui lòng thực hiện lại quy trình Quên mật khẩu.");
                 }
 
-                // 3. Update Password (BCrypt hash)
-                khachHang.MatKhau = BCrypt.Net.BCrypt.HashPassword(newPassword);
-                
-                // 4. Clean up all OTPs for this customer
-                await _otpService.DeletePreviousOtpAsync(khachHang.IdKhachHang);
+                // 3. Update Password (ASP.NET Core Identity PasswordHasher)
+                khachHang.MatKhau = _khachHangPasswordHasher.HashPassword(khachHang, newPassword);
+
+                // 4. Invalidate all OTPs for this customer
+                await _otpService.InvalidatePreviousOtpAsync(khachHang.IdKhachHang, "QuenMatKhau");
 
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();

@@ -39,6 +39,9 @@
         <link rel="stylesheet" href="~/assets/css/header.css">
         <link rel="stylesheet" href="~/assets/css/sidebar.css">
         <link rel="stylesheet" href="~/assets/css/footer.css">
+        <link rel="stylesheet" href="~/assets/css/issue-category.css" asp-append-version="true" />
+        <link rel="stylesheet" href="~/assets/css/phieu-cuatoi.css" asp-append-version="true" />
+        <link rel="stylesheet" href="~/assets/css/live-support.css" asp-append-version="true" />
     }
     else
     {
@@ -54,43 +57,206 @@
     <!-- ═══════════════════════════════════════════════════
          CUSTOMER LAYOUT
     ═══════════════════════════════════════════════════ -->
-    <body class="customer-chat-body">
+    <body class="customer-chat-body bg-light">
     @await Html.PartialAsync("_Header", Context.Session)
     @await Html.PartialAsync("_Sidebar")
 
-    <div class="main-content-wrapper pt-3 pb-4">
-        <div class="container-fluid px-3 px-md-4">
-            <div class="chat-layout-wrapper card border-0 rounded-4 shadow-sm overflow-hidden" style="height: calc(100vh - 140px);">
-                <div class="d-flex h-100 position-relative w-100">
+    <!-- ==================== HERO SECTION ==================== -->
+    <section class="hero-section py-4" style="background: linear-gradient(180deg, #FFF5F7 0%, #FFFFFF 100%);">
+        <div class="container hero-content">
+            <div class="row align-items-center g-4">
+                <!-- LEFT: Text & Metadata -->
+                <div class="col-lg-7 col-12 text-start hero-text-col animate-fade-up">
+                    <!-- Breadcrumb Navigation -->
+                    <nav aria-label="breadcrumb" class="hero-breadcrumb mb-2">
+                        <ol class="breadcrumb m-0">
+                            <li class="breadcrumb-item">
+                                <a href="/" class="text-decoration-none d-inline-flex align-items-center text-muted">
+                                    <i class="fa-solid fa-house-door-fill me-1"></i> Trang chủ
+                                </a>
+                            </li>
+                            <li class="breadcrumb-item text-muted">Hỗ trợ kỹ thuật</li>
+                            <li class="breadcrumb-item active text-danger fw-semibold" aria-current="page">Trò chuyện trực tuyến</li>
+                        </ol>
+                    </nav>
 
-                    <!-- ── Cột 1: Danh sách hội thoại (Left Sidebar) ── -->
-                    <section class="chat-sidebar-list" id="customerSidebarList" aria-label="Danh sách cuộc hội thoại">
-                        <div class="conv-header">
-                            <div class="conv-title-row">
-                                <h5 class="fw-bold mb-0">
-                                    <i class="bi bi-chat-dots-fill text-danger me-2"></i>Hỗ hỗ trực tuyến
-                                </h5>
-                                <button class="btn btn-danger btn-sm fw-bold px-3 rounded-pill shadow-sm"
-                                        style="background-color:#D71920; border-color:#D71920; font-size:0.78rem;"
-                                        data-bs-toggle="modal" data-bs-target="#newChatModal">
-                                    <i class="bi bi-plus-lg me-1"></i> Tạo mới
-                                </button>
+                    <!-- Hero Badge -->
+                    <span class="hero-badge badge bg-danger-subtle text-danger px-3 py-1.5 rounded-pill fw-bold mb-3 d-inline-flex align-items-center" style="border: 1px solid #FECACA; font-size: 0.8rem;">
+                        <i class="bi bi-headset me-1.5 fs-6"></i> Live Support Online 24/7/365
+                    </span>
+
+                    <!-- Title -->
+                    <h1 class="hero-title text-uppercase fw-extrabold text-dark display-6 mb-3" style="letter-spacing: -0.5px;">
+                        Trò Chuyện Trực Tuyến <span class="text-danger">Với Kỹ Thuật Viên</span>
+                    </h1>
+                    
+                    <!-- Description -->
+                    <p class="hero-desc text-muted mb-4" style="max-width: 540px; font-size: 0.95rem; line-height: 1.6;">
+                        Kết nối trực tiếp với kỹ thuật viên Viettel để xử lý sự cố kỹ thuật theo thời gian thực và trao đổi trực tiếp trên phiếu @(Model.ActiveConversation != null && !string.IsNullOrEmpty(Model.ActiveConversation.MaPhieu) ? Model.ActiveConversation.MaPhieu : "").
+                    </p>
+
+                    <!-- CTA Buttons -->
+                    <div class="hero-cta-buttons d-flex flex-wrap align-items-center gap-3">
+                        <button class="btn btn-danger fw-bold px-4 py-2.5 rounded-pill shadow-sm" style="background: linear-gradient(135deg, #D71920 0%, #E53935 100%); border:none;" data-bs-toggle="modal" data-bs-target="#newChatModal">
+                            <i class="bi bi-chat-dots-fill me-1.5"></i> Bắt đầu trò chuyện
+                        </button>
+                        <a asp-controller="Home" asp-action="LienHe" class="btn btn-outline-secondary fw-bold px-4 py-2.5 rounded-pill">
+                            <i class="bi bi-headset me-1.5"></i> Liên hệ tổng đài
+                        </a>
+                    </div>
+
+                    <!-- Quick Stats (Glassmorphism Cards) -->
+                    <div class="lk-hero-stats d-flex flex-wrap align-items-center gap-3 mt-4 pt-2">
+                        <div class="glass-stat-card px-3.5 py-2.5 d-flex align-items-center gap-3">
+                            <div class="rounded-circle d-flex align-items-center justify-content-center text-white flex-shrink-0 shadow-xs" style="width:40px; height:40px; background: linear-gradient(135deg, #E60012 0%, #FF4D4F 100%); line-height:1;">
+                                <i class="bi bi-clock-history fs-5"></i>
                             </div>
-
-                            <!-- Search -->
-                            <div class="conv-search-group mt-2">
-                                <i class="bi bi-search"></i>
-                                <input type="text" class="conv-search-input" id="searchConvInputCustomer"
-                                       placeholder="Tìm hội thoại hỗ trợ...">
+                            <div>
+                                <span class="fw-extrabold fs-5 d-block lh-1" style="color:#E60012">24/7/365</span>
+                                <span class="text-muted small" style="font-size:0.75rem;">Hỗ trợ kỹ thuật SLA</span>
                             </div>
                         </div>
+                        <div class="glass-stat-card px-3.5 py-2.5 d-flex align-items-center gap-3">
+                            <div class="rounded-circle d-flex align-items-center justify-content-center text-white flex-shrink-0 shadow-xs" style="width:40px; height:40px; background: linear-gradient(135deg, #2563EB 0%, #3B82F6 100%); line-height:1;">
+                                <i class="bi bi-lightning-charge-fill fs-5"></i>
+                            </div>
+                            <div>
+                                <span class="fw-extrabold fs-5 d-block lh-1" style="color:#2563EB">&lt; 1 Phút</span>
+                                <span class="text-muted small" style="font-size:0.75rem;">Phản hồi kết nối</span>
+                            </div>
+                        </div>
+                        <div class="glass-stat-card px-3.5 py-2.5 d-flex align-items-center gap-3">
+                            <div class="rounded-circle d-flex align-items-center justify-content-center text-white flex-shrink-0 shadow-xs" style="width:40px; height:40px; background: linear-gradient(135deg, #10B981 0%, #059669 100%); line-height:1;">
+                                <i class="bi bi-shield-check fs-5"></i>
+                            </div>
+                            <div>
+                                <span class="fw-extrabold fs-5 d-block lh-1" style="color:#10B981">100%</span>
+                                <span class="text-muted small" style="font-size:0.75rem;">Bảo mật & Cam kết SLA</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-                        <div class="scrollable-y flex-grow-1" id="customerConvContainer">
+                <!-- RIGHT: SVG Illustration Banner -->
+                <div class="col-lg-5 col-12 hero-banner-wrapper d-none d-lg-block">
+                    <svg class="hero-banner-svg w-100" viewBox="0 0 500 420" xmlns="http://www.w3.org/2000/svg" aria-label="Trò chuyện trực tuyến">
+                        <defs>
+                            <linearGradient id="lsGradRed" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#E60012" />
+                                <stop offset="100%" stop-color="#FF4D4F" />
+                            </linearGradient>
+                            <linearGradient id="lsGradDark" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#1F2937" />
+                                <stop offset="100%" stop-color="#111827" />
+                            </linearGradient>
+                        </defs>
+                        <circle cx="250" cy="210" r="175" fill="url(#lsGradRed)" opacity="0.04" />
+                        <circle cx="400" cy="80" r="65" fill="url(#lsGradRed)" opacity="0.06" />
+                        <rect x="40" y="50" width="380" height="310" rx="24" fill="#ffffff" stroke="rgba(15,17,21,0.05)" stroke-width="2" filter="drop-shadow(0 20px 40px rgba(0,0,0,0.07))" />
+                        <path d="M40 74 C40 60.85 50.85 50 64 50 L396 50 C409.15 50 420 60.85 420 74 L420 95 L40 95 Z" fill="url(#lsGradDark)" />
+                        <circle cx="65" cy="72" r="5" fill="#E60012" />
+                        <circle cx="81" cy="72" r="5" fill="#eab308" />
+                        <circle cx="97" cy="72" r="5" fill="#10b981" />
+                        <rect x="60" y="115" width="340" height="42" rx="10" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1" />
+                        <circle cx="82" cy="136" r="12" fill="url(#lsGradRed)" />
+                        <text x="82" y="140" font-size="10" font-weight="bold" fill="#fff" text-anchor="middle">VT</text>
+                        <rect x="105" y="128" width="120" height="8" rx="3" fill="#1E293B" />
+                        <rect x="105" y="139" width="65" height="6" rx="2" fill="#10B981" />
+                        <rect x="60" y="175" width="220" height="42" rx="14" fill="#F1F5F9" />
+                        <rect x="75" y="187" width="160" height="7" rx="3" fill="#334155" />
+                        <rect x="75" y="198" width="110" height="6" rx="2" fill="#94A3B8" />
+                        <rect x="180" y="230" width="220" height="42" rx="14" fill="url(#lsGradRed)" />
+                        <rect x="195" y="242" width="150" height="7" rx="3" fill="#ffffff" />
+                        <rect x="195" y="253" width="90" height="6" rx="2" fill="rgba(255,255,255,0.7)" />
+                        <rect x="60" y="295" width="340" height="36" rx="18" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1.5" />
+                        <rect x="80" y="309" width="120" height="8" rx="4" fill="#94A3B8" />
+                        <circle cx="380" cy="313" r="11" fill="url(#lsGradRed)" />
+                        <path d="M376 313 L383 310 L380 317" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Mobile Backdrop Overlay -->
+    <div id="chatDarkOverlay"></div>
+
+    <!-- ==================== MAIN SAAS SUPPORT WORKSPACE (2-COLUMN LAYOUT) ==================== -->
+    <section class="live-chat-workspace pt-2 pb-5 mb-5" style="margin-top: 16px;">
+        <div class="container-fluid px-lg-4">
+            <div class="saas-card overflow-hidden bg-white border" style="border-color:#ECECEC !important; border-radius:20px;">
+                <div class="row g-0 w-100 position-relative" style="height: 640px;">
+
+                    <!-- ── COLUMN 1: LEFT PANEL (33% / 35%) - TICKET INFO & CONVERSATIONS ── -->
+                    <div class="col-lg-4 col-md-5 col-12 border-end p-3 bg-light overflow-auto d-flex flex-column h-100" id="customerSidebarList" style="background:#F7F8FC !important;">
+
+                        <!-- Mobile Close Header -->
+                        <div class="d-flex align-items-center justify-content-between d-lg-none mb-2 pb-2 border-bottom">
+                            <span class="fw-bold text-dark" style="font-size:0.9rem;"><i class="bi bi-chat-left-text-fill text-danger me-1.5"></i>Hộp thư hỗ trợ</span>
+                            <button type="button" class="btn-close text-reset small" id="btnCloseCustomerSidebar" aria-label="Close"></button>
+                        </div>
+
+                        <!-- Ticket Summary Card -->
+                        @if (Model.ActiveConversation != null)
+                        {
+                            <div class="saas-card bg-white p-3 rounded-4 mb-3 border-0 shadow-xs">
+                                <div class="d-flex align-items-center justify-content-between mb-2 border-bottom pb-2">
+                                    <h6 class="fw-bold mb-0 text-dark" style="font-size:0.84rem;">
+                                        <i class="bi bi-ticket-perforated-fill text-danger me-1.5"></i>Phiếu hỗ trợ
+                                    </h6>
+                                    <span class="badge rounded-pill px-2.5 py-1 fw-bold" style="font-size:0.72rem; background: linear-gradient(135deg, #E60012 0%, #FF4D4F 100%); color:#ffffff;">
+                                        @(string.IsNullOrEmpty(Model.ActiveConversation.MaPhieu) ? "LH-" + Model.ActiveConversation.IdLienHe : Model.ActiveConversation.MaPhieu)
+                                    </span>
+                                </div>
+                                <div class="info-list d-flex flex-column gap-2" style="font-size:0.78rem;">
+                                    <div class="d-flex justify-content-between">
+                                        <span class="text-muted">Tiêu đề:</span>
+                                        <strong class="text-dark text-end ms-2 text-truncate" style="max-width:180px;" title="@Model.ActiveConversation.TieuDe">@Model.ActiveConversation.TieuDe</strong>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="text-muted">Trạng thái:</span>
+                                        <span class="badge @Model.ActiveConversation.BadgeCssClass rounded-pill">@Model.ActiveConversation.TrangThaiText</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="text-muted">Ưu tiên:</span>
+                                        <span class="badge bg-danger-subtle text-danger rounded-pill px-2 py-0.5 fw-bold" style="font-size:0.68rem;">Cao</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="text-muted">Danh mục:</span>
+                                        <span class="text-dark fw-bold">@(string.IsNullOrEmpty(Model.ActiveConversation.TenDanhMuc) ? "Hỗ trợ kỹ thuật" : Model.ActiveConversation.TenDanhMuc)</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Technician Card -->
+                            <div class="saas-card bg-white p-3 rounded-4 mb-3 border-0 shadow-xs">
+                                <h6 class="fw-bold mb-2 text-dark" style="font-size:0.84rem;">
+                                    <i class="bi bi-person-badge-fill text-danger me-1.5"></i>Kỹ thuật viên phụ trách
+                                </h6>
+                                <div class="d-flex align-items-center gap-2.5 p-2 rounded-3 bg-light">
+                                    <div class="technician-avatar-circle d-flex align-items-center justify-content-center text-white rounded-circle flex-shrink-0" style="width:40px; height:40px; min-width:40px; background: linear-gradient(135deg, #E60012 0%, #FF4D4F 100%); font-size:1.1rem;">
+                                        <i class="bi bi-headset"></i>
+                                    </div>
+                                    <div class="flex-grow-1 overflow-hidden">
+                                        <h6 class="fw-bold text-dark mb-0 text-truncate" style="font-size:0.85rem;">@(string.IsNullOrEmpty(Model.ActiveConversation.TenNhanVien) || Model.ActiveConversation.TenNhanVien == "Chưa phân công" ? "Chưa phân công" : Model.ActiveConversation.TenNhanVien)</h6>
+                                        <span class="badge bg-danger-subtle text-danger rounded-pill px-2 py-0.5 mt-0.5" style="font-size:0.68rem;">Nhân viên kỹ thuật</span>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                        <!-- Conversations List Card -->
+                        <div class="saas-card bg-white rounded-4 overflow-hidden border-0 shadow-xs flex-grow-1 d-flex flex-column" id="customerConvContainer">
+                            <div class="px-3 py-2.5 bg-light border-bottom fw-bold text-dark small d-flex align-items-center justify-content-between">
+                                <span><i class="bi bi-chat-left-text-fill text-danger me-1.5"></i>Cuộc trò chuyện</span>
+                                <span class="badge bg-danger rounded-circle px-2 py-0.5">@(Model.Conversations?.Count ?? 0)</span>
+                            </div>
+                            <div class="overflow-auto flex-grow-1 p-2">
                             @if (Model.Conversations == null || !Model.Conversations.Any())
                             {
-                                <div class="text-center py-5 text-muted px-3">
-                                    <i class="bi bi-chat-left-text display-6 d-block mb-3 opacity-50"></i>
-                                    <p class="mb-0 small">Chưa có cuộc hội thoại.<br>Bấm <strong>+ Tạo mới</strong> để bắt đầu hỗ trợ.</p>
+                                <div class="text-center py-4 text-muted px-3">
+                                    <i class="bi bi-chat-left-text fs-3 d-block mb-2 opacity-50"></i>
+                                    <p class="mb-0 small">Chưa có cuộc hội thoại.<br>Bấm <strong>+ Bắt đầu</strong> để hỗ trợ.</p>
                                 </div>
                             }
                             else
@@ -98,129 +264,110 @@
                                 @foreach (var conv in Model.Conversations)
                                 {
                                     var isActive = Model.SelectedIdLienHe == conv.IdLienHe;
-                                    var initial = !string.IsNullOrEmpty(conv.TenNhanVien) ? conv.TenNhanVien.Substring(0, 1).ToUpper() : "K";
                                     <a asp-controller="Chat" asp-action="Index" asp-route-id="@conv.IdLienHe"
-                                       class="conv-card @(isActive ? "active" : "")"
-                                       data-name="@conv.TieuDe.ToLower()">
-                                        <div class="avatar-wrapper">
-                                            <img src="https://ui-avatars.com/api/?name=@(Uri.EscapeDataString(initial))&background=E2E8F0&color=475569"
-                                                 alt="Avatar" class="avatar-img">
-                                            <span class="status-dot online"></span>
+                                       class="conv-card-saas @(isActive ? "active" : "") d-flex align-items-center p-2.5 text-decoration-none transition-all">
+                                        <div class="avatar-wrapper position-relative flex-shrink-0 me-2.5">
+                                            <div class="avatar-img-circle d-flex align-items-center justify-content-center text-white rounded-circle flex-shrink-0"
+                                                 style="width:38px; height:38px; min-width:38px; background: linear-gradient(135deg, #E60012 0%, #FF4D4F 100%); font-size: 1rem;">
+                                                <i class="bi bi-headset"></i>
+                                            </div>
+                                            <span class="status-dot online position-absolute bottom-0 end-0 bg-success border border-2 border-white rounded-circle" style="width:10px; height:10px;"></span>
                                         </div>
-                                        <div class="conv-details">
-                                            <div class="conv-meta">
-                                                <span class="conv-name">@conv.TieuDe</span>
+                                        <div class="conv-details flex-grow-1 overflow-hidden">
+                                            <div class="conv-meta d-flex justify-content-between align-items-center mb-0.5">
+                                                <span class="conv-name fw-bold text-dark text-truncate" style="font-size:0.84rem; max-width:140px;">@conv.TieuDe</span>
                                                 @if (conv.ThoiGianGui.HasValue)
                                                 {
-                                                    <span class="conv-time">@conv.ThoiGianGui.Value.ToString("HH:mm")</span>
+                                                    <span class="conv-time text-muted" style="font-size:0.68rem;">@conv.ThoiGianGui.Value.ToString("HH:mm")</span>
                                                 }
                                             </div>
-                                            <div class="conv-message-row">
-                                                <p class="conv-last-msg">
-                                                    @conv.LastMessage
-                                                </p>
-                                                @if (conv.TinChuaDocKhach > 0)
-                                                {
-                                                    <span class="conv-unread-badge">@conv.TinChuaDocKhach</span>
-                                                }
+                                            <div class="d-flex align-items-center justify-content-between gap-1">
+                                                <span class="text-danger fw-bold" style="font-size:0.68rem;">
+                                                    <i class="bi bi-ticket-detailed me-1"></i>@(string.IsNullOrEmpty(conv.MaPhieu) ? "LH-" + conv.IdLienHe : conv.MaPhieu)
+                                                </span>
+                                                <span class="badge @conv.BadgeCssClass rounded-pill" style="font-size:0.6rem;">@conv.TrangThaiText</span>
                                             </div>
                                         </div>
                                     </a>
                                 }
                             }
+                            </div>
                         </div>
-                    </section>
+                    </div>
 
-                    <!-- ── Cột 2: Khung chat chính ── -->
-                    <section class="chat-main-window" aria-label="Nội dung chat hỗ trợ">
+                    <!-- ── COLUMN 2: RIGHT MAIN CHAT PANEL (65% / 67%) - MESSAGING STREAM & INPUT CAPSULE ── -->
+                    <div class="col-lg-8 col-md-7 col-12 chat-main-pane d-flex flex-column bg-white h-100">
                         @if (Model.SelectedIdLienHe.HasValue && Model.ActiveConversation != null)
                         {
-                            <!-- Chat Header -->
-                            <div class="chat-header">
-                                <div class="chat-customer-details">
-                                    <button class="mobile-back-btn" id="mobileToggleCustomerSidebar" title="Danh sách cuộc trò chuyện">
-                                        <i class="bi bi-list"></i>
+                            <!-- SaaS Chat Header Bar -->
+                            <div class="chat-pane-header d-flex justify-content-between align-items-center px-4 py-3 bg-white border-bottom shadow-xs flex-shrink-0" style="min-height:72px;">
+                                <div class="chat-header-title-area d-flex align-items-center gap-3">
+                                    <button class="mobile-back-btn btn btn-sm btn-light border d-lg-none" id="mobileToggleCustomerSidebar" title="Danh sách cuộc trò chuyện">
+                                        <i class="bi bi-list fs-5"></i>
                                     </button>
-                                    <div class="avatar-wrapper me-2">
-                                        <img src="https://ui-avatars.com/api/?name=@(Uri.EscapeDataString(Model.ActiveConversation.TenNhanVien?.Substring(0,1) ?? "K"))&background=D71920&color=fff"
-                                             alt="Avatar" class="avatar-img-round-44">
-                                        <span class="status-dot online"></span>
+                                    <div class="avatar-indicator-wrap position-relative flex-shrink-0">
+                                        <div class="technician-avatar-circle d-flex align-items-center justify-content-center text-white rounded-circle flex-shrink-0 shadow-xs" style="width:46px; height:46px; min-width:46px; background: linear-gradient(135deg, #E60012 0%, #FF4D4F 100%); font-size:1.25rem;">
+                                            <i class="bi bi-headset"></i>
+                                        </div>
+                                        <span class="status-dot online position-absolute bottom-0 end-0 border border-2 border-white rounded-circle" style="width:13px; height:13px; background-color:#22C55E;"></span>
                                     </div>
-                                    <div>
-                                        <h6 class="chat-header-title mb-0 fw-bold">Chat hỗ trợ — Phiếu: @(string.IsNullOrEmpty(Model.ActiveConversation.MaPhieu) ? ("PH" + Model.ActiveConversation.IdPhieu) : Model.ActiveConversation.MaPhieu)</h6>
-                                        <div class="chat-header-subtext d-flex align-items-center gap-2 mt-1">
-                                            <span><i class="bi bi-person-fill text-danger me-1"></i>Nhân viên phụ trách: <strong>@Model.ActiveConversation.TenNhanVien</strong></span>
-                                            <span class="ms-2"><i class="bi bi-info-circle me-1"></i>Trạng thái: <strong class="text-danger">@Model.ActiveConversation.TrangThaiText</strong></span>
-                                            <span class="status-pill-online ms-2"><i class="bi bi-circle-fill me-1" style="font-size:0.4rem;"></i>Trực tuyến 24/7</span>
+                                    <div class="chat-header-details d-flex flex-column justify-content-center">
+                                        <div class="d-flex align-items-center gap-2 flex-wrap">
+                                            <h6 class="mb-0 fw-bold text-dark fs-6">@(string.IsNullOrEmpty(Model.ActiveConversation.TenNhanVien) || Model.ActiveConversation.TenNhanVien == "Chưa phân công" ? "Kỹ thuật viên Viettel" : Model.ActiveConversation.TenNhanVien)</h6>
+                                            <span class="badge rounded-pill px-2.5 py-1 fw-bold" style="font-size:0.7rem; background-color: #FEF2F2; color: #E60012; border: 1px solid #FECACA;">
+                                                <i class="bi bi-shield-check me-1"></i>Nhân viên kỹ thuật
+                                            </span>
+                                        </div>
+                                        <div class="d-flex align-items-center gap-2 mt-1 flex-wrap" style="font-size:0.78rem; color:#64748B;">
+                                            <span class="text-success fw-semibold d-inline-flex align-items-center">
+                                                <span class="status-pulse-dot me-1.5" style="width:7px; height:7px; background-color:#22C55E; border-radius:50%; display:inline-block;"></span>Đang hoạt động
+                                            </span>
+                                            <span class="text-muted opacity-40">•</span>
+                                            <span>Phản hồi &lt; 2 phút</span>
+                                            <span class="text-muted opacity-40">•</span>
+                                            <span>Mã phiếu: <strong class="text-danger fw-bold">@(string.IsNullOrEmpty(Model.ActiveConversation.MaPhieu) ? "LH-" + Model.ActiveConversation.IdLienHe : Model.ActiveConversation.MaPhieu)</strong></span>
                                         </div>
                                     </div>
                                 </div>
+
+                                <!-- Quick Header Action Icons (Call, Video, Search, More) -->
                             </div>
 
-                            <!-- Messages Area -->
-                            <div class="chat-messages-area scrollable-y position-relative" id="chatMessageArea">
+                            <!-- Messages Stream Pattern Area -->
+                            <div class="chat-messages-pane saas-chat-stream flex-grow-1 p-3 overflow-auto position-relative" id="chatMessageArea" style="min-height: 0;">
                                 @{ ViewData["CurrentUserRole"] = Model.CurrentUserRole; }
                                 @await Html.PartialAsync("_MessageList", Model.Messages)
                             </div>
 
-                            <!-- Floating Scroll To Bottom Button -->
+                            <!-- Scroll to bottom button -->
                             <button class="btn-scroll-bottom" id="btnScrollToBottomCustomer" title="Cuộn xuống tin mới nhất">
                                 <i class="bi bi-arrow-down-short"></i>
                             </button>
 
-                            <!-- Typing Indicator -->
-                            <div class="typing-status-bar d-none" id="chatTypingIndicatorCustomer">
-                                <div class="typing-container">
-                                    <span class="typing-dot"></span>
-                                    <span class="typing-dot"></span>
-                                    <span class="typing-dot"></span>
-                                    <small class="text-muted ms-2">Kỹ thuật viên đang nhập...</small>
-                                </div>
-                            </div>
-
-                            @if (TempData["Error"] != null)
-                            {
-                                <div class="mx-4 mb-1">
-                                    <div class="alert alert-danger border-0 rounded-3 py-2 px-3 small mb-0 alert-dismissible fade show shadow-sm">
-                                        <i class="bi bi-exclamation-triangle-fill me-1"></i>@TempData["Error"]
-                                        <button type="button" class="btn-close btn-sm" data-bs-dismiss="alert"></button>
-                                    </div>
-                                </div>
-                            }
-
-                            <!-- Chat Input -->
-                            <div class="chat-input-container">
+                            <!-- Footer Input Capsule Bar -->
+                            <div class="chat-footer-pane p-3 bg-white border-top position-relative mt-auto flex-shrink-0">
                                 <form asp-controller="Chat" asp-action="GuiTinNhan" method="post" enctype="multipart/form-data" id="chatFormCustomer">
                                     @Html.AntiForgeryToken()
                                     <input type="hidden" name="idLienHe" value="@Model.SelectedIdLienHe" />
                                     <input type="hidden" name="idPhieu" id="customerIdPhieu" value="@Model.ActiveConversation?.IdPhieu" />
 
-                                    <!-- Upload Preview -->
-                                    <div class="file-preview-bar" id="filePreviewBarCustomer" style="display:none;">
-                                        <i class="bi bi-file-earmark-fill text-danger fs-5"></i>
-                                        <div class="file-preview-info">
-                                            <span class="file-preview-name" id="filePreviewNameCustomer">file.pdf</span>
-                                        </div>
-                                        <button type="button" id="btnRemovePreviewCustomer" class="btn-remove-preview" title="Hủy file">
-                                            <i class="bi bi-x"></i>
-                                        </button>
-                                    </div>
+                                    <div class="file-preview-bar" id="filePreviewBarCustomer" style="display:none;"></div>
 
-                                    <!-- Input Bar -->
-                                    <div class="chat-input-bar">
-                                        <div class="chat-input-tools">
+                                    <div class="chat-input-capsule d-flex align-items-center gap-2.5 bg-light p-2.5 border rounded-pill shadow-xs" style="min-height:58px; border-color:#ECECEC !important; background:#F8FAFC !important;">
+                                        <div class="chat-toolbar-group d-flex align-items-center gap-1 flex-shrink-0 ps-1">
                                             <input type="file" name="file" id="chatFileCustomer" class="d-none" accept=".jpg,.png,.pdf,.docx,.xlsx,.zip">
-                                            <button type="button" class="chat-tool-btn" id="btnChatUploadCustomer" title="Đính kèm tệp tin">
-                                                <i class="bi bi-paperclip"></i>
+                                           
+                                            <button type="button" class="btn btn-link text-secondary p-1 rounded-circle" id="btnChatUploadCustomer" title="Gửi tệp đính kèm 📎">
+                                                <i class="bi bi-paperclip fs-5"></i>
                                             </button>
-                                            <button type="button" class="chat-tool-btn" id="btnEmojiCustomer" title="Chèn Emoji">
-                                                <i class="bi bi-emoji-smile"></i>
+                                            <button type="button" class="btn btn-link text-secondary p-1 rounded-circle" title="Ghi âm thoại 🎤" onclick="alert('Đang bật ghi âm thoại...')">
+                                                <i class="bi bi-mic fs-5"></i>
                                             </button>
                                         </div>
-                                        <textarea name="messageText" id="chatTextareaCustomer"
-                                                  class="chat-textarea" rows="1"
-                                                  placeholder="Nhập câu hỏi... (Enter gửi, Shift+Enter xuống dòng)"></textarea>
-                                        <button type="submit" class="btn-chat-send" id="btnChatSendCustomer" title="Gửi tin nhắn">
+
+                                        <textarea name="messageText" id="chatTextareaCustomer" class="chat-textarea border-0 bg-transparent flex-grow-1 px-2 py-1" rows="1" placeholder="Nhập nội dung hỗ trợ... (Enter gửi)" style="font-size:0.92rem; outline:none; resize:none; max-height:120px; line-height:1.45;"></textarea>
+
+                                        <button type="submit" class="chat-send-btn btn-ripple-send rounded-circle text-white border-0 d-grid place-items-center flex-shrink-0 shadow-xs" id="btnChatSendCustomer" title="Gửi" style="width:48px; height:48px; background: linear-gradient(135deg, #E60012 0%, #FF4D4F 100%); font-size:1.1rem; cursor:pointer;">
                                             <i class="bi bi-send-fill"></i>
                                         </button>
                                     </div>
@@ -235,19 +382,19 @@
                                 </div>
                                 <h5 class="fw-bold text-dark mb-2">Hỗ Trợ Kỹ Thuật Viettel Telecom 24/7</h5>
                                 <p class="text-muted small mb-4" style="max-width:380px; line-height:1.6;">Chọn một cuộc hội thoại bên trái hoặc nhấn nút tạo yêu cầu hỗ trợ mới để nhận phản hồi từ kỹ thuật viên.</p>
-                                <button class="btn btn-danger fw-bold px-4 py-2 rounded-pill shadow-sm"
-                                        style="background-color:#D71920; border-color:#D71920;"
-                                        data-bs-toggle="modal" data-bs-target="#newChatModal">
-                                    <i class="bi bi-chat-plus-fill me-2"></i>Tạo liên hệ hỗ trợ
+                                <button class="btn btn-danger fw-bold px-4 py-2 rounded-pill shadow-sm" style="background-color:#E60012; border-color:#E60012;" data-bs-toggle="modal" data-bs-target="#newChatModal">
+                                    <i class="bi bi-plus-lg me-1"></i> Bắt đầu cuộc trò chuyện
                                 </button>
                             </div>
                         }
-                    </section>
+                    </div>
 
                 </div>
             </div>
         </div>
-    </div>
+    </section>
+
+    @await Html.PartialAsync("_Footer", Context.Session)
     </body>
 }
 else
@@ -437,7 +584,24 @@ else
                                     </div>
                                 </div>
 
-                                
+                               @*  <div class="chat-header-actions d-flex align-items-center gap-2">
+                                    @if (Model.ActiveConversation.TrangThai == "Đang chờ")
+                                    {
+                                        <button type="button" class="btn btn-sm btn-success fw-bold px-3 btn-nhan-ho-tro" data-id="@Model.ActiveConversation.IdLienHe">
+                                            <i class="bi bi-person-check-fill me-1"></i>Nhận hỗ trợ
+                                        </button>
+                                    }
+                                    else if (Model.ActiveConversation.TrangThai == "Đang hỗ trợ")
+                                    {
+                                        <button type="button" class="btn btn-sm btn-primary fw-bold px-3" data-bs-toggle="modal" data-bs-target="#modalTaoPhieuTuChat">
+                                            <i class="bi bi-ticket-perforated-fill me-1"></i>Tạo Phiếu Hỗ Trợ
+                                        </button>
+
+                                        <button type="button" class="btn btn-sm btn-danger fw-bold px-3" data-bs-toggle="modal" data-bs-target="#modalKetThucHoTro">
+                                            <i class="bi bi-x-circle-fill me-1"></i>Kết thúc hỗ trợ
+                                        </button>
+                                    }
+                                </div> *@
                             </div>
 
                             <!-- Chat Messages Area -->
@@ -705,6 +869,86 @@ else
 }
 
 <!-- ═══════════════════════════════════════════════════
+     MODAL: Tạo Phiếu Hỗ Trợ Từ Chat & Kết Thúc Hỗ Trợ
+═══════════════════════════════════════════════════ -->
+@if (Model.ActiveConversation != null)
+{
+    <div class="modal fade" id="modalTaoPhieuTuChat" tabindex="-1" aria-labelledby="modalTaoPhieuTuChatLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 rounded-4 shadow-lg overflow-hidden">
+                <div class="modal-header text-white py-3 px-4" style="background: linear-gradient(135deg, #D71920 0%, #B00B13 100%);">
+                    <h5 class="modal-title fw-bold" id="modalTaoPhieuTuChatLabel">
+                        <i class="bi bi-ticket-perforated-fill me-2"></i>Tạo Phiếu Hỗ Trợ Kỹ Thuật
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="formTaoPhieuTuChat">
+                    <div class="modal-body p-4 d-flex flex-column gap-3">
+                        <input type="hidden" name="idLienHe" value="@Model.SelectedIdLienHe" />
+
+                        <div class="form-group">
+                            <label class="form-label fw-bold text-dark small mb-1">Khách hàng</label>
+                            <input type="text" class="form-control bg-light border-0 fw-semibold" value="@Model.ActiveConversation.TenKhachHang" readonly style="border-radius:10px;" />
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label fw-bold text-dark small mb-1">Tiêu đề sự cố <span class="text-danger">*</span></label>
+                            <input type="text" name="tieuDe" class="form-control border-2" value="@Model.ActiveConversation.TieuDe" required style="border-radius:10px;" />
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label fw-bold text-dark small mb-1">Nội dung sự cố <span class="text-danger">*</span></label>
+                            <textarea name="noiDung" class="form-control border-2" rows="3" required style="border-radius:10px;">Khách hàng yêu cầu hỗ trợ qua Chat trực tuyến.</textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label fw-bold text-dark small mb-1">Mức độ ưu tiên</label>
+                            <select name="mucDoUuTien" class="form-select border-2" style="border-radius:10px;">
+                                <option value="1">🟢 Thấp</option>
+                                <option value="2" selected>🟡 Trung bình</option>
+                                <option value="3">🟠 Cao</option>
+                                <option value="4">🔴 Khẩn cấp</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer bg-light py-3 px-4">
+                        <button type="button" class="btn btn-outline-secondary fw-bold px-4 rounded-pill" data-bs-dismiss="modal">Hủy</button>
+                        <button type="submit" class="btn btn-danger fw-bold px-4 text-white rounded-pill shadow-sm" style="background-color:#D71920; border-color:#D71920;" id="btnSubmitTaoPhieuTuChat">
+                            <i class="bi bi-check-circle-fill me-1"></i>Xác nhận tạo phiếu
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalKetThucHoTro" tabindex="-1" aria-labelledby="modalKetThucHoTroLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content border-0 rounded-4 shadow-lg overflow-hidden">
+                <div class="modal-header bg-warning text-dark py-3 px-4">
+                    <h6 class="modal-title fw-bold mb-0" id="modalKetThucHoTroLabel">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>Xác nhận kết thúc
+                    </h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+                </div>
+                <div class="modal-body p-4 text-center">
+                    <p class="mb-0 text-muted" style="font-size:0.9rem;">
+                        Bạn có chắc chắn muốn <strong>kết thúc cuộc hỗ trợ</strong> này không?<br>
+                        <small class="text-secondary">(Trạng thái sẽ chuyển thành "Đã hoàn thành")</small>
+                    </p>
+                </div>
+                <div class="modal-footer bg-light py-2 px-3 justify-content-center">
+                    <button type="button" class="btn btn-outline-secondary btn-sm fw-bold px-3 rounded-pill" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-danger btn-sm fw-bold px-3 rounded-pill btn-confirm-ket-thuc-ho-tro" data-id="@Model.SelectedIdLienHe">
+                        <i class="bi bi-check-lg me-1"></i>Xác nhận
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<!-- ═══════════════════════════════════════════════════
      SCRIPTS & CLIENT LOGIC
 ═══════════════════════════════════════════════════ -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
@@ -925,6 +1169,7 @@ else
         var customerSidebar = document.getElementById('customerSidebarList');
         var btnToggleStaff = document.getElementById('mobileToggleStaffSidebar');
         var btnToggleCustomer = document.getElementById('mobileToggleCustomerSidebar');
+        var btnCloseCustomer = document.getElementById('btnCloseCustomerSidebar');
         var darkOverlay = document.getElementById('chatDarkOverlay');
 
         function toggleSidebarMobile(sidebar) {
@@ -936,6 +1181,12 @@ else
 
         if (btnToggleStaff) btnToggleStaff.addEventListener('click', function() { toggleSidebarMobile(staffSidebar); });
         if (btnToggleCustomer) btnToggleCustomer.addEventListener('click', function() { toggleSidebarMobile(customerSidebar); });
+        if (btnCloseCustomer) {
+            btnCloseCustomer.addEventListener('click', function() {
+                if (customerSidebar) customerSidebar.classList.remove('show-mobile');
+                if (darkOverlay) darkOverlay.classList.remove('show');
+            });
+        }
         if (darkOverlay) {
             darkOverlay.addEventListener('click', function() {
                 if (staffSidebar) staffSidebar.classList.remove('show-mobile');
@@ -1039,6 +1290,118 @@ else
             .catch(err => {
                 console.error('Lỗi cập nhật trạng thái:', err);
                 alert('Đã xảy ra lỗi khi gửi yêu cầu.');
+            });
+        });
+
+        // ── Action Button: Nhận hỗ trợ ──
+        document.querySelectorAll('.btn-nhan-ho-tro').forEach(function(btn) {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                var idLienHe = this.getAttribute('data-id');
+                if (!idLienHe) return;
+
+                btn.disabled = true;
+                btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Đang xử lý...';
+
+                fetch('/Chat/TiepNhanChat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: 'idLienHe=' + encodeURIComponent(idLienHe)
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload();
+                    } else {
+                        alert(data.message || 'Không thể tiếp nhận cuộc trò chuyện.');
+                        btn.disabled = false;
+                        btn.innerHTML = '<i class="bi bi-person-check-fill me-1"></i>Nhận hỗ trợ';
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert('Lỗi khi kết nối hệ thống.');
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="bi bi-person-check-fill me-1"></i>Nhận hỗ trợ';
+                });
+            });
+        });
+
+        // ── Form Submit: Tạo Phiếu Hỗ Trợ từ Chat ──
+        var formTaoPhieu = document.getElementById('formTaoPhieuTuChat');
+        if (formTaoPhieu) {
+            formTaoPhieu.addEventListener('submit', function(e) {
+                e.preventDefault();
+                var btnSubmit = document.getElementById('btnSubmitTaoPhieuTuChat');
+                if (btnSubmit) {
+                    btnSubmit.disabled = true;
+                    btnSubmit.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Đang khởi tạo...';
+                }
+
+                var formData = new FormData(this);
+                fetch('/Chat/TaoPhieuTuChat', {
+                    method: 'POST',
+                    body: new URLSearchParams(formData)
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        var modalEl = document.getElementById('modalTaoPhieuTuChat');
+                        if (modalEl) {
+                            var modal = bootstrap.Modal.getInstance(modalEl);
+                            if (modal) modal.hide();
+                        }
+                        location.reload();
+                    } else {
+                        alert(data.message || 'Lỗi khi tạo phiếu.');
+                        if (btnSubmit) {
+                            btnSubmit.disabled = false;
+                            btnSubmit.innerHTML = '<i class="bi bi-check-circle-fill me-1"></i>Xác nhận tạo phiếu';
+                        }
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert('Lỗi kết nối khi gửi dữ liệu.');
+                    if (btnSubmit) {
+                        btnSubmit.disabled = false;
+                        btnSubmit.innerHTML = '<i class="bi bi-check-circle-fill me-1"></i>Xác nhận tạo phiếu';
+                    }
+                });
+            });
+        }
+
+        // ── Action Button: Confirm Kết thúc hỗ trợ ──
+        document.querySelectorAll('.btn-confirm-ket-thuc-ho-tro').forEach(function(btn) {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                var idLienHe = this.getAttribute('data-id');
+                if (!idLienHe) return;
+
+                btn.disabled = true;
+                btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Đang xử lý...';
+
+                fetch('/Chat/KetThucHoTro', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: 'idLienHe=' + encodeURIComponent(idLienHe)
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload();
+                    } else {
+                        alert(data.message || 'Không thể kết thúc cuộc trò chuyện.');
+                        btn.disabled = false;
+                        btn.innerHTML = '<i class="bi bi-check-lg me-1"></i>Xác nhận';
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert('Lỗi khi kết nối hệ thống.');
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="bi bi-check-lg me-1"></i>Xác nhận';
+                });
             });
         });
     });

@@ -30,7 +30,7 @@
                 </div>
                 <div class="chat-header-text">
                     <span class="chat-header-title">🤖 TechSupport AI</span>
-                    <span class="chat-header-status-badge-top"><span class="status-dot"></span> Trực tuyến</span>
+                    <span class="chat-header-status-badge-top" id="aiStatusBadgeTop"><span class="status-dot" id="aiStatusDot" style="background-color: #22c55e;"></span> <span id="aiStatusText">🟢 AI sẵn sàng</span></span>
                 </div>
             </div>
             <div class="chat-header-actions">
@@ -101,16 +101,7 @@
                                 </div>
                             </a>
 
-                            <!-- Action 4: Chat với nhân viên -->
-                            <button class="quick-action-card" id="btnGoStaffChat">
-                                <div class="quick-action-icon-wrapper chat-convo-icon" style="background: rgba(37, 99, 235, 0.1); color: #2563EB;">
-                                    <i class="bi bi-headset"></i>
-                                </div>
-                                <div class="quick-action-info">
-                                    <span class="quick-action-card-title">Chat với nhân viên</span>
-                                    <span class="quick-action-card-desc">Trao đổi trực tiếp với kỹ thuật viên phụ trách</span>
-                                </div>
-                            </button>
+                        
                         </div>
                     </div>
                 </div>
@@ -165,9 +156,6 @@
                 <div class="stream-footer">
                     <div class="chatgpt-input-capsule">
                         <input type="file" id="roomFileInput" style="display:none;" accept=".jpg,.jpeg,.png,.pdf,.docx,.xlsx,.zip" />
-                        <button class="capsule-icon-btn" id="btnRoomUpload" type="button" title="Đính kèm tài liệu" onclick="document.getElementById('roomFileInput').click();">
-                            <i class="bi bi-paperclip"></i>
-                        </button>
                         <button class="capsule-icon-btn" type="button" title="Gửi hình ảnh" onclick="document.getElementById('roomFileInput').click();">
                             <i class="bi bi-image"></i>
                         </button>
@@ -198,26 +186,18 @@
                     </div>
                 </div>
 
+                <div class="quick-chips-bar px-3 py-2 border-bottom d-flex gap-2 flex-wrap bg-light flex-shrink-0" style="font-size:0.8rem;">
+                    <button type="button" class="btn btn-outline-danger btn-sm rounded-pill quick-prompt-chip py-1 px-3 style-chip" data-prompt="Tôi muốn tra cứu phiếu hỗ trợ">🔍 Tra cứu phiếu</button>
+                    <a href="/Ticket/TaoPhieu" class="btn btn-outline-danger btn-sm rounded-pill py-1 px-3 style-chip text-decoration-none">➕ Tạo phiếu hỗ trợ</a>
+                    <button type="button" class="btn btn-outline-danger btn-sm rounded-pill quick-prompt-chip py-1 px-3 style-chip" data-prompt="Tôi muốn kiểm tra lịch hẹn kỹ thuật">📅 Kiểm tra lịch hẹn</button>
+                    <button type="button" class="btn btn-outline-danger btn-sm rounded-pill quick-prompt-chip py-1 px-3 style-chip" data-prompt="Hỏi về dịch vụ viễn thông Viettel">❓ Hỏi về dịch vụ</button>
+                </div>
+
                 <div class="messages-scrollable" id="chatAiMessagesContainer">
                     <!-- Loaded dynamically via GET LayLichSuChatAI -->
                 </div>
 
-                <!-- Quick Prompt Chips -->
-                <div class="quick-prompt-wrapper" id="aiQuickPrompts">
-                    <button class="quick-prompt-chip" data-prompt="Tra cứu tiến trình phiếu hỗ trợ của tôi">
-                        <i class="bi bi-search text-danger"></i> Tra cứu phiếu
-                    </button>
-                    <button class="quick-prompt-chip" data-prompt="Hướng dẫn tạo phiếu hỗ trợ kỹ thuật">
-                        <i class="bi bi-tools text-primary"></i> Tạo phiếu hỗ trợ
-                    </button>
-                    <button class="quick-prompt-chip" data-prompt="Tư vấn gói cước Internet Cáp Quang Viettel">
-                        <i class="bi bi-wifi text-success"></i> Tư vấn gói cước
-                    </button>
-                    <button class="quick-prompt-chip" data-prompt="Tôi muốn gặp nhân viên hỗ trợ trực tiếp">
-                        <i class="bi bi-headset text-warning"></i> Chat với nhân viên
-                    </button>
-                </div>
-
+              
                 <!-- Pre-upload file preview for AI -->
                 <div id="aiFilePreviewBar" class="file-preview-card d-none">
                     <div class="file-preview-info">

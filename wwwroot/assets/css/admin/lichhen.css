@@ -416,38 +416,103 @@ body {
 .vt-status-pill {
     display: inline-flex;
     align-items: center;
-    gap: 0.4rem;
-    padding: 0.4rem 0.9rem;
+    gap: 0.45rem;
+    padding: 0.35rem 0.85rem;
     border-radius: 50px;
     font-size: 0.8rem;
     font-weight: 700;
     white-space: nowrap;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.03);
 }
 
 .vt-status-pill.ChoXacNhan, .vt-status-pill.waiting {
-    background-color: var(--status-pending-bg);
-    color: var(--status-pending);
-    border: 1px solid rgba(245, 158, 11, 0.2);
+    background-color: #FEF3C7;
+    color: #D97706;
+    border: 1px solid rgba(217, 119, 6, 0.25);
 }
 .vt-status-pill.DaXacNhan, .vt-status-pill.confirmed {
-    background-color: var(--status-confirmed-bg);
-    color: var(--status-confirmed);
-    border: 1px solid rgba(37, 99, 235, 0.2);
+    background-color: #DBEAFE;
+    color: #2563EB;
+    border: 1px solid rgba(37, 99, 235, 0.25);
 }
 .vt-status-pill.DangThucHien, .vt-status-pill.in_progress {
-    background-color: var(--status-in-progress-bg);
-    color: var(--status-in-progress);
-    border: 1px solid rgba(139, 92, 246, 0.2);
+    background-color: #EDE9FE;
+    color: #7C3AED;
+    border: 1px solid rgba(124, 58, 237, 0.25);
 }
 .vt-status-pill.HoanThanh, .vt-status-pill.completed {
-    background-color: var(--status-completed-bg);
-    color: var(--status-completed);
-    border: 1px solid rgba(16, 185, 129, 0.2);
+    background-color: #D1FAE5;
+    color: #059669;
+    border: 1px solid rgba(5, 150, 105, 0.25);
 }
 .vt-status-pill.DaHuy, .vt-status-pill.cancelled {
-    background-color: var(--status-cancelled-bg);
-    color: var(--status-cancelled);
-    border: 1px solid rgba(239, 68, 68, 0.2);
+    background-color: #FEE2E2;
+    color: #DC2626;
+    border: 1px solid rgba(220, 38, 38, 0.25);
+}
+
+/* 5.1 UNIFIED PAGINATION STYLING */
+.vt-pagination-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.1rem 1.5rem;
+    background-color: #FAFAFA;
+    border-top: 1px solid var(--vt-border);
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.vt-pagination-info {
+    font-size: 0.835rem;
+    color: var(--vt-text-muted);
+    font-weight: 500;
+}
+
+.vt-pagination {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.vt-page-btn {
+    min-width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    border: 1.5px solid var(--vt-border);
+    background-color: #ffffff;
+    color: var(--vt-text-main);
+    font-size: 0.825rem;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--vt-transition);
+    padding: 0 10px;
+    text-decoration: none;
+}
+
+.vt-page-btn:hover:not(:disabled):not(.active) {
+    border-color: var(--vt-primary);
+    color: var(--vt-primary);
+    background-color: var(--vt-primary-light);
+}
+
+.vt-page-btn.active {
+    background-color: var(--vt-primary);
+    border-color: var(--vt-primary);
+    color: #ffffff;
+    box-shadow: 0 4px 10px rgba(215, 25, 32, 0.3);
+}
+
+.vt-page-btn:disabled, .vt-page-btn.disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    pointer-events: none;
 }
 
 /* 6. UNIFIED ACTION BUTTONS */

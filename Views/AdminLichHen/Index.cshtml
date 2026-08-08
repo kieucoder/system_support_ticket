@@ -23,9 +23,9 @@
             </p>
         </div>
         <div class="d-flex align-items-center flex-wrap gap-2">
-            <a href="@Url.Action("TaoYeuCau", "LichHen")" class="vt-btn-primary">
+            <button type="button" class="vt-btn-primary" data-bs-toggle="modal" data-bs-target="#createLichHenModal">
                 <i class="fa-solid fa-plus"></i> Tạo lịch hẹn
-            </a>
+            </button>
             <a href="@Url.Action("Index", "AdminLichHen")" class="vt-btn-secondary">
                 <i class="fa-solid fa-rotate me-1"></i> Làm mới
             </a>
@@ -202,9 +202,9 @@
                 </div>
                 <h5 class="vt-empty-title">Chưa có lịch hẹn nào</h5>
                 <p class="vt-empty-desc">Không tìm thấy dữ liệu lịch hẹn phù hợp với điều kiện tìm kiếm hoặc hệ thống chưa ghi nhận lịch hẹn mới.</p>
-                <a href="@Url.Action("TaoYeuCau", "LichHen")" class="vt-btn-primary">
+                <button type="button" class="vt-btn-primary" data-bs-toggle="modal" data-bs-target="#createLichHenModal">
                     <i class="fa-solid fa-plus me-1"></i> Tạo lịch hẹn
-                </a>
+                </button>
             </div>
         }
         else
@@ -277,87 +277,102 @@
                                     </div>
                                 </td>
 
-                               
-
                                 <!-- Trạng thái -->
                                 <td class="text-center">
                                     <span class="vt-status-pill @item.TrangThaiCode">
-                                        @item.TrangThaiTitle
+                                        @if (item.TrangThaiCode == "ChoXacNhan")
+                                        {
+                                            <i class="fa-solid fa-clock-rotate-left"></i>
+                                        }
+                                        else if (item.TrangThaiCode == "DaXacNhan")
+                                        {
+                                            <i class="fa-solid fa-user-check"></i>
+                                        }
+                                        else if (item.TrangThaiCode == "DangThucHien")
+                                        {
+                                            <i class="fa-solid fa-screwdriver-wrench"></i>
+                                        }
+                                        else if (item.TrangThaiCode == "HoanThanh")
+                                        {
+                                            <i class="fa-solid fa-circle-check"></i>
+                                        }
+                                        else if (item.TrangThaiCode == "DaHuy")
+                                        {
+                                            <i class="fa-solid fa-calendar-xmark"></i>
+                                        }
+                                        <span>@item.TrangThaiTitle</span>
                                     </span>
                                 </td>
 
                                 <!-- Thao tác -->
-                                 <td class="text-center pe-4">
-                                     <div class="d-flex align-items-center justify-content-center gap-1">
-                                         <!-- 1. Xem chi tiết -->
-                                         <a href="@Url.Action("Details", "AdminLichHen", new { id = item.IdLichHen })" class="btn-action-custom view" title="Xem chi tiết phiếu & lịch hẹn" data-bs-toggle="tooltip">
-                                             <i class="fa-solid fa-eye"></i>
-                                         </a>
+                                <td class="text-center pe-4">
+                                    <div class="d-flex align-items-center justify-content-center gap-1">
+                                        <!-- 1. Xem chi tiết (Luôn có) -->
+                                        <button type="button" class="btn-action-custom view" onclick="openDetailsModal(@item.IdLichHen)" title="Xem chi tiết phiếu & lịch hẹn" data-bs-toggle="tooltip">
+                                            <i class="fa-solid fa-eye"></i>
+                                        </button>
 
-                                         @if (item.TrangThaiCode == "ChoXacNhan" || item.TrangThaiCode == "Chờ xác nhận")
-                                         {
-                                             <!-- 2. Button Phân công KTV & Duyệt -->
-                                             <button type="button" class="btn-action-custom confirm" onclick="openConfirmModal(@item.IdLichHen, '@item.MaPhieu', @(item.IdNhanVien ?? 0))" title="Xác nhận & Phân công KTV" data-bs-toggle="tooltip">
-                                                 <i class="fa-solid fa-user-plus"></i>
-                                             </button>
-                                         }
-                                         else if (item.TrangThaiCode == "DaXacNhan" || item.TrangThaiCode == "Đã xác nhận" || item.TrangThaiCode == "DangThucHien")
-                                         {
-                                             bool canComplete = !item.NgayHen.HasValue || item.NgayHen.Value <= todayDate;
-                                             if (canComplete)
-                                             {
-                                                 <!-- 2. Button Hoàn thành -->
-                                                 <button type="button" class="btn-action-custom complete" onclick="openCompleteModal(@item.IdLichHen, '@item.MaPhieu')" title="Đánh dấu hoàn thành lịch hẹn" data-bs-toggle="tooltip">
-                                                     <i class="fa-solid fa-check"></i>
-                                                 </button>
-                                             }
-                                             else
-                                             {
-                                                 <!-- 2. Button Hoàn thành (Bị khóa vì chưa đến ngày hẹn) -->
-                                                 <button type="button" class="btn-action-custom text-muted opacity-50 bg-light border-0" style="cursor: not-allowed;" title="Chưa đến ngày hẹn (@(item.NgayHen?.ToString("dd/MM/yyyy"))), không thể hoàn thành trước!" data-bs-toggle="tooltip" disabled>
-                                                     <i class="fa-solid fa-lock"></i>
-                                                 </button>
-                                             }
-                                         }
+                                        @if (item.TrangThaiCode == "ChoXacNhan" || item.TrangThaiCode == "Chờ xác nhận")
+                                        {
+                                            <!-- 2. Button Phân công KTV & Duyệt -->
+                                            <button type="button" class="btn-action-custom confirm" onclick="openConfirmModal(@item.IdLichHen, '@item.MaPhieu', @(item.IdNhanVien ?? 0))" title="Xác nhận & Phân công KTV" data-bs-toggle="tooltip">
+                                                <i class="fa-solid fa-user-plus"></i>
+                                            </button>
 
-                                         <!-- 3. Menu Thao Tác Khác (Dropdown) -->
-                                         <div class="dropdown d-inline-block">
-                                             <button type="button" class="btn-action-custom edit" data-bs-toggle="dropdown" aria-expanded="false" title="Thao tác khác" data-bs-toggle="tooltip">
-                                                 <i class="fa-solid fa-ellipsis-vertical"></i>
-                                             </button>
-                                             <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 font-size-sm" style="border-radius: 12px; font-size: 0.85rem; min-width: 180px; z-index: 1050;">
-                                                 <li>
-                                                     <a class="dropdown-item py-2" href="@Url.Action("Edit", "AdminLichHen", new { id = item.IdLichHen })">
-                                                         <i class="fa-solid fa-pen-to-square text-primary me-2"></i>Chỉnh sửa / Dời lịch
-                                                     </a>
-                                                 </li>
-                                                 <li>
-                                                     <a class="dropdown-item py-2" href="@Url.Action("Details", "AdminLichHen", new { id = item.IdLichHen })">
-                                                         <i class="fa-solid fa-circle-info text-info me-2"></i>Xem thông tin chi tiết
-                                                     </a>
-                                                 </li>
-                                                 @if (item.TrangThaiCode == "ChoXacNhan" || item.TrangThaiCode == "Chờ xác nhận")
-                                                 {
-                                                     <li><hr class="dropdown-divider"></li>
-                                                     <li>
-                                                         <a class="dropdown-item py-2 text-danger" href="javascript:void(0);" onclick="openRejectModal(@item.IdLichHen, '@item.MaPhieu')">
-                                                             <i class="fa-solid fa-xmark me-2"></i>Từ chối lịch hẹn
-                                                         </a>
-                                                     </li>
-                                                 }
-                                                 else if (item.TrangThaiCode == "DaXacNhan" || item.TrangThaiCode == "Đã xác nhận" || item.TrangThaiCode == "DangThucHien")
-                                                 {
-                                                     <li><hr class="dropdown-divider"></li>
-                                                     <li>
-                                                         <a class="dropdown-item py-2 text-danger" href="javascript:void(0);" onclick="openCancelModal(@item.IdLichHen, '@item.MaPhieu')">
-                                                             <i class="fa-solid fa-ban me-2"></i>Hủy lịch hẹn
-                                                         </a>
-                                                     </li>
-                                                 }
-                                             </ul>
-                                         </div>
-                                     </div>
-                                 </td>
+                                            <!-- 3. Menu Thao Tác Khác (Dropdown) -->
+                                            <div class="dropdown d-inline-block">
+                                                <button type="button" class="btn-action-custom edit" data-bs-toggle="dropdown" aria-expanded="false" title="Thao tác khác">
+                                                    <i class="fa-solid fa-ellipsis-vertical"></i>
+                                                </button>
+                                                <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 font-size-sm" style="border-radius: 12px; font-size: 0.85rem; min-width: 180px; z-index: 1050;">
+                                                    <li>
+                                                        <a class="dropdown-item py-2" href="javascript:void(0);" onclick="openEditModal(@item.IdLichHen)">
+                                                            <i class="fa-solid fa-pen-to-square text-primary me-2"></i>Chỉnh sửa / Dời lịch
+                                                        </a>
+                                                    </li>
+                                                    <li><hr class="dropdown-divider my-1"></li>
+                                                    <li>
+                                                        <a class="dropdown-item py-2 text-danger" href="javascript:void(0);" onclick="openRejectModal(@item.IdLichHen, '@item.MaPhieu')">
+                                                            <i class="fa-solid fa-xmark me-2"></i>Từ chối lịch hẹn
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        }
+                                        else if (item.TrangThaiCode == "DaXacNhan" || item.TrangThaiCode == "Đã xác nhận" || item.TrangThaiCode == "DangThucHien")
+                                        {
+                                            bool canComplete = !item.NgayHen.HasValue || item.NgayHen.Value <= todayDate;
+                                            if (canComplete)
+                                            {
+                                                <!-- 2. Button Hoàn thành -->
+                                                <button type="button" class="btn-action-custom complete" onclick="openCompleteModal(@item.IdLichHen, '@item.MaPhieu')" title="Đánh dấu hoàn thành lịch hẹn" data-bs-toggle="tooltip">
+                                                    <i class="fa-solid fa-check"></i>
+                                                </button>
+                                            }
+                                            
+                                            <!-- 3. Menu Thao Tác Khác (Dropdown) -->
+                                            <div class="dropdown d-inline-block">
+                                                <button type="button" class="btn-action-custom edit" data-bs-toggle="dropdown" aria-expanded="false" title="Thao tác khác">
+                                                    <i class="fa-solid fa-ellipsis-vertical"></i>
+                                                </button>
+                                                <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 font-size-sm" style="border-radius: 12px; font-size: 0.85rem; min-width: 180px; z-index: 1050;">
+                                                   
+                                                    <li>
+                                                        <a class="dropdown-item py-2" href="javascript:void(0);" onclick="openEditModal(@item.IdLichHen)">
+                                                            <i class="fa-solid fa-pen-to-square text-primary me-2"></i>Chỉnh sửa / Dời lịch
+                                                        </a>
+                                                    </li>
+                                                    <li><hr class="dropdown-divider my-1"></li>
+                                                    <li>
+                                                        <a class="dropdown-item py-2 text-danger" href="javascript:void(0);" onclick="openCancelModal(@item.IdLichHen, '@item.MaPhieu')">
+                                                            <i class="fa-solid fa-ban me-2"></i>Hủy lịch hẹn
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        }
+                                    </div>
+                                </td>
                             </tr>
                         }
                     </tbody>
@@ -367,30 +382,49 @@
             <!-- PAGINATION FOOTER -->
             @if (Model.TotalPages > 1)
             {
-                <div class="p-3 bg-light d-flex align-items-center justify-content-between border-top">
-                    <div class="small text-muted">
+                <div class="vt-pagination-wrap">
+                    <span class="vt-pagination-info">
                         Hiển thị <b>@((Model.PageIndex - 1) * Model.PageSize + 1)</b> - <b>@(Math.Min(Model.PageIndex * Model.PageSize, Model.TotalItems))</b> trên tổng số <b>@Model.TotalItems</b> lịch hẹn
-                    </div>
-                    <nav aria-label="Điều hướng phân trang">
-                        <ul class="pagination pagination-sm m-0">
-                            <li class="page-item @(Model.PageIndex <= 1 ? "disabled" : "")">
-                                <a class="page-link" href="@Url.Action("Index", "AdminLichHen", new { Page = Model.PageIndex - 1, TuKhoa = Model.Filter.TuKhoa, TrangThai = Model.Filter.TrangThai, IdNhanVien = Model.Filter.IdNhanVien })">
-                                    <i class="fa-solid fa-chevron-left"></i>
-                                </a>
-                            </li>
-                            @for (int p = 1; p <= Model.TotalPages; p++)
+                    </span>
+                    <div class="vt-pagination" role="navigation" aria-label="Điều hướng phân trang">
+                        @if (Model.PageIndex > 1)
+                        {
+                            <a class="vt-page-btn" href="@Url.Action("Index", "AdminLichHen", new { Page = Model.PageIndex - 1, TuKhoa = Model.Filter.TuKhoa, TrangThai = Model.Filter.TrangThai, IdNhanVien = Model.Filter.IdNhanVien, TuNgay = Model.Filter.TuNgay?.ToString("yyyy-MM-dd"), DenNgay = Model.Filter.DenNgay?.ToString("yyyy-MM-dd") })" title="Trang trước">
+                                <i class="fa-solid fa-chevron-left" style="font-size:0.75rem;"></i>
+                            </a>
+                        }
+                        else
+                        {
+                            <button class="vt-page-btn" disabled title="Trang trước">
+                                <i class="fa-solid fa-chevron-left" style="font-size:0.75rem;"></i>
+                            </button>
+                        }
+
+                        @for (int p = 1; p <= Model.TotalPages; p++)
+                        {
+                            if (p == Model.PageIndex)
                             {
-                                <li class="page-item @(p == Model.PageIndex ? "active" : "")">
-                                    <a class="page-link" href="@Url.Action("Index", "AdminLichHen", new { Page = p, TuKhoa = Model.Filter.TuKhoa, TrangThai = Model.Filter.TrangThai, IdNhanVien = Model.Filter.IdNhanVien })">@p</a>
-                                </li>
+                                <button class="vt-page-btn active">@p</button>
                             }
-                            <li class="page-item @(Model.PageIndex >= Model.TotalPages ? "disabled" : "")">
-                                <a class="page-link" href="@Url.Action("Index", "AdminLichHen", new { Page = Model.PageIndex + 1, TuKhoa = Model.Filter.TuKhoa, TrangThai = Model.Filter.TrangThai, IdNhanVien = Model.Filter.IdNhanVien })">
-                                    <i class="fa-solid fa-chevron-right"></i>
-                                </a>
-                            </li>
-                        </ul>
-                    </nav>
+                            else
+                            {
+                                <a class="vt-page-btn" href="@Url.Action("Index", "AdminLichHen", new { Page = p, TuKhoa = Model.Filter.TuKhoa, TrangThai = Model.Filter.TrangThai, IdNhanVien = Model.Filter.IdNhanVien, TuNgay = Model.Filter.TuNgay?.ToString("yyyy-MM-dd"), DenNgay = Model.Filter.DenNgay?.ToString("yyyy-MM-dd") })">@p</a>
+                            }
+                        }
+
+                        @if (Model.PageIndex < Model.TotalPages)
+                        {
+                            <a class="vt-page-btn" href="@Url.Action("Index", "AdminLichHen", new { Page = Model.PageIndex + 1, TuKhoa = Model.Filter.TuKhoa, TrangThai = Model.Filter.TrangThai, IdNhanVien = Model.Filter.IdNhanVien, TuNgay = Model.Filter.TuNgay?.ToString("yyyy-MM-dd"), DenNgay = Model.Filter.DenNgay?.ToString("yyyy-MM-dd") })" title="Trang sau">
+                                <i class="fa-solid fa-chevron-right" style="font-size:0.75rem;"></i>
+                            </a>
+                        }
+                        else
+                        {
+                            <button class="vt-page-btn" disabled title="Trang sau">
+                                <i class="fa-solid fa-chevron-right" style="font-size:0.75rem;"></i>
+                            </button>
+                        }
+                    </div>
                 </div>
             }
         }
@@ -398,8 +432,483 @@
 </div>
 
 <!-- ==========================================
+   STYLING FOR POPUP MODALS (COMPACT REPORT DESIGN)
+   ========================================== -->
+<style>
+    .modal-vt-custom .modal-dialog {
+        transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+        transform: scale(0.95);
+    }
+    .modal-vt-custom.show .modal-dialog {
+        transform: scale(1);
+    }
+    @@media (min-width: 992px) {
+        .modal-vt-custom .modal-dialog {
+            max-width: 760px !important;
+        }
+    }
+    @@media (min-width: 768px) and (max-width: 991px) {
+        .modal-vt-custom .modal-dialog {
+            max-width: 700px !important;
+        }
+    }
+    @@media (max-width: 767px) {
+        .modal-vt-custom .modal-dialog {
+            width: 95% !important;
+            max-width: 95% !important;
+            margin: 10px auto !important;
+        }
+    }
+
+    /* Compact Modal Header (55px height) */
+    .modal-vt-custom .modal-header {
+        padding: 10px 18px !important;
+        min-height: 55px !important;
+        max-height: 55px !important;
+    }
+    .modal-vt-custom .modal-title {
+        font-size: 18px !important;
+        font-weight: 600 !important;
+    }
+    .modal-vt-custom .vt-header-icon {
+        width: 34px !important;
+        height: 34px !important;
+        font-size: 1rem !important;
+    }
+
+    /* Compact Modal Body & Scrolling (Max ~68vh) */
+    .modal-vt-custom .modal-body {
+        padding: 14px 16px !important;
+        max-height: 68vh !important;
+        overflow-y: auto !important;
+    }
+
+    /* Compact Typography & Spacing */
+    .modal-vt-custom .form-label,
+    .modal-vt-custom .vt-compact-label {
+        font-size: 13px !important;
+        font-weight: 600 !important;
+        margin-bottom: 2px !important;
+    }
+    .modal-vt-custom .form-control,
+    .modal-vt-custom .form-select,
+    .modal-vt-custom .vt-compact-val {
+        font-size: 14px !important;
+        padding: 5px 10px !important;
+        border-radius: 8px !important;
+    }
+
+    /* Card Padding inside body */
+    .modal-vt-custom .vt-compact-card {
+        padding: 12px 14px !important;
+        border-radius: 12px !important;
+    }
+    .modal-vt-custom .vt-compact-field {
+        margin-bottom: 8px !important;
+    }
+
+    /* Textarea height (70px) */
+    .modal-vt-custom textarea.form-control,
+    .modal-vt-custom .vt-compact-textarea {
+        height: 70px !important;
+        min-height: 70px !important;
+        resize: none;
+    }
+
+    /* Compact Footer & Buttons (40px height) */
+    .modal-vt-custom .modal-footer {
+        padding: 10px 18px !important;
+    }
+    .modal-vt-custom .modal-footer .btn {
+        height: 40px !important;
+        padding: 8px 18px !important;
+        border-radius: 10px !important;
+        font-size: 14px !important;
+        font-weight: 600 !important;
+    }
+</style>
+
+<!-- ==========================================
    MODAL POPUPS
    ========================================== -->
+<!-- MODAL POPUP 1: XEM CHI TIẾT LỊCH HẸN -->
+<div class="modal fade modal-vt-custom" id="detailsLichHenModal" tabindex="-1" aria-labelledby="detailsLichHenModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg overflow-hidden" style="border-radius: 14px; background-color: #ffffff;">
+            <!-- Header Viettel Red #E60012 -->
+            <div class="modal-header border-0 text-white position-relative" style="background: linear-gradient(135deg, #E60012 0%, #B00F15 100%);">
+                <div class="d-flex align-items-center gap-2">
+                    <div class="rounded-circle bg-white text-danger d-flex align-items-center justify-content-center shadow-sm vt-header-icon">
+                        <i class="fa-solid fa-calendar-check"></i>
+                    </div>
+                    <div>
+                        <h5 class="modal-title text-white m-0" id="detailsLichHenModalLabel">Chi tiết lịch hẹn</h5>
+                        <div class="small text-white-50" style="font-size: 0.75rem;">Mã phiếu hỗ trợ: <strong id="detailMaPhieuText" class="text-white">...</strong></div>
+                    </div>
+                </div>
+                <button type="button" class="btn-close btn-close-white position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <!-- Modal Body (Chia 2 cột) -->
+            <div class="modal-body bg-light">
+                <div class="row g-2">
+                    <!-- CỘT TRÁI: Thông tin phiếu & Khách hàng -->
+                    <div class="col-md-6">
+                        <div class="bg-white shadow-sm h-100 border vt-compact-card">
+                            <h6 class="fw-bold text-danger mb-2 border-bottom pb-1" style="font-size: 13.5px;">
+                                <i class="fa-solid fa-file-invoice me-1"></i>Thông Tin Phiếu & Khách Hàng
+                            </h6>
+                            <div class="vt-compact-field">
+                                <span class="text-muted vt-compact-label d-block">Mã lịch hẹn:</span>
+                                <strong class="text-dark vt-compact-val" id="detailIdLichHen">—</strong>
+                            </div>
+                            <div class="vt-compact-field">
+                                <span class="text-muted vt-compact-label d-block">Mã phiếu hỗ trợ:</span>
+                                <span class="badge bg-danger-subtle text-danger fw-bold" style="font-size: 12.5px;" id="detailMaPhieuTitle">—</span>
+                            </div>
+                            <div class="vt-compact-field">
+                                <span class="text-muted vt-compact-label d-block">Khách hàng:</span>
+                                <strong class="text-dark vt-compact-val" id="detailTenKhachHang">—</strong>
+                            </div>
+                            <div class="vt-compact-field">
+                                <span class="text-muted vt-compact-label d-block">Số điện thoại:</span>
+                                <a href="tel:" id="detailSoDienThoaiKhachHang" class="fw-bold text-danger text-decoration-none vt-compact-val">—</a>
+                            </div>
+                            <div class="vt-compact-field">
+                                <span class="text-muted vt-compact-label d-block">Danh mục:</span>
+                                <span class="badge bg-secondary-subtle text-dark border px-2 py-0.5" style="font-size: 11.5px;" id="detailTenDanhMuc">—</span>
+                            </div>
+                            <div class="vt-compact-field">
+                                <span class="text-muted vt-compact-label d-block">Dịch vụ:</span>
+                                <span class="fw-semibold text-dark vt-compact-val" id="detailTenDichVu">—</span>
+                            </div>
+                            <div class="vt-compact-field mb-0">
+                                <span class="text-muted vt-compact-label d-block">Ngày tạo phiếu:</span>
+                                <span class="text-muted small" style="font-size: 12.5px;" id="detailNgayTao">—</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CỘT PHẢI: Thông tin lịch hẹn & Kỹ thuật viên -->
+                    <div class="col-md-6">
+                        <div class="bg-white shadow-sm h-100 border vt-compact-card">
+                            <h6 class="fw-bold text-primary mb-2 border-bottom pb-1" style="font-size: 13.5px;">
+                                <i class="fa-solid fa-clock me-1"></i>Thông Tin Lịch Hẹn & KTV
+                            </h6>
+                            <div class="vt-compact-field">
+                                <span class="text-muted vt-compact-label d-block">Kỹ thuật viên phụ trách:</span>
+                                <strong class="text-dark vt-compact-val" id="detailTenNhanVien">—</strong>
+                            </div>
+                            <div class="vt-compact-field">
+                                <span class="text-muted vt-compact-label d-block">Ngày hẹn:</span>
+                                <span class="badge bg-danger text-white px-2 py-0.5" style="font-size: 12.5px;" id="detailNgayHen">—</span>
+                            </div>
+                            <div class="vt-compact-field">
+                                <span class="text-muted vt-compact-label d-block">Giờ hẹn (Khung giờ):</span>
+                                <span class="fw-bold text-dark vt-compact-val" id="detailKhungGio">—</span>
+                            </div>
+                            <div class="vt-compact-field">
+                                <span class="text-muted vt-compact-label d-block">Địa chỉ hỗ trợ:</span>
+                                <span class="text-dark small fw-semibold vt-compact-val" id="detailDiaDiemKhachHang">—</span>
+                            </div>
+                            <div class="vt-compact-field">
+                                <span class="text-muted vt-compact-label d-block">Trạng thái:</span>
+                                <span class="vt-status-pill badge bg-danger text-white px-2.5 py-0.5" style="font-size: 12px;" id="detailTrangThaiBadge">Chờ xác nhận</span>
+                            </div>
+                            <div class="vt-compact-field">
+                                <span class="text-muted vt-compact-label d-block">Ghi chú:</span>
+                                <div class="small text-muted fst-italic p-1.5 bg-light rounded vt-compact-textarea" style="font-size: 12.5px; overflow-y: auto;" id="detailGhiChu">Không có ghi chú thêm.</div>
+                            </div>
+                            <div class="vt-compact-field mb-0">
+                                <span class="text-muted vt-compact-label d-block">File đính kèm:</span>
+                                <div id="detailFilesContainer" class="small text-muted" style="font-size: 12.5px;">Không có file đính kèm.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer: Chỉ có nút Đóng -->
+            <div class="modal-footer bg-white border-0 justify-content-end">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL POPUP 2: CHỈNH SỬA / CẬP NHẬT LỊCH HẸN -->
+<div class="modal fade modal-vt-custom" id="editLichHenModal" tabindex="-1" aria-labelledby="editLichHenModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg overflow-hidden" style="border-radius: 14px; background-color: #ffffff;">
+            <form asp-controller="AdminLichHen" asp-action="Edit" method="post" id="editLichHenFormModal">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="IdLichHen" id="editModalIdLichHen" />
+                <input type="hidden" name="IdPhieu" id="editModalIdPhieu" />
+
+                <!-- Header Viettel Red #E60012 -->
+                <div class="modal-header border-0 text-white position-relative" style="background: linear-gradient(135deg, #E60012 0%, #B00F15 100%);">
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="rounded-circle bg-white text-danger d-flex align-items-center justify-content-center shadow-sm vt-header-icon">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </div>
+                        <div>
+                            <h5 class="modal-title text-white m-0" id="editLichHenModalLabel">Chỉnh sửa lịch hẹn</h5>
+                            <div class="small text-white-50" style="font-size: 0.75rem;">Mã phiếu hỗ trợ: <strong id="editModalMaPhieuText" class="text-white">...</strong></div>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <!-- Modal Body (Chia 2 cột) -->
+                <div class="modal-body bg-light">
+                    <!-- Alert Thông báo Lỗi / Xung Đột -->
+                    <div id="editModalConflictAlertBanner" class="alert alert-danger d-none mb-2 border-0 shadow-sm rounded-3 py-1.5 px-3" role="alert">
+                        <div class="d-flex align-items-center">
+                            <i class="fa-solid fa-triangle-exclamation me-2 fs-5"></i>
+                            <div class="small fw-bold" style="font-size: 12.5px;" id="editModalConflictBannerDesc">Kỹ thuật viên đã có lịch hẹn trong khoảng thời gian này. Vui lòng chọn nhân viên khác hoặc đổi thời gian.</div>
+                        </div>
+                    </div>
+
+                    <div class="row g-2">
+                        <!-- CỘT TRÁI: Thông tin phiếu READONLY -->
+                        <div class="col-md-6">
+                            <div class="bg-white shadow-sm h-100 border vt-compact-card">
+                                <h6 class="fw-bold text-secondary mb-2 border-bottom pb-1" style="font-size: 13.5px;">
+                                    <i class="fa-solid fa-lock me-1"></i>Thông Tin Cố Định (Readonly)
+                                </h6>
+                                <div class="vt-compact-field">
+                                    <label class="form-label text-muted vt-compact-label">Mã lịch hẹn</label>
+                                    <input type="text" class="form-control bg-light border-0 fw-bold text-dark" id="editDisplayIdLichHen" readonly value="—" />
+                                </div>
+                                <div class="vt-compact-field">
+                                    <label class="form-label text-muted vt-compact-label">Mã phiếu hỗ trợ</label>
+                                    <input type="text" class="form-control bg-light border-0 fw-bold text-danger" id="editDisplayMaPhieu" readonly value="—" />
+                                </div>
+                                <div class="vt-compact-field">
+                                    <label class="form-label text-muted vt-compact-label">Khách hàng</label>
+                                    <input type="text" class="form-control bg-light border-0 fw-semibold text-dark" id="editDisplayKhachHang" readonly value="—" />
+                                </div>
+                                <div class="vt-compact-field">
+                                    <label class="form-label text-muted vt-compact-label">Danh mục</label>
+                                    <input type="text" class="form-control bg-light border-0 text-dark" id="editDisplayDanhMuc" readonly value="—" />
+                                </div>
+                                <div class="vt-compact-field mb-0">
+                                    <label class="form-label text-muted vt-compact-label">Dịch vụ</label>
+                                    <input type="text" class="form-control bg-light border-0 text-dark" id="editDisplayDichVu" readonly value="—" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- CỘT PHẢI: Thông tin CHO PHÉP CHỈNH SỬA -->
+                        <div class="col-md-6">
+                            <div class="bg-white shadow-sm h-100 border vt-compact-card">
+                                <h6 class="fw-bold text-danger mb-2 border-bottom pb-1" style="font-size: 13.5px;">
+                                    <i class="fa-solid fa-sliders me-1"></i>Thông Tin Chỉnh Sửa
+                                </h6>
+
+                                <!-- KTV -->
+                                <div class="vt-compact-field">
+                                    <label class="form-label text-dark vt-compact-label">
+                                        Kỹ Thuật Viên Phụ Trách <span class="text-danger">*</span>
+                                    </label>
+                                    <select name="IdNhanVien" class="form-select bg-white border text-dark" id="editModalStaffInput" asp-items="@Model.NhanVienList" required>
+                                        <option value="">-- Chọn kỹ thuật viên --</option>
+                                    </select>
+                                </div>
+
+                                <!-- Ngày hẹn -->
+                                <div class="vt-compact-field">
+                                    <label class="form-label text-dark vt-compact-label">
+                                        Ngày Hẹn <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="date" name="NgayHen" class="form-control bg-white border text-dark" id="editModalInputNgayHen" min="@DateTime.Today.ToString("yyyy-MM-dd")" required />
+                                </div>
+
+                                <!-- Giờ hẹn -->
+                                <div class="row g-1 vt-compact-field">
+                                    <div class="col-6">
+                                        <label class="form-label text-dark vt-compact-label">
+                                            Giờ Bắt Đầu <span class="text-danger">*</span>
+                                        </label>
+                                        <input type="time" name="GioBatDau" class="form-control bg-white border text-dark" id="editModalInputGioBatDau" required />
+                                    </div>
+                                    <div class="col-6">
+                                        <label class="form-label text-dark vt-compact-label">
+                                            Giờ Kết Thúc <span class="text-danger">*</span>
+                                        </label>
+                                        <input type="time" name="GioKetThuc" class="form-control bg-white border text-dark" id="editModalInputGioKetThuc" required />
+                                    </div>
+                                </div>
+
+                                <!-- Địa chỉ hỗ trợ -->
+                                <div class="vt-compact-field">
+                                    <label class="form-label text-dark vt-compact-label">
+                                        Địa Chỉ Hỗ Trợ <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="text" name="DiaDiem" class="form-control bg-white border text-dark" id="editModalInputDiaDiem" placeholder="Nhập địa chỉ..." required />
+                                </div>
+
+                                <!-- Ghi chú -->
+                                <div class="vt-compact-field mb-0">
+                                    <label class="form-label text-dark vt-compact-label">Ghi Chú Admin</label>
+                                    <textarea name="GhiChu" class="form-control bg-white border text-dark vt-compact-textarea" id="editModalGhiChu" rows="2" placeholder="Nhập ghi chú..."></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="modal-footer bg-white border-0 justify-content-end gap-2">
+                    <button type="button" class="btn btn-light text-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="submit" class="btn btn-danger text-white shadow-sm" style="background-color:#E60012; border-color:#E60012;">
+                        <i class="fa-solid fa-floppy-disk me-1"></i> Cập Nhật
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- TOAST NOTIFICATION CONTAINER -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 9999;">
+    <div id="vtSuccessToast" class="toast align-items-center text-white bg-success border-0 rounded-3 shadow-lg" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body font-weight-semibold" id="vtSuccessToastMsg">
+                <i class="fa-solid fa-circle-check me-2"></i>Cập nhật lịch hẹn thành công.
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+<!-- MODAL 0: TẠO LỊCH HẸN TRỰC TIẾP (POPUP HỆ THỐNG) -->
+<div class="modal fade" id="createLichHenModal" tabindex="-1" aria-labelledby="createLichHenModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content vt-modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+            <form asp-controller="AdminLichHen" asp-action="Create" method="post" id="createLichHenFormModal">
+                @Html.AntiForgeryToken()
+
+                <!-- Modal Header -->
+                <div class="modal-header border-0 text-white p-4 position-relative" style="background: linear-gradient(135deg, #D71920 0%, #B00F15 100%);">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="rounded-circle bg-white text-danger d-flex align-items-center justify-content-center shadow-sm" style="width: 46px; height: 46px; font-size: 1.25rem;">
+                            <i class="fa-solid fa-calendar-plus"></i>
+                        </div>
+                        <div>
+                            <h5 class="modal-title fw-bold text-white m-0" id="createLichHenModalLabel">Tạo Lịch Hẹn Hỗ Trợ Kỹ Thuật</h5>
+                            <div class="small text-white-50 mt-0.5">Đặt lịch hẹn hỗ trợ trực tiếp hoặc trực tuyến cho phiếu yêu cầu</div>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <!-- Modal Body -->
+                <div class="modal-body p-4 bg-light">
+                    <!-- 1. Chọn phiếu hỗ trợ -->
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-dark small mb-1">
+                            Chọn Phiếu Hỗ Trợ Kỹ Thuật <span class="text-danger">*</span>
+                        </label>
+                        @if (Model.PhieuList != null && Model.PhieuList.Any())
+                        {
+                            <select name="IdPhieu" class="form-select bg-white border-0 py-2.5 shadow-sm rounded-3 fw-bold text-dark" id="modalSelectPhieuInput" required asp-items="@Model.PhieuList">
+                                <option value="">-- Chọn phiếu hỗ trợ chưa có lịch hẹn --</option>
+                            </select>
+                        }
+                        else
+                        {
+                            <div class="alert alert-warning border-0 rounded-3 mb-0 small">
+                                <i class="fa-solid fa-circle-info me-2"></i>Hiện tại tất cả các phiếu hỗ trợ đang xử lý đều đã có lịch hẹn hoặc không có phiếu khả dụng.
+                            </div>
+                        }
+                    </div>
+
+                    <!-- 2. Kỹ thuật viên -->
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-dark small mb-1">
+                            Phân Công Kỹ Thuật Viên Phụ Trách (Tùy chọn)
+                        </label>
+                        <select name="IdNhanVien" class="form-select bg-white border-0 py-2.5 shadow-sm rounded-3 text-dark" id="modalSelectStaffInput" asp-items="@Model.NhanVienList">
+                            <option value="">-- Để trống nếu chưa phân công (Trạng thái sẽ là Chờ xác nhận) --</option>
+                        </select>
+                        <div class="form-text text-muted small mt-1">
+                            <i class="fa-solid fa-circle-info me-1 text-primary"></i>Nếu chọn KTV, lịch hẹn sẽ được tự động chuyển sang trạng thái <strong>Đã xác nhận</strong>.
+                        </div>
+                    </div>
+
+                    <!-- Conflict alert -->
+                    <div id="modalConflictAlertBanner" class="alert alert-warning d-none mb-3 border-0 shadow-sm rounded-3" role="alert">
+                        <div class="d-flex align-items-center">
+                            <i class="fa-solid fa-triangle-exclamation me-2 fs-5"></i>
+                            <div>
+                                <div class="fw-bold small" id="modalConflictBannerTitle">Cảnh báo xung đột lịch làm việc</div>
+                                <div class="small" id="modalConflictBannerDesc">KTV đã có lịch hẹn trùng khung giờ này.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3. Ngày & Giờ hẹn -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold text-dark small mb-1">
+                                Ngày Hẹn <span class="text-danger">*</span>
+                            </label>
+                            <input type="date" name="NgayHen" class="form-control bg-white border-0 py-2.5 shadow-sm rounded-3 text-dark" id="modalInputNgayHen" min="@DateTime.Today.ToString("yyyy-MM-dd")" value="@DateTime.Today.AddDays(1).ToString("yyyy-MM-dd")" required />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold text-dark small mb-1">
+                                Giờ Bắt Đầu <span class="text-danger">*</span>
+                            </label>
+                            <input type="time" name="GioBatDau" class="form-control bg-white border-0 py-2.5 shadow-sm rounded-3 text-dark" id="modalInputGioBatDau" value="08:00" required />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold text-dark small mb-1">
+                                Giờ Kết Thúc <span class="text-danger">*</span>
+                            </label>
+                            <input type="time" name="GioKetThuc" class="form-control bg-white border-0 py-2.5 shadow-sm rounded-3 text-dark" id="modalInputGioKetThuc" value="10:00" required />
+                        </div>
+                    </div>
+
+                    <!-- 4. Hình thức & Địa điểm -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold text-dark small mb-1">
+                                Hình Thức Hỗ Trợ <span class="text-danger">*</span>
+                            </label>
+                            <select name="HinhThuc" class="form-select bg-white border-0 py-2.5 shadow-sm rounded-3 text-dark" id="modalSelectHinhThuc">
+                                <option value="TrucTiep">Trực tiếp (Tại nhà/Cơ quan KH)</option>
+                                <option value="TrucTuyen">Trực tuyến (Online/Remote)</option>
+                            </select>
+                        </div>
+                        <div class="col-md-8">
+                            <label class="form-label fw-bold text-dark small mb-1">
+                                Địa Điểm Hỗ Trợ <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" name="DiaDiem" class="form-control bg-white border-0 py-2.5 shadow-sm rounded-3 text-dark" id="modalInputDiaDiem" placeholder="Nhập địa chỉ nhà hoặc địa điểm cần KTV đến hỗ trợ..." required />
+                        </div>
+                    </div>
+
+                    <!-- 5. Ghi chú -->
+                    <div class="mb-0">
+                        <label class="form-label fw-bold text-dark small mb-1">Ghi Chú Admin / Phụ Trách</label>
+                        <textarea name="GhiChu" class="form-control bg-white border-0 shadow-sm rounded-3 text-dark" rows="2" placeholder="Ghi chú thiết bị, vật tư hoặc yêu cầu đặc biệt cho KTV..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="modal-footer vt-modal-footer bg-white border-0 p-3 justify-content-end gap-2">
+                    <button type="button" class="btn btn-light px-4 py-2 text-secondary fw-bold rounded-pill" data-bs-dismiss="modal">
+                        Hủy bỏ
+                    </button>
+                    <button type="submit" class="btn btn-danger px-4 py-2 fw-bold text-white rounded-pill shadow-sm" style="background-color:#D71920; border-color:#D71920;">
+                        <i class="fa-solid fa-plus me-1"></i> Tạo Lịch Hẹn Mới
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <!-- MODAL 1: XÁC NHẬN & PHÂN CÔNG -->
 <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -528,4 +1037,188 @@
 
 @section Scripts {
     <script src="~/assets/js/admin/lichhen.js" asp-append-version="true"></script>
+    <script>
+        function openDetailsModal(idLichHen) {
+            const modal = bootstrap.Modal.getOrCreateInstance('#detailsLichHenModal');
+            document.getElementById('detailIdLichHen').textContent = '#' + idLichHen;
+            document.getElementById('detailMaPhieuText').textContent = '...';
+            document.getElementById('detailMaPhieuTitle').textContent = 'PHT...';
+            document.getElementById('detailTenKhachHang').textContent = 'Đang tải...';
+            modal.show();
+
+            fetch(`/Admin/LichHen/GetJson/${idLichHen}`)
+                .then(res => {
+                    if (!res.ok) throw new Error('HTTP ' + res.status);
+                    return res.json();
+                })
+                .then(data => {
+                    document.getElementById('detailIdLichHen').textContent = '#' + data.idLichHen;
+                    document.getElementById('detailMaPhieuText').textContent = data.maPhieu;
+                    document.getElementById('detailMaPhieuTitle').textContent = data.maPhieu;
+                    document.getElementById('detailTenKhachHang').textContent = data.tenKhachHang;
+
+                    const phoneElem = document.getElementById('detailSoDienThoaiKhachHang');
+                    phoneElem.textContent = data.soDienThoaiKhachHang;
+                    phoneElem.href = 'tel:' + data.soDienThoaiKhachHang;
+
+                    document.getElementById('detailTenDanhMuc').textContent = data.tenDanhMuc || 'Hỗ trợ kỹ thuật';
+                    document.getElementById('detailTenDichVu').textContent = data.tenDichVu;
+                    document.getElementById('detailNgayTao').textContent = data.ngayTaoFormatted || '—';
+
+                    document.getElementById('detailTenNhanVien').textContent = data.tenNhanVien + (data.soDienThoaiNhanVien ? ` (${data.soDienThoaiNhanVien})` : '');
+                    document.getElementById('detailNgayHen').textContent = data.ngayHenFormatted;
+                    document.getElementById('detailKhungGio').textContent = (data.gioBatDau || '--') + ' - ' + (data.gioKetThuc || '--');
+                    document.getElementById('detailDiaDiemKhachHang').textContent = data.diaDiem;
+                    document.getElementById('detailTrangThaiBadge').textContent = data.trangThaiTitle;
+                    document.getElementById('detailGhiChu').textContent = data.ghiChu || 'Không có ghi chú thêm.';
+
+                    const filesContainer = document.getElementById('detailFilesContainer');
+                    if (data.files && data.files.length > 0) {
+                        filesContainer.innerHTML = data.files.map(f => `<a href="${f.duongDan}" target="_blank" class="d-inline-block text-primary text-decoration-none me-2 mb-1"><i class="fa-solid fa-paperclip me-1"></i>${f.tenFile}</a>`).join('');
+                    } else {
+                        filesContainer.innerHTML = '<span class="text-muted fst-italic">Không có file đính kèm.</span>';
+                    }
+                })
+                .catch(err => {
+                    console.error('Lỗi khi tải chi tiết lịch hẹn:', err);
+                    document.getElementById('detailTenKhachHang').textContent = 'Không thể tải dữ liệu.';
+                });
+        }
+
+        function openEditModal(idLichHen) {
+            const modal = bootstrap.Modal.getOrCreateInstance('#editLichHenModal');
+            const conflictAlert = document.getElementById('editModalConflictAlertBanner');
+            if (conflictAlert) conflictAlert.classList.add('d-none');
+            modal.show();
+
+            fetch(`/Admin/LichHen/GetJson/${idLichHen}`)
+                .then(res => {
+                    if (!res.ok) throw new Error('HTTP ' + res.status);
+                    return res.json();
+                })
+                .then(data => {
+                    document.getElementById('editModalIdLichHen').value = data.idLichHen;
+                    document.getElementById('editModalIdPhieu').value = data.idPhieu;
+
+                    document.getElementById('editModalMaPhieuText').textContent = data.maPhieu;
+                    document.getElementById('editDisplayIdLichHen').value = '#' + data.idLichHen;
+                    document.getElementById('editDisplayMaPhieu').value = data.maPhieu;
+                    document.getElementById('editDisplayKhachHang').value = data.tenKhachHang;
+                    document.getElementById('editDisplayDanhMuc').value = data.tenDanhMuc || 'Hỗ trợ kỹ thuật';
+                    document.getElementById('editDisplayDichVu').value = data.tenDichVu;
+
+                    if (document.getElementById('editModalStaffInput')) {
+                        document.getElementById('editModalStaffInput').value = data.idNhanVien || '';
+                    }
+                    document.getElementById('editModalInputNgayHen').value = data.ngayHen || '';
+                    document.getElementById('editModalInputGioBatDau').value = data.gioBatDau || '';
+                    document.getElementById('editModalInputGioKetThuc').value = data.gioKetThuc || '';
+                    document.getElementById('editModalInputDiaDiem').value = data.diaDiem || '';
+                    document.getElementById('editModalGhiChu').value = data.ghiChu || '';
+                })
+                .catch(err => {
+                    console.error('Lỗi khi tải dữ liệu chỉnh sửa:', err);
+                });
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // Đăng ký AJAX submit cho Form Cập Nhật Lịch Hẹn
+            const editForm = document.getElementById('editLichHenFormModal');
+            if (editForm) {
+                editForm.addEventListener('submit', function (e) {
+                    e.preventDefault();
+                    const idLichHen = document.getElementById('editModalIdLichHen').value;
+                    const formData = new FormData(editForm);
+                    const conflictAlert = document.getElementById('editModalConflictAlertBanner');
+                    const conflictDesc = document.getElementById('editModalConflictBannerDesc');
+
+                    fetch(`/Admin/LichHen/Edit/${idLichHen}`, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            const modal = bootstrap.Modal.getInstance(document.getElementById('editLichHenModal'));
+                            if (modal) modal.hide();
+
+                            // Hiển thị Toast thông báo thành công
+                            const toastElem = document.getElementById('vtSuccessToast');
+                            const toastMsg = document.getElementById('vtSuccessToastMsg');
+                            if (toastElem && toastMsg) {
+                                toastMsg.innerHTML = `<i class="fa-solid fa-circle-check me-2"></i>${data.message || 'Cập nhật lịch hẹn thành công.'}`;
+                                const toast = bootstrap.Toast.getOrCreateInstance(toastElem);
+                                toast.show();
+                            }
+
+                            // Cập nhật lại giao diện không cần reload F5
+                            setTimeout(() => {
+                                location.reload();
+                            }, 800);
+                        } else {
+                            if (conflictAlert && conflictDesc) {
+                                conflictDesc.textContent = data.message || 'Kỹ thuật viên đã có lịch hẹn trong khoảng thời gian này. Vui lòng chọn nhân viên khác hoặc đổi thời gian.';
+                                conflictAlert.classList.remove('d-none');
+                            } else {
+                                alert(data.message);
+                            }
+                        }
+                    })
+                    .catch(err => {
+                        console.error('Error submitting edit form:', err);
+                        alert('Có lỗi xảy ra khi lưu dữ liệu.');
+                    });
+                });
+            }
+
+            const modalStaffSelect = document.getElementById('modalSelectStaffInput');
+            const modalNgayHenInput = document.getElementById('modalInputNgayHen');
+            const modalGioBatDauInput = document.getElementById('modalInputGioBatDau');
+            const modalGioKetThucInput = document.getElementById('modalInputGioKetThuc');
+            const modalHinhThucSelect = document.getElementById('modalSelectHinhThuc');
+            const modalConflictBanner = document.getElementById('modalConflictAlertBanner');
+            const modalConflictTitle = document.getElementById('modalConflictBannerTitle');
+            const modalConflictDesc = document.getElementById('modalConflictBannerDesc');
+
+            function checkModalConflict() {
+                const staffId = modalStaffSelect ? modalStaffSelect.value : '';
+                const ngayHen = modalNgayHenInput ? modalNgayHenInput.value : '';
+                const gioBatDau = modalGioBatDauInput ? modalGioBatDauInput.value : '';
+                const gioKetThuc = modalGioKetThucInput ? modalGioKetThucInput.value : '';
+                const hinhThuc = modalHinhThucSelect ? modalHinhThucSelect.value : 'TrucTiep';
+
+                if (!staffId || !ngayHen || !gioBatDau || !gioKetThuc || gioBatDau >= gioKetThuc) {
+                    if (modalConflictBanner) modalConflictBanner.classList.add('d-none');
+                    return;
+                }
+
+                const startDateTimeStr = `${ngayHen}T${gioBatDau}:00`;
+                const endDateTimeStr = `${ngayHen}T${gioKetThuc}:00`;
+
+                fetch(`/Admin/LichHen/CheckConflict?idNhanVien=${staffId}&start=${encodeURIComponent(startDateTimeStr)}&end=${encodeURIComponent(endDateTimeStr)}&hinhThuc=${hinhThuc}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        if (!data.isAvailable) {
+                            if (modalConflictTitle) modalConflictTitle.textContent = 'Cảnh báo xung đột lịch làm việc KTV';
+                            if (modalConflictDesc) modalConflictDesc.textContent = `${data.message} (${data.reasons ? data.reasons.join('; ') : ''})`;
+                            if (modalConflictBanner) modalConflictBanner.classList.remove('d-none');
+                        } else {
+                            if (modalConflictBanner) modalConflictBanner.classList.add('d-none');
+                        }
+                    })
+                    .catch(() => {
+                        if (modalConflictBanner) modalConflictBanner.classList.add('d-none');
+                    });
+            }
+
+            if (modalStaffSelect) modalStaffSelect.addEventListener('change', checkModalConflict);
+            if (modalNgayHenInput) modalNgayHenInput.addEventListener('change', checkModalConflict);
+            if (modalGioBatDauInput) modalGioBatDauInput.addEventListener('change', checkModalConflict);
+            if (modalGioKetThucInput) modalGioKetThucInput.addEventListener('change', checkModalConflict);
+            if (modalHinhThucSelect) modalHinhThucSelect.addEventListener('change', checkModalConflict);
+        });
+    </script>
 }

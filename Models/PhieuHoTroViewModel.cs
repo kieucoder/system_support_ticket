@@ -156,12 +156,6 @@ namespace SupportTicketSysterm.Models
         /// <summary>Số phiếu đã hủy (TrangThai == "DaHuy").</summary>
         public int DaHuy { get; set; }
 
-        /// <summary>
-        /// Số phiếu quá hạn:
-        /// TrangThai != "DaHoanThanh" AND NgayHenXuLy &lt; ngày hôm nay.
-        /// </summary>
-        public int QuaHan { get; set; }
-
         // ----------------------------------------------------------
         //  Sidebar widgets
         // ----------------------------------------------------------

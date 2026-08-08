@@ -27,8 +27,11 @@ public class AdminLichHenListViewModel
     public int CompletedCount { get; set; }
     public int CancelledCount { get; set; }
 
-    // Dropdown danh sách nhân viên phục vụ bộ lọc
+    // Dropdown danh sách nhân viên phục vụ bộ lọc & tạo mới
     public List<SelectListItem> NhanVienList { get; set; } = new();
+
+    // Dropdown danh sách phiếu chưa có lịch hẹn cho Modal Tạo Mới
+    public List<SelectListItem> PhieuList { get; set; } = new();
 }
 
 /// <summary>
@@ -215,3 +218,63 @@ public class LichSuHoTroItemViewModel
     public DateOnly? NgayCapNhat { get; set; }
     public string TenNhanVien { get; set; } = string.Empty;
 }
+
+/// <summary>
+/// DTO Input / ViewModel Phân công lại KTV cho Admin (PhanCongLai)
+/// </summary>
+public class AdminPhanCongLaiViewModel
+{
+    [Required(ErrorMessage = "Vui lòng chọn lịch hẹn.")]
+    public int IdLichHen { get; set; }
+
+    public int? IdPhieu { get; set; }
+    public string MaPhieu { get; set; } = string.Empty;
+    public string TenKhachHang { get; set; } = string.Empty;
+    public string TenKtvHienTai { get; set; } = "Chưa phân công";
+
+    [Required(ErrorMessage = "Vui lòng chọn nhân viên kỹ thuật mới.")]
+    public int IdNhanVienMoi { get; set; }
+
+    [StringLength(500, ErrorMessage = "Ghi chú không vượt quá 500 ký tự.")]
+    public string? GhiChu { get; set; }
+
+    public List<SelectListItem> NhanVienList { get; set; } = new();
+}
+
+/// <summary>
+/// ViewModel Tạo mới Lịch hẹn trực tiếp dành cho Admin (Admin/LichHen/Create)
+/// </summary>
+public class AdminCreateLichHenViewModel
+{
+    [Required(ErrorMessage = "Vui lòng chọn phiếu hỗ trợ kỹ thuật.")]
+    [Range(1, int.MaxValue, ErrorMessage = "Vui lòng chọn phiếu hỗ trợ hợp lệ.")]
+    public int IdPhieu { get; set; }
+
+    public int? IdNhanVien { get; set; }
+
+    [Required(ErrorMessage = "Vui lòng chọn ngày hẹn.")]
+    public DateOnly NgayHen { get; set; } = DateOnly.FromDateTime(DateTime.Today.AddDays(1));
+
+    [Required(ErrorMessage = "Vui lòng chọn giờ bắt đầu.")]
+    public TimeOnly GioBatDau { get; set; } = new TimeOnly(8, 0);
+
+    [Required(ErrorMessage = "Vui lòng chọn giờ kết thúc.")]
+    public TimeOnly GioKetThuc { get; set; } = new TimeOnly(10, 0);
+
+    [Required(ErrorMessage = "Vui lòng chọn hình thức hỗ trợ.")]
+    public string HinhThuc { get; set; } = "TrucTiep";
+
+    [Required(ErrorMessage = "Vui lòng nhập địa điểm hỗ trợ.")]
+    [StringLength(255, ErrorMessage = "Địa điểm không vượt quá 255 ký tự.")]
+    public string DiaDiem { get; set; } = string.Empty;
+
+    [StringLength(500, ErrorMessage = "Ghi chú không vượt quá 500 ký tự.")]
+    public string? GhiChu { get; set; }
+
+    // List phiếu hỗ trợ đủ điều kiện
+    public List<SelectListItem> PhieuList { get; set; } = new();
+
+    // List nhân viên KTV
+    public List<SelectListItem> NhanVienList { get; set; } = new();
+}
+

@@ -6,7 +6,7 @@
     ViewData["HeaderSubtitle"] = "Hệ thống quản lý thông tin khách hàng, trạng thái tài khoản và lịch sử phiếu hỗ trợ";
 
     string vaiTro = Context.Session?.GetString("Role") ?? Context.Session?.GetString("VaiTro") ?? User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value ?? User.FindFirst("VaiTro")?.Value ?? "";
-    bool isAdmin = ViewBag.IsAdmin ?? (vaiTro.Equals("Admin", StringComparison.OrdinalIgnoreCase) || vaiTro.Equals("Quản trị viên", StringComparison.OrdinalIgnoreCase));
+    bool isAdmin = ViewBag.IsAdmin ?? (vaiTro.Equals("Admin", StringComparison.OrdinalIgnoreCase) || vaiTro.Equals("Quản trị viên", StringComparison.OrdinalIgnoreCase) || vaiTro.Equals("NhanVien", StringComparison.OrdinalIgnoreCase) || vaiTro.Equals("Nhân viên", StringComparison.OrdinalIgnoreCase) || vaiTro.Equals("Nhân viên hỗ trợ", StringComparison.OrdinalIgnoreCase));
 }
 
 @section Styles {
@@ -164,10 +164,9 @@
 }
 
 <!-- 2. VIEW CUSTOMER DETAIL DIALOG MODAL (PROFILE CARD) -->
+<div class="modal fade" id="customerDetailModal" tabindex="-1" aria-labelledby="customerDetailModalLabel" aria-hidden="true">
+</div>
 <div class="modal fade" id="viewCustomerModal" tabindex="-1" aria-labelledby="viewCustomerModalLabel" aria-hidden="true">
-    <div id="customerDetailContainer">
-        Loading...
-    </div>
 </div>
 <!-- 3. TICKET HISTORY MODAL -->
 <div class="modal fade" id="ticketHistoryModal" tabindex="-1" aria-labelledby="ticketHistoryModalLabel"

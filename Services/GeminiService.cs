@@ -24,9 +24,9 @@ namespace SupportTicketSysterm.Services
             _httpClient = httpClient;
             _logger = logger;
             _apiKey = configuration["Gemini:ApiKey"] ?? "";
-            _model = configuration["Gemini:Model"] ?? "gemini-1.5-flash"; // fallbacks
+            _model = configuration["Gemini:Model"] ?? "gemini-flash-latest"; // fallbacks
 
-            if (string.IsNullOrEmpty(_apiKey))
+            if (string.IsNullOrEmpty(_apiKey) || _apiKey == "YOUR_GEMINI_API_KEY")
             {
                 _logger.LogWarning("Gemini API key is empty or not configured under 'Gemini:ApiKey'. Please configure it in appsettings.json.");
             }
@@ -39,33 +39,16 @@ namespace SupportTicketSysterm.Services
 
         private string MapHttpStatusCodeToErrorMessage(int statusCode, string responseBody)
         {
-            switch (statusCode)
-            {
-                case 400:
-                    return $"[Lỗi {statusCode} - Invalid Argument] Yêu cầu gửi đi không hợp lệ. Chi tiết phản hồi: {responseBody}";
-                case 401:
-                    return $"[Lỗi {statusCode} - Unauthorized] API Key khóa truy cập Gemini không hợp lệ hoặc đã hết hạn. Vui lòng kiểm tra lại cấu hình.";
-                case 403:
-                    return $"[Lỗi {statusCode} - Forbidden] Khóa API của bạn chưa được kích hoạt hoặc không được phép gọi dịch vụ Generative Language API.";
-                case 404:
-                    return $"[Lỗi {statusCode} - Not Found] Model cấu hình '{_model}' không tồn tại hoặc không được tìm thấy ở phiên bản v1beta.";
-                case 429:
-                    return $"⚠️ [Lỗi {statusCode} - Quota Limit Exceeded] Khóa API Google Gemini của bạn đã hết hạn ngạch truy cập miễn phí trong ngày (Free Tier Daily Limit Reached) hoặc bị giới hạn tần suất. Vui lòng tạo khóa API Key mới tại https://aistudio.google.com/app/apikey và cập nhật vào file appsettings.json.";
-                case 500:
-                    return $"[Lỗi {statusCode} - Internal Error] Máy chủ Google Gemini gặp sự cố kỹ thuật nội bộ.";
-                case 503:
-                    return $"[Lỗi {statusCode} - Service Unavailable] Dịch vụ Google Gemini hiện đang quá tải hoặc tạm thời ngưng hoạt động.";
-                default:
-                    return $"[Lỗi {statusCode} - HTTP Error] Kết nối tới máy chủ AI thất bại với trạng thái {statusCode}. Chi tiết: {responseBody}";
-            }
+            _logger.LogError("Gemini API error. HttpStatusCode: {StatusCode}, Body: {ResponseBody}", statusCode, responseBody);
+            return "Xin lỗi, AI hiện đang tạm thời không khả dụng.\n\nYêu cầu của bạn đã được chuyển đến nhân viên hỗ trợ.\n\nBạn vẫn có thể tiếp tục gửi tin nhắn.\n\n[ACTION_BUTTONS]";
         }
 
         public async Task<string> SendPromptAsync(string systemInstruction, string userPrompt)
         {
-            if (string.IsNullOrEmpty(_apiKey))
+            if (string.IsNullOrEmpty(_apiKey) || _apiKey == "YOUR_GEMINI_API_KEY")
             {
-                _logger.LogError("Gemini API Key is missing. Cannot call Gemini Service.");
-                return "Hệ thống AI chưa được cấu hình khóa truy cập (API Key) trong appsettings.json.";
+                _logger.LogError("Gemini API Key is missing or placeholder in configuration.");
+                return "Xin lỗi, AI hiện đang tạm thời không khả dụng.\n\nYêu cầu của bạn đã được chuyển đến nhân viên hỗ trợ.\n\nBạn vẫn có thể tiếp tục gửi tin nhắn.\n\n[ACTION_BUTTONS]";
             }
 
             var endpoint = BuildEndpoint();
@@ -118,11 +101,18 @@ namespace SupportTicketSysterm.Services
                     lastErrorDetails = responseBody;
 
                     // Log response details
-                    _logger.LogInformation("Gemini API Attempt {Attempt} returned StatusCode: {Status}, Response Time: {TimeMs}ms, Body: {Body}", 
-                        i + 1, lastStatusCode, stopwatch.Elapsed.TotalMilliseconds, responseBody);
+                    _logger.LogInformation("Gemini API Attempt {Attempt} returned StatusCode: {Status}, Response Time: {TimeMs}ms", 
+                        i + 1, lastStatusCode, stopwatch.Elapsed.TotalMilliseconds);
 
                     if (response.IsSuccessStatusCode)
                     {
+                        break;
+                    }
+
+                    // Không retry khi 429 (quota exceeded) hoặc 400/401/403 (lỗi cấu hình)
+                    if (lastStatusCode == 429 || lastStatusCode == 400 || lastStatusCode == 401 || lastStatusCode == 403)
+                    {
+                        _logger.LogWarning("Gemini API returned {StatusCode} — stopping retries immediately.", lastStatusCode);
                         break;
                     }
                 }
@@ -178,10 +168,10 @@ namespace SupportTicketSysterm.Services
 
         public async Task<string> SendMultimodalPromptAsync(string systemInstruction, string userPrompt, byte[] fileBytes, string mimeType)
         {
-            if (string.IsNullOrEmpty(_apiKey))
+            if (string.IsNullOrEmpty(_apiKey) || _apiKey == "YOUR_GEMINI_API_KEY")
             {
-                _logger.LogError("Gemini API Key is missing.");
-                return "Hệ thống AI chưa được cấu hình khóa truy cập (API Key) trong appsettings.json.";
+                _logger.LogError("Gemini API Key is missing or placeholder.");
+                return "⚠️ Hệ thống AI chưa được cấu hình API Key hợp lệ. Vui lòng liên hệ quản trị viên để kích hoạt.";
             }
 
             if (fileBytes == null || fileBytes.Length == 0)
@@ -247,6 +237,13 @@ namespace SupportTicketSysterm.Services
 
                     if (response.IsSuccessStatusCode)
                     {
+                        break;
+                    }
+
+                    // Không retry khi 429 (quota exceeded) hoặc lỗi cấu hình
+                    if (lastStatusCode == 429 || lastStatusCode == 400 || lastStatusCode == 401 || lastStatusCode == 403)
+                    {
+                        _logger.LogWarning("Multimodal Gemini API returned {StatusCode} — stopping retries.", lastStatusCode);
                         break;
                     }
                 }

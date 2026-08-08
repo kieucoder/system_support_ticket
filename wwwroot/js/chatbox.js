@@ -5,10 +5,44 @@
 document.addEventListener('DOMContentLoaded', function() {
     'use strict';
 
+    function setAiStatus(status) {
+        const dot = document.getElementById('aiStatusDot');
+        const text = document.getElementById('aiStatusText');
+        const roomBadge = document.getElementById('aiRoomStatusBadge');
+
+        if (status === 'thinking') {
+            if (dot) { dot.style.backgroundColor = '#f59e0b'; }
+            if (text) { text.textContent = '🟡 Đang xử lý...'; }
+            if (roomBadge) { roomBadge.className = 'stream-header-status-badge text-dark text-bg-warning'; roomBadge.textContent = '🟡 Đang xử lý...'; }
+        } else if (status === 'fallback') {
+            if (dot) { dot.style.backgroundColor = '#ef4444'; }
+            if (text) { text.textContent = '🔴 AI tạm thời không khả dụng'; }
+            if (roomBadge) { roomBadge.className = 'stream-header-status-badge text-white text-bg-danger'; roomBadge.textContent = '🔴 AI tạm thời không khả dụng'; }
+        } else {
+            if (dot) { dot.style.backgroundColor = '#22c55e'; }
+            if (text) { text.textContent = '🟢 AI sẵn sàng'; }
+            if (roomBadge) { roomBadge.className = 'stream-header-status-badge text-white text-bg-success'; roomBadge.textContent = '🟢 AI sẵn sàng'; }
+        }
+    }
+
+    function transferToStaff() {
+        if (!config.isLoggedIn) {
+            if (loginModal) loginModal.style.display = 'flex';
+            return;
+        }
+        switchScreen(screenConversations);
+        loadConversationsList();
+        setTimeout(() => {
+            if (btnCreateNewConvo) btnCreateNewConvo.click();
+        }, 300);
+    }
+
     // Global Widget Namespace
     window.TechSupportChat = {
         openConversation: openConversation,
-        backToConversations: backToConversations
+        backToConversations: backToConversations,
+        transferToStaff: transferToStaff,
+        setAiStatus: setAiStatus
     };
 
     // Configuration flags
@@ -491,6 +525,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!text && !selectedAiFile) return;
 
         isProcessing = true;
+        setAiStatus('thinking');
         if (btnAiSend) btnAiSend.disabled = true;
 
         // Optimistic UI update
@@ -578,6 +613,12 @@ document.addEventListener('DOMContentLoaded', function() {
             // Remove optimistic UI temp bubbles before applying html
             document.querySelectorAll('.temporary-client-msg').forEach(el => el.remove());
 
+            if (html.includes('🔴 AI tạm thời không khả dụng') || html.includes('không khả dụng')) {
+                setAiStatus('fallback');
+            } else {
+                setAiStatus('ready');
+            }
+
             chatAiMessagesContainer.innerHTML = html;
             scrollContainerToBottom(chatAiMessagesContainer);
 
@@ -587,6 +628,7 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .catch(err => {
             isProcessing = false;
+            setAiStatus('fallback');
             if (btnAiSend) btnAiSend.disabled = false;
             if (aiTypingIndicator) {
                 aiTypingIndicator.style.display = 'none';
@@ -596,7 +638,27 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             document.querySelectorAll('.temporary-client-msg').forEach(el => el.remove());
             console.error(err);
-            alert("Lỗi khi kết nối với AI.");
+            chatAiMessagesContainer.innerHTML += `
+                <div class="chat-message-item msg-row incoming received ai-message">
+                    <div class="message-avatar msg-avatar robot-avatar">
+                        <i class="bi bi-robot"></i>
+                    </div>
+                    <div class="message-content msg-bubble-wrapper">
+                        <div class="viettel-bubble msg-bubble border border-danger-subtle bg-white">
+                            <div class="message-text">Xin lỗi, AI hiện đang tạm thời không khả dụng.<br/><br/>Yêu cầu của bạn đã được chuyển đến nhân viên hỗ trợ.<br/><br/>Bạn vẫn có thể tiếp tục gửi tin nhắn.</div>
+                            <div class='mt-3 d-flex flex-column gap-2 w-100 action-buttons-group'>
+                                <a href='/Ticket/TaoPhieu' class='btn btn-danger btn-sm rounded-pill fw-bold text-white py-2 text-center text-decoration-none shadow-sm' style='background-color:#D71920; border-color:#D71920;'>
+                                    <i class='bi bi-file-earmark-plus-fill me-1'></i> Tạo Phiếu Hỗ Trợ
+                                </a>
+                                <button type='button' class='btn btn-outline-danger btn-sm rounded-pill fw-bold py-2 text-center btn-transfer-staff shadow-sm' onclick='if(window.TechSupportChat && window.TechSupportChat.transferToStaff) window.TechSupportChat.transferToStaff();'>
+                                    <i class='bi bi-headset me-1'></i> Chat Với Nhân Viên Kỹ Thuật
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            scrollContainerToBottom(chatAiMessagesContainer);
         });
     }
 
@@ -756,6 +818,74 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.error(err);
                 alert('Lỗi kết nối khi đặt lịch.');
             });
+        }
+    };
+
+    // ==========================================
+    // 11. CONFIRM TICKET CREATION HELPER
+    // ==========================================
+    window.confirmCreateTicket = function(btn, title, categoryId, serviceId, address, content) {
+        if (!config.isLoggedIn) {
+            if (loginModal) loginModal.style.display = 'flex';
+            return;
+        }
+
+        const cardContainer = btn.closest('.ai-confirm-ticket-card');
+        btn.disabled = true;
+        btn.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span>Đang tạo...`;
+
+        fetch('/api/ticket/create-ai', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                title: title,
+                categoryId: categoryId,
+                serviceId: serviceId,
+                address: address,
+                content: content
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                if (cardContainer) {
+                    cardContainer.innerHTML = `
+                        <div class="alert alert-success m-0 rounded-4 border-0 shadow-sm p-3" style="border-left: 4px solid #198754 !important; background-color: #f0fdf4;">
+                            <h6 class="fw-bold mb-2 text-success" style="font-size:0.95rem;">
+                                <i class="bi bi-check-circle-fill me-2"></i>PHIẾU HỖ TRỢ CỦA BẠN ĐÃ ĐƯỢC TẠO THÀNH CÔNG!
+                            </h6>
+                            <div class="small text-dark" style="font-size:0.85rem; line-height:1.6;">
+                                <div>• <strong>Mã phiếu:</strong> <span class="badge bg-danger text-white fw-bold px-2 py-1">${data.maPhieu}</span></div>
+                                <div>• <strong>Trạng thái:</strong> <span class="badge bg-warning-subtle text-dark fw-bold px-2 py-1">${data.trangThai}</span></div>
+                                <div>• <strong>Dịch vụ:</strong> ${data.tenDichVu}</div>
+                                <div>• <strong>Kỹ thuật viên:</strong> ${data.tenKtv}</div>
+                                <div class="mt-2 text-muted">Hệ thống sẽ tự động phân công kỹ thuật viên phù hợp và thông báo khi có cập nhật.</div>
+                            </div>
+                        </div>
+                    `;
+                }
+            } else {
+                btn.disabled = false;
+                btn.innerHTML = `<i class="bi bi-check-circle-fill me-1"></i> Tạo phiếu hỗ trợ`;
+                alert(data.message || "Lỗi khi tạo phiếu hỗ trợ.");
+            }
+        })
+        .catch(err => {
+            btn.disabled = false;
+            btn.innerHTML = `<i class="bi bi-check-circle-fill me-1"></i> Tạo phiếu hỗ trợ`;
+            console.error(err);
+            alert("Lỗi kết nối khi tạo phiếu.");
+        });
+    };
+
+    window.cancelConfirmTicket = function(btn) {
+        const cardContainer = btn.closest('.ai-confirm-ticket-card');
+        if (cardContainer) {
+            cardContainer.innerHTML = `
+                <div class="alert alert-secondary m-0 rounded-4 border-0 p-2 small text-muted">
+                    <i class="bi bi-info-circle me-1"></i> Đã hủy yêu cầu tạo phiếu hỗ trợ. Bạn có thể tiếp tục hỏi hoặc chọn dịch vụ khác.
+                </div>
+            `;
         }
     };
 });

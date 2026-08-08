@@ -329,26 +329,6 @@
                         </div>
                     </div>
 
-                    <!-- Overdue -->
-                    <div class="animate-fade-up delay-5">
-                        <div class="stat-card-custom stat-theme-overdue" data-status="QuaHan">
-                            <div class="stat-card-custom__header">
-                                <span class="stat-card-custom__label">Quá hạn</span>
-                                <div class="stat-card-custom__icon-circle">
-                                    <i class="bi bi-exclamation-octagon"></i>
-                                </div>
-                            </div>
-                            <div class="stat-card-custom__info">
-                                <h3 class="stat-card-custom__value" data-target="@Model.QuaHan">0</h3>
-                                <div class="stat-card-custom__progress-wrapper">
-                                    <div class="stat-card-custom__progress-bg">
-                                        <div class="stat-card-custom__progress-bar"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
                 </div>
             </div>
         </section>
@@ -356,6 +336,30 @@
         <!-- ==================== MAIN CONTENT SECTION ==================== -->
         <main class="py-3">
             <div class="container">
+                <!-- ==================== ALERT MESSAGES ==================== -->
+                @if (TempData["SuccessMessage"] != null)
+                {
+                    <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm rounded-4 mb-4 d-flex align-items-center" role="alert" id="autoDismissAlert" style="background-color: #ECFDF5; color: #065F46; border-left: 5px solid #10B981 !important;">
+                        <i class="bi bi-check-circle-fill fs-4 me-3 text-success"></i>
+                        <div>
+                            <h6 class="fw-bold mb-1" style="font-size: 0.95rem;">Hủy phiếu thành công</h6>
+                            <div style="font-size: 0.88rem;">@TempData["SuccessMessage"]</div>
+                        </div>
+                        <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+                @if (TempData["ErrorMessage"] != null)
+                {
+                    <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm rounded-4 mb-4 d-flex align-items-center" role="alert" id="autoDismissAlert" style="background-color: #FEF2F2; color: #991B1B; border-left: 5px solid #EF4444 !important;">
+                        <i class="bi bi-exclamation-triangle-fill fs-4 me-3 text-danger"></i>
+                        <div>
+                            <h6 class="fw-bold mb-1" style="font-size: 0.95rem;">Không thể thực hiện</h6>
+                            <div style="font-size: 0.88rem;">@TempData["ErrorMessage"]</div>
+                        </div>
+                        <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+
                 <div class="row g-4">
                     
                     <!-- Left Column: Search, Filter, Tickets List -->
@@ -406,9 +410,6 @@
                                             </button>
                                             <button type="button" class="filter-chip @(ViewBag.SelectedStatus == "DaHuy" ? "active" : "")" data-status="DaHuy">
                                                 Đã hủy <span class="chip-count chip-count-cancelled">@Model.DaHuy</span>
-                                            </button>
-                                            <button type="button" class="filter-chip @(ViewBag.SelectedStatus == "QuaHan" ? "active" : "")" data-status="QuaHan">
-                                                Quá hạn <span class="chip-count chip-count-overdue">@Model.QuaHan</span>
                                             </button>
                                         </div>
                                         
@@ -588,6 +589,7 @@
                                                     };
 
                                                     var isCompleted = normalizeStatus(phieu.TrangThai) == "DaHoanThanh";
+                                                    var isChoTiepNhan = normalizeStatus(phieu.TrangThai) == "ChoTiepNhan";
 
                                                     <div class="ticket-item-row" style="--status-color: @mapping.Color;">
                                                         
@@ -712,6 +714,19 @@
                                                                      <i class="bi bi-star"></i>
                                                                  </button>
                                                              }
+
+                                                              <!-- Hủy phiếu (Chỉ khi Chờ tiếp nhận) -->
+                                                              @if (isChoTiepNhan)
+                                                              {
+                                                                  <button type="button" 
+                                                                          class="btn-item-action btn-cancel-action btn-open-cancel-modal" 
+                                                                          data-id="@phieu.IdPhieu"
+                                                                          data-maphieu="@phieu.MaPhieu"
+                                                                          data-tieude="@phieu.TieuDe"
+                                                                          data-tooltip="Hủy phiếu hỗ trợ">
+                                                                      <i class="fa-solid fa-xmark"></i>
+                                                                  </button>
+                                                              }
                                                         </div>
 
                                                     </div>
@@ -859,10 +874,56 @@
     @await Html.PartialAsync("_Footer")
 
     <!-- ==================== CHATBOX CONTAINER ==================== -->
-    <div id="chatbox-container"></div>
+    @await Html.PartialAsync("_ChatBox")
 
     <!-- Toast Notification Container -->
     <div class="custom-toast-container" id="toastContainer" aria-live="polite" aria-atomic="true"></div>
+
+    <!-- ==================== MODAL XÁC NHẬN HỦY PHIẾU ==================== -->
+    <div class="modal fade" id="modalXacNhanHuy" tabindex="-1" aria-labelledby="modalXacNhanHuyLabel" aria-hidden="true" style="backdrop-filter: blur(4px);">
+        <div class="modal-dialog modal-dialog-centered" style="max-width: 480px;">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 18px; overflow: hidden;">
+                <div class="modal-header text-white px-4 py-3 border-0" style="background: linear-gradient(135deg, #E60012 0%, #C00000 100%);">
+                    <h5 class="modal-title fw-bold d-flex align-items-center gap-2" id="modalXacNhanHuyLabel" style="font-size: 1.1rem;">
+                        <i class="fa-solid fa-circle-xmark fs-4"></i> Hủy phiếu hỗ trợ?
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Đóng"></button>
+                </div>
+                <form asp-controller="Customers" asp-action="HuyPhieu" method="post" id="formHuyPhieu">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" id="huyTicketId" value="" />
+                    
+                    <div class="modal-body p-4 text-center">
+                        <div class="mb-3">
+                            <div class="d-inline-flex align-items-center justify-content-center bg-danger-subtle text-danger rounded-circle mb-3" style="width: 64px; height: 64px;">
+                                <i class="fa-solid fa-triangle-exclamation fs-2"></i>
+                            </div>
+                            <h6 class="fw-bold text-dark mb-2" style="font-size: 1.05rem;" id="huyTicketTitleDisplay">
+                                Bạn có chắc chắn muốn hủy phiếu hỗ trợ này không?
+                            </h6>
+                            <p class="text-muted small mb-0" style="line-height: 1.5;">
+                                Sau khi hủy, phiếu sẽ chuyển sang trạng thái <strong class="text-danger">"Đã hủy"</strong> và không thể tiếp tục xử lý.
+                            </p>
+                        </div>
+
+                        <div class="text-start mt-3">
+                            <label for="lyDoHuyInput" class="form-label small fw-bold text-muted mb-1">Lý do hủy (không bắt buộc):</label>
+                            <textarea id="lyDoHuyInput" name="lyDoHuy" class="form-control form-control-sm border rounded-3 p-2" rows="2" placeholder="Nhập lý do hủy phiếu nếu có..." style="resize: none; font-size: 0.85rem;"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer border-top-0 px-4 pb-4 pt-0 d-flex gap-2">
+                        <button type="button" class="btn btn-outline-secondary fw-semibold flex-grow-1 py-2" data-bs-dismiss="modal" style="border-radius: 12px; height: 42px;">
+                            <i class="bi bi-arrow-left me-1"></i> Quay lại
+                        </button>
+                        <button type="submit" class="btn btn-danger fw-bold flex-grow-1 py-2" id="btnConfirmHuy" style="background-color: #E60012; border-color: #E60012; border-radius: 12px; height: 42px;">
+                            <i class="fa-solid fa-xmark me-1"></i> Xác nhận hủy
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
     <!-- ==================== SCRIPTS ==================== -->
     <!-- Bootstrap 5.3 JS Bundle -->
@@ -876,5 +937,61 @@
 
     <!-- Page custom scripts -->
     <script src="~/js/customers/phieu-cuatoi.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Auto dismiss alert after 4 seconds
+            const autoAlert = document.getElementById('autoDismissAlert');
+            if (autoAlert) {
+                setTimeout(function() {
+                    if (window.bootstrap && bootstrap.Alert) {
+                        const bsAlert = bootstrap.Alert.getOrCreateInstance(autoAlert);
+                        if (bsAlert) bsAlert.close();
+                    } else {
+                        autoAlert.remove();
+                    }
+                }, 4000);
+            }
+
+            // Delegate click for open cancel modal
+            document.addEventListener('click', function(e) {
+                const btn = e.target.closest('.btn-open-cancel-modal');
+                if (btn) {
+                    e.preventDefault();
+                    const ticketId = btn.getAttribute('data-id');
+                    const ticketCode = btn.getAttribute('data-maphieu') || '';
+                    const ticketTitle = btn.getAttribute('data-tieude') || '';
+
+                    const inputId = document.getElementById('huyTicketId');
+                    const titleDisplay = document.getElementById('huyTicketTitleDisplay');
+
+                    if (inputId) inputId.value = ticketId;
+                    if (titleDisplay) {
+                        let labelStr = ticketCode ? `phiếu <strong>${ticketCode}</strong>` : 'phiếu hỗ trợ này';
+                        if (ticketTitle) labelStr += ` ("${ticketTitle}")`;
+                        titleDisplay.innerHTML = `Bạn có chắc chắn muốn hủy ${labelStr} không?`;
+                    }
+
+                    const modalEl = document.getElementById('modalXacNhanHuy');
+                    if (modalEl && window.bootstrap && bootstrap.Modal) {
+                        const modalInstance = bootstrap.Modal.getOrCreateInstance(modalEl);
+                        modalInstance.show();
+                    }
+                }
+            });
+
+            // Prevent double click submit
+            const formHuy = document.getElementById('formHuyPhieu');
+            if (formHuy) {
+                formHuy.addEventListener('submit', function() {
+                    const btnSubmit = document.getElementById('btnConfirmHuy');
+                    if (btnSubmit) {
+                        btnSubmit.disabled = true;
+                        btnSubmit.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span> Đang xử lý...';
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 </html>

@@ -36,14 +36,17 @@ namespace SupportTicketSysterm.Models
 
     public class CreateTicketAiDto
     {
-        public int? ServiceId { get; set; }
-        public int? CategoryId { get; set; }
+        public string Title { get; set; } = "";
         public string TieuDe { get; set; } = "";
-        public string NoiDung { get; set; } = "";
+        public int? CategoryId { get; set; }
+        public int? ServiceId { get; set; }
+        public string? Address { get; set; }
+        public string? DiaChi { get; set; }
+        public string? Content { get; set; }
+        public string? NoiDung { get; set; }
         public int Priority { get; set; } = 2;
         public string? HoTen { get; set; }
         public string? SoDienThoai { get; set; }
-        public string? DiaChi { get; set; }
     }
 
     public class CreateAppointmentAiDto

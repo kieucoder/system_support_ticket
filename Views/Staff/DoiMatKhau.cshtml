@@ -1,0 +1,377 @@
+@model SupportTicketSysterm.ViewModels.DoiMatKhauViewModel
+@{
+    Layout = "~/Views/Shared/_LayoutStaff.cshtml";
+    ViewData["Title"] = "Đổi Mật Khẩu - TechSupport Viettel Admin";
+    ViewData["HeaderTitle"] = "Đổi Mật Khẩu";
+    ViewData["HeaderSubtitle"] = "Cập nhật mật khẩu bảo mật tài khoản nhân viên / quản trị viên";
+}
+
+<style>
+    .change-password-card {
+        background: #ffffff;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        border: 1px solid rgba(0, 0, 0, 0.06);
+        overflow: hidden;
+    }
+
+    .change-password-header {
+        background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        padding: 24px 30px;
+        color: #ffffff;
+        position: relative;
+    }
+
+    .change-password-header::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #EE0033, #ff4d6d);
+    }
+
+    .pwd-input-group {
+        position: relative;
+    }
+
+    .pwd-input-group .form-control {
+        border-radius: 10px;
+        padding-right: 48px;
+        font-size: 0.95rem;
+        height: 48px;
+        border: 1px solid #e2e8f0;
+        transition: all 0.2s ease;
+    }
+
+    .pwd-input-group .form-control:focus {
+        border-color: #EE0033;
+        box-shadow: 0 0 0 4px rgba(238, 0, 51, 0.1);
+    }
+
+    .btn-toggle-eye {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: transparent;
+        border: none;
+        color: #94a3b8;
+        font-size: 1.1rem;
+        cursor: pointer;
+        padding: 4px 8px;
+        border-radius: 6px;
+        transition: color 0.2s ease;
+        z-index: 5;
+    }
+
+    .btn-toggle-eye:hover {
+        color: #EE0033;
+    }
+
+    .pwd-policy-box {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 16px;
+    }
+
+    .btn-submit-change {
+        background: linear-gradient(135deg, #EE0033 0%, #c4002a 100%);
+        color: #ffffff;
+        font-weight: 600;
+        border: none;
+        border-radius: 10px;
+        padding: 12px 28px;
+        transition: all 0.25 ease;
+        box-shadow: 0 4px 14px rgba(238, 0, 51, 0.25);
+    }
+
+    .btn-submit-change:hover {
+        background: linear-gradient(135deg, #d6002d 0%, #ab0024 100%);
+        color: #ffffff;
+        transform: translateY(-1px);
+        box-shadow: 0 6px 18px rgba(238, 0, 51, 0.35);
+    }
+
+    .btn-cancel-change {
+        background: #f1f5f9;
+        color: #475569;
+        font-weight: 600;
+        border: 1px solid #cbd5e1;
+        border-radius: 10px;
+        padding: 12px 24px;
+        transition: all 0.2s ease;
+    }
+
+    .btn-cancel-change:hover {
+        background: #e2e8f0;
+        color: #1e293b;
+    }
+
+    .pwd-strength-bar {
+        height: 5px;
+        border-radius: 3px;
+        transition: width 0.3s ease, background-color 0.3s ease;
+    }
+
+    /* Toast Notification Container */
+    .toast-container-custom {
+        position: fixed;
+        top: 24px;
+        right: 24px;
+        z-index: 1090;
+    }
+</style>
+
+<!-- Toast Thông Báo Thành Công (Bootstrap Toast) -->
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="toast-container-custom">
+        <div id="passwordSuccessToast" class="toast align-items-center text-white bg-success border-0 show shadow-lg" role="alert" aria-live="assertive" aria-atomic="true" style="min-width: 320px; border-radius: 12px; background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;">
+            <div class="d-flex p-3">
+                <div class="toast-body d-flex align-items-start gap-3 p-0 text-white">
+                    <i class="fa-solid fa-circle-check fs-3 flex-shrink-0 mt-1"></i>
+                    <div>
+                        <h6 class="fw-bold mb-1 text-white" style="font-size: 0.95rem;">✓ Đổi mật khẩu thành công!</h6>
+                        <p class="mb-0 small text-white-50" style="font-size: 0.85rem;">@TempData["SuccessMessage"]</p>
+                    </div>
+                </div>
+                <button type="button" class="btn-close btn-close-white ms-auto me-0" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+}
+
+<div class="container-fluid px-0">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a asp-controller="Staff" asp-action="Dashboard" class="text-decoration-none text-muted">
+                    <i class="fa-solid fa-house me-1"></i> Dashboard
+                </a>
+            </li>
+            <li class="breadcrumb-item">
+                <a asp-controller="Staff" asp-action="TaiKhoanNhanVien" class="text-decoration-none text-muted">
+                    Tài khoản
+                </a>
+            </li>
+            <li class="breadcrumb-item active text-danger fw-semibold" aria-current="page">
+                Đổi mật khẩu
+            </li>
+        </ol>
+    </nav>
+
+    <div class="row justify-content-center">
+        <div class="col-xl-6 col-lg-8 col-md-10 col-12">
+            <div class="change-password-card">
+                
+                <!-- Card Header -->
+                <div class="change-password-header d-flex align-items-center gap-3">
+                    <div class="d-inline-flex align-items-center justify-content-center bg-danger bg-opacity-25 text-danger rounded-circle p-3" style="width: 52px; height: 52px;">
+                        <i class="fa-solid fa-key fs-4 text-white"></i>
+                    </div>
+                    <div>
+                        <h5 class="fw-bold mb-1 text-white">Đổi Mật Khẩu Tài Khoản</h5>
+                        <p class="mb-0 small text-white-50">Vui lòng nhập đầy đủ thông tin bên dưới để đổi mật khẩu</p>
+                    </div>
+                </div>
+
+                <!-- Card Body -->
+                <div class="p-4 p-md-5">
+
+                    <!-- Alert Lỗi Tổng Thể Nếu Có -->
+                    @if (!ViewData.ModelState.IsValid && ViewData.ModelState[string.Empty]?.Errors.Count > 0)
+                    {
+                        <div class="alert alert-danger alert-dismissible fade show border-0 rounded-3 mb-4 shadow-sm" role="alert" style="border-left: 4px solid #ef4444 !important; background-color: rgba(239, 68, 68, 0.08);">
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="fa-solid fa-triangle-exclamation fs-5 text-danger"></i>
+                                <div>
+                                    <div asp-validation-summary="ModelOnly" class="text-danger fw-semibold small"></div>
+                                </div>
+                            </div>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    }
+
+                    <form asp-controller="Staff" asp-action="DoiMatKhau" method="post" id="doiMatKhauForm" autocomplete="off">
+                        @Html.AntiForgeryToken()
+
+                        <!-- 1. Mật khẩu hiện tại -->
+                        <div class="mb-4">
+                            <label asp-for="MatKhauHienTai" class="form-label fw-semibold text-dark mb-2">
+                                Mật khẩu hiện tại <span class="text-danger">*</span>
+                            </label>
+                            <div class="pwd-input-group">
+                                <input type="password" 
+                                       asp-for="MatKhauHienTai" 
+                                       class="form-control @(ViewData.ModelState["MatKhauHienTai"]?.Errors.Count > 0 ? "is-invalid" : "")" 
+                                       id="MatKhauHienTai" 
+                                       placeholder="Nhập mật khẩu hiện tại..." 
+                                       required />
+                                <button type="button" 
+                                        class="btn-toggle-eye" 
+                                        onclick="togglePasswordVisibility('MatKhauHienTai', this)" 
+                                        title="Hiện/Ẩn mật khẩu" 
+                                        aria-label="Toggle password visibility">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            </div>
+                            <span asp-validation-for="MatKhauHienTai" class="text-danger small mt-1 d-block fw-medium"></span>
+                        </div>
+
+                        <!-- 2. Mật khẩu mới -->
+                        <div class="mb-4">
+                            <label asp-for="MatKhauMoi" class="form-label fw-semibold text-dark mb-2">
+                                Mật khẩu mới <span class="text-danger">*</span>
+                            </label>
+                            <div class="pwd-input-group">
+                                <input type="password" 
+                                       asp-for="MatKhauMoi" 
+                                       class="form-control @(ViewData.ModelState["MatKhauMoi"]?.Errors.Count > 0 ? "is-invalid" : "")" 
+                                       id="MatKhauMoi" 
+                                       placeholder="Nhập mật khẩu mới (tối thiểu 8 ký tự)..." 
+                                       required 
+                                       oninput="checkPasswordStrength(this.value)" />
+                                <button type="button" 
+                                        class="btn-toggle-eye" 
+                                        onclick="togglePasswordVisibility('MatKhauMoi', this)" 
+                                        title="Hiện/Ẩn mật khẩu" 
+                                        aria-label="Toggle password visibility">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            </div>
+                            <!-- Password Strength Indicator -->
+                            <div class="progress mt-2 bg-light" style="height: 5px;" aria-hidden="true">
+                                <div id="pwdStrengthBar" class="pwd-strength-bar" role="progressbar" style="width: 0%;"></div>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mt-1">
+                                <span asp-validation-for="MatKhauMoi" class="text-danger small fw-medium"></span>
+                                <small id="pwdStrengthText" class="fw-semibold text-muted ms-auto" style="font-size: 0.78rem;"></small>
+                            </div>
+                        </div>
+
+                        <!-- 3. Xác nhận mật khẩu mới -->
+                        <div class="mb-4">
+                            <label asp-for="XacNhanMatKhau" class="form-label fw-semibold text-dark mb-2">
+                                Xác nhận mật khẩu mới <span class="text-danger">*</span>
+                            </label>
+                            <div class="pwd-input-group">
+                                <input type="password" 
+                                       asp-for="XacNhanMatKhau" 
+                                       class="form-control @(ViewData.ModelState["XacNhanMatKhau"]?.Errors.Count > 0 ? "is-invalid" : "")" 
+                                       id="XacNhanMatKhau" 
+                                       placeholder="Nhập lại mật khẩu mới..." 
+                                       required />
+                                <button type="button" 
+                                        class="btn-toggle-eye" 
+                                        onclick="togglePasswordVisibility('XacNhanMatKhau', this)" 
+                                        title="Hiện/Ẩn mật khẩu" 
+                                        aria-label="Toggle password visibility">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            </div>
+                            <span asp-validation-for="XacNhanMatKhau" class="text-danger small mt-1 d-block fw-medium"></span>
+                        </div>
+
+                        <!-- Policy Note -->
+                        <div class="pwd-policy-box mb-4">
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                <i class="fa-solid fa-shield-halved text-danger"></i>
+                                <span class="fw-bold text-dark small">Yêu cầu mật khẩu bảo mật:</span>
+                            </div>
+                            <ul class="mb-0 ps-3 small text-muted" style="line-height: 1.7; font-size: 0.82rem;">
+                                <li id="ruleLength">Độ dài tối thiểu <strong>8 ký tự</strong></li>
+                                <li id="ruleDifferent">Mật khẩu mới phải <strong>khác mật khẩu hiện tại</strong></li>
+                                <li id="ruleConfirm">Mật khẩu xác nhận phải <strong>khớp với mật khẩu mới</strong></li>
+                            </ul>
+                        </div>
+
+                        <!-- Form Actions -->
+                        <div class="d-flex align-items-center justify-content-end gap-3 mt-4 pt-2 border-top">
+                            <a asp-controller="Staff" asp-action="Dashboard" class="btn btn-cancel-change text-decoration-none">
+                                <i class="fa-solid fa-xmark me-1"></i> Hủy
+                            </a>
+                            <button type="submit" class="btn btn-submit-change d-inline-flex align-items-center gap-2">
+                                <i class="fa-solid fa-lock me-1"></i> Đổi mật khẩu
+                            </button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        // Toggle hiện / ẩn mật khẩu (Eye icon)
+        function togglePasswordVisibility(inputId, btnElement) {
+            const input = document.getElementById(inputId);
+            const icon = btnElement.querySelector('i');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.className = 'bi bi-eye-slash';
+            } else {
+                input.type = 'password';
+                icon.className = 'bi bi-eye';
+            }
+        }
+
+        // Đánh giá độ mạnh mật khẩu hiển thị thanh tiến trình
+        function checkPasswordStrength(password) {
+            const bar = document.getElementById('pwdStrengthBar');
+            const txt = document.getElementById('pwdStrengthText');
+            let score = 0;
+
+            if (password.length >= 8) score++;
+            if (/[A-Z]/.test(password) && /[a-z]/.test(password)) score++;
+            if (/[0-9]/.test(password)) score++;
+            if (/[^A-Za-z0-9]/.test(password)) score++;
+
+            if (password.length === 0) {
+                bar.style.width = '0%';
+                txt.innerText = '';
+            } else if (password.length < 8) {
+                bar.style.width = '25%';
+                bar.style.backgroundColor = '#ef4444';
+                txt.innerText = 'Quá ngắn (Cần ít nhất 8 ký tự)';
+                txt.style.color = '#ef4444';
+            } else if (score <= 2) {
+                bar.style.width = '50%';
+                bar.style.backgroundColor = '#f59e0b';
+                txt.innerText = 'Trung bình';
+                txt.style.color = '#f59e0b';
+            } else if (score === 3) {
+                bar.style.width = '75%';
+                bar.style.backgroundColor = '#3b82f6';
+                txt.innerText = 'Khá mạnh';
+                txt.style.color = '#3b82f6';
+            } else {
+                bar.style.width = '100%';
+                bar.style.backgroundColor = '#10b981';
+                txt.innerText = 'Rất mạnh';
+                txt.style.color = '#10b981';
+            }
+        }
+
+        // Tự động ẩn Toast thông báo thành công sau 3500ms
+        document.addEventListener('DOMContentLoaded', function () {
+            const toastEl = document.getElementById('passwordSuccessToast');
+            if (toastEl) {
+                setTimeout(function () {
+                    if (typeof bootstrap !== 'undefined' && bootstrap.Toast) {
+                        const toast = bootstrap.Toast.getOrCreateInstance(toastEl);
+                        toast.hide();
+                    } else {
+                        toastEl.style.display = 'none';
+                    }
+                }, 3500);
+            }
+        });
+    </script>
+}

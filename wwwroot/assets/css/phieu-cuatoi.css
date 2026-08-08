@@ -372,7 +372,7 @@ body {
 
 .stats-grid-row {
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns: repeat(5, 1fr);
     gap: 1.25rem;
 }
 
@@ -1146,6 +1146,20 @@ body {
     box-shadow: none !important;
 }
 
+.btn-item-action.btn-cancel-action {
+    background: #FEF2F2 !important;
+    border-color: #FECACA !important;
+    color: #DC2626 !important;
+}
+
+.btn-item-action.btn-cancel-action:hover {
+    background: var(--viettel-red) !important;
+    color: #FFFFFF !important;
+    border-color: var(--viettel-red) !important;
+    box-shadow: 0 4px 14px rgba(215, 25, 32, 0.3) !important;
+    transform: scale(1.1) !important;
+}
+
 /* Tooltip standard fallback styling */
 [data-tooltip] {
     position: relative;
@@ -1683,7 +1697,7 @@ body {
 /* ==================== 13. RESPONSIVE BREAKPOINTS ==================== */
 @media (max-width: 1600px) {
     .stats-grid-row {
-        grid-template-columns: repeat(6, 1fr);
+        grid-template-columns: repeat(5, 1fr);
     }
 }
 
@@ -1843,4 +1857,35 @@ body {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
+
+/* ==================== BUTTON HỦY PHIẾU STYLING ==================== */
+.btn-cancel-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 16px;
+    border-radius: 50px;
+    background-color: #FEF2F2 !important;
+    border: 1px solid #FECACA !important;
+    color: #DC2626 !important;
+    font-size: 0.82rem;
+    font-weight: 700;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    text-decoration: none;
+    line-height: 1;
+}
+
+.btn-cancel-pill:hover {
+    background-color: #DC2626 !important;
+    color: #FFFFFF !important;
+    border-color: #DC2626 !important;
+    box-shadow: 0 4px 14px rgba(220, 38, 38, 0.35) !important;
+    transform: translateY(-2px);
+}
+
+.btn-cancel-pill:active {
+    transform: translateY(0);
+}
+
 

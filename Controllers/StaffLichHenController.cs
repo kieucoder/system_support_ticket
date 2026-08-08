@@ -48,14 +48,9 @@ public class StaffLichHenController : Controller
     /// </summary>
     [HttpGet("")]
     [HttpGet("DanhSach")]
-    public async Task<IActionResult> DanhSach([FromQuery] LichHenFilterDto filter)
+    public IActionResult DanhSach([FromQuery] LichHenFilterDto filter)
     {
-        var (userId, userRole) = GetCurrentStaffInfo();
-
-        var appointments = await _lichHenService.GetAppointmentsForUserAsync(userId, userRole, filter);
-        ViewBag.Filter = filter;
-
-        return View("~/Views/Staff/QuanLyLichHen.cshtml", appointments);
+        return RedirectToAction("QuanLyLichHen", "Staff", filter);
     }
 
     /// <summary>

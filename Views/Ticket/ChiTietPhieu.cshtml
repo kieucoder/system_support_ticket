@@ -88,6 +88,7 @@
     <link rel="stylesheet" href="~/assets/css/ticket-detail.css">
     <link rel="stylesheet" href="~/assets/css/phieu-cuatoi.css" asp-append-version="true">
     <link rel="stylesheet" href="~/assets/css/page-hero.css" asp-append-version="true">
+    <link rel="stylesheet" href="~/assets/css/chatbox.css" asp-append-version="true">
 </head>
 
 <body>
@@ -175,9 +176,16 @@
                         <a asp-controller="Customers" asp-action="PhieuCuaToi" class="btn btn-hero-contact px-4 py-2">
                             <i class="bi bi-arrow-left me-1"></i> Danh sách phiếu
                         </a>
-                        <a asp-controller="Ticket" asp-action="InPhieuPDF" asp-route-id="@Model.IdPhieu" class="btn btn-hero-create px-4 py-2">
+                       
+                      @*   <a asp-controller="Ticket" asp-action="InPhieuPDF" asp-route-id="@Model.IdPhieu" class="btn btn-hero-create px-4 py-2">
                             <i class="fa-solid fa-file-pdf me-1"></i> In Phiếu PDF
-                        </a>
+                        </a> *@
+                        @if (Model.TrangThai == "Chờ tiếp nhận" || Model.TrangThai == "ChoTiepNhan")
+                        {
+                            <button type="button" class="btn btn-viettel btn-cancel-ticket shadow-sm" id="btnOpenCancelTicketModal" data-bs-toggle="modal" data-bs-target="#cancelTicketModal">
+                                <i class="fa-solid fa-circle-xmark me-1"></i> Hủy phiếu
+                            </button>
+                        }
                     </div>
 
                     <!-- Quick Stats -->
@@ -821,25 +829,31 @@
             <!-- ACTION BUTTONS BAR -->
             <div class="action-buttons-layout">
                 <div class="action-btn-group">
-                    <a asp-controller="Customers" asp-action="PhieuCuaToi" class="btn btn-viettel btn-outline" style="color: white !important;">
+                    <a asp-controller="Customers" asp-action="PhieuCuaToi" class="btn btn-viettel btn-red">
                         <i class="bi bi-arrow-left"></i> Danh sách phiếu
                     </a>
                     @if (!string.IsNullOrEmpty(Model.TenNhanVien))
                     {
-                        <a href="/LiveSupport?maPhieu=@Model.MaPhieu" class="btn btn-viettel btn-red" style="background-color: #EE0033 !important; color: white !important; border: none !important;">
+                        <a href="/LiveSupport?maPhieu=@Model.MaPhieu" class="btn btn-viettel btn-red">
                             <i class="bi bi-chat-dots-fill"></i> Trao đổi nhân viên
                         </a>
                     }
                     else
                     {
-                        <a asp-controller="Customers" asp-action="LienHe" class="btn btn-viettel btn-outline">
+                        <a asp-controller="Customers" asp-action="LienHe" class="btn btn-viettel btn-red">
                             <i class="bi bi-telephone-inbound"></i> Liên hệ hỗ trợ
                         </a>
+                    }
+                    @if (Model.TrangThai == "Chờ tiếp nhận" || Model.TrangThai == "ChoTiepNhan")
+                    {
+                        <button type="button" class="btn btn-viettel btn-red btn-cancel-ticket" id="btnOpenCancelTicketModalBottom" data-bs-toggle="modal" data-bs-target="#cancelTicketModal">
+                            <i class="fa-solid fa-xmark me-1"></i> Hủy phiếu
+                        </button>
                     }
                 </div>
 
                 <div class="action-btn-group">
-                    <a asp-controller="Ticket" asp-action="InPhieuPDF" asp-route-id="@Model.IdPhieu" class="btn btn-viettel btn-red" style="background-color: #EE0033 !important; color: white !important; border: none !important;">
+                    <a asp-controller="Ticket" asp-action="InPhieuPDF" asp-route-id="@Model.IdPhieu" class="btn btn-viettel btn-red">
                         <i class="fa-solid fa-print"></i> In Phiếu
                     </a>
 
@@ -1527,8 +1541,182 @@
                     }
                 });
             }
+
+            // ==========================================================================
+            // AJAX HANDLER FOR CANCEL TICKET (/Ticket/HuyPhieu)
+            // ==========================================================================
+            const lyDoInput = document.getElementById('lyDoHuyPhieu');
+            const charCount = document.getElementById('charCount');
+            const lyDoError = document.getElementById('lyDoHuyError');
+            const formCancelTicket = document.getElementById('formCancelTicket');
+            const btnConfirmCancelTicket = document.getElementById('btnConfirmCancelTicket');
+
+            if (lyDoInput && charCount) {
+                lyDoInput.addEventListener('input', function() {
+                    const len = this.value.trim().length;
+                    charCount.textContent = `${len}/10 ký tự tối thiểu`;
+                    if (len >= 10) {
+                        charCount.classList.remove('text-danger');
+                        charCount.classList.add('text-success');
+                        if (lyDoError) lyDoError.classList.add('d-none');
+                    } else {
+                        charCount.classList.remove('text-success');
+                        charCount.classList.add('text-muted');
+                    }
+                });
+            }
+
+            if (formCancelTicket) {
+                formCancelTicket.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    const reasonVal = lyDoInput ? lyDoInput.value.trim() : '';
+
+                    if (reasonVal.length < 10) {
+                        if (lyDoError) {
+                            lyDoError.textContent = 'Vui lòng nhập lý do hủy phiếu tối thiểu 10 ký tự.';
+                            lyDoError.classList.remove('d-none');
+                        }
+                        if (lyDoInput) lyDoInput.focus();
+                        return;
+                    }
+
+                    btnConfirmCancelTicket.disabled = true;
+                    btnConfirmCancelTicket.innerHTML = `<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Đang xử lý...`;
+
+                    try {
+                        const formData = new FormData(this);
+                        const response = await fetch(this.action, {
+                            method: 'POST',
+                            body: formData,
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest'
+                            }
+                        });
+
+                        const data = await response.json();
+
+                        if (data.success) {
+                            // Close Modal
+                            const modalEl = document.getElementById('cancelTicketModal');
+                            const modalInstance = bootstrap.Modal.getInstance(modalEl);
+                            if (modalInstance) modalInstance.hide();
+
+                            // Notification
+                            if (typeof Swal !== 'undefined') {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Thành công',
+                                    text: data.message || 'Hủy phiếu hỗ trợ thành công.',
+                                    confirmButtonColor: '#E60012'
+                                });
+                            } else {
+                                alert(data.message || 'Hủy phiếu hỗ trợ thành công.');
+                            }
+
+                            // Update Status Badges
+                            const statusBadgeEl = document.querySelector('.hero-section .tag-badge');
+                            if (statusBadgeEl) {
+                                statusBadgeEl.className = 'tag-badge bg-danger text-white';
+                                statusBadgeEl.innerHTML = '<i class="bi bi-clock-history"></i> Đã hủy';
+                            }
+
+                            // Hide Cancel Button
+                            const btnCancelModal = document.getElementById('btnOpenCancelTicketModal');
+                            if (btnCancelModal) btnCancelModal.remove();
+
+                            // Hide action buttons for appointments/chats if any
+                            const lhActions = document.querySelectorAll('.lh-actions');
+                            lhActions.forEach(el => el.remove());
+
+                            // Append timeline log item
+                            const timelineFlow = document.querySelector('.timeline-flow');
+                            if (timelineFlow) {
+                                const newLogHtml = `
+                                    <div class="timeline-step animate-fade-up">
+                                        <div class="timeline-dot" style="display: flex; align-items: center; justify-content: center; background-color: var(--vt-red-glow);">
+                                            <i class="fa-solid fa-circle-xmark text-danger" style="font-size: 0.75rem;"></i>
+                                        </div>
+                                        <div class="timeline-card border-danger">
+                                            <div class="timeline-header">
+                                                <span class="timeline-op-name"><i class="bi bi-person-fill text-danger me-1"></i> Khách hàng</span>
+                                                <span class="timeline-date">Vừa xong</span>
+                                            </div>
+                                            <p class="timeline-desc text-danger fw-bold">Khách hàng đã hủy phiếu. Lý do: ${reasonVal}</p>
+                                            <div class="timeline-status-change">
+                                                <span>Trạng thái: </span>
+                                                <span class="status-new text-danger fw-bold">Đã hủy</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `;
+                                timelineFlow.insertAdjacentHTML('afterbegin', newLogHtml);
+                            }
+                        } else {
+                            alert(data.message || 'Không thể hủy phiếu hỗ trợ.');
+                        }
+                    } catch (err) {
+                        console.error('Lỗi AJAX hủy phiếu:', err);
+                        alert('Lỗi kết nối khi gửi yêu cầu hủy phiếu.');
+                    } finally {
+                        btnConfirmCancelTicket.disabled = false;
+                        btnConfirmCancelTicket.innerHTML = `<i class="fa-solid fa-check me-1"></i> Xác nhận hủy`;
+                    }
+                });
+            }
         });
     </script>
+
+    <!-- ========================================================================== -->
+    <!-- MODAL POPUP HỦY PHIẾU HỖ TRỢ (CHUẨN VIETTEL - BORDER RADIUS 18PX) -->
+    <!-- ========================================================================== -->
+    <div class="modal fade" id="cancelTicketModal" tabindex="-1" aria-labelledby="cancelTicketModalLabel" aria-hidden="true" style="backdrop-filter: blur(5px);">
+        <div class="modal-dialog modal-dialog-centered" style="max-width: 500px;">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 18px; overflow: hidden;">
+                <div class="modal-header text-white px-4 py-3 border-0" style="background-color: #E60012;">
+                    <h5 class="modal-title fw-bold d-flex align-items-center gap-2" id="cancelTicketModalLabel" style="font-size: 1.15rem;">
+                        <i class="fa-solid fa-circle-xmark fs-4"></i> HỦY PHIẾU HỖ TRỢ
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white opacity-100" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="formCancelTicket" method="post" action="/Ticket/HuyPhieu">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="idPhieu" value="@Model.IdPhieu" />
+                    
+                    <div class="modal-body p-4">
+                        <div class="alert alert-warning border-0 rounded-3 mb-3 d-flex align-items-center gap-2" style="background-color: #FFF3CD; color: #664D03; font-size: 0.88rem;">
+                            <i class="fa-solid fa-triangle-exclamation fs-5 text-warning flex-shrink-0"></i>
+                            <div>Bạn có chắc chắn muốn hủy phiếu hỗ trợ <strong>@Model.MaPhieu</strong> này không? Quá trình này không thể đảo ngược.</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="lyDoHuyPhieu" class="form-label fw-bold text-dark mb-1" style="font-size: 0.9rem;">
+                                Lý do hủy phiếu <span class="text-danger">*</span>
+                            </label>
+                            <textarea class="form-control border rounded-3 p-3" id="lyDoHuyPhieu" name="lyDoHuy" rows="4" 
+                                      placeholder="Vui lòng nhập chi tiết lý do bạn muốn hủy phiếu hỗ trợ (tối thiểu 10 ký tự)..." 
+                                      style="border-radius: 12px; font-size: 0.9rem; resize: none;" required minlength="10"></textarea>
+                            <div class="d-flex justify-content-between align-items-center mt-1">
+                                <span class="text-danger small d-none" id="lyDoHuyError">Vui lòng nhập lý do tối thiểu 10 ký tự.</span>
+                                <span class="text-muted small ms-auto" id="charCount">0/10 ký tự tối thiểu</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer border-top-0 px-4 pb-4 pt-0 d-flex gap-2">
+                        <button type="button" class="btn btn-outline-secondary fw-bold px-4 py-2 flex-grow-1" data-bs-dismiss="modal" style="border-radius: 12px; height: 44px;">
+                            Đóng
+                        </button>
+                        <button type="submit" class="btn btn-danger fw-bold px-4 py-2 flex-grow-1 shadow-sm" id="btnConfirmCancelTicket" style="background-color: #E60012; border-color: #E60012; border-radius: 12px; height: 44px;">
+                            <i class="fa-solid fa-check me-1"></i> Xác nhận hủy
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- AI Chatbox Widget -->
+    @await Html.PartialAsync("_ChatBox")
+    <script src="~/assets/js/chatbox.js" asp-append-version="true"></script>
 </body>
 
 </html>

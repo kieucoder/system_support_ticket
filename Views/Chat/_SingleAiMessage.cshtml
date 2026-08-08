@@ -268,6 +268,111 @@
             }
         }
 
+        // 2.8.5 Parse Action Buttons Tag: [ACTION_BUTTONS]
+        var actionButtonsMarker = "[ACTION_BUTTONS]";
+        if (encoded.Contains(actionButtonsMarker))
+        {
+            var btnHtml = @"
+<div class='mt-3 d-flex flex-column gap-2 w-100 action-buttons-group'>
+    <a href='/Ticket/TaoPhieu' class='btn btn-danger btn-sm rounded-pill fw-bold text-white py-2 text-center text-decoration-none shadow-sm' style='background-color:#D71920; border-color:#D71920;'>
+        <i class='bi bi-file-earmark-plus-fill me-1'></i> Tạo Phiếu Hỗ Trợ
+    </a>
+    <button type='button' class='btn btn-outline-danger btn-sm rounded-pill fw-bold py-2 text-center btn-transfer-staff shadow-sm' onclick='if(window.TechSupportChat && window.TechSupportChat.transferToStaff) window.TechSupportChat.transferToStaff();'>
+        <i class='bi bi-headset me-1'></i> Chat Với Nhân Viên Kỹ Thuật
+    </button>
+</div>";
+            encoded = encoded.Replace(actionButtonsMarker, btnHtml);
+        }
+
+        // 2.8.6 Parse Action Require Login Tag: [ACTION_REQUIRE_LOGIN]
+        var actionRequireLoginMarker = "[ACTION_REQUIRE_LOGIN]";
+        if (encoded.Contains(actionRequireLoginMarker))
+        {
+            var loginCardHtml = @"
+<div class='card border-0 shadow-sm rounded-4 overflow-hidden bg-white p-3 border-danger-subtle mt-3' style='border: 1px solid #fee2e2 !important;'>
+    <div class='d-flex align-items-center mb-2 text-danger fw-bold'>
+        <i class='bi bi-lock-fill me-2 fs-5'></i> 🔒 Cần Đăng Nhập
+    </div>
+    <p class='small text-dark mb-3' style='font-size:0.85rem;'>Để tạo phiếu hỗ trợ và sắp xếp kỹ thuật viên, vui lòng đăng nhập tài khoản của bạn.</p>
+    <div class='d-flex gap-2'>
+        <a href='/Auth/DangNhap' class='btn btn-danger btn-sm rounded-pill fw-bold text-white px-3 py-2 text-decoration-none shadow-sm' style='background-color:#D71920; border-color:#D71920;'>
+            <i class='bi bi-box-arrow-in-right me-1'></i> Đăng nhập
+        </a>
+        <a href='/Auth/DangKy' class='btn btn-outline-danger btn-sm rounded-pill fw-bold px-3 py-2 text-decoration-none shadow-sm'>
+            <i class='bi bi-person-plus-fill me-1'></i> Đăng ký
+        </a>
+    </div>
+</div>";
+            encoded = encoded.Replace(actionRequireLoginMarker, loginCardHtml);
+        }
+
+        // 2.8.7 Parse Confirm Create Ticket Tag: [CONFIRM_CREATE_TICKET|...]
+        var confirmTicketRegex = new System.Text.RegularExpressions.Regex(@"\[CONFIRM_CREATE_TICKET\|(.*?)\]", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+        var confirmMatch = confirmTicketRegex.Match(encoded);
+        if (confirmMatch.Success)
+        {
+            var fullTag = confirmMatch.Value;
+            var innerContent = confirmMatch.Groups[1].Value;
+            
+            string title = "Sự cố kỹ thuật";
+            string categoryIdStr = "1";
+            string serviceIdStr = "1";
+            string address = "";
+            string ticketContent = "Cần hỗ trợ kiểm tra kỹ thuật";
+
+            // Parse key-value parts separated by '|'
+            var parts = innerContent.Split('|');
+            foreach (var part in parts)
+            {
+                var trimmed = part.Trim();
+                if (string.IsNullOrEmpty(trimmed)) continue;
+
+                var eqIdx = trimmed.IndexOf('=');
+                if (eqIdx > 0)
+                {
+                    var key = trimmed.Substring(0, eqIdx).Trim().ToLower();
+                    var val = trimmed.Substring(eqIdx + 1).Trim();
+
+                    if (key == "title" && !string.IsNullOrEmpty(val)) title = val;
+                    else if (key == "categoryid" && !string.IsNullOrEmpty(val)) categoryIdStr = val;
+                    else if (key == "serviceid" && !string.IsNullOrEmpty(val)) serviceIdStr = val;
+                    else if (key == "address" && !string.IsNullOrEmpty(val)) address = val;
+                    else if (key == "content" && !string.IsNullOrEmpty(val)) ticketContent = val;
+                }
+            }
+
+            if (!int.TryParse(categoryIdStr, out int catId) || catId <= 0) categoryIdStr = "1";
+            if (!int.TryParse(serviceIdStr, out int srvId) || srvId <= 0) serviceIdStr = "1";
+
+            string encodedTitle = System.Net.WebUtility.HtmlEncode(title);
+            string encodedAddress = System.Net.WebUtility.HtmlEncode(address);
+            string displayAddress = string.IsNullOrWhiteSpace(address) ? "Tại địa chỉ đăng ký" : encodedAddress;
+            string encodedTicketContent = System.Net.WebUtility.HtmlEncode(ticketContent);
+
+            var cardHtml = $@"
+<div class='ai-confirm-ticket-card card border-0 shadow-sm rounded-4 overflow-hidden bg-white p-3 border-danger-subtle mt-3' style='border: 1px solid #fee2e2 !important;'>
+    <div class='d-flex align-items-center mb-2 text-danger fw-bold'>
+        <i class='bi bi-file-earmark-plus-fill me-2 fs-5'></i> 📋 Xác Nhận Tạo Phiếu Hỗ Trợ
+    </div>
+    <div class='small text-dark mb-3' style='font-size:0.85rem; line-height: 1.6;'>
+        <div>• <strong>Sự cố:</strong> <span class='text-danger fw-bold'>{encodedTitle}</span></div>
+        <div>• <strong>Địa chỉ hỗ trợ:</strong> <span class='fw-bold'>{displayAddress}</span></div>
+    </div>
+    <div class='d-flex flex-wrap gap-2'>
+        <button type='button' class='btn btn-danger btn-sm rounded-pill fw-bold text-white px-3 py-2 btn-confirm-create-ticket shadow-sm' style='background-color:#D71920; border-color:#D71920;' onclick='if(window.confirmCreateTicket) window.confirmCreateTicket(this, ""{encodedTitle}"", {categoryIdStr}, {serviceIdStr}, ""{encodedAddress}"", ""{encodedTicketContent}"");'>
+            <i class='bi bi-check-circle-fill me-1'></i> Tạo phiếu hỗ trợ
+        </button>
+        <a href='/Ticket/TaoPhieu?serviceId={serviceIdStr}&categoryId={categoryIdStr}' class='btn btn-outline-secondary btn-sm rounded-pill px-3 py-2 text-decoration-none'>
+            <i class='bi bi-pencil-square me-1'></i> Chỉnh sửa thông tin
+        </a>
+        <button type='button' class='btn btn-outline-danger btn-sm rounded-pill px-3 py-2' onclick='if(window.cancelConfirmTicket) window.cancelConfirmTicket(this);'>
+            <i class='bi bi-x-circle me-1'></i> Hủy
+        </button>
+    </div>
+</div>";
+            encoded = encoded.Replace(fullTag, cardHtml);
+        }
+
         // 3. Parse bold Markdown: **text** -> <strong>text</strong>
         encoded = System.Text.RegularExpressions.Regex.Replace(encoded, @"\*\*(.*?)\*\*", "<strong>$1</strong>");
 

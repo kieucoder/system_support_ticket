@@ -1679,6 +1679,146 @@ namespace SupportTicketSysterm.Controllers
         }
 
         // ==========================================================================
+        // HỦY PHIẾU HỖ TRỢ (POST - DÀNH CHO KHÁCH HÀNG TẠI CHITIETPHIEU)
+        // ==========================================================================
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Route("Ticket/HuyPhieu")]
+        public async Task<IActionResult> HuyPhieu([FromForm] int id, [FromForm] int? idPhieu, [FromForm] string? lyDoHuy)
+        {
+            int targetId = id > 0 ? id : (idPhieu ?? 0);
+            var idKhachHang = GetCurrentCustomerId();
+            if (idKhachHang == null || idKhachHang.Value <= 0)
+            {
+                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                {
+                    return Unauthorized(new { success = false, message = "Phiên làm việc hết hạn. Vui lòng đăng nhập lại." });
+                }
+                TempData["ErrorMessage"] = "Phiên làm việc hết hạn. Vui lòng đăng nhập lại.";
+                return RedirectToAction("DangNhap", "Auth");
+            }
+
+            if (targetId <= 0)
+            {
+                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                {
+                    return Json(new { success = false, message = "Không tìm thấy phiếu hỗ trợ." });
+                }
+                TempData["ErrorMessage"] = "Không tìm thấy phiếu hỗ trợ.";
+                return RedirectToAction("PhieuCuaToi", "Customers");
+            }
+
+            var phieu = await _context.PhieuHoTros
+                .Include(p => p.IdKhachHangNavigation)
+                .Include(p => p.LichHens)
+                .FirstOrDefaultAsync(p => p.IdPhieu == targetId);
+
+            if (phieu == null)
+            {
+                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                {
+                    return Json(new { success = false, message = "Không tìm thấy thông tin phiếu hỗ trợ." });
+                }
+                TempData["ErrorMessage"] = "Không tìm thấy phiếu hỗ trợ.";
+                return RedirectToAction("PhieuCuaToi", "Customers");
+            }
+
+            // 1. Kiểm tra quyền sở hữu phiếu
+            if (phieu.IdKhachHang != idKhachHang.Value)
+            {
+                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                {
+                    return StatusCode(403, new { success = false, message = "Bạn không có quyền hủy phiếu hỗ trợ này." });
+                }
+                TempData["ErrorMessage"] = "Bạn không có quyền hủy phiếu hỗ trợ này.";
+                return RedirectToAction("PhieuCuaToi", "Customers");
+            }
+
+            // 2. Kiểm tra trạng thái hợp lệ để hủy
+            string currentStatus = phieu.TrangThai?.Trim() ?? "";
+            bool isChoTiepNhan = currentStatus.Equals("Chờ tiếp nhận", StringComparison.OrdinalIgnoreCase)
+                              || currentStatus.Equals("ChoTiepNhan", StringComparison.OrdinalIgnoreCase);
+
+            if (!isChoTiepNhan)
+            {
+                string errorMsg = "Phiếu không thể hủy vì đã được tiếp nhận hoặc xử lý.";
+                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                {
+                    return Json(new { success = false, message = errorMsg });
+                }
+                TempData["ErrorMessage"] = errorMsg;
+                return RedirectToAction("PhieuCuaToi", "Customers");
+            }
+
+            // 3. Cập nhật phiếu hỗ trợ
+            string trangThaiCu = phieu.TrangThai ?? "Chờ tiếp nhận";
+            phieu.TrangThai = "Đã hủy";
+            phieu.NgayCapNhat = DateOnly.FromDateTime(DateTime.Today);
+
+            string cleanReason = lyDoHuy?.Trim() ?? "";
+            string logDesc = !string.IsNullOrWhiteSpace(cleanReason)
+                ? $"Khách hàng đã hủy phiếu. Lý do: {cleanReason}"
+                : "Khách hàng đã hủy phiếu hỗ trợ.";
+
+            // 4. Ghi vết vào LichSuHoTro
+            var log = new LichSuHoTro
+            {
+                IdPhieu = phieu.IdPhieu,
+                IdNhanVien = phieu.IdNhanVien,
+                TrangThaiCu = trangThaiCu,
+                TrangThaiMoi = "Đã hủy",
+                NoiDungCapNhat = logDesc,
+                NgayCapNhat = DateOnly.FromDateTime(DateTime.Today)
+            };
+            _context.LichSuHoTros.Add(log);
+
+            // 5. Đồng bộ hủy các lịch hẹn thuộc phiếu này (nếu có)
+            if (phieu.LichHens != null && phieu.LichHens.Any())
+            {
+                foreach (var lh in phieu.LichHens)
+                {
+                    if (lh.TrangThai != "DaHuy" && lh.TrangThai != "Đã hủy")
+                    {
+                        lh.TrangThai = "DaHuy";
+                        lh.LyDoHuy = !string.IsNullOrWhiteSpace(cleanReason)
+                            ? $"Lịch hẹn bị hủy do khách hàng hủy phiếu hỗ trợ ({cleanReason})."
+                            : "Lịch hẹn bị hủy do khách hàng hủy phiếu hỗ trợ.";
+                        lh.NgayHuy = DateTime.Now;
+                        lh.NguoiHuy = "KhachHang";
+
+                        _context.LichSuHoTros.Add(new LichSuHoTro
+                        {
+                            IdPhieu = phieu.IdPhieu,
+                            IdNhanVien = lh.IdNhanVien ?? phieu.IdNhanVien,
+                            TrangThaiCu = lh.TrangThai,
+                            TrangThaiMoi = "DaHuy",
+                            NoiDungCapNhat = "Lịch hẹn đã được hủy tự động do khách hàng hủy phiếu hỗ trợ.",
+                            NgayCapNhat = DateOnly.FromDateTime(DateTime.Today)
+                        });
+                    }
+                }
+            }
+
+            await _context.SaveChangesAsync();
+
+            string successMsg = $"Hủy phiếu hỗ trợ {phieu.MaPhieu} thành công.";
+
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            {
+                return Json(new
+                {
+                    success = true,
+                    message = successMsg,
+                    idPhieu = phieu.IdPhieu,
+                    trangThai = "Đã hủy"
+                });
+            }
+
+            TempData["SuccessMessage"] = successMsg;
+            return RedirectToAction("PhieuCuaToi", "Customers");
+        }
+
+        // ==========================================================================
         // KIỂM TRA KHUNG GIỜ CÒN TRỐNG / ĐÃ ĐẦY TRÊN SQL SERVER
         // ==========================================================================
         [HttpGet]

@@ -1,0 +1,207 @@
+@model SupportTicketSysterm.ViewModels.AdminCreateLichHenViewModel
+@{
+    ViewData["Title"] = "Tạo Lịch Hẹn Hỗ Trợ Kỹ Thuật Mới - Admin Viettel TechSupport";
+    Layout = "~/Views/Shared/_LayoutStaff.cshtml";
+}
+
+<div class="container-fluid py-3">
+    <!-- BREADCRUMB & HEADER -->
+    <div class="d-flex align-items-center justify-content-between mb-4">
+        <div>
+            <div class="d-flex align-items-center gap-2 mb-1">
+                <a href="@Url.Action("Index", "AdminLichHen")" class="text-decoration-none text-secondary">
+                    <i class="fa-solid fa-arrow-left me-1"></i> Trở về danh sách
+                </a>
+                <span class="text-muted">/</span>
+                <span class="text-dark font-weight-bold">Tạo Lịch Hẹn Mới</span>
+            </div>
+            <h1 class="h3 mb-0 font-weight-bold text-gray-800">
+                <i class="fa-solid fa-calendar-plus text-danger me-2"></i>Tạo Lịch Hẹn Hỗ Trợ Kỹ Thuật
+            </h1>
+        </div>
+    </div>
+
+    <!-- MAIN FORM CARD -->
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm rounded-3">
+                <div class="card-header bg-white py-3 border-0">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fa-solid fa-file-circle-plus me-2 text-danger"></i>Thông Tin Lịch Hẹn Mới
+                    </h6>
+                </div>
+                <div class="card-body p-4">
+                    <form asp-controller="AdminLichHen" asp-action="Create" method="post" id="createLichHenForm">
+                        @Html.AntiForgeryToken()
+
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger mb-4" role="alert"></div>
+
+                        <!-- 1. CHỌN PHIẾU HỖ TRỢ -->
+                        <div class="mb-4">
+                            <label asp-for="IdPhieu" class="form-label font-weight-bold text-dark">
+                                Chọn Phiếu Hỗ Trợ Kỹ Thuật <span class="text-danger">*</span>
+                            </label>
+                            @if (Model.PhieuList != null && Model.PhieuList.Any())
+                            {
+                                <select asp-for="IdPhieu" asp-items="@Model.PhieuList" class="form-select bg-light" id="selectPhieuInput" required>
+                                    <option value="">-- Chọn phiếu hỗ trợ chưa có lịch hẹn --</option>
+                                </select>
+                            }
+                            else
+                            {
+                                <div class="alert alert-warning border-0 rounded-3 mb-0">
+                                    <i class="fa-solid fa-circle-info me-2"></i>Hiện tại tất cả các phiếu hỗ trợ đang xử lý đều đã có lịch hẹn hoặc không có phiếu khả dụng.
+                                </div>
+                            }
+                            <span asp-validation-for="IdPhieu" class="text-danger small"></span>
+                        </div>
+
+                        <!-- 2. PHÂN CÔNG KTV (TÙY CHỌN) -->
+                        <div class="mb-4">
+                            <label asp-for="IdNhanVien" class="form-label font-weight-bold text-dark">
+                                Phân Công Kỹ Thuật Viên Phụ Trách (Tùy chọn)
+                            </label>
+                            <select asp-for="IdNhanVien" asp-items="@Model.NhanVienList" class="form-select bg-light" id="selectStaffInput">
+                                <option value="">-- Để trống nếu chưa phân công (Lịch sẽ ở trạng thái Chờ xác nhận) --</option>
+                            </select>
+                            <span asp-validation-for="IdNhanVien" class="text-danger small"></span>
+                            <div class="form-text text-muted">
+                                <i class="fa-solid fa-circle-info me-1 text-primary"></i>Nếu chọn KTV, lịch hẹn sẽ được tự động chuyển sang trạng thái <strong>Đã xác nhận</strong>.
+                            </div>
+                        </div>
+
+                        <!-- BANNER CẢNH BÁO XUNG ĐỘT THỜI GIAN -->
+                        <div id="conflictAlertBanner" class="alert alert-warning d-none mb-4" role="alert">
+                            <div class="d-flex align-items-center">
+                                <i class="fa-solid fa-triangle-exclamation me-2 fs-4"></i>
+                                <div>
+                                    <div class="fw-bold" id="conflictBannerTitle">Cảnh báo xung đột lịch làm việc</div>
+                                    <div class="small" id="conflictBannerDesc">KTV đã có lịch hẹn trùng khung giờ này.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 3. NGÀY & KHUNG GIỜ HẸN -->
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-4">
+                                <label asp-for="NgayHen" class="form-label font-weight-bold text-dark">
+                                    Ngày Hẹn <span class="text-danger">*</span>
+                                </label>
+                                <input type="date" asp-for="NgayHen" class="form-control bg-light" id="inputNgayHen" min="@DateTime.Today.ToString("yyyy-MM-dd")" required />
+                                <span asp-validation-for="NgayHen" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label asp-for="GioBatDau" class="form-label font-weight-bold text-dark">
+                                    Giờ Bắt Đầu <span class="text-danger">*</span>
+                                </label>
+                                <input type="time" asp-for="GioBatDau" class="form-control bg-light" id="inputGioBatDau" required />
+                                <span asp-validation-for="GioBatDau" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label asp-for="GioKetThuc" class="form-label font-weight-bold text-dark">
+                                    Giờ Kết Thúc <span class="text-danger">*</span>
+                                </label>
+                                <input type="time" asp-for="GioKetThuc" class="form-control bg-light" id="inputGioKetThuc" required />
+                                <span asp-validation-for="GioKetThuc" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <!-- 4. HÌNH THỨC & ĐỊA ĐIỂM -->
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-4">
+                                <label asp-for="HinhThuc" class="form-label font-weight-bold text-dark">
+                                    Hình Thức Hỗ Trợ <span class="text-danger">*</span>
+                                </label>
+                                <select asp-for="HinhThuc" class="form-select bg-light" id="selectHinhThuc">
+                                    <option value="TrucTiep">Trực tiếp (Tại nhà/Đơn vị khách hàng)</option>
+                                    <option value="TrucTuyen">Trực tuyến (Online / Remote)</option>
+                                </select>
+                                <span asp-validation-for="HinhThuc" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-8">
+                                <label asp-for="DiaDiem" class="form-label font-weight-bold text-dark">
+                                    Địa Điểm Hỗ Trợ <span class="text-danger">*</span>
+                                </label>
+                                <input type="text" asp-for="DiaDiem" class="form-control bg-light" id="inputDiaDiem" placeholder="Nhập địa chỉ nhà/đơn vị cần nhân viên kỹ thuật tới hỗ trợ..." required />
+                                <span asp-validation-for="DiaDiem" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <!-- 5. GHI CHÚ -->
+                        <div class="mb-4">
+                            <label asp-for="GhiChu" class="form-label font-weight-bold text-dark">Ghi Chú Admin / Phụ Trách</label>
+                            <textarea asp-for="GhiChu" class="form-control bg-light" rows="3" placeholder="Nhập ghi chú hoặc yêu cầu đặc biệt về thiết bị, vật tư cho KTV..."></textarea>
+                            <span asp-validation-for="GhiChu" class="text-danger small"></span>
+                        </div>
+
+                        <!-- SUBMIT BUTTONS -->
+                        <div class="d-flex align-items-center justify-content-end gap-2 pt-3 border-top">
+                            <a href="@Url.Action("Index", "AdminLichHen")" class="btn btn-light px-4 py-2 text-secondary fw-bold rounded-pill">
+                                Hủy bỏ
+                            </a>
+                            <button type="submit" class="btn btn-danger px-4 py-2 fw-bold text-white rounded-pill shadow-sm" style="background-color:#D71920; border-color:#D71920;" id="btnSubmitCreate">
+                                <i class="fa-solid fa-plus me-1"></i> Tạo Lịch Hẹn Mới
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const staffSelect = document.getElementById('selectStaffInput');
+            const ngayHenInput = document.getElementById('inputNgayHen');
+            const gioBatDauInput = document.getElementById('inputGioBatDau');
+            const gioKetThucInput = document.getElementById('inputGioKetThuc');
+            const hinhThucSelect = document.getElementById('selectHinhThuc');
+            const conflictBanner = document.getElementById('conflictAlertBanner');
+            const conflictTitle = document.getElementById('conflictBannerTitle');
+            const conflictDesc = document.getElementById('conflictBannerDesc');
+
+            function checkConflict() {
+                const staffId = staffSelect ? staffSelect.value : '';
+                const ngayHen = ngayHenInput ? ngayHenInput.value : '';
+                const gioBatDau = gioBatDauInput ? gioBatDauInput.value : '';
+                const gioKetThuc = gioKetThucInput ? gioKetThucInput.value : '';
+                const hinhThuc = hinhThucSelect ? hinhThucSelect.value : 'TrucTiep';
+
+                if (!staffId || !ngayHen || !gioBatDau || !gioKetThuc || gioBatDau >= gioKetThuc) {
+                    if (conflictBanner) conflictBanner.classList.add('d-none');
+                    return;
+                }
+
+                const startDateTimeStr = `${ngayHen}T${gioBatDau}:00`;
+                const endDateTimeStr = `${ngayHen}T${gioKetThuc}:00`;
+
+                fetch(`/Admin/LichHen/CheckConflict?idNhanVien=${staffId}&start=${encodeURIComponent(startDateTimeStr)}&end=${encodeURIComponent(endDateTimeStr)}&hinhThuc=${hinhThuc}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        if (!data.isAvailable) {
+                            if (conflictTitle) conflictTitle.textContent = 'Cảnh báo xung đột lịch làm việc KTV';
+                            if (conflictDesc) conflictDesc.textContent = `${data.message} (${data.reasons ? data.reasons.join('; ') : ''})`;
+                            if (conflictBanner) conflictBanner.classList.remove('d-none');
+                        } else {
+                            if (conflictBanner) conflictBanner.classList.add('d-none');
+                        }
+                    })
+                    .catch(() => {
+                        if (conflictBanner) conflictBanner.classList.add('d-none');
+                    });
+            }
+
+            if (staffSelect) staffSelect.addEventListener('change', checkConflict);
+            if (ngayHenInput) ngayHenInput.addEventListener('change', checkConflict);
+            if (gioBatDauInput) gioBatDauInput.addEventListener('change', checkConflict);
+            if (gioKetThucInput) gioKetThucInput.addEventListener('change', checkConflict);
+            if (hinhThucSelect) hinhThucSelect.addEventListener('change', checkConflict);
+        });
+    </script>
+}

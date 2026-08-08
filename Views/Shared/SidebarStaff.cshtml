@@ -99,11 +99,21 @@
             </li>
 
             <!-- Quản lý Lịch hẹn (Admin & Nhân viên) -->
-            <li class="sidebar-item @(currentController.Equals("AdminLichHen", StringComparison.OrdinalIgnoreCase) || currentController.Equals("StaffLichHen", StringComparison.OrdinalIgnoreCase) || (currentController.Equals("Staff", StringComparison.OrdinalIgnoreCase) && currentAction.Equals("QuanLyLichHen", StringComparison.OrdinalIgnoreCase)) ? "active" : "")">
-                <a asp-controller="@(isAdmin ? "AdminLichHen" : "Staff")" asp-action="@(isAdmin ? "Index" : "QuanLyLichHen")" class="sidebar-link">
-                    <i class="fa-solid fa-calendar-days"></i>
-                    <span>Quản lý Lịch hẹn</span>
-                </a>
+            <li class="sidebar-item @(currentController.Equals("AdminLichHen", StringComparison.OrdinalIgnoreCase) || currentController.Equals("NhanVienLichHen", StringComparison.OrdinalIgnoreCase) || currentController.Equals("StaffLichHen", StringComparison.OrdinalIgnoreCase) || (currentController.Equals("Staff", StringComparison.OrdinalIgnoreCase) && currentAction.Equals("QuanLyLichHen", StringComparison.OrdinalIgnoreCase)) ? "active" : "")">
+                @if (isAdmin)
+                {
+                    <a href="/Admin/LichHen/Index" class="sidebar-link">
+                        <i class="fa-solid fa-calendar-days"></i>
+                        <span>Quản lý Lịch hẹn</span>
+                    </a>
+                }
+                else
+                {
+                    <a asp-controller="Staff" asp-action="QuanLyLichHen" class="sidebar-link">
+                        <i class="fa-solid fa-calendar-days"></i>
+                        <span>Quản lý Lịch hẹn</span>
+                    </a>
+                }
             </li>
 
             <!-- Quản lý Khách hàng (Admin & Nhân viên) -->
@@ -152,8 +162,19 @@
                 </li>
             }
 
-     
-
+            <li class="sidebar-section-label">TÀI KHOẢN</li>
+            <li class="sidebar-item @(currentController.Equals("Staff", StringComparison.OrdinalIgnoreCase) && currentAction.Equals("TaiKhoanNhanVien", StringComparison.OrdinalIgnoreCase) ? "active" : "")">
+                <a asp-controller="Staff" asp-action="TaiKhoanNhanVien" class="sidebar-link">
+                    <i class="fa-solid fa-id-card"></i>
+                    <span>Thông tin cá nhân</span>
+                </a>
+            </li>
+            <li class="sidebar-item @(currentController.Equals("Staff", StringComparison.OrdinalIgnoreCase) && currentAction.Equals("DoiMatKhau", StringComparison.OrdinalIgnoreCase) ? "active" : "")">
+                <a asp-controller="Staff" asp-action="DoiMatKhau" class="sidebar-link">
+                    <i class="fa-solid fa-key"></i>
+                    <span>Đổi mật khẩu</span>
+                </a>
+            </li>
         </ul>
     </nav>
 </aside>

@@ -1,0 +1,426 @@
+@model SupportTicketSysterm.Models.ViewModels.ChiTietLichHenViewModel
+@{
+    ViewData["Title"] = "Chi tiết lịch hẹn hỗ trợ kỹ thuật - Viettel TechSupport";
+    ViewData["HeaderTitle"] = "Chi tiết lịch hẹn";
+    ViewData["HeaderSubtitle"] = "Thông tin đầy đủ của lịch hẹn và phiếu hỗ trợ";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/staff/chitietlichhen.css" asp-append-version="true" />
+}
+
+<div class="container-fluid py-3 vt-detail-container">
+
+    <!-- 1. BREADCRUMB -->
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb" style="font-size: 0.85rem;">
+            <li class="breadcrumb-item">
+                <a asp-controller="Staff" asp-action="Dashboard" class="text-danger text-decoration-none fw-semibold">
+                    <i class="fa-solid fa-gauge-high me-1"></i>Dashboard
+                </a>
+            </li>
+            <li class="breadcrumb-item">
+                <a asp-controller="Staff" asp-action="QuanLyLichHen" class="text-danger text-decoration-none fw-semibold">
+                    <i class="fa-solid fa-calendar-days me-1"></i>Quản lý lịch hẹn
+                </a>
+            </li>
+            <li class="breadcrumb-item active fw-bold text-dark" aria-current="page">
+                Chi tiết lịch hẹn #LH-@Model.IdLichHen.ToString("D5")
+            </li>
+        </ol>
+    </nav>
+
+    <!-- 2. HEADER TITLE -->
+    <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-4 bg-white p-3 rounded-4 shadow-sm border">
+        <div>
+            <h1 class="h4 fw-bold text-danger mb-1 d-flex align-items-center gap-2">
+                <i class="fa-solid fa-calendar-check"></i> Chi tiết lịch hẹn hỗ trợ kỹ thuật
+            </h1>
+            <p class="text-muted small mb-0">
+                Thông tin đầy đủ của lịch hẹn và phiếu hỗ trợ kỹ thuật Viettel Telecom
+            </p>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <span class="badge @Model.CssClassTrangThai px-3 py-2 fs-6 rounded-pill">
+                <i class="fa-solid fa-circle-dot me-1"></i> @Model.TrangThai
+            </span>
+        </div>
+    </div>
+
+    <!-- NOTIFICATION ALERTS -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show border-0 rounded-3 shadow-sm mb-4" role="alert">
+            <i class="fa-solid fa-circle-check me-2"></i>@TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show border-0 rounded-3 shadow-sm mb-4" role="alert">
+            <i class="fa-solid fa-triangle-exclamation me-2"></i>@TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <!-- 3. MAIN WORKSPACE 2-COLUMN GRID -->
+    <div class="row g-4">
+
+        <!-- ==========================================
+             LEFT COLUMN (8/12 Desktop)
+             ========================================== -->
+        <div class="col-lg-8 col-12">
+
+            <!-- Card 1: Thông tin lịch hẹn -->
+            <div class="vt-card">
+                <div class="vt-card-header-title">
+                    <i class="fa-solid fa-clock"></i> Thông tin lịch hẹn
+                </div>
+                <div class="row g-3">
+                    <div class="col-md-6 col-12">
+                        <div class="vt-info-row">
+                            <span class="vt-info-label">Mã lịch hẹn:</span>
+                            <span class="vt-info-value text-danger font-monospace">LH-@Model.IdLichHen.ToString("D5")</span>
+                        </div>
+                        <div class="vt-info-row">
+                            <span class="vt-info-label">Ngày hẹn:</span>
+                            <span class="vt-info-value">@(Model.NgayHen?.ToString("dd/MM/yyyy") ?? "–")</span>
+                        </div>
+                        <div class="vt-info-row">
+                            <span class="vt-info-label">Giờ hẹn:</span>
+                            <span class="vt-info-value text-primary">@Model.GioBatDauStr – @Model.GioKetThucStr</span>
+                        </div>
+                        <div class="vt-info-row">
+                            <span class="vt-info-label">Trạng thái:</span>
+                            <span class="badge @Model.CssClassTrangThai px-2 py-1">@Model.TrangThai</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-12">
+                        <div class="vt-info-row">
+                            <span class="vt-info-label">KTV phụ trách:</span>
+                            <span class="vt-info-value text-primary">@Model.TenNhanVien</span>
+                        </div>
+                        <div class="vt-info-row">
+                            <span class="vt-info-label">SĐT KTV:</span>
+                            <span class="vt-info-value">@Model.SoDienThoaiNV</span>
+                        </div>
+                        <div class="vt-info-row">
+                            <span class="vt-info-label">Thời gian tạo:</span>
+                            <span class="vt-info-value">@(Model.NgayTao?.ToString("dd/MM/yyyy HH:mm") ?? "–")</span>
+                        </div>
+                        <div class="vt-info-row">
+                            <span class="vt-info-label">Người tạo:</span>
+                            <span class="vt-info-value">@Model.NguoiTao</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2: Thông tin phiếu hỗ trợ -->
+            <div class="vt-card">
+                <div class="vt-card-header-title">
+                    <i class="fa-solid fa-ticket"></i> Thông tin phiếu hỗ trợ
+                </div>
+                <div class="row g-3">
+                    <div class="col-md-6 col-12">
+                        <div class="vt-info-row">
+                            <span class="vt-info-label">Mã phiếu:</span>
+                            <span class="vt-info-value text-danger font-monospace">@Model.MaPhieu</span>
+                        </div>
+                        <div class="vt-info-row">
+                            <span class="vt-info-label">Danh mục:</span>
+                            <span class="vt-info-value">@(Model.TenDanhMuc ?? "–")</span>
+                        </div>
+                        <div class="vt-info-row">
+                            <span class="vt-info-label">Dịch vụ:</span>
+                            <span class="vt-info-value">@(Model.TenDichVu ?? "–")</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-12">
+                        <div class="vt-info-row">
+                            <span class="vt-info-label">Mức ưu tiên:</span>
+                            <span class="badge @Model.CssClassUuTien px-2 py-1">@Model.NhanUuTien</span>
+                        </div>
+                        <div class="vt-info-row">
+                            <span class="vt-info-label">Trạng thái phiếu:</span>
+                            <span class="vt-info-value">@(Model.TrangThaiPhieu ?? "–")</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 3: Mô tả yêu cầu -->
+            <div class="vt-card">
+                <div class="vt-card-header-title">
+                    <i class="fa-solid fa-align-left"></i> Mô tả yêu cầu của khách hàng
+                </div>
+                <p class="mb-0 text-dark" style="white-space: pre-line; line-height: 1.6; font-size: 0.9rem;">
+                    @(string.IsNullOrWhiteSpace(Model.NoiDungPhieu) ? "Không có nội dung mô tả từ khách hàng." : Model.NoiDungPhieu)
+                </p>
+            </div>
+
+            <!-- Card 4: Ghi chú kỹ thuật -->
+            <div class="vt-card">
+                <div class="vt-card-header-title">
+                    <i class="fa-solid fa-clipboard-list"></i> Ghi chú kỹ thuật & Kết quả xử lý
+                </div>
+                <div class="p-3 bg-light rounded-3 border">
+                    <p class="mb-0 text-secondary" style="white-space: pre-line; font-size: 0.9rem;">
+                        @(string.IsNullOrWhiteSpace(Model.GhiChu) ? "Chưa có ghi chú." : Model.GhiChu)
+                    </p>
+                </div>
+            </div>
+
+            <!-- Card 5: Lịch sử xử lý (Timeline) -->
+            <div class="vt-card">
+                <div class="vt-card-header-title">
+                    <i class="fa-solid fa-history"></i> Lịch sử xử lý & Cập nhật
+                </div>
+
+                @if (!Model.LichSuHoTros.Any())
+                {
+                    <p class="text-muted small mb-0">Chưa có lịch sử thay đổi cho phiếu hỗ trợ này.</p>
+                }
+                else
+                {
+                    <div class="vt-timeline">
+                        @foreach (var item in Model.LichSuHoTros)
+                        {
+                            <div class="vt-timeline-item">
+                                <div class="vt-timeline-badge">
+                                    <i class="fa-solid fa-check"></i>
+                                </div>
+                                <div class="vt-timeline-content">
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <span class="vt-timeline-user">@item.NguoiThucHien</span>
+                                        <span class="vt-timeline-time">
+                                            @(item.ThoiGian?.ToString("dd/MM/yyyy HH:mm") ?? "Vừa xong")
+                                        </span>
+                                    </div>
+                                    @if (!string.IsNullOrEmpty(item.TrangThaiMoi))
+                                    {
+                                        <div class="mt-1">
+                                            <span class="badge bg-secondary">@item.TrangThaiCu</span>
+                                            <i class="fa-solid fa-arrow-right mx-1 small text-muted"></i>
+                                            <span class="badge bg-danger">@item.TrangThaiMoi</span>
+                                        </div>
+                                    }
+                                    @if (!string.IsNullOrEmpty(item.NoiDung))
+                                    {
+                                        <p class="vt-timeline-text mb-0">@item.NoiDung</p>
+                                    }
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+
+        </div>
+
+        <!-- ==========================================
+             RIGHT COLUMN (4/12 Desktop)
+             ========================================== -->
+        <div class="col-lg-4 col-12">
+
+            <!-- Card 1: Khách hàng -->
+            <div class="vt-card">
+                <div class="vt-card-header-title">
+                    <i class="fa-solid fa-user"></i> Khách hàng
+                </div>
+                <div class="text-center mb-3">
+                    <img src="https://ui-avatars.com/api/?name=@Uri.EscapeDataString(Model.TenKhachHang)&background=D71920&color=fff&size=64" alt="Avatar" class="rounded-circle shadow-sm mb-2" width="64" height="64">
+                    <h6 class="fw-bold text-dark mb-0">@Model.TenKhachHang</h6>
+                    <small class="text-muted">ID KH: #@Model.IdKhachHang</small>
+                </div>
+
+                <div class="vt-info-row">
+                    <span class="vt-info-label"><i class="fa-solid fa-phone me-1 text-danger"></i>Điện thoại:</span>
+                    <span class="vt-info-value">@Model.SoDienThoaiKH</span>
+                </div>
+                <div class="vt-info-row">
+                    <span class="vt-info-label"><i class="fa-solid fa-envelope me-1 text-danger"></i>Email:</span>
+                    <span class="vt-info-value text-break">@(Model.EmailKH ?? "–")</span>
+                </div>
+                <div class="vt-info-row">
+                    <span class="vt-info-label"><i class="fa-solid fa-map-marker-alt me-1 text-danger"></i>Địa chỉ:</span>
+                    <span class="vt-info-value text-break">@(Model.DiaChiHoTro ?? Model.DiaChiKH ?? "–")</span>
+                </div>
+
+                <div class="d-flex flex-column gap-2 mt-3 pt-2 border-top">
+                    <a href="tel:@Model.SoDienThoaiKH" class="btn btn-outline-danger btn-sm rounded-pill w-100 fw-semibold">
+                        <i class="fa-solid fa-phone me-1"></i> Gọi điện thoại
+                    </a>
+                    @if (!string.IsNullOrEmpty(Model.EmailKH))
+                    {
+                        <a href="mailto:@Model.EmailKH" class="btn btn-outline-secondary btn-sm rounded-pill w-100 fw-semibold">
+                            <i class="fa-solid fa-envelope me-1"></i> Gửi Email
+                        </a>
+                    }
+                    <a href="@Model.GoogleMapsUrl" target="_blank" class="btn btn-outline-primary btn-sm rounded-pill w-100 fw-semibold">
+                        <i class="fa-solid fa-map-marker-alt me-1"></i> Xem trên Google Maps
+                    </a>
+                </div>
+            </div>
+
+            <!-- Card 2: Thông tin nhanh -->
+            <div class="vt-card">
+                <div class="vt-card-header-title">
+                    <i class="fa-solid fa-bolt"></i> Thông tin nhanh
+                </div>
+                <div class="vt-info-row">
+                    <span class="vt-info-label">Mức ưu tiên:</span>
+                    <span class="badge @Model.CssClassUuTien">@Model.NhanUuTien</span>
+                </div>
+                <div class="vt-info-row">
+                    <span class="vt-info-label">Trạng thái:</span>
+                    <span class="badge @Model.CssClassTrangThai">@Model.TrangThai</span>
+                </div>
+                <div class="vt-info-row">
+                    <span class="vt-info-label">Ngày hẹn:</span>
+                    <span class="vt-info-value">@(Model.NgayHen?.ToString("dd/MM/yyyy") ?? "–")</span>
+                </div>
+                <div class="vt-info-row">
+                    <span class="vt-info-label">Thời lượng dự kiến:</span>
+                    <span class="vt-info-value text-primary">@Model.ThoiLuongStr</span>
+                </div>
+                <div class="vt-info-row">
+                    <span class="vt-info-label">Danh mục:</span>
+                    <span class="vt-info-value">@(Model.TenDanhMuc ?? "–")</span>
+                </div>
+                <div class="vt-info-row">
+                    <span class="vt-info-label">Dịch vụ:</span>
+                    <span class="vt-info-value">@(Model.TenDichVu ?? "–")</span>
+                </div>
+            </div>
+
+            <!-- Card 3: File đính kèm -->
+            <div class="vt-card">
+                <div class="vt-card-header-title">
+                    <i class="fa-solid fa-paperclip"></i> File đính kèm (@Model.FileDinhKems.Count)
+                </div>
+
+                @if (!Model.FileDinhKems.Any())
+                {
+                    <p class="text-muted small mb-0">Không có tệp đính kèm.</p>
+                }
+                else
+                {
+                    @foreach (var file in Model.FileDinhKems)
+                    {
+                        <div class="vt-file-item">
+                            <div class="d-flex align-items-center gap-2 text-truncate me-2">
+                                <i class="fa-solid @file.IconClass fs-5"></i>
+                                <div class="text-truncate">
+                                    <div class="fw-semibold text-dark text-truncate" style="font-size:0.83rem;">@file.TenFile</div>
+                                    <small class="text-muted">@(file.NgayUpload?.ToString("dd/MM/yyyy") ?? "–")</small>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center gap-1 flex-shrink-0">
+                                <a href="@file.DuongDan" target="_blank" class="btn btn-sm btn-light rounded-circle" title="Xem / Tải về">
+                                    <i class="fa-solid fa-download text-danger"></i>
+                                </a>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ==========================================
+     FLOATING BOTTOM ACTION BAR
+     ========================================== -->
+<div class="vt-action-bar">
+    <div class="d-flex align-items-center gap-2">
+        <a asp-controller="Staff" asp-action="QuanLyLichHen" class="btn btn-outline-secondary rounded-pill px-3 fw-semibold">
+            <i class="fa-solid fa-arrow-left me-1"></i> Quay lại
+        </a>
+    </div>
+
+    <div class="d-flex align-items-center gap-2 flex-wrap">
+        @if (Model.CoTheBatDau)
+        {
+            <form method="post" asp-action="BatDauHoTro" asp-controller="Staff" class="d-inline" onsubmit="return confirm('Bạn có chắc muốn bắt đầu hỗ trợ khách hàng?');">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" value="@Model.IdLichHen" />
+                <button type="submit" class="btn btn-warning text-dark rounded-pill px-4 fw-bold">
+                    <i class="fa-solid fa-play me-1"></i> Bắt đầu hỗ trợ
+                </button>
+            </form>
+        }
+
+        @if (Model.CoTheHoanThanh)
+        {
+            <button type="button" class="btn btn-success rounded-pill px-4 fw-bold" data-bs-toggle="modal" data-bs-target="#completeApptModal">
+                <i class="fa-solid fa-circle-check me-1"></i> Hoàn thành
+            </button>
+        }
+
+        @if (Model.DaHoanThanh)
+        {
+            <span class="badge bg-success fs-6 px-3 py-2 rounded-pill">
+                <i class="fa-solid fa-circle-check me-1"></i> Đã hoàn thành hỗ trợ
+            </span>
+        }
+    </div>
+</div>
+
+<!-- =============================================================
+     MODAL DIALOGS
+     ============================================================= -->
+
+<!-- Modal: Hoàn thành lịch hẹn -->
+<div class="modal fade" id="completeApptModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
+            <div class="modal-header border-0 pt-4 px-4">
+                <h5 class="modal-title fw-bold text-success">
+                    <i class="fa-solid fa-circle-check me-2"></i>Báo Cáo Hoàn Thành Lịch Hẹn Hỗ Trợ
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body px-4 pb-4">
+                <form method="post" asp-action="HoanThanhLich" asp-controller="Staff">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.IdLichHen" />
+                    
+                    <div class="alert alert-success border-0 rounded-3 mb-3 small" style="background-color: rgba(22, 163, 74, 0.08);">
+                        <i class="fa-solid fa-circle-info text-success me-1"></i>
+                        Vui lòng nhập thông tin kết quả xử lý thực tế trước khi xác nhận hoàn thành lịch hẹn cho phiếu <strong>#@Model.MaPhieu</strong>.
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label class="form-label fw-bold small text-secondary">Kết quả xử lý kỹ thuật <span class="text-danger">*</span></label>
+                            <textarea name="ketQuaXuLy" class="form-control rounded-3" rows="3" placeholder="Mô tả chi tiết nguyên nhân sự cố và biện pháp đã khắc phục..." required></textarea>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label fw-bold small text-secondary">Thiết bị / Vật tư đã thay thế (nếu có)</label>
+                            <input type="text" name="thietBiThayThe" class="form-control rounded-3" placeholder="Ví dụ: Modem Wi-Fi 6 HG8145V5, 15m cáp quang...">
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label fw-bold small text-secondary">Khuyến nghị cho khách hàng</label>
+                            <input type="text" name="khuyenNghi" class="form-control rounded-3" placeholder="Ví dụ: Đặt modem nơi thoáng mát, không tự ý gập dây cáp...">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-bold small text-secondary">Ghi chú bổ sung</label>
+                            <textarea name="ghiChuBoSung" class="form-control rounded-3" rows="2" placeholder="Ghi chú thêm cho bộ phận quản lý (nếu có)..."></textarea>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2 justify-content-end mt-4 pt-2 border-top">
+                        <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Hủy bỏ</button>
+                        <button type="submit" class="btn btn-success rounded-pill px-4" style="background-color: #16A34A; border-color: #16A34A;">
+                            <i class="fa-solid fa-check me-1"></i> Xác nhận hoàn thành
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

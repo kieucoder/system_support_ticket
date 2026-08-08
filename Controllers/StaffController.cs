@@ -10,6 +10,8 @@ using System.Security.Claims;
 using SupportTicketSysterm.Services;
 using SupportTicketSysterm.Models.ViewModels;
 
+using Microsoft.AspNetCore.Identity;
+
 namespace SupportTicketSysterm.Controllers
 {
     [Authorize(Roles = "Admin,NhanVien,Nhân viên,Nhân viên hỗ trợ")]
@@ -19,13 +21,23 @@ namespace SupportTicketSysterm.Controllers
         private readonly IDashboardService _dashboardService;
         private readonly IDanhGiaService _danhGiaService;
         private readonly ILichHenService _lichHenService;
+        private readonly IPasswordHasher<KhachHang> _khachHangPasswordHasher;
+        private readonly IPasswordHasher<NhanVien> _nhanVienPasswordHasher;
 
-        public StaffController(TechSupportContext context, IDashboardService dashboardService, IDanhGiaService danhGiaService, ILichHenService lichHenService)
+        public StaffController(
+            TechSupportContext context,
+            IDashboardService dashboardService,
+            IDanhGiaService danhGiaService,
+            ILichHenService lichHenService,
+            IPasswordHasher<KhachHang> khachHangPasswordHasher,
+            IPasswordHasher<NhanVien> nhanVienPasswordHasher)
         {
             _context = context;
             _dashboardService = dashboardService;
             _danhGiaService = danhGiaService;
             _lichHenService = lichHenService;
+            _khachHangPasswordHasher = khachHangPasswordHasher;
+            _nhanVienPasswordHasher = nhanVienPasswordHasher;
         }
 
 
@@ -361,8 +373,9 @@ namespace SupportTicketSysterm.Controllers
             int pageSize = 10)
         {
             string vaiTro = HttpContext.Session.GetString("Role") ?? HttpContext.Session.GetString("VaiTro") ?? User.FindFirstValue(ClaimTypes.Role) ?? User.FindFirstValue("VaiTro") ?? "";
-            bool isAdmin = vaiTro.Equals("Admin", StringComparison.OrdinalIgnoreCase) || vaiTro.Equals("Quản trị viên", StringComparison.OrdinalIgnoreCase);
-            ViewBag.IsAdmin = isAdmin;
+            bool canManage = vaiTro.Equals("Admin", StringComparison.OrdinalIgnoreCase) || vaiTro.Equals("Quản trị viên", StringComparison.OrdinalIgnoreCase) || vaiTro.Equals("NhanVien", StringComparison.OrdinalIgnoreCase) || vaiTro.Equals("Nhân viên", StringComparison.OrdinalIgnoreCase) || vaiTro.Equals("Nhân viên hỗ trợ", StringComparison.OrdinalIgnoreCase);
+            ViewBag.IsAdmin = canManage;
+            ViewBag.CanManageCustomers = canManage;
 
             var query = _context.KhachHangs.AsQueryable();
 
@@ -435,8 +448,9 @@ namespace SupportTicketSysterm.Controllers
         public IActionResult DanhSachKhachHang(string keyword, string status, string sort = "newest", int page = 1, int pageSize = 10)
         {
             string vaiTro = HttpContext.Session.GetString("Role") ?? HttpContext.Session.GetString("VaiTro") ?? User.FindFirstValue(ClaimTypes.Role) ?? User.FindFirstValue("VaiTro") ?? "";
-            bool isAdmin = vaiTro.Equals("Admin", StringComparison.OrdinalIgnoreCase) || vaiTro.Equals("Quản trị viên", StringComparison.OrdinalIgnoreCase);
-            ViewBag.IsAdmin = isAdmin;
+            bool canManage = vaiTro.Equals("Admin", StringComparison.OrdinalIgnoreCase) || vaiTro.Equals("Quản trị viên", StringComparison.OrdinalIgnoreCase) || vaiTro.Equals("NhanVien", StringComparison.OrdinalIgnoreCase) || vaiTro.Equals("Nhân viên", StringComparison.OrdinalIgnoreCase) || vaiTro.Equals("Nhân viên hỗ trợ", StringComparison.OrdinalIgnoreCase);
+            ViewBag.IsAdmin = canManage;
+            ViewBag.CanManageCustomers = canManage;
 
             var query = _context.KhachHangs.AsQueryable();
 
@@ -529,8 +543,8 @@ namespace SupportTicketSysterm.Controllers
         public IActionResult ThemKhachHang(KhachHang model)
         {
             string vaiTro = HttpContext.Session.GetString("Role") ?? HttpContext.Session.GetString("VaiTro") ?? User.FindFirstValue(ClaimTypes.Role) ?? User.FindFirstValue("VaiTro") ?? "";
-            bool isAdmin = vaiTro.Equals("Admin", StringComparison.OrdinalIgnoreCase) || vaiTro.Equals("Quản trị viên", StringComparison.OrdinalIgnoreCase);
-            if (!isAdmin)
+            bool canManage = vaiTro.Equals("Admin", StringComparison.OrdinalIgnoreCase) || vaiTro.Equals("Quản trị viên", StringComparison.OrdinalIgnoreCase) || vaiTro.Equals("NhanVien", StringComparison.OrdinalIgnoreCase) || vaiTro.Equals("Nhân viên", StringComparison.OrdinalIgnoreCase) || vaiTro.Equals("Nhân viên hỗ trợ", StringComparison.OrdinalIgnoreCase);
+            if (!canManage)
             {
                 if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
                 {
@@ -591,6 +605,7 @@ namespace SupportTicketSysterm.Controllers
                 {
                     model.MaKh = TaoMaKhachHang();
                     model.NgayTao = DateOnly.FromDateTime(DateTime.Now);
+                    model.MatKhau = _khachHangPasswordHasher.HashPassword(model, string.IsNullOrWhiteSpace(model.MatKhau) ? "123456" : model.MatKhau);
 
                     _context.KhachHangs.Add(model);
                     _context.SaveChanges();
@@ -673,8 +688,8 @@ namespace SupportTicketSysterm.Controllers
         public IActionResult SuaKhachHang(KhachHang model)
         {
             string vaiTro = HttpContext.Session.GetString("Role") ?? HttpContext.Session.GetString("VaiTro") ?? User.FindFirstValue(ClaimTypes.Role) ?? User.FindFirstValue("VaiTro") ?? "";
-            bool isAdmin = vaiTro.Equals("Admin", StringComparison.OrdinalIgnoreCase) || vaiTro.Equals("Quản trị viên", StringComparison.OrdinalIgnoreCase);
-            if (!isAdmin)
+            bool canManage = vaiTro.Equals("Admin", StringComparison.OrdinalIgnoreCase) || vaiTro.Equals("Quản trị viên", StringComparison.OrdinalIgnoreCase) || vaiTro.Equals("NhanVien", StringComparison.OrdinalIgnoreCase) || vaiTro.Equals("Nhân viên", StringComparison.OrdinalIgnoreCase) || vaiTro.Equals("Nhân viên hỗ trợ", StringComparison.OrdinalIgnoreCase);
+            if (!canManage)
             {
                 return Json(new { success = false, message = "Bạn không có quyền chỉnh sửa thông tin khách hàng." });
             }
@@ -728,7 +743,7 @@ namespace SupportTicketSysterm.Controllers
 
                 if (!string.IsNullOrWhiteSpace(model.MatKhau))
                 {
-                    customer.MatKhau = model.MatKhau;
+                    customer.MatKhau = _khachHangPasswordHasher.HashPassword(customer, model.MatKhau);
                 }
 
                 _context.SaveChanges();
@@ -741,52 +756,14 @@ namespace SupportTicketSysterm.Controllers
             }
         }
 
-        // Xóa khách hàng
+        // Xóa khách hàng (Đã vô hiệu hóa theo yêu cầu hệ thống)
         [HttpPost]
         [Route("Staff/XoaKhachHang")]
         [Route("KhachHang/XoaKhachHang")]
         [ValidateAntiForgeryToken]
         public IActionResult XoaKhachHang(string id)
         {
-            string vaiTro = HttpContext.Session.GetString("Role") ?? HttpContext.Session.GetString("VaiTro") ?? User.FindFirstValue(ClaimTypes.Role) ?? User.FindFirstValue("VaiTro") ?? "";
-            bool isAdmin = vaiTro.Equals("Admin", StringComparison.OrdinalIgnoreCase) || vaiTro.Equals("Quản trị viên", StringComparison.OrdinalIgnoreCase);
-            if (!isAdmin)
-            {
-                return Json(new { success = false, message = "Bạn không có quyền xóa khách hàng." });
-            }
-
-            KhachHang? customer = null;
-            if (int.TryParse(id, out int numericId))
-            {
-                customer = _context.KhachHangs.Find(numericId);
-            }
-            if (customer == null && !string.IsNullOrEmpty(id))
-            {
-                customer = _context.KhachHangs.FirstOrDefault(x => x.MaKh == id);
-            }
-
-            if (customer == null)
-            {
-                return Json(new { success = false, message = "Khách hàng không tồn tại." });
-            }
-
-            bool hasTickets = _context.PhieuHoTros.Any(x => x.IdKhachHang == customer.IdKhachHang);
-            if (hasTickets)
-            {
-                return Json(new { success = false, message = "Không thể xóa khách hàng đã phát sinh phiếu hỗ trợ kỹ thuật trên hệ thống." });
-            }
-
-            try
-            {
-                _context.KhachHangs.Remove(customer);
-                _context.SaveChanges();
-                return Json(new { success = true, message = "Xóa tài khoản khách hàng thành công!" });
-            }
-            catch (Exception ex)
-            {
-                var errorMsg = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
-                return Json(new { success = false, message = $"Lỗi hệ thống khi xóa khách hàng: {errorMsg}" });
-            }
+            return Json(new { success = false, message = "Chức năng xóa khách hàng hiện đã bị vô hiệu hóa trên hệ thống." });
         }
 
         [HttpPost]
@@ -796,8 +773,8 @@ namespace SupportTicketSysterm.Controllers
         public IActionResult KhoaKhachHang(string? id, int? idKhachHang)
         {
             string vaiTro = HttpContext.Session.GetString("Role") ?? HttpContext.Session.GetString("VaiTro") ?? User.FindFirstValue(ClaimTypes.Role) ?? User.FindFirstValue("VaiTro") ?? "";
-            bool isAdmin = vaiTro.Equals("Admin", StringComparison.OrdinalIgnoreCase) || vaiTro.Equals("Quản trị viên", StringComparison.OrdinalIgnoreCase);
-            if (!isAdmin)
+            bool canManage = vaiTro.Equals("Admin", StringComparison.OrdinalIgnoreCase) || vaiTro.Equals("Quản trị viên", StringComparison.OrdinalIgnoreCase) || vaiTro.Equals("NhanVien", StringComparison.OrdinalIgnoreCase) || vaiTro.Equals("Nhân viên", StringComparison.OrdinalIgnoreCase) || vaiTro.Equals("Nhân viên hỗ trợ", StringComparison.OrdinalIgnoreCase);
+            if (!canManage)
             {
                 return Json(new { success = false, message = "Bạn không có quyền thay đổi trạng thái tài khoản khách hàng." });
             }
@@ -838,41 +815,122 @@ namespace SupportTicketSysterm.Controllers
             return Json(new { success = true, message = "Cập nhật trạng thái thành công!", newStatus = customer.TrangThai });
         }
 
-        //Chi tiết KH
+        // GET: /Staff/ChiTietKhachHang/{id} hoặc /Staff/ChiTietKH/{id}
         [HttpGet]
-        public IActionResult ChiTietKH(string id)
+        [Route("Staff/ChiTietKhachHang/{id}")]
+        [Route("Staff/ChiTietKH/{id?}")]
+        [Route("Staff/ChiTietKH")]
+        public async Task<IActionResult> ChiTietKhachHang(string id)
         {
+            if (string.IsNullOrWhiteSpace(id))
+            {
+                return Json(new { success = false, message = "Mã hoặc ID khách hàng không hợp lệ." });
+            }
+
             string vaiTro = HttpContext.Session.GetString("Role") ?? HttpContext.Session.GetString("VaiTro") ?? User.FindFirstValue(ClaimTypes.Role) ?? User.FindFirstValue("VaiTro") ?? "";
-            bool isAdmin = vaiTro.Equals("Admin", StringComparison.OrdinalIgnoreCase) || vaiTro.Equals("Quản trị viên", StringComparison.OrdinalIgnoreCase);
-            ViewBag.IsAdmin = isAdmin;
+            bool canManage = vaiTro.Equals("Admin", StringComparison.OrdinalIgnoreCase) || vaiTro.Equals("Quản trị viên", StringComparison.OrdinalIgnoreCase) || vaiTro.Equals("NhanVien", StringComparison.OrdinalIgnoreCase) || vaiTro.Equals("Nhân viên", StringComparison.OrdinalIgnoreCase) || vaiTro.Equals("Nhân viên hỗ trợ", StringComparison.OrdinalIgnoreCase);
+            ViewBag.IsAdmin = canManage;
+            ViewBag.CanManageCustomers = canManage;
 
             KhachHang? khachHang = null;
             if (int.TryParse(id, out int numericId))
             {
-                khachHang = _context.KhachHangs
+                khachHang = await _context.KhachHangs
                                     .Include(x => x.PhieuHoTros)
                                         .ThenInclude(p => p.LichHens)
                                     .Include(x => x.PhieuHoTros)
                                         .ThenInclude(p => p.DanhGium)
-                                    .FirstOrDefault(x => x.IdKhachHang == numericId);
-            }
-            if (khachHang == null && !string.IsNullOrEmpty(id))
-            {
-                khachHang = _context.KhachHangs
-                                    .Include(x => x.PhieuHoTros)
-                                        .ThenInclude(p => p.LichHens)
-                                    .Include(x => x.PhieuHoTros)
-                                        .ThenInclude(p => p.DanhGium)
-                                    .FirstOrDefault(x => x.MaKh == id);
+                                    .FirstOrDefaultAsync(x => x.IdKhachHang == numericId);
             }
 
             if (khachHang == null)
             {
-                return NotFound();
+                khachHang = await _context.KhachHangs
+                                    .Include(x => x.PhieuHoTros)
+                                        .ThenInclude(p => p.LichHens)
+                                    .Include(x => x.PhieuHoTros)
+                                        .ThenInclude(p => p.DanhGium)
+                                    .FirstOrDefaultAsync(x => x.MaKh == id);
             }
 
-            return PartialView("_ChiTietKH", khachHang);
+            if (khachHang == null)
+            {
+                return Json(new { success = false, message = "Không tìm thấy khách hàng." });
+            }
+
+            // Gán giá trị TenDangNhap hiển thị nếu chưa có
+            if (string.IsNullOrWhiteSpace(khachHang.TenDangNhap))
+            {
+                khachHang.TenDangNhap = !string.IsNullOrWhiteSpace(khachHang.Email) 
+                    ? khachHang.Email.Split('@')[0] 
+                    : (khachHang.MaKh ?? khachHang.SoDienThoai ?? "khachhang");
+            }
+
+            return PartialView("_ChiTietKhachHang", khachHang);
         }
+
+        [HttpGet]
+        public IActionResult ChiTietKH(string id)
+        {
+            return RedirectToAction("ChiTietKhachHang", new { id = id });
+        }
+
+        // Lấy danh sách lịch sử phiếu hỗ trợ của khách hàng
+        [HttpGet]
+        [Route("Staff/LichSuPhieuKH")]
+        public IActionResult LichSuPhieuKH(string id)
+        {
+            KhachHang? khachHang = null;
+            if (int.TryParse(id, out int numericId))
+            {
+                khachHang = _context.KhachHangs.FirstOrDefault(x => x.IdKhachHang == numericId);
+            }
+            if (khachHang == null && !string.IsNullOrEmpty(id))
+            {
+                khachHang = _context.KhachHangs.FirstOrDefault(x => x.MaKh == id);
+            }
+
+            if (khachHang == null)
+            {
+                return Json(new { success = false, message = "Khách hàng không tồn tại." });
+            }
+
+            var tickets = _context.PhieuHoTros
+                .AsNoTracking()
+                .Include(p => p.IdDichVuNavigation)
+                .Include(p => p.IdNhanVienNavigation)
+                .Where(p => p.IdKhachHang == khachHang.IdKhachHang)
+                .OrderByDescending(p => p.NgayTao)
+                .Select(p => new
+                {
+                    idPhieu = p.IdPhieu,
+                    maPhieu = !string.IsNullOrEmpty(p.MaPhieu) ? p.MaPhieu : $"PHT{p.IdPhieu:D6}",
+                    tieuDe = p.TieuDe ?? "Hỗ trợ kỹ thuật",
+                    tenDichVu = p.IdDichVuNavigation != null ? p.IdDichVuNavigation.TenDichVu : "Dịch vụ chung",
+                    mucUuTien = p.MucDoUuTien ?? 2,
+                    trangThai = p.TrangThai ?? "Chờ xử lý",
+                    ngayTao = p.NgayTao.HasValue ? p.NgayTao.Value.ToString("dd/MM/yyyy") : "--",
+                    ngayCapNhat = p.NgayCapNhat.HasValue ? p.NgayCapNhat.Value.ToString("dd/MM/yyyy") : "--",
+                    tenNhanVien = p.IdNhanVienNavigation != null ? p.IdNhanVienNavigation.HoTen : "Chưa phân công",
+                    moTa = p.NoiDung ?? "Không có mô tả chi tiết."
+                })
+                .ToList();
+
+            return Json(new
+            {
+                success = true,
+                customer = new
+                {
+                    idKhachHang = khachHang.IdKhachHang,
+                    maKh = khachHang.MaKh,
+                    hoTen = khachHang.HoTen,
+                    soDienThoai = khachHang.SoDienThoai,
+                    email = khachHang.Email
+                },
+                tickets = tickets
+            });
+        }
+
 
         //Thêm dịch vụ 
         //==================================================
@@ -1418,7 +1476,7 @@ namespace SupportTicketSysterm.Controllers
                 var nv = await _context.NhanViens.FindAsync(id);
                 if (nv == null) return Json(new { success = false, message = "Nhân viên không tồn tại." });
 
-                nv.MatKhau = "Viettel@1234";
+                nv.MatKhau = _nhanVienPasswordHasher.HashPassword(nv, "Viettel@1234");
                 await _context.SaveChangesAsync();
 
                 return Json(new { success = true, message = $"Đã reset mật khẩu của {nv.HoTen} thành: 'Viettel@1234'" });
@@ -1461,11 +1519,11 @@ namespace SupportTicketSysterm.Controllers
                     SoDienThoai = model.SoDienThoai,
                     DiaChi = model.DiaChi,
                     TenDangNhap = model.TenDangNhap,
-                    MatKhau = string.IsNullOrEmpty(model.MatKhau) ? "Viettel@1234" : model.MatKhau,
                     VaiTro = model.VaiTro,
                     TrangThai = model.TrangThai,
                     NgayTao = DateOnly.FromDateTime(DateTime.Now)
                 };
+                nv.MatKhau = _nhanVienPasswordHasher.HashPassword(nv, string.IsNullOrEmpty(model.MatKhau) ? "Viettel@1234" : model.MatKhau);
 
                 _context.NhanViens.Add(nv);
                 await _context.SaveChangesAsync();
@@ -1514,11 +1572,11 @@ namespace SupportTicketSysterm.Controllers
                         SoDienThoai = model.SoDienThoai,
                         DiaChi = model.DiaChi,
                         TenDangNhap = model.TenDangNhap,
-                        MatKhau = string.IsNullOrEmpty(model.MatKhau) ? "Viettel@1234" : model.MatKhau,
                         VaiTro = model.VaiTro,
                         TrangThai = model.TrangThai,
                         NgayTao = DateOnly.FromDateTime(DateTime.Now)
                     };
+                    nv.MatKhau = _nhanVienPasswordHasher.HashPassword(nv, string.IsNullOrEmpty(model.MatKhau) ? "Viettel@1234" : model.MatKhau);
 
                     _context.NhanViens.Add(nv);
                     await _context.SaveChangesAsync();
@@ -1797,7 +1855,7 @@ namespace SupportTicketSysterm.Controllers
                     });
                 }
 
-                nv.MatKhau = BCrypt.Net.BCrypt.HashPassword(model.MatKhauMoi);
+                nv.MatKhau = _nhanVienPasswordHasher.HashPassword(nv, model.MatKhauMoi);
                 _context.NhanViens.Update(nv);
                 await _context.SaveChangesAsync();
 
@@ -2567,6 +2625,7 @@ namespace SupportTicketSysterm.Controllers
         {
             var phieu = await _context.PhieuHoTros
                 .Include(x => x.IdKhachHangNavigation)
+                .Include(x => x.LichSuHoTros)
                 .FirstOrDefaultAsync(x => x.IdPhieu == id);
 
             if (phieu == null) return NotFound();
@@ -2582,6 +2641,12 @@ namespace SupportTicketSysterm.Controllers
         {
             var phieu = await _context.PhieuHoTros.FindAsync(id);
             if (phieu == null) return NotFound();
+
+            if (phieu.TrangThai == "Đã hủy" || phieu.TrangThai == "DaHuy")
+            {
+                TempData["Error"] = "Không thể thay đổi trạng thái của phiếu hỗ trợ đã bị hủy.";
+                return RedirectToAction("QuanLyPhieuHoTro");
+            }
 
             var (userId, role) = GetStaffSessionInfo();
             if (role == "NhanVien" || role == "Nhân viên" || role == "Nhân viên hỗ trợ")
@@ -2814,10 +2879,132 @@ namespace SupportTicketSysterm.Controllers
         #region Quản lý lịch hẹn
 
         // ============================================================
-        //  GET: QuanLyLichHen – Trang chính quản lý lịch hẹn
+        //  GET: ChiTietLichHen – Trang chi tiết lịch hẹn hỗ trợ kỹ thuật (Full Page)
         // ============================================================
         [HttpGet]
-        public IActionResult QuanLyLichHen(
+        [Route("Staff/ChiTietLichHen/{id:int?}")]
+        [Route("Staff/ChiTietLichHen")]
+        [Route("Staff/QuanLyLichHen/ChiTiet/{id:int?}")]
+        public async Task<IActionResult> ChiTietLichHen(int? id)
+        {
+            if (!id.HasValue || id.Value <= 0)
+            {
+                TempData["ErrorMessage"] = "Không tìm thấy mã lịch hẹn.";
+                return RedirectToAction(nameof(QuanLyLichHen));
+            }
+
+            int currentUserId = HttpContext.Session.GetInt32("IdNhanVien") ?? HttpContext.Session.GetInt32("UserId") ?? 0;
+            string currentUserRole = HttpContext.Session.GetString("Role") ?? HttpContext.Session.GetString("VaiTro") ?? "NhanVien";
+            bool isAdmin = User.IsInRole("Admin") || User.IsInRole("QuanTriVien") || currentUserRole.Equals("Admin", StringComparison.OrdinalIgnoreCase);
+
+            var appt = await _context.LichHens
+                .Include(x => x.IdPhieuNavigation)
+                    .ThenInclude(p => p.IdKhachHangNavigation)
+                .Include(x => x.IdPhieuNavigation)
+                    .ThenInclude(p => p.IdDichVuNavigation)
+                        .ThenInclude(d => d.IdDanhMucNavigation)
+                .Include(x => x.IdPhieuNavigation)
+                    .ThenInclude(p => p.FileDinhKems)
+                .Include(x => x.IdPhieuNavigation)
+                    .ThenInclude(p => p.LichSuHoTros)
+                        .ThenInclude(s => s.IdNhanVienNavigation)
+                .Include(x => x.IdNhanVienNavigation)
+                .FirstOrDefaultAsync(x => x.IdLichHen == id.Value);
+
+            if (appt == null)
+            {
+                TempData["ErrorMessage"] = $"Không tìm thấy thông tin lịch hẹn #{id.Value}.";
+                return RedirectToAction(nameof(QuanLyLichHen));
+            }
+
+            // Phân quyền RBAC: Nhân viên chỉ được xem lịch hẹn được phân công cho mình (trả về 403 Forbidden nếu không có quyền)
+            bool isAssignedToUser = appt.IdNhanVien == currentUserId || (appt.IdPhieuNavigation != null && appt.IdPhieuNavigation.IdNhanVien == currentUserId);
+            if (!isAdmin && !isAssignedToUser)
+            {
+                TempData["ErrorMessage"] = "403 Forbidden: Bạn không có quyền truy cập thông tin chi tiết lịch hẹn của nhân viên khác.";
+                return RedirectToAction(nameof(QuanLyLichHen));
+            }
+
+            var phieu = appt.IdPhieuNavigation;
+            var khachHang = phieu?.IdKhachHangNavigation;
+            var nhanVien = appt.IdNhanVienNavigation;
+
+            var danhSachKTV = await _context.NhanViens
+                .Where(n => n.TrangThai == "Hoạt động")
+                .OrderBy(n => n.HoTen)
+                .Select(n => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
+                {
+                    Value = n.IdNhanVien.ToString(),
+                    Text = $"{n.HoTen} ({n.SoDienThoai})"
+                })
+                .ToListAsync();
+
+            var vm = new SupportTicketSysterm.Models.ViewModels.ChiTietLichHenViewModel
+            {
+                IdLichHen = appt.IdLichHen,
+                TrangThai = appt.TrangThai,
+                NgayHen = appt.NgayHen,
+                GioBatDau = appt.GioBatDau,
+                GioKetThuc = appt.GioKetThuc,
+                DiaChiHoTro = appt.DiaChiHoTro,
+                GhiChu = appt.GhiChu,
+                NgayTao = appt.NgayTao,
+                NguoiTao = appt.IdNhanVienNavigation?.HoTen ?? "Hệ thống",
+
+                IdPhieu = phieu?.IdPhieu,
+                MaPhieu = phieu?.MaPhieu ?? (phieu != null ? $"HD-{phieu.IdPhieu:D5}" : "--"),
+                TieuDePhieu = phieu?.TieuDe,
+                NoiDungPhieu = phieu?.NoiDung,
+                MucDoUuTien = phieu?.MucDoUuTien,
+                TrangThaiPhieu = phieu?.TrangThai,
+                TenDichVu = phieu?.IdDichVuNavigation?.TenDichVu,
+                TenDanhMuc = phieu?.IdDichVuNavigation?.IdDanhMucNavigation?.TenDanhMuc,
+
+                IdKhachHang = khachHang?.IdKhachHang,
+                TenKhachHang = khachHang?.HoTen ?? "Khách hàng",
+                SoDienThoaiKH = khachHang?.SoDienThoai ?? "--",
+                EmailKH = khachHang?.Email,
+                DiaChiKH = khachHang?.DiaChi,
+
+                IdNhanVien = nhanVien?.IdNhanVien,
+                TenNhanVien = nhanVien?.HoTen ?? "Chưa phân công",
+                SoDienThoaiNV = nhanVien?.SoDienThoai ?? "--",
+                EmailNV = nhanVien?.Email,
+                ChucVuNV = nhanVien?.VaiTro,
+
+                DanhSachKTV = danhSachKTV,
+
+                LichSuHoTros = phieu?.LichSuHoTros?
+                    .OrderByDescending(s => s.IdLichSu)
+                    .Select(s => new SupportTicketSysterm.Models.ViewModels.LichSuHoTroItemViewModel
+                    {
+                        IdLichSu = s.IdLichSu,
+                        ThoiGian = s.NgayCapNhat.HasValue ? s.NgayCapNhat.Value.ToDateTime(TimeOnly.MinValue) : null,
+                        NguoiThucHien = s.IdNhanVienNavigation?.HoTen ?? "Hệ thống",
+                        TrangThaiCu = s.TrangThaiCu,
+                        TrangThaiMoi = s.TrangThaiMoi,
+                        NoiDung = s.NoiDungCapNhat
+                    }).ToList() ?? new List<SupportTicketSysterm.Models.ViewModels.LichSuHoTroItemViewModel>(),
+
+                FileDinhKems = phieu?.FileDinhKems?
+                    .Select(f => new SupportTicketSysterm.Models.ViewModels.FileDinhKemItemViewModel
+                    {
+                        IdFile = f.IdFile,
+                        TenFile = f.TenFile,
+                        DuongDan = f.DuongDan,
+                        LoaiFile = f.LoaiFile,
+                        NgayUpload = f.NgayUpload
+                    }).ToList() ?? new List<SupportTicketSysterm.Models.ViewModels.FileDinhKemItemViewModel>()
+            };
+
+            return View("ChiTietLichHen", vm);
+        }
+
+        // ============================================================
+        //  GET: QuanLyLichHen – Trang chính quản lý lịch hẹn (100% Real SQL Server EF Core)
+        // ============================================================
+        [HttpGet]
+        public async Task<IActionResult> QuanLyLichHen(
             int? nhanVien,
             string? trangThai,
             int? danhMuc,
@@ -2840,7 +3027,7 @@ namespace SupportTicketSysterm.Controllers
             int calThang = thang ?? DateTime.Today.Month;
             int calNam = nam ?? DateTime.Today.Year;
 
-            // ── LINQ: 1 query duy nhất với Include đầy đủ ──
+            // ── LINQ: Query trực tiếp từ SQL Server EF Core với Include đầy đủ ──
             var query = _context.LichHens
                 .Include(x => x.IdPhieuNavigation)
                     .ThenInclude(p => p.IdKhachHangNavigation)
@@ -2853,14 +3040,14 @@ namespace SupportTicketSysterm.Controllers
             // ── Phân quyền RBAC ──
             if (!isAdmin)
             {
-                // Nhân viên chỉ được xem lịch hẹn phân công cho chính mình
-                query = query.Where(x => x.IdNhanVien == currentUserId);
+                // Đối với nhân viên: chỉ lấy đúng các lịch hẹn phân công cho nhân viên đó
+                query = query.Where(x => x.IdNhanVien == currentUserId || (x.IdPhieuNavigation != null && x.IdPhieuNavigation.IdNhanVien == currentUserId));
                 nhanVien = currentUserId;
 
                 // Kiểm tra nếu selectedId truyền vào của nhân viên khác thì chặn lại
                 if (selectedId.HasValue)
                 {
-                    bool isOwner = _context.LichHens.Any(l => l.IdLichHen == selectedId.Value && l.IdNhanVien == currentUserId);
+                    bool isOwner = await _context.LichHens.AnyAsync(l => l.IdLichHen == selectedId.Value && (l.IdNhanVien == currentUserId || (l.IdPhieuNavigation != null && l.IdPhieuNavigation.IdNhanVien == currentUserId)));
                     if (!isOwner)
                     {
                         TempData["ErrorMessage"] = "Bạn không có quyền xem thông tin lịch hẹn của nhân viên khác.";
@@ -2870,7 +3057,8 @@ namespace SupportTicketSysterm.Controllers
             }
             else if (nhanVien.HasValue)
             {
-                query = query.Where(x => x.IdNhanVien == nhanVien.Value);
+                // Đối với Admin: nếu lọc theo KTV cụ thể
+                query = query.Where(x => x.IdNhanVien == nhanVien.Value || (x.IdPhieuNavigation != null && x.IdPhieuNavigation.IdNhanVien == nhanVien.Value));
             }
 
             if (!string.IsNullOrWhiteSpace(trangThai))
@@ -2911,8 +3099,8 @@ namespace SupportTicketSysterm.Controllers
                 _ => query.OrderByDescending(x => x.NgayHen).ThenBy(x => x.GioBatDau)
             };
 
-            // ── Thực thi query (1 lần) ──
-            var allItems = query.ToList();
+            // ── Thực thi query trực tiếp từ SQL Server (1 lần) ──
+            var allItems = await query.ToListAsync();
 
             // ── KPI: tính từ lịch hẹn hôm nay ──
             var today = DateOnly.FromDateTime(DateTime.Today);
@@ -2941,10 +3129,10 @@ namespace SupportTicketSysterm.Controllers
                 SoDienThoaiKH = x.IdPhieuNavigation?.IdKhachHangNavigation?.SoDienThoai ?? string.Empty,
                 EmailKH = x.IdPhieuNavigation?.IdKhachHangNavigation?.Email,
                 DiaChiKH = x.IdPhieuNavigation?.IdKhachHangNavigation?.DiaChi,
-                IdNhanVien = x.IdNhanVien,
-                TenNhanVien = x.IdNhanVienNavigation?.HoTen ?? string.Empty,
-                SoDienThoaiNV = x.IdNhanVienNavigation?.SoDienThoai ?? string.Empty,
-                EmailNV = x.IdNhanVienNavigation?.Email,
+                IdNhanVien = x.IdNhanVien ?? x.IdPhieuNavigation?.IdNhanVien,
+                TenNhanVien = x.IdNhanVienNavigation?.HoTen ?? x.IdPhieuNavigation?.IdNhanVienNavigation?.HoTen ?? "Chưa phân công",
+                SoDienThoaiNV = x.IdNhanVienNavigation?.SoDienThoai ?? x.IdPhieuNavigation?.IdNhanVienNavigation?.SoDienThoai ?? string.Empty,
+                EmailNV = x.IdNhanVienNavigation?.Email ?? x.IdPhieuNavigation?.IdNhanVienNavigation?.Email,
             };
 
             var allVm = allItems.Select(MapToVm).ToList();
@@ -2967,8 +3155,8 @@ namespace SupportTicketSysterm.Controllers
             else if (todayVm.Any())
                 chiTiet = todayVm.First();
 
-            // ── Dropdown NhanVien (VaiTro=Nhân viên, TrangThai=Hoạt động) ──
-            var danhSachNhanVien = _context.NhanViens
+            // ── Dropdown NhanVien (VaiTro=Nhân viên, TrangThai=Hoạt động) từ SQL Server ──
+            var danhSachNhanVien = await _context.NhanViens
                 .Where(n => n.TrangThai == "Hoạt động")
                 .OrderBy(n => n.HoTen)
                 .Select(n => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
@@ -2976,10 +3164,10 @@ namespace SupportTicketSysterm.Controllers
                     Value = n.IdNhanVien.ToString(),
                     Text = n.HoTen
                 })
-                .ToList();
+                .ToListAsync();
 
-            // ── Dropdown DanhMuc ──
-            var danhSachDanhMuc = _context.DanhMucs
+            // ── Dropdown DanhMuc từ SQL Server ──
+            var danhSachDanhMuc = await _context.DanhMucs
                 .Where(d => d.TrangThai == "Hoạt động")
                 .OrderBy(d => d.TenDanhMuc)
                 .Select(d => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
@@ -2987,10 +3175,10 @@ namespace SupportTicketSysterm.Controllers
                     Value = d.IdDanhMuc.ToString(),
                     Text = d.TenDanhMuc
                 })
-                .ToList();
+                .ToListAsync();
 
-            // ── Danh sách KTV cho form đổi KTV ──
-            var danhSachKTV = _context.NhanViens
+            // ── Danh sách KTV từ SQL Server ──
+            var danhSachKTV = await _context.NhanViens
                 .Where(n => n.TrangThai == "Hoạt động")
                 .OrderBy(n => n.HoTen)
                 .Select(n => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
@@ -2998,7 +3186,9 @@ namespace SupportTicketSysterm.Controllers
                     Value = n.IdNhanVien.ToString(),
                     Text = $"{n.HoTen} ({n.SoDienThoai})"
                 })
-                .ToList();
+                .ToListAsync();
+
+            var statSource = todayList.Any() ? todayList : allItems;
 
             // ── Build ViewModel ──
             var vm = new Models.LichHenCalendarViewModel
@@ -3007,12 +3197,12 @@ namespace SupportTicketSysterm.Controllers
                 DanhSachHomNay = todayVm,
                 CalendarThang = calThang,
                 CalendarNam = calNam,
-                TongHomNay = todayList.Count(x => x.TrangThai != "Đã hủy"),
-                ChoXacNhan = todayList.Count(x => x.TrangThai == "Chờ xác nhận"),
-                DaXacNhan = todayList.Count(x => x.TrangThai == "Đã xác nhận"),
-                DangThucHien = todayList.Count(x => x.TrangThai == "Đang thực hiện"),
-                HoanThanh = todayList.Count(x => x.TrangThai == "Hoàn thành"),
-                DaHuy = todayList.Count(x => x.TrangThai == "Đã hủy"),
+                TongHomNay = allItems.Count,
+                ChoXacNhan = statSource.Count(x => x.TrangThai == "Chờ xác nhận" || x.TrangThai == "ChoXacNhan"),
+                DaXacNhan = statSource.Count(x => x.TrangThai == "Đã xác nhận" || x.TrangThai == "DaXacNhan"),
+                DangThucHien = statSource.Count(x => x.TrangThai == "Đang thực hiện" || x.TrangThai == "DangThucHien" || x.TrangThai == "Đang hỗ trợ"),
+                HoanThanh = statSource.Count(x => x.TrangThai == "Hoàn thành" || x.TrangThai == "DaHoanThanh" || x.TrangThai == "Đã hoàn thành"),
+                DaHuy = statSource.Count(x => x.TrangThai == "Đã hủy" || x.TrangThai == "DaHuy"),
                 DanhSachNhanVien = danhSachNhanVien,
                 DanhSachDanhMuc = danhSachDanhMuc,
                 DanhSachKTV = danhSachKTV,
@@ -3100,7 +3290,12 @@ namespace SupportTicketSysterm.Controllers
                 TempData["ErrorMessage"] = ex.Message;
             }
 
-            return RedirectToAction(nameof(QuanLyLichHen), new { selectedId = id });
+            string referer = Request.Headers["Referer"].ToString();
+            if (!string.IsNullOrEmpty(referer) && referer.Contains("ChiTietLichHen", StringComparison.OrdinalIgnoreCase))
+            {
+                return RedirectToAction(nameof(ChiTietLichHen), new { id });
+            }
+            return RedirectToAction(nameof(QuanLyLichHen));
         }
 
         // ============================================================
@@ -3110,8 +3305,25 @@ namespace SupportTicketSysterm.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> HoanThanhLich(int id, string? ketQuaXuLy, string? thietBiThayThe, string? khuyenNghi, string? ghiChuBoSung)
         {
-            int currentUserId = HttpContext.Session.GetInt32("IdNhanVien") ?? HttpContext.Session.GetInt32("UserId") ?? 0;
-            string currentUserRole = HttpContext.Session.GetString("Role") ?? HttpContext.Session.GetString("VaiTro") ?? "NhanVien";
+            var (userId, userRole) = GetStaffSessionInfo();
+            int currentUserId = userId ?? 0;
+            string currentUserRole = userRole;
+
+            if (string.IsNullOrWhiteSpace(ketQuaXuLy))
+            {
+                string validationMsg = "Vui lòng nhập Kết quả xử lý kỹ thuật trước khi xác nhận hoàn thành.";
+                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                {
+                    return Json(new { success = false, message = validationMsg });
+                }
+                TempData["ErrorMessage"] = validationMsg;
+                string referUrl = Request.Headers["Referer"].ToString();
+                if (!string.IsNullOrEmpty(referUrl) && referUrl.Contains("ChiTietLichHen", StringComparison.OrdinalIgnoreCase))
+                {
+                    return RedirectToAction(nameof(ChiTietLichHen), new { id });
+                }
+                return RedirectToAction(nameof(QuanLyLichHen));
+            }
 
             try
             {
@@ -3123,7 +3335,7 @@ namespace SupportTicketSysterm.Controllers
                 string ghiChuCombined = string.Join(" | ", sb);
 
                 await _lichHenService.CompleteAppointmentAsync(id, currentUserId, currentUserRole, ghiChuCombined);
-                string msg = "Lịch hẹn đã hoàn thành. Phiếu hỗ trợ cũng đã được chuyển sang hoàn thành.";
+                string msg = "Lịch hẹn đã hoàn thành thành công. Trạng thái phiếu hỗ trợ đã được chuyển sang Hoàn thành.";
                 if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
                 {
                     return Json(new { success = true, message = msg, idLichHen = id, trangThaiCode = "DaHoanThanh", trangThaiTitle = "Hoàn thành" });
@@ -3132,14 +3344,28 @@ namespace SupportTicketSysterm.Controllers
             }
             catch (Exception ex)
             {
+                string logDetail = ex.InnerException?.Message != null ? $"{ex.Message} -> Inner: {ex.InnerException.Message}" : ex.Message;
+                Console.WriteLine($"[HoanThanhLich Error] {logDetail}");
+
+                string displayMsg = ex.Message;
+                if (ex is DbUpdateException || ex.InnerException != null)
+                {
+                    displayMsg = "Không thể cập nhật lịch hẹn và phiếu hỗ trợ do lỗi cơ sở dữ liệu. Vui lòng kiểm tra lại thông tin.";
+                }
+
                 if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
                 {
-                    return Json(new { success = false, message = ex.Message });
+                    return Json(new { success = false, message = displayMsg });
                 }
-                TempData["ErrorMessage"] = ex.Message;
+                TempData["ErrorMessage"] = displayMsg;
             }
 
-            return RedirectToAction(nameof(QuanLyLichHen), new { selectedId = id });
+            string refUrl = Request.Headers["Referer"].ToString();
+            if (!string.IsNullOrEmpty(refUrl) && refUrl.Contains("ChiTietLichHen", StringComparison.OrdinalIgnoreCase))
+            {
+                return RedirectToAction(nameof(ChiTietLichHen), new { id });
+            }
+            return RedirectToAction(nameof(QuanLyLichHen));
         }
 
         // ============================================================
@@ -3474,72 +3700,92 @@ namespace SupportTicketSysterm.Controllers
             return RedirectToAction(nameof(TaiKhoanNhanVien));
         }
 
+        [HttpGet]
+        public IActionResult DoiMatKhau()
+        {
+            var (userId, role) = GetStaffSessionInfo();
+            if (!userId.HasValue)
+            {
+                return RedirectToAction("DangNhap", "Auth");
+            }
+            return View();
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DoiMatKhau(SupportTicketSysterm.ViewModels.TaiKhoanNhanVienViewModel model)
+        public async Task<IActionResult> DoiMatKhau(SupportTicketSysterm.ViewModels.DoiMatKhauViewModel model)
         {
-            var idNhanVien = HttpContext.Session.GetInt32("UserId") ?? HttpContext.Session.GetInt32("IdNhanVien") ?? model.IdNhanVien;
-            var nv = await _context.NhanViens.FirstOrDefaultAsync(x => x.IdNhanVien == idNhanVien);
+            var (userId, role) = GetStaffSessionInfo();
+            if (!userId.HasValue)
+            {
+                return RedirectToAction("DangNhap", "Auth");
+            }
+
+            var nv = await _context.NhanViens.FirstOrDefaultAsync(x => x.IdNhanVien == userId.Value);
             if (nv == null)
             {
                 return RedirectToAction("DangNhap", "Auth");
             }
 
-            if (string.IsNullOrEmpty(model.MatKhauCu))
-            {
-                ModelState.AddModelError("MatKhauCu", "Vui lòng nhập mật khẩu cũ.");
-            }
-            if (string.IsNullOrEmpty(model.MatKhauMoi))
-            {
-                ModelState.AddModelError("MatKhauMoi", "Vui lòng nhập mật khẩu mới.");
-            }
-            if (model.MatKhauMoi != model.NhapLaiMatKhau)
-            {
-                ModelState.AddModelError("NhapLaiMatKhau", "Mật khẩu nhập lại không trùng khớp.");
-            }
-
             if (!ModelState.IsValid)
             {
-                model.HoTen = nv.HoTen;
-                model.Email = nv.Email;
-                model.SoDienThoai = nv.SoDienThoai;
-                model.Avatar = nv.Avatar;
-                model.VaiTro = nv.VaiTro;
-
-                TempData["ErrorMessage"] = "Thông tin đổi mật khẩu không hợp lệ.";
-                return View("ThongTinCaNhan", model);
+                return View(model);
             }
 
-            bool verified = false;
+            if (string.IsNullOrWhiteSpace(model.MatKhauMoi) || model.MatKhauMoi.Length < 8)
+            {
+                ModelState.AddModelError("MatKhauMoi", "Mật khẩu mới phải có ít nhất 8 ký tự.");
+                return View(model);
+            }
+
+            if (model.MatKhauMoi != model.XacNhanMatKhau)
+            {
+                ModelState.AddModelError("XacNhanMatKhau", "Mật khẩu xác nhận không khớp.");
+                return View(model);
+            }
+
+            if (model.MatKhauMoi == model.MatKhauHienTai)
+            {
+                ModelState.AddModelError("MatKhauMoi", "Mật khẩu mới phải khác mật khẩu hiện tại.");
+                return View(model);
+            }
+
             string dbHash = nv.MatKhau?.Trim() ?? "";
-            if (dbHash.StartsWith("$2a$") || dbHash.StartsWith("$2b$") || dbHash.StartsWith("$2y$"))
+            bool isCurrentPasswordCorrect = false;
+
+            if (!string.IsNullOrEmpty(dbHash))
             {
-                verified = BCrypt.Net.BCrypt.Verify(model.MatKhauCu, dbHash);
+                try
+                {
+                    var verifyResult = _nhanVienPasswordHasher.VerifyHashedPassword(nv, dbHash, model.MatKhauHienTai);
+                    if (verifyResult == PasswordVerificationResult.Success || verifyResult == PasswordVerificationResult.SuccessRehashNeeded)
+                    {
+                        isCurrentPasswordCorrect = true;
+                    }
+                }
+                catch
+                {
+                    // Trường hợp tài khoản trong DB đang lưu mật khẩu dạng plaintext (chưa băm)
+                    isCurrentPasswordCorrect = (dbHash == model.MatKhauHienTai);
+                }
+
+                if (!isCurrentPasswordCorrect && dbHash == model.MatKhauHienTai)
+                {
+                    isCurrentPasswordCorrect = true;
+                }
             }
-            else
+
+            if (!isCurrentPasswordCorrect)
             {
-                verified = dbHash == model.MatKhauCu;
+                ModelState.AddModelError("MatKhauHienTai", "Mật khẩu hiện tại không chính xác.");
+                return View(model);
             }
 
-            if (!verified)
-            {
-                ModelState.AddModelError("MatKhauCu", "Mật khẩu hiện tại không chính xác.");
-                model.HoTen = nv.HoTen;
-                model.Email = nv.Email;
-                model.SoDienThoai = nv.SoDienThoai;
-                model.Avatar = nv.Avatar;
-                model.VaiTro = nv.VaiTro;
-
-                TempData["ErrorMessage"] = "Mật khẩu cũ không chính xác.";
-                return View("ThongTinCaNhan", model);
-            }
-
-            nv.MatKhau = BCrypt.Net.BCrypt.HashPassword(model.MatKhauMoi);
-
+            nv.MatKhau = _nhanVienPasswordHasher.HashPassword(nv, model.MatKhauMoi);
             await _context.SaveChangesAsync();
 
-            TempData["SuccessMessage"] = "Đổi mật khẩu tài khoản thành công!";
-            return RedirectToAction(nameof(TaiKhoanNhanVien));
+            TempData["SuccessMessage"] = "Đổi mật khẩu thành công! Mật khẩu của bạn đã được cập nhật.";
+            return RedirectToAction(nameof(DoiMatKhau));
         }
 
         [HttpPost]
@@ -3769,13 +4015,13 @@ namespace SupportTicketSysterm.Controllers
                     p.NgayTao.Value.Month == t.Month)
             }).ToList();
 
-            // ── CHART: Top 10 dịch vụ ──────────────────────────────────────
+            // ── CHART: Top 5 dịch vụ ──────────────────────────────────────
             var topDvRaw = allPhieu
                 .Where(p => p.IdDichVu.HasValue)
                 .GroupBy(p => p.IdDichVu!.Value)
                 .Select(g => new { IdDichVu = g.Key, Count = g.Count() })
                 .OrderByDescending(x => x.Count)
-                .Take(10)
+                .Take(5)
                 .ToList();
 
             var dichVuDict = await _context.DichVus
@@ -3895,13 +4141,13 @@ namespace SupportTicketSysterm.Controllers
                 };
             }).ToList();
 
-            // ── BẢNG: Top 10 Khách hàng ────────────────────────────────────
+            // ── BẢNG: Top 5 Khách hàng ────────────────────────────────────
             var topKHIds = allPhieu
                 .Where(p => p.IdKhachHang.HasValue)
                 .GroupBy(p => p.IdKhachHang!.Value)
                 .Select(g => new { IdKH = g.Key, Count = g.Count() })
                 .OrderByDescending(x => x.Count)
-                .Take(10)
+                .Take(5)
                 .ToList();
 
             var khDict = await _context.KhachHangs

@@ -6,17 +6,12 @@
 
 @if (Model == null || !Model.Any())
 {
-    <div class="chat-empty-state text-center py-5 px-3 d-flex flex-column align-items-center justify-content-center h-100">
-        <div class="empty-icon-ring mb-3" style="width:76px; height:76px; border-radius:50%; background:rgba(215,25,32,0.08); display:grid; place-items:center;">
-            <i class="bi bi-chat-square-dots-fill text-danger display-6"></i>
+    <div class="chat-empty-state py-5 text-center my-auto d-flex flex-column align-items-center justify-content-center h-100">
+        <div class="empty-icon-wrap mx-auto mb-3 d-flex align-items-center justify-content-center rounded-circle shadow-xs" style="width: 64px; height: 64px; background: rgba(215, 25, 32, 0.08); color: #D71920;">
+            <i class="bi bi-chat-dots-fill fs-2"></i>
         </div>
-        <h5 class="fw-bold mb-2 text-dark" style="font-family:'Inter', sans-serif;">Hỗ Trợ Kỹ Thuật TechSupport</h5>
-        <p class="text-muted mb-4 small" style="max-width:340px; line-height:1.5;">Chào bạn! Chưa có tin nhắn nào trong cuộc trò chuyện này. Bạn có thể gửi câu hỏi hoặc thắc mắc để bắt đầu ngay.</p>
-        <div class="d-flex flex-column gap-2 text-start small text-secondary p-3 rounded-4 bg-white border shadow-sm" style="max-width:360px;">
-            <div><i class="bi bi-check-circle-fill text-danger me-2"></i> Hỗ trợ sự cố đường truyền Internet, Wi-Fi 24/7</div>
-            <div><i class="bi bi-check-circle-fill text-danger me-2"></i> Tư vấn lắp đặt Camera, TV Truyền hình Viettel</div>
-            <div><i class="bi bi-check-circle-fill text-danger me-2"></i> Tra cứu & khởi tạo phiếu kỹ thuật trực tuyến</div>
-        </div>
+        <h5 class="fw-bold text-dark mb-1">Chưa có tin nhắn nào</h5>
+        <p class="text-muted small mb-0" style="max-width:360px;">Bắt đầu cuộc trò chuyện bằng cách nhập nội dung tin nhắn bên dưới.</p>
     </div>
 }
 else
@@ -27,10 +22,8 @@ else
         if (!lastDate.HasValue || lastDate.Value != msgDate)
         {
             string dateLabel = msgDate == DateTime.Today ? "Hôm nay" : (msgDate == DateTime.Today.AddDays(-1) ? "Hôm qua" : msgDate.ToString("dd/MM/yyyy"));
-            <div class="chat-date-separator d-flex align-items-center justify-content-center my-4">
-                <span class="chat-date-line"></span>
-                <span class="chat-date-pill px-3 py-1 bg-white border rounded-pill shadow-sm">@dateLabel</span>
-                <span class="chat-date-line"></span>
+            <div class="chat-date-separator text-center my-3">
+                <span class="chat-date-text px-3 py-1 bg-white border rounded-pill text-muted small fw-semibold shadow-xs" style="font-size:0.75rem; color:#64748B;">@dateLabel</span>
             </div>
             lastDate = msgDate;
         }
@@ -43,11 +36,11 @@ else
 
         if (isOutgoing)
         {
-            <!-- Outgoing message (Right side) -->
-            <div class="chat-message-row outgoing msg-row sent d-flex justify-content-end align-items-end gap-2 mb-3" data-id="@msg.IdTinNhan">
-                <div class="chat-message-wrapper message-content d-flex flex-column align-items-end" style="max-width: 72%;">
-                    <div class="chat-message-item viettel-bubble msg-bubble text-white shadow-sm">
-                        @* File attachments *@
+            <!-- Outgoing Customer Message (Right side - Zalo Viettel Red Gradient) -->
+            <div class="chat-message-row client animate-message-appear d-flex justify-content-end mb-3" data-id="@msg.IdTinNhan" style="width:100%;">
+                <div class="chat-message-wrapper d-flex flex-column align-items-end" style="max-width: 70%;">
+                    <div class="chat-message-item text-white shadow-sm" 
+                         style="background: linear-gradient(135deg, #E60012 0%, #FF4D4F 100%) !important; color: #FFFFFF !important; border-radius: 18px 18px 4px 18px !important; padding: 11px 18px !important; font-size: 0.92rem !important; line-height: 1.5 !important; word-break: break-word !important; box-shadow: 0 4px 14px rgba(230, 0, 18, 0.18) !important;">
                         @if (msg.Files != null && msg.Files.Any())
                         {
                             @foreach (var file in msg.Files)
@@ -62,15 +55,8 @@ else
                                 }
                                 else
                                 {
-                                    string iconClass = ext switch {
-                                        ".pdf" => "bi-file-earmark-pdf-fill",
-                                        ".doc" or ".docx" => "bi-file-earmark-word-fill",
-                                        ".xls" or ".xlsx" => "bi-file-earmark-excel-fill",
-                                        ".zip" or ".rar" => "bi-file-earmark-zip-fill",
-                                        _ => "bi-file-earmark-arrow-down-fill"
-                                    };
-                                    <div class="border-0 rounded-3 p-2 bg-white bg-opacity-25 text-white mb-2 d-flex align-items-center gap-2" style="min-width:230px;">
-                                        <i class="bi @iconClass fs-3"></i>
+                                    <div class="border-0 rounded-3 p-2.5 bg-white bg-opacity-25 text-white mb-2 d-flex align-items-center gap-2" style="min-width:210px;">
+                                        <i class="bi bi-file-earmark-arrow-down-fill fs-3"></i>
                                         <div class="text-truncate flex-grow-1">
                                             <span class="fw-semibold small d-block text-truncate">@file.TenFile</span>
                                             <a href="@file.DuongDan" class="text-white text-decoration-underline" download="@file.TenFile" style="font-size:0.75rem;">Tải về <i class="bi bi-download ms-1"></i></a>
@@ -79,70 +65,44 @@ else
                                 }
                             }
                         }
-                        @* Text content *@
                         @if (!string.IsNullOrEmpty(msg.NoiDung) && !msg.NoiDung.StartsWith("[Đính kèm tệp:"))
                         {
                             <div class="message-text">@FormatMessageContent(msg.NoiDung)</div>
                         }
                     </div>
-                    <!-- Timestamp under bubble -->
-                    <div class="chat-message-meta time text-end mt-1 d-flex align-items-center gap-1">
+                    
+                    <!-- Timestamp & Seen Status below bubble -->
+                    <div class="chat-message-meta text-end mt-1 d-flex align-items-center justify-content-end gap-1.5" style="font-size: 11.5px; color: #94A3B8;">
                         <span>@msg.ThoiGian.ToString("HH:mm")</span>
-                        <span class="read-status-checks" title="Đã xem" style="color: #3B82F6;">✔✔</span>
+                        <span class="seen-indicator fw-bold" style="color:#22C55E;">✓✓ Đã nhận</span>
                     </div>
-                </div>
-
-                <!-- Avatar right side -->
-                <div class="chat-avatar msg-avatar avatar user-avatar position-relative flex-shrink-0" title="@senderTitle">
-                    @if (currentUserRole == "KhachHang")
-                    {
-                        <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center fw-bold shadow-sm" style="width:36px; height:36px; font-size:0.75rem;">
-                            KH
-                        </div>
-                    }
-                    else
-                    {
-                        <div class="rounded-circle text-white d-flex align-items-center justify-content-center fw-bold shadow-sm" style="width:36px; height:36px; font-size:0.85rem; background: linear-gradient(135deg, #D71920 0%, #E53E3E 100%);">
-                            <i class="bi bi-headset"></i>
-                        </div>
-                    }
                 </div>
             </div>
         }
         else
         {
-            <!-- Incoming message (Left side) -->
-            <div class="chat-message-row incoming msg-row received @(isAi ? "ai-message" : "") d-flex justify-content-start align-items-end gap-2 mb-3" data-id="@msg.IdTinNhan">
-                <!-- Avatar left side -->
-                <div class="chat-avatar msg-avatar @(isAi ? "robot-avatar" : "staff-avatar") position-relative flex-shrink-0" title="@senderTitle">
-                    @if (isAi) {
-                        <div class="rounded-circle d-flex align-items-center justify-content-center shadow-sm" style="width:36px; height:36px; background-color:#FEF2F2; color:#D71920; border:1.5px solid #FCA5A5; font-size:1.1rem;">
-                            <i class="bi bi-robot" style="color:#D71920 !important;"></i>
-                        </div>
+            <!-- Incoming Staff / AI Message (Left side - Zalo Crisp White Card) -->
+            <div class="chat-message-row staff animate-message-appear d-flex justify-content-start align-items-start gap-2.5 mb-3" data-id="@msg.IdTinNhan" style="width:100%;">
+                <!-- Staff Avatar Icon -->
+                <div class="chat-avatar flex-shrink-0 text-white fw-bold shadow-xs mt-1" 
+                     style="background: @(isAi ? "#F59E0B" : "linear-gradient(135deg, #E60012 0%, #FF4D4F 100%)"); width:36px; height:36px; border-radius:50%; display:grid; place-items:center; font-size:0.85rem; border:1px solid #FFFFFF;">
+                    @if (isAi)
+                    {
+                        <i class="bi bi-robot"></i>
                     }
-                    else if (msg.LoaiNguoiGui == "NhanVien") {
-                        <div class="rounded-circle text-white d-flex align-items-center justify-content-center shadow-sm" style="width:36px; height:36px; background: linear-gradient(135deg, #D71920 0%, #E53E3E 100%); font-size:1rem;">
-                            <i class="bi bi-headset"></i>
-                        </div>
-                    }
-                    else {
-                        <div class="rounded-circle bg-secondary-subtle text-dark d-flex align-items-center justify-content-center shadow-sm fw-bold" style="width:36px; height:36px; font-size:0.85rem;">
-                            KH
-                        </div>
+                    else
+                    {
+                        <i class="bi bi-headset"></i>
                     }
                 </div>
-
-                <div class="chat-message-wrapper message-content d-flex flex-column align-items-start" style="max-width: 72%;">
-                    <div class="chat-message-sender-name sender-name fw-bold mb-1 small text-secondary d-flex align-items-center gap-1">
-                        @if (isAi) {
-                            <span class="badge rounded-pill px-2 py-0.5" style="background-color:#FEF2F2 !important; color:#D71920 !important; border: 1px solid #FCA5A5 !important; font-size:0.68rem; font-weight:600;"><i class="bi bi-stars me-1" style="color:#D71920;"></i>AI Assistant</span>
-                        } else if (msg.LoaiNguoiGui == "NhanVien") {
-                            <span class="badge bg-danger-subtle text-danger rounded-pill px-2 py-0.5" style="font-size:0.68rem;"><i class="bi bi-headset me-1"></i>Viettel Support</span>
-                        }
-                        <span>@senderTitle</span>
+                
+                <div class="chat-message-wrapper d-flex flex-column align-items-start" style="max-width: @(isAi ? "78%" : "70%");">
+                    <div class="chat-message-sender-name fw-bold mb-1 text-secondary" style="font-size:0.75rem;">
+                        @(isAi ? "Trợ lý Kỹ Thuật AI" : "Kỹ thuật viên Viettel")
                     </div>
-                    <div class="chat-message-item viettel-bubble msg-bubble shadow-sm @(isAi ? "ai-bubble" : "")">
-                        @* File attachments *@
+                    
+                    <div class="chat-message-item shadow-sm" 
+                         style="background-color: @(isAi ? "#FFF6E8" : "#FFFFFF") !important; color: #1E293B !important; border: 1px solid @(isAi ? "#FDE68A" : "#ECECEC") !important; border-radius: 18px 18px 18px 4px !important; padding: 11px 18px !important; font-size: 0.92rem !important; line-height: 1.5 !important; word-break: break-word !important; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03) !important;">
                         @if (msg.Files != null && msg.Files.Any())
                         {
                             @foreach (var file in msg.Files)
@@ -157,15 +117,8 @@ else
                                 }
                                 else
                                 {
-                                    string iconClass = ext switch {
-                                        ".pdf" => "bi-file-earmark-pdf-fill text-danger",
-                                        ".doc" or ".docx" => "bi-file-earmark-word-fill text-primary",
-                                        ".xls" or ".xlsx" => "bi-file-earmark-excel-fill text-success",
-                                        ".zip" or ".rar" => "bi-file-earmark-zip-fill text-warning",
-                                        _ => "bi-file-earmark-arrow-down-fill text-danger"
-                                    };
-                                    <div class="border rounded-3 p-2 bg-light text-dark mb-2 d-flex align-items-center gap-2" style="min-width:230px;">
-                                        <i class="bi @iconClass fs-3"></i>
+                                    <div class="border rounded-3 p-2.5 bg-light text-dark mb-2 d-flex align-items-center gap-2" style="min-width:210px;">
+                                        <i class="bi bi-file-earmark-zip-fill fs-3 text-danger"></i>
                                         <div class="text-truncate flex-grow-1">
                                             <span class="fw-semibold small d-block text-truncate">@file.TenFile</span>
                                             <a href="@file.DuongDan" class="text-danger fw-bold text-decoration-none" download="@file.TenFile" style="font-size:0.75rem;">Tải về <i class="bi bi-download ms-1"></i></a>
@@ -174,14 +127,14 @@ else
                                 }
                             }
                         }
-                        @* Text content *@
                         @if (!string.IsNullOrEmpty(msg.NoiDung) && !msg.NoiDung.StartsWith("[Đính kèm tệp:"))
                         {
                             @FormatMessageContent(msg.NoiDung)
                         }
                     </div>
-                    <!-- Timestamp under bubble -->
-                    <div class="chat-message-meta text-start mt-1">
+
+                    <!-- Timestamp below bubble -->
+                    <div class="chat-message-meta text-start mt-1" style="font-size: 11.5px; color: #94A3B8;">
                         <span>@msg.ThoiGian.ToString("HH:mm")</span>
                     </div>
                 </div>
@@ -361,6 +314,111 @@ else
 </div>";
                 encoded = encoded.Replace(fullTag, slotsHtml);
             }
+        }
+
+        // 2.8.5 Parse Action Buttons Tag: [ACTION_BUTTONS]
+        var actionButtonsMarker = "[ACTION_BUTTONS]";
+        if (encoded.Contains(actionButtonsMarker))
+        {
+            var btnHtml = @"
+<div class='mt-2.5 d-flex flex-wrap align-items-center gap-2 action-buttons-group'>
+    <a href='/Ticket/TaoPhieu' class='btn btn-danger btn-sm rounded-pill fw-bold text-white px-3 py-1.5 text-center text-decoration-none shadow-xs' style='background: linear-gradient(135deg, #D71920 0%, #E53935 100%); border:none; font-size:0.8rem;'>
+        <i class='bi bi-file-earmark-plus-fill me-1'></i> Tạo Phiếu Hỗ Trợ
+    </a>
+    <button type='button' class='btn btn-outline-danger btn-sm rounded-pill fw-bold px-3 py-1.5 text-center btn-transfer-staff shadow-xs' style='font-size:0.8rem; background-color:#FFFFFF; color:#D71920; border: 1px solid #D71920;' onclick='if(window.TechSupportChat && window.TechSupportChat.transferToStaff) window.TechSupportChat.transferToStaff();'>
+        <i class='bi bi-headset me-1'></i> Chat Với Nhân Viên Kỹ Thuật
+    </button>
+</div>";
+            encoded = encoded.Replace(actionButtonsMarker, btnHtml);
+        }
+
+        // 2.8.6 Parse Action Require Login Tag: [ACTION_REQUIRE_LOGIN]
+        var actionRequireLoginMarker = "[ACTION_REQUIRE_LOGIN]";
+        if (encoded.Contains(actionRequireLoginMarker))
+        {
+            var loginCardHtml = @"
+<div class='card border-0 shadow-sm rounded-4 overflow-hidden bg-white p-3 border-danger-subtle mt-3' style='border: 1px solid #fee2e2 !important;'>
+    <div class='d-flex align-items-center mb-2 text-danger fw-bold'>
+        <i class='bi bi-lock-fill me-2 fs-5'></i> 🔒 Cần Đăng Nhập
+    </div>
+    <p class='small text-dark mb-3' style='font-size:0.85rem;'>Để tạo phiếu hỗ trợ và sắp xếp kỹ thuật viên, vui lòng đăng nhập tài khoản của bạn.</p>
+    <div class='d-flex gap-2'>
+        <a href='/Auth/DangNhap' class='btn btn-danger btn-sm rounded-pill fw-bold text-white px-3 py-2 text-decoration-none shadow-sm' style='background-color:#D71920; border-color:#D71920;'>
+            <i class='bi bi-box-arrow-in-right me-1'></i> Đăng nhập
+        </a>
+        <a href='/Auth/DangKy' class='btn btn-outline-danger btn-sm rounded-pill fw-bold px-3 py-2 text-decoration-none shadow-sm'>
+            <i class='bi bi-person-plus-fill me-1'></i> Đăng ký
+        </a>
+    </div>
+</div>";
+            encoded = encoded.Replace(actionRequireLoginMarker, loginCardHtml);
+        }
+
+        // 2.8.7 Parse Confirm Create Ticket Tag: [CONFIRM_CREATE_TICKET|...]
+        var confirmTicketRegex = new System.Text.RegularExpressions.Regex(@"\[CONFIRM_CREATE_TICKET\|(.*?)\]", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+        var confirmMatch = confirmTicketRegex.Match(encoded);
+        if (confirmMatch.Success)
+        {
+            var fullTag = confirmMatch.Value;
+            var innerContent = confirmMatch.Groups[1].Value;
+            
+            string title = "Sự cố kỹ thuật";
+            string categoryIdStr = "1";
+            string serviceIdStr = "1";
+            string address = "";
+            string ticketContent = "Cần hỗ trợ kiểm tra kỹ thuật";
+
+            // Parse key-value parts separated by '|'
+            var parts = innerContent.Split('|');
+            foreach (var part in parts)
+            {
+                var trimmed = part.Trim();
+                if (string.IsNullOrEmpty(trimmed)) continue;
+
+                var eqIdx = trimmed.IndexOf('=');
+                if (eqIdx > 0)
+                {
+                    var key = trimmed.Substring(0, eqIdx).Trim().ToLower();
+                    var val = trimmed.Substring(eqIdx + 1).Trim();
+
+                    if (key == "title" && !string.IsNullOrEmpty(val)) title = val;
+                    else if (key == "categoryid" && !string.IsNullOrEmpty(val)) categoryIdStr = val;
+                    else if (key == "serviceid" && !string.IsNullOrEmpty(val)) serviceIdStr = val;
+                    else if (key == "address" && !string.IsNullOrEmpty(val)) address = val;
+                    else if (key == "content" && !string.IsNullOrEmpty(val)) ticketContent = val;
+                }
+            }
+
+            if (!int.TryParse(categoryIdStr, out int catId) || catId <= 0) categoryIdStr = "1";
+            if (!int.TryParse(serviceIdStr, out int srvId) || srvId <= 0) serviceIdStr = "1";
+
+            string encodedTitle = System.Net.WebUtility.HtmlEncode(title);
+            string encodedAddress = System.Net.WebUtility.HtmlEncode(address);
+            string displayAddress = string.IsNullOrWhiteSpace(address) ? "Tại địa chỉ đăng ký" : encodedAddress;
+            string encodedTicketContent = System.Net.WebUtility.HtmlEncode(ticketContent);
+
+            var cardHtml = $@"
+<div class='ai-confirm-ticket-card card border-0 shadow-sm rounded-4 overflow-hidden bg-white p-3 border-danger-subtle mt-3' style='border: 1px solid #fee2e2 !important;'>
+    <div class='d-flex align-items-center mb-2 text-danger fw-bold'>
+        <i class='bi bi-file-earmark-plus-fill me-2 fs-5'></i> 📋 Xác Nhận Tạo Phiếu Hỗ Trợ
+    </div>
+    <div class='small text-dark mb-3' style='font-size:0.85rem; line-height: 1.6;'>
+        <div>• <strong>Sự cố:</strong> <span class='text-danger fw-bold'>{encodedTitle}</span></div>
+        <div>• <strong>Địa chỉ hỗ trợ:</strong> <span class='fw-bold'>{displayAddress}</span></div>
+    </div>
+    <div class='d-flex flex-wrap gap-2'>
+        <button type='button' class='btn btn-danger btn-sm rounded-pill fw-bold text-white px-3 py-2 btn-confirm-create-ticket shadow-sm' style='background-color:#D71920; border-color:#D71920;' onclick='if(window.confirmCreateTicket) window.confirmCreateTicket(this, ""{encodedTitle}"", {categoryIdStr}, {serviceIdStr}, ""{encodedAddress}"", ""{encodedTicketContent}"");'>
+            <i class='bi bi-check-circle-fill me-1'></i> Tạo phiếu hỗ trợ
+        </button>
+        <a href='/Ticket/TaoPhieu?serviceId={serviceIdStr}&categoryId={categoryIdStr}' class='btn btn-outline-secondary btn-sm rounded-pill px-3 py-2 text-decoration-none'>
+            <i class='bi bi-pencil-square me-1'></i> Chỉnh sửa thông tin
+        </a>
+        <button type='button' class='btn btn-outline-danger btn-sm rounded-pill px-3 py-2' onclick='if(window.cancelConfirmTicket) window.cancelConfirmTicket(this);'>
+            <i class='bi bi-x-circle me-1'></i> Hủy
+        </button>
+    </div>
+</div>";
+            encoded = encoded.Replace(fullTag, cardHtml);
         }
 
         // 3. Parse bold Markdown: **text** -> <strong>text</strong>

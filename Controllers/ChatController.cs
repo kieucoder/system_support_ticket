@@ -4,6 +4,7 @@ using SupportTicketSysterm.Data;
 using SupportTicketSysterm.Models;
 using System.Security.Claims;
 using SupportTicketSysterm.Services;
+using SupportTicketSysterm.ViewModels;
 using ChatViewModel = SupportTicketSysterm.ViewModels.ChatViewModel;
 using Microsoft.AspNetCore.SignalR;
 
@@ -74,7 +75,7 @@ namespace SupportTicketSysterm.Controllers
             }
             else if (role == "NhanVien" || role == "Nhân viên" || role == "Nhân viên hỗ trợ")
             {
-                query = query.Where(lh => lh.IdNhanVien == userId.Value);
+                query = query.Where(lh => lh.TrangThai == "Đang chờ" || (lh.TrangThai == "Đang hỗ trợ" && lh.IdNhanVien == userId.Value));
             }
             // Admin role sees all
 
@@ -165,7 +166,7 @@ namespace SupportTicketSysterm.Controllers
                             bool isAuthorized = false;
                             if (role == "Admin") isAuthorized = true;
                             else if (role == "KhachHang" && lhById.IdKhachHang == userId.Value) isAuthorized = true;
-                            else if ((role == "NhanVien" || role == "Nhân viên" || role == "Nhân viên hỗ trợ") && lhById.IdNhanVien == userId.Value) isAuthorized = true;
+                            else if ((role == "NhanVien" || role == "Nhân viên" || role == "Nhân viên hỗ trợ") && (lhById.IdNhanVien == userId.Value || lhById.TrangThai == "Đang chờ")) isAuthorized = true;
 
                             if (!isAuthorized)
                             {
@@ -440,59 +441,116 @@ namespace SupportTicketSysterm.Controllers
         // ==========================================
         // 3b. SEND MESSAGE API ACTION (POST SendMessage)
         // ==========================================
+        // ==========================================
+        // 3b. SEND MESSAGE API ACTION (POST SendMessage)
+        // Unified for Ticket Chat (with idPhieu) and AI ChatBox (without idPhieu)
+        // ==========================================
         [HttpPost]
         [Route("Chat/SendMessage")]
-        public async Task<IActionResult> SendMessage([FromForm] int? idPhieu, [FromForm] string? noiDung, [FromForm] string? loaiNguoiGui)
+        public async Task<IActionResult> SendMessage([FromBody] ChatMessageRequest? jsonRequest, [FromForm] int? idPhieu, [FromForm] string? noiDung, [FromForm] string? message, [FromForm] string? loaiNguoiGui)
         {
             var (userId, role, _) = GetUserSessionInfo();
-            if (userId == null)
+
+            // 1. TICKET CHAT ROOM FLOW (If idPhieu is provided)
+            if (idPhieu.HasValue && idPhieu.Value > 0)
             {
-                return Unauthorized(new { success = false, message = "Bạn cần đăng nhập để gửi tin nhắn." });
+                if (userId == null)
+                {
+                    return Unauthorized(new { success = false, message = "Bạn cần đăng nhập để gửi tin nhắn." });
+                }
+
+                string ticketMsgText = jsonRequest?.Message ?? noiDung ?? message ?? string.Empty;
+                if (string.IsNullOrWhiteSpace(ticketMsgText))
+                {
+                    return BadRequest(new { success = false, message = "Nội dung tin nhắn không được để trống." });
+                }
+
+                var ticket = await _context.PhieuHoTros.AsNoTracking().FirstOrDefaultAsync(p => p.IdPhieu == idPhieu.Value);
+                if (ticket == null)
+                {
+                    return NotFound(new { success = false, message = "Phiếu hỗ trợ không tồn tại." });
+                }
+
+                bool isAuthorized = false;
+                if (role == "Admin") isAuthorized = true;
+                else if (role == "KhachHang" && ticket.IdKhachHang == userId.Value) isAuthorized = true;
+                else if ((role == "NhanVien" || role == "Nhân viên" || role == "Nhân viên hỗ trợ") && ticket.IdNhanVien == userId.Value) isAuthorized = true;
+
+                if (!isAuthorized)
+                {
+                    return StatusCode(403, new { success = false, message = "403 Forbidden: Bạn không có quyền chat trong phiếu hỗ trợ này." });
+                }
+
+                if (ticket.TrangThai == "Hoàn thành" || ticket.TrangThai == "Đã hủy")
+                {
+                    return BadRequest(new { success = false, message = "Phiếu hỗ trợ đã kết thúc, không thể gửi tin nhắn mới." });
+                }
+
+                string senderType = string.IsNullOrWhiteSpace(loaiNguoiGui)
+                    ? (role == "KhachHang" ? "KhachHang" : "NhanVien")
+                    : loaiNguoiGui;
+
+                var savedMsg = await _liveSupportService.SaveMessageByTicketIdAsync(idPhieu.Value, ticketMsgText.Trim(), senderType);
+
+                string roomName = $"Ticket_{idPhieu.Value}";
+                await _chatHubContext.Clients.Group(roomName).SendAsync("ReceiveMessage", idPhieu.Value.ToString(), savedMsg);
+
+                return Json(new { success = true, data = savedMsg, message = savedMsg.NoiDung, sender = senderType });
             }
 
-            if (!idPhieu.HasValue || idPhieu.Value <= 0)
+            // 2. AI CHATBOX FLOW (If no idPhieu)
+            string userMsg = jsonRequest?.Message ?? message ?? noiDung ?? string.Empty;
+            userMsg = userMsg.Trim();
+
+            if (string.IsNullOrWhiteSpace(userMsg))
             {
-                return BadRequest(new { success = false, message = "Bắt buộc phải có IdPhieu." });
+                return Json(new ChatMessageResponse
+                {
+                    Success = false,
+                    Message = "Nội dung tin nhắn không được để trống.",
+                    Sender = "ai"
+                });
             }
 
-            if (string.IsNullOrWhiteSpace(noiDung))
+            try
             {
-                return BadRequest(new { success = false, message = "Nội dung tin nhắn không được để trống." });
-            }
+                int? guestLienHeId = HttpContext.Session.GetInt32("GuestLienHeId");
+                var conversation = await _chatService.GetOrCreateAiConversationAsync(userId, guestLienHeId);
+                if (guestLienHeId == null && conversation != null)
+                {
+                    HttpContext.Session.SetInt32("GuestLienHeId", conversation.IdLienHe);
+                }
 
-            var ticket = await _context.PhieuHoTros.AsNoTracking().FirstOrDefaultAsync(p => p.IdPhieu == idPhieu.Value);
-            if (ticket == null)
+                int lienHeId = conversation?.IdLienHe ?? 0;
+                string aiResponse = await _chatService.GetAiResponseAndProcessActionsAsync(lienHeId, userMsg, userId);
+
+                bool requiresLogin = false;
+                if (userId == null && (userMsg.ToLower().Contains("phiếu") || userMsg.ToLower().Contains("tải") || userMsg.ToLower().Contains("tài khoản") || userMsg.ToLower().Contains("lịch hẹn")))
+                {
+                    if (aiResponse.Contains("đăng nhập") || aiResponse.Contains("Đăng nhập"))
+                    {
+                        requiresLogin = true;
+                    }
+                }
+
+                return Json(new ChatMessageResponse
+                {
+                    Success = true,
+                    Message = aiResponse,
+                    Sender = "ai",
+                    RequiresLogin = requiresLogin
+                });
+            }
+            catch (Exception ex)
             {
-                return NotFound(new { success = false, message = "Phiếu hỗ trợ không tồn tại." });
+                _logger.LogError(ex, "Error in SendMessage endpoint");
+                return Json(new ChatMessageResponse
+                {
+                    Success = false,
+                    Message = "Xin lỗi, hiện tại tôi chưa thể xử lý yêu cầu này.",
+                    Sender = "ai"
+                });
             }
-
-            // Security authorization check
-            bool isAuthorized = false;
-            if (role == "Admin") isAuthorized = true;
-            else if (role == "KhachHang" && ticket.IdKhachHang == userId.Value) isAuthorized = true;
-            else if ((role == "NhanVien" || role == "Nhân viên" || role == "Nhân viên hỗ trợ") && ticket.IdNhanVien == userId.Value) isAuthorized = true;
-
-            if (!isAuthorized)
-            {
-                return StatusCode(403, new { success = false, message = "403 Forbidden: Bạn không có quyền chat trong phiếu hỗ trợ này." });
-            }
-
-            if (ticket.TrangThai == "Hoàn thành" || ticket.TrangThai == "Đã hủy")
-            {
-                return BadRequest(new { success = false, message = "Phiếu hỗ trợ đã kết thúc, không thể gửi tin nhắn mới." });
-            }
-
-            string senderType = string.IsNullOrWhiteSpace(loaiNguoiGui)
-                ? (role == "KhachHang" ? "KhachHang" : "NhanVien")
-                : loaiNguoiGui;
-
-            var savedMsg = await _liveSupportService.SaveMessageByTicketIdAsync(idPhieu.Value, noiDung.Trim(), senderType);
-
-            // Broadcast Realtime via SignalR
-            string roomName = $"Ticket_{idPhieu.Value}";
-            await _chatHubContext.Clients.Group(roomName).SendAsync("ReceiveMessage", idPhieu.Value.ToString(), savedMsg);
-
-            return Json(new { success = true, data = savedMsg });
         }
 
         // ==========================================
@@ -1192,6 +1250,8 @@ namespace SupportTicketSysterm.Controllers
             }
         }
 
+
+
         /// <summary>
         /// Phase 2: Call Gemini and return only the AI response bubble HTML.
         /// This is the slow part (3-10s). Returns PartialView("_SingleAiMessage").
@@ -1559,6 +1619,85 @@ namespace SupportTicketSysterm.Controllers
         }
 
         // ==========================================
+        // 13. API CREATE TICKET (FROM AI CONFIRMATION CARD)
+        // ==========================================
+        [HttpPost]
+        [Route("api/ticket/create-ai")]
+        public async Task<IActionResult> CreateTicketAi([FromBody] SupportTicketSysterm.Models.CreateTicketAiDto req)
+        {
+            var (userId, _, _) = GetUserSessionInfo();
+            if (userId == null)
+            {
+                return Json(new { success = false, message = "Để tạo phiếu hỗ trợ và sắp xếp kỹ thuật viên, vui lòng đăng nhập tài khoản của bạn." });
+            }
+
+            try
+            {
+                // Auto find staff with least active workload
+                var activeStaff = await _context.NhanViens
+                    .Where(n => n.TrangThai == "Hoạt động" || n.TrangThai == "Hoạt Động")
+                    .Select(n => new
+                    {
+                        Staff = n,
+                        TicketCount = _context.PhieuHoTros.Count(p => p.IdNhanVien == n.IdNhanVien && (p.TrangThai == "Chờ tiếp nhận" || p.TrangThai == "Chờ xử lý" || p.TrangThai == "Đang xử lý"))
+                    })
+                    .OrderBy(x => x.TicketCount)
+                    .FirstOrDefaultAsync();
+
+                int? assignedStaffId = activeStaff?.Staff?.IdNhanVien;
+
+                string maPhieu = $"PHT{DateTime.Now:yyyyMMddHHmmss}";
+
+                string fullContent = string.IsNullOrWhiteSpace(req.Content) ? "Yêu cầu hỗ trợ kỹ thuật qua Chatbox AI" : req.Content;
+                if (!string.IsNullOrWhiteSpace(req.Address) && !fullContent.Contains(req.Address))
+                {
+                    fullContent += $"\n[Địa chỉ hỗ trợ]: {req.Address}";
+                }
+
+                var newTicket = new PhieuHoTro
+                {
+                    MaPhieu = maPhieu,
+                    IdKhachHang = userId.Value,
+                    IdDichVu = (req.ServiceId.HasValue && req.ServiceId > 0) ? req.ServiceId.Value : null,
+                    TieuDe = string.IsNullOrWhiteSpace(req.Title) ? "Khắc phục sự cố WiFi chập chờn" : req.Title,
+                    NoiDung = fullContent,
+                    TrangThai = "Chờ tiếp nhận",
+                    MucDoUuTien = 2,
+                    IdNhanVien = assignedStaffId,
+                    NgayTao = DateOnly.FromDateTime(DateTime.Now),
+                    NgayCapNhat = DateOnly.FromDateTime(DateTime.Now)
+                };
+
+                _context.PhieuHoTros.Add(newTicket);
+                await _context.SaveChangesAsync();
+
+                string dichVuName = "Khắc phục WiFi chập chờn";
+                if (req.ServiceId.HasValue && req.ServiceId > 0)
+                {
+                    var dv = await _context.DichVus.FindAsync(req.ServiceId.Value);
+                    if (dv != null) dichVuName = dv.TenDichVu;
+                }
+
+                string empName = activeStaff?.Staff?.HoTen ?? "Hệ thống sẽ tự động phân công kỹ thuật viên phù hợp";
+
+                return Json(new
+                {
+                    success = true,
+                    message = "Phiếu hỗ trợ của bạn đã được tạo thành công.",
+                    maPhieu = newTicket.MaPhieu,
+                    trangThai = newTicket.TrangThai ?? "Chờ tiếp nhận",
+                    tenDichVu = dichVuName,
+                    tenKtv = empName
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Lỗi khi tạo phiếu hỗ trợ từ AI");
+                return Json(new { success = false, message = "Lỗi tạo phiếu hỗ trợ: " + ex.Message });
+            }
+        }
+
+        // ==========================================
         // API UPDATE TICKET STATUS DIRECTLY FROM CHAT
         // ==========================================
         [HttpPost]
@@ -1650,6 +1789,188 @@ namespace SupportTicketSysterm.Controllers
                 trangThaiMoi = statusFormatted,
                 maPhieu = phieu.MaPhieu
             });
+        }
+
+        // ==========================================
+        // 9. NHẬN HỖ TRỢ (TIEP NHAN CHAT)
+        // ==========================================
+        [HttpPost]
+        [Route("Chat/TiepNhanChat")]
+        [Route("Chat/NhanHoTro")]
+        public async Task<IActionResult> TiepNhanChat(int idLienHe)
+        {
+            var (userId, role, hoTen) = GetUserSessionInfo();
+            if (userId == null) return Unauthorized(new { success = false, message = "Chưa đăng nhập." });
+
+            var lienHe = await _context.LienHes.FirstOrDefaultAsync(l => l.IdLienHe == idLienHe);
+            if (lienHe == null) return Json(new { success = false, message = "Cuộc trò chuyện không tồn tại." });
+
+            if (lienHe.TrangThai != "Đang chờ" && lienHe.IdNhanVien != null && lienHe.IdNhanVien != userId)
+            {
+                return Json(new { success = false, message = "Cuộc trò chuyện này đã được nhân viên khác tiếp nhận." });
+            }
+
+            lienHe.IdNhanVien = userId.Value;
+            lienHe.TrangThai = "Đang hỗ trợ";
+            _context.LienHes.Update(lienHe);
+
+            var sysMsg = new TinNhan
+            {
+                IdLienHe = lienHe.IdLienHe,
+                LoaiNguoiGui = "Nhân viên",
+                TinNhan1 = $"Kỹ thuật viên {hoTen} đã tiếp nhận cuộc trò chuyện.",
+                TrangThai = "Đã gửi",
+                ThoiGian = DateTime.Now
+            };
+            _context.TinNhans.Add(sysMsg);
+
+            await _context.SaveChangesAsync();
+
+            string groupName = $"Ticket_{lienHe.IdLienHe}";
+            try
+            {
+                await _chatHubContext.Clients.Group(groupName).SendAsync("ReceiveMessage", groupName, new {
+                    idTinNhan = sysMsg.IdTinNhan,
+                    idLienHe = lienHe.IdLienHe,
+                    loaiNguoiGui = "Nhân viên",
+                    tinNhan = sysMsg.TinNhan1,
+                    thoiGian = sysMsg.ThoiGian?.ToString("HH:mm")
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "SignalR Error on TiepNhanChat");
+            }
+
+            return Json(new { success = true, message = "Đã tiếp nhận cuộc trò chuyện thành công." });
+        }
+
+        // ==========================================
+        // 10. TẠO PHIẾU HỖ TRỢ TỪ CHAT (CREATE TICKET)
+        // ==========================================
+        [HttpPost]
+        [Route("Chat/TaoPhieuTuChat")]
+        public async Task<IActionResult> TaoPhieuTuChat(int idLienHe, string tieuDe, string noiDung, int? idDichVu, int? mucDoUuTien, string? diaChi)
+        {
+            var (userId, role, hoTen) = GetUserSessionInfo();
+            if (userId == null) return Unauthorized(new { success = false, message = "Chưa đăng nhập." });
+
+            var lienHe = await _context.LienHes
+                .Include(l => l.IdKhachHangNavigation)
+                .FirstOrDefaultAsync(l => l.IdLienHe == idLienHe);
+
+            if (lienHe == null) return Json(new { success = false, message = "Cuộc trò chuyện không tồn tại." });
+
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                var countToday = await _context.PhieuHoTros.CountAsync();
+                string maPhieu = $"PHT{(countToday + 1):D6}";
+
+                var newPhieu = new PhieuHoTro
+                {
+                    MaPhieu = maPhieu,
+                    IdKhachHang = lienHe.IdKhachHang,
+                    IdNhanVien = lienHe.IdNhanVien ?? userId,
+                    IdDichVu = idDichVu,
+                    TieuDe = string.IsNullOrWhiteSpace(tieuDe) ? (lienHe.TieuDe ?? "Hỗ trợ sự cố kỹ thuật") : tieuDe.Trim(),
+                    NoiDung = string.IsNullOrWhiteSpace(noiDung) ? (lienHe.NoiDung ?? "Tạo phiếu từ cuộc trò chuyện hỗ trợ trực tuyến.") : noiDung.Trim(),
+                    MucDoUuTien = mucDoUuTien ?? 2,
+                    TrangThai = "Chờ xử lý",
+                    NgayTao = DateOnly.FromDateTime(DateTime.Now),
+                    NgayCapNhat = DateOnly.FromDateTime(DateTime.Now)
+                };
+
+                _context.PhieuHoTros.Add(newPhieu);
+                await _context.SaveChangesAsync();
+
+                lienHe.IdPhieu = newPhieu.IdPhieu;
+                _context.LienHes.Update(lienHe);
+
+                var sysMsg = new TinNhan
+                {
+                    IdLienHe = lienHe.IdLienHe,
+                    LoaiNguoiGui = "Hệ thống",
+                    TinNhan1 = $"Hệ thống đã tạo Phiếu hỗ trợ {newPhieu.MaPhieu}.",
+                    TrangThai = "Đã gửi",
+                    ThoiGian = DateTime.Now
+                };
+                _context.TinNhans.Add(sysMsg);
+
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+
+                string groupName = $"Ticket_{lienHe.IdLienHe}";
+                try
+                {
+                    await _chatHubContext.Clients.Group(groupName).SendAsync("ReceiveMessage", groupName, new {
+                        idTinNhan = sysMsg.IdTinNhan,
+                        idLienHe = lienHe.IdLienHe,
+                        loaiNguoiGui = "Hệ thống",
+                        tinNhan = sysMsg.TinNhan1,
+                        thoiGian = sysMsg.ThoiGian?.ToString("HH:mm")
+                    });
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "SignalR Error on TaoPhieuTuChat");
+                }
+
+                return Json(new { success = true, maPhieu = newPhieu.MaPhieu, idPhieu = newPhieu.IdPhieu, message = $"Hệ thống đã tạo Phiếu hỗ trợ {newPhieu.MaPhieu}." });
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                return Json(new { success = false, message = "Lỗi khi tạo phiếu hỗ trợ: " + ex.Message });
+            }
+        }
+
+        // ==========================================
+        // 11. KẾT THÚC HỖ TRỢ (CLOSE SUPPORT CHAT)
+        // ==========================================
+        [HttpPost]
+        [Route("Chat/KetThucHoTro")]
+        public async Task<IActionResult> KetThucHoTro(int idLienHe)
+        {
+            var (userId, role, hoTen) = GetUserSessionInfo();
+            if (userId == null) return Unauthorized(new { success = false, message = "Chưa đăng nhập." });
+
+            var lienHe = await _context.LienHes.FirstOrDefaultAsync(l => l.IdLienHe == idLienHe);
+            if (lienHe == null) return Json(new { success = false, message = "Cuộc trò chuyện không tồn tại." });
+
+            lienHe.TrangThai = "Đã hoàn thành";
+            _context.LienHes.Update(lienHe);
+
+            var sysMsg = new TinNhan
+            {
+                IdLienHe = lienHe.IdLienHe,
+                LoaiNguoiGui = "Hệ thống",
+                TinNhan1 = "Cuộc trò chuyện đã kết thúc. Xin cảm ơn Quý khách.",
+                TrangThai = "Đã gửi",
+                ThoiGian = DateTime.Now
+            };
+            _context.TinNhans.Add(sysMsg);
+
+            await _context.SaveChangesAsync();
+
+            string groupName = $"Ticket_{lienHe.IdLienHe}";
+            try
+            {
+                await _chatHubContext.Clients.Group(groupName).SendAsync("ReceiveMessage", groupName, new {
+                    idTinNhan = sysMsg.IdTinNhan,
+                    idLienHe = lienHe.IdLienHe,
+                    loaiNguoiGui = "Hệ thống",
+                    tinNhan = sysMsg.TinNhan1,
+                    thoiGian = sysMsg.ThoiGian?.ToString("HH:mm")
+                });
+                await _chatHubContext.Clients.Group(groupName).SendAsync("ChatClosed", new { status = "Đã hoàn thành" });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "SignalR Error on KetThucHoTro");
+            }
+
+            return Json(new { success = true, message = "Cuộc trò chuyện đã kết thúc." });
         }
     }
 }

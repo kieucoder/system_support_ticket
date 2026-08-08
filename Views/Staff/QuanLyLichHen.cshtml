@@ -1,73 +1,26 @@
 @model SupportTicketSysterm.Models.LichHenCalendarViewModel
 @{
-    ViewData["Title"] = "Quản Lý Lịch Hẹn Kỹ Thuật";
-    Layout = null; // Standalone page with topbar & sidebar loader
+    ViewData["Title"] = "Quản Lý Lịch Hẹn Kỹ Thuật - TechSupport Viettel";
+    ViewData["HeaderTitle"] = "Quản lý Lịch Hẹn";
+    ViewData["HeaderSubtitle"] = "Điều phối & xử lý lịch hẹn kỹ thuật trực tuyến";
     var today = DateOnly.FromDateTime(DateTime.Today);
     var chiTiet = Model.LichHenChiTiet;
 
     string ClassTrangThaiSpec(string? tt) => tt switch {
-        "Chờ xác nhận"    => "waiting",
-        "Đã xác nhận"     => "confirmed",
-        "Đang di chuyển"  => "in_progress",
-        "Đang thực hiện"  => "in_progress",
-        "Hoàn thành"      => "completed",
-        "Đã hủy"          => "cancelled",
-        _                  => "waiting"
+        "Chờ xác nhận" or "ChoXacNhan" => "waiting",
+        "Đã xác nhận" or "DaXacNhan" => "confirmed",
+        "Đang thực hiện" or "Đang hỗ trợ" or "DangThucHien" => "in_progress",
+        "Hoàn thành" or "Đã hoàn thành" or "DaHoanThanh" or "HoanThanh" => "completed",
+        "Đã hủy" or "DaHuy" => "cancelled",
+        _ => "waiting"
     };
 }
-<!DOCTYPE html>
-<html lang="vi" data-bs-theme="light">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewData["Title"] - TechSupport Viettel</title>
-    <meta name="description" content="Hệ thống quản lý và điều phối lịch hẹn kỹ thuật địa bàn Viettel Telecom.">
-    <meta name="robots" content="noindex, nofollow">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="~/assets/css/staff/dashboard.css">
+
+@section Styles {
     <link rel="stylesheet" href="~/css/staff/quanlylichhen.css" asp-append-version="true">
-</head>
-<body class="staff-ticket-page">
-<div id="adminLayout">
-    <partial name="~/Views/Shared/SidebarStaff.cshtml" />
-    <div class="main-wrapper">
+}
 
-        <!-- ── TOPBAR COMPONENT ── -->
-        <header class="admin-topbar" role="banner">
-            <div class="topbar-left">
-                <button class="sidebar-toggle-btn d-lg-none" id="toggleMobileSidebar" data-bs-toggle="offcanvas" data-bs-target="#adminSidebar" aria-label="Mở sidebar"><i class="bi bi-bars"></i></button>
-                <button class="sidebar-toggle-btn d-none d-lg-flex" id="toggleSidebar" aria-label="Toggle sidebar"><i class="bi bi-bars"></i></button>
-                <div class="d-none d-md-block">
-                    <p class="mb-0 fw-bold" style="font-size:0.95rem;color:var(--vt-primary);">Quản Lý Lịch Hẹn</p>
-                    <p class="mb-0 text-muted" style="font-size:0.75rem;">Điều phối & xử lý lịch hẹn kỹ thuật trực tuyến</p>
-                </div>
-            </div>
-            <div class="topbar-right">
-                <button class="btn btn-outline-secondary rounded-circle me-2" id="darkThemeToggle" aria-label="Đổi sáng tối" style="width: 36px; height: 36px; display:inline-flex; align-items:center; justify-content:center;">
-                    <i class="bi bi-moon-stars-fill text-secondary"></i>
-                </button>
-                <div class="dropdown">
-                    <a class="user-profile-dropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src="https://ui-avatars.com/api/?name=@Uri.EscapeDataString(User.Identity?.Name ?? "NV")&background=D71920&color=fff&size=38" alt="Avatar" class="user-avatar">
-                        <div class="d-none d-sm-block">
-                            <p class="user-profile-name mb-0">@(User.Identity?.Name ?? "Nhân viên")</p>
-                            <p class="mb-0 user-profile-role">Nhân viên hỗ trợ</p>
-                        </div>
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2" style="border-radius:12px;">
-                        <li><a class="dropdown-item py-2" asp-controller="Staff" asp-action="Dashboard"><i class="fa-solid fa-gauge-high me-2 text-danger"></i>Dashboard</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item py-2 text-danger" asp-controller="Auth" asp-action="DangXuat"><i class="fa-solid fa-right-from-bracket me-2"></i>Đăng xuất</a></li>
-                    </ul>
-                </div>
-            </div>
-        </header>
-
-        <!-- ── MAIN WORKSPACE ── -->
-        <main class="admin-content container-fluid py-4 px-3 px-md-4">
+<div class="container-fluid py-4 px-3 px-md-4">
 
             <!-- Breadcrumb -->
             <nav aria-label="breadcrumb" class="mb-3">
@@ -266,7 +219,7 @@
                                 <th style="width: 160px;">KTV Phụ Trách</th>
                                 <th>Địa chỉ hỗ trợ</th>
                                 <th style="width: 140px;">Trạng thái</th>
-                                <th style="width: 90px;" class="text-center">Thao tác</th>
+                                <th style="width: 150px;" class="text-center">Thao tác</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -331,75 +284,9 @@
                                             <span class="badge-status-spec @stateClass">@appt.TrangThai</span>
                                         </td>
                                         <td class="text-center" onclick="event.stopPropagation();">
-                                            <div class="d-flex align-items-center justify-content-center gap-1">
-                                                <!-- View Drawer Button -->
-                                                <a class="btn-action-custom view" href="@Url.Action("QuanLyLichHen","Staff", new { selectedId = appt.IdLichHen })" title="Xem chi tiết (Drawer)">
-                                                    <i class="bi bi-eye-fill"></i>
-                                                </a>
-                                                <!-- Action Dropdown -->
-                                                <div class="dropdown">
-                        <div class="dropdown">
-                                                    <button class="btn-action-custom more" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Thao tác khác">
-                                                        <i class="bi bi-three-dots"></i>
-                                                    </button>
-                                                    <ul class="dropdown-menu dropdown-menu-end shadow border-0" style="border-radius:12px; font-size:0.85rem; z-index:1060;">
-                                                        <li>
-                                                            <a class="dropdown-item py-2 fw-semibold text-danger" href="@Url.Action("QuanLyLichHen","Staff", new { selectedId = appt.IdLichHen })">
-                                                                <i class="bi bi-eye-fill me-2"></i>Xem chi tiết (Drawer)
-                                                            </a>
-                                                        </li>
-                                                        <li><hr class="dropdown-divider"></li>
-
-                                                        @if (appt.TrangThai == "Chờ xác nhận")
-                                                        {
-                                                            <li>
-                                                                <form method="post" asp-action="XacNhanLich" asp-controller="Staff">
-                                                                    @Html.AntiForgeryToken()
-                                                                    <input type="hidden" name="id" value="@appt.IdLichHen" />
-                                                                    <button type="submit" class="dropdown-item py-2 text-primary fw-semibold"><i class="bi bi-check-circle me-2"></i>Xác nhận lịch</button>
-                                                                </form>
-                                                            </li>
-                                                        }
-                                                        @if (appt.TrangThai == "Đã xác nhận")
-                                                        {
-                                                            <li>
-                                                                <form method="post" asp-action="BatDauHoTro" asp-controller="Staff">
-                                                                    @Html.AntiForgeryToken()
-                                                                    <input type="hidden" name="id" value="@appt.IdLichHen" />
-                                                                    <button type="submit" class="dropdown-item py-2 text-purple fw-semibold" style="color:#7C3AED;"><i class="bi bi-play-circle me-2"></i>Bắt đầu hỗ trợ</button>
-                                                                </form>
-                                                            </li>
-                                                        }
-                                                        @if (appt.TrangThai == "Đang thực hiện")
-                                                        {
-                                                            <li>
-                                                                <button type="button" class="dropdown-item py-2 text-success fw-semibold" data-bs-toggle="modal" data-bs-target="#completeApptModal" onclick="prepareCompleteModal(@appt.IdLichHen, '@appt.MaPhieu')">
-                                                                    <i class="bi bi-check2-all me-2"></i>Hoàn thành hỗ trợ
-                                                                </button>
-                                                            </li>
-                                                        }
-
-                                                        @if (User.IsInRole("Admin") || User.IsInRole("QuanTriVien"))
-                                                        {
-                                                            <li>
-                                                                <a class="dropdown-item py-2 text-warning fw-semibold" href="#" data-bs-toggle="modal" data-bs-target="#editTimeModal">
-                                                                    <i class="bi bi-clock-history me-2"></i>Đổi giờ
-                                                                </a>
-                                                            </li>
-                                                            <li>
-                                                                <a class="dropdown-item py-2 text-info fw-semibold" href="#" data-bs-toggle="modal" data-bs-target="#transferTechModal">
-                                                                    <i class="bi bi-person-gear me-2"></i>Đổi KTV
-                                                                </a>
-                                                            </li>
-                                                            <li>
-                                                                <a class="dropdown-item py-2 text-danger fw-semibold" href="#" data-bs-toggle="modal" data-bs-target="#cancelModal">
-                                                                    <i class="bi bi-x-circle me-2"></i>Hủy lịch
-                                                                </a>
-                                                            </li>
-                                                        }
-                                                    </ul>
-                                                </div>
-                                            </div>
+                                            <a class="btn btn-sm btn-outline-danger rounded-pill px-3 py-1.5 fw-bold shadow-sm" style="white-space: nowrap;" href="@Url.Action("ChiTietLichHen", "Staff", new { id = appt.IdLichHen })">
+                                                <i class="fa-solid fa-eye me-1"></i> Xem chi tiết
+                                            </a>
                                         </td>
                                     </tr>
                                 }
@@ -463,112 +350,7 @@
     </div>
 </div>
 
-<!-- =============================================================
-     5. RIGHT SLIDE-OVER DRAWER (420px WIDTH)
-     ============================================================= -->
-<div class="drawer-backdrop-overlay" id="drawerOverlay"></div>
 
-<div class="drawer-slide-panel" id="slideOverDrawer">
-    <div class="drawer-header">
-        <h6 class="fw-bold mb-0 text-danger">
-            <i class="bi bi-file-earmark-text-fill me-2"></i>Chi Tiết Phiếu & Lịch Hẹn
-        </h6>
-        <button type="button" class="btn-close" id="closeDrawerBtn" aria-label="Đóng"></button>
-    </div>
-
-    <div class="drawer-body-scroll">
-        <!-- Section 1: Thông tin phiếu -->
-        <div class="drawer-section-card">
-            <div class="drawer-sec-title"><i class="fa-solid fa-file-invoice"></i> Thông tin phiếu</div>
-            <div class="drawer-field-row"><span class="lbl">Mã phiếu:</span><span class="val text-danger" id="dw-code">@chiTiet?.MaPhieu</span></div>
-            <div class="drawer-field-row"><span class="lbl">Danh mục:</span><span class="val" id="dw-cat">@chiTiet?.TenDanhMuc</span></div>
-            <div class="drawer-field-row"><span class="lbl">Dịch vụ:</span><span class="val" id="dw-service">@chiTiet?.TenDichVu</span></div>
-            <div class="drawer-field-row"><span class="lbl">Ưu tiên:</span><span class="val badge bg-danger-subtle text-danger" id="dw-priority">@(chiTiet?.NhanUuTien ?? "Bình thường")</span></div>
-        </div>
-
-        <!-- Section 2: Khách hàng -->
-        <div class="drawer-section-card">
-            <div class="drawer-sec-title"><i class="fa-solid fa-user-tie"></i> Khách hàng</div>
-            <div class="drawer-field-row"><span class="lbl">Họ tên:</span><span class="val" id="dw-client">@chiTiet?.TenKhachHang</span></div>
-            <div class="drawer-field-row"><span class="lbl">Điện thoại:</span><span class="val"><a href="tel:@chiTiet?.SoDienThoaiKH" class="text-danger text-decoration-none fw-bold" id="dw-phone-link"><span id="dw-phone">@chiTiet?.SoDienThoaiKH</span></a></span></div>
-            <div class="drawer-field-row"><span class="lbl">Email:</span><span class="val text-break" id="dw-email">@(chiTiet?.EmailKH ?? "–")</span></div>
-            <div class="drawer-field-row"><span class="lbl">Địa chỉ:</span><span class="val" id="dw-address">@(chiTiet?.DiaChiKH ?? "–")</span></div>
-        </div>
-
-        <!-- Section 3: Lịch hẹn -->
-        <div class="drawer-section-card">
-            <div class="drawer-sec-title"><i class="fa-solid fa-calendar-check"></i> Lịch hẹn</div>
-            <div class="drawer-field-row"><span class="lbl">Ngày hẹn:</span><span class="val" id="dw-date">@(chiTiet?.NgayHen?.ToString("dd/MM/yyyy") ?? "–")</span></div>
-            <div class="drawer-field-row"><span class="lbl">Giờ hẹn:</span><span class="val" id="dw-time">@chiTiet?.GioBatDauStr – @chiTiet?.GioKetThucStr</span></div>
-            <div class="drawer-field-row"><span class="lbl">KTV phụ trách:</span><span class="val text-primary" id="dw-tech">@(string.IsNullOrEmpty(chiTiet?.TenNhanVien) ? "Chưa phân công" : chiTiet?.TenNhanVien)</span></div>
-            <div class="drawer-field-row"><span class="lbl">SĐT KTV:</span><span class="val" id="dw-techphone">@chiTiet?.SoDienThoaiNV</span></div>
-            <div class="drawer-field-row"><span class="lbl">Trạng thái:</span><span class="val badge bg-danger text-white" id="dw-status">@chiTiet?.TrangThai</span></div>
-            <div class="mt-2">
-                <span class="lbl small d-block mb-1">Ghi chú:</span>
-                <p class="small text-muted mb-2" id="dw-notes">@(chiTiet?.GhiChu ?? "Không có ghi chú.")</p>
-                <a href="@chiTiet?.GoogleMapsUrl" target="_blank" class="btn btn-sm btn-outline-danger w-100 rounded-pill" id="dw-maps-btn">
-                    <i class="bi bi-geo-alt-fill me-1"></i> Xem trên bản đồ Google Maps
-                </a>
-            </div>
-        </div>
-
-        <!-- Section 4: Thao tác -->
-        @if (chiTiet != null && chiTiet.CoTheThaoTac)
-        {
-            <div class="drawer-section-card">
-                <div class="drawer-sec-title"><i class="fa-solid fa-sliders"></i> Thao tác</div>
-                <div class="d-flex flex-column gap-2 mt-2">
-                    @if (chiTiet.TrangThai == "Chờ xác nhận")
-                    {
-                        <form method="post" asp-action="XacNhanLich" asp-controller="Staff" class="w-100">
-                            @Html.AntiForgeryToken()
-                            <input type="hidden" name="id" value="@chiTiet.IdLichHen" />
-                            <button type="submit" class="drawer-act-btn confirm">
-                                <i class="bi bi-calendar-check-fill"></i> Xác nhận lịch
-                            </button>
-                        </form>
-                    }
-
-                    @if (chiTiet.TrangThai == "Đã xác nhận")
-                    {
-                        <form method="post" asp-action="BatDauHoTro" asp-controller="Staff" class="w-100">
-                            @Html.AntiForgeryToken()
-                            <input type="hidden" name="id" value="@chiTiet.IdLichHen" />
-                            <button type="submit" class="drawer-act-btn start">
-                                <i class="bi bi-play-circle-fill"></i> Bắt đầu hỗ trợ
-                            </button>
-                        </form>
-                    }
-
-                    @if (chiTiet.TrangThai == "Đang thực hiện")
-                    {
-                        <button type="button" class="drawer-act-btn complete" data-bs-toggle="modal" data-bs-target="#completeApptModal" onclick="prepareCompleteModal(@chiTiet.IdLichHen, '@chiTiet.MaPhieu')">
-                            <i class="bi bi-check-circle-fill"></i> Hoàn thành hỗ trợ
-                        </button>
-                    }
-
-                    @if (User.IsInRole("Admin") || User.IsInRole("QuanTriVien"))
-                    {
-                        <button type="button" class="drawer-act-btn reschedule" data-bs-toggle="modal" data-bs-target="#editTimeModal">
-                            <i class="bi bi-clock-history"></i> Đổi giờ
-                        </button>
-
-                        @if (chiTiet.CoTheDoiKTV)
-                        {
-                            <button type="button" class="drawer-act-btn transfer" data-bs-toggle="modal" data-bs-target="#transferTechModal">
-                                <i class="bi bi-person-gear"></i> Đổi KTV
-                            </button>
-                        }
-
-                        <button type="button" class="drawer-act-btn cancel" data-bs-toggle="modal" data-bs-target="#cancelModal">
-                            <i class="bi bi-x-circle-fill"></i> Hủy lịch
-                        </button>
-                    }
-                </div>
-            </div>
-        }
-    </div>
-</div>
 
 <!-- =============================================================
      GLASSMORPHIC MODAL DIALOGS
@@ -783,19 +565,16 @@
     </div>
 </div>
 
-<script>
-    function prepareCompleteModal(id, code) {
-        var inputId = document.getElementById('completeApptId');
-        var inputCode = document.getElementById('completeApptCode');
-        if (inputId) inputId.value = id;
-        if (inputCode) inputCode.textContent = code || ('#' + id);
-    }
-</script>
+</div>
 
-<!-- External Scripts -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
-<script src="~/assets/js/staff/sidebar-loader.js"></script>
-<script src="~/js/staff/quanlylichhen.js" asp-append-version="true"></script>
-</body>
-</html>
+@section Scripts {
+    <script>
+        function prepareCompleteModal(id, code) {
+            var inputId = document.getElementById('completeApptId');
+            var inputCode = document.getElementById('completeApptCode');
+            if (inputId) inputId.value = id;
+            if (inputCode) inputCode.textContent = code || ('#' + id);
+        }
+    </script>
+    <script src="~/js/staff/quanlylichhen.js" asp-append-version="true"></script>
+}

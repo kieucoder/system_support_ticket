@@ -1,0 +1,141 @@
+@model SupportTicketSysterm.Data.KhachHang
+
+@{
+    var ratings = Model.PhieuHoTros?
+        .Select(p => p.DanhGium)
+        .Where(d => d != null && d.ChatLuongDichVu.HasValue)
+        .Select(d => d!.ChatLuongDichVu!.Value)
+        .ToList() ?? new List<int>();
+    double avgRating = ratings.Any() ? Math.Round(ratings.Average(), 1) : 5.0;
+
+    string vaiTro = Context.Session?.GetString("Role") ?? Context.Session?.GetString("VaiTro") ?? User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value ?? User.FindFirst("VaiTro")?.Value ?? "";
+    bool isAdmin = ViewBag.IsAdmin ?? (vaiTro.Equals("Admin", StringComparison.OrdinalIgnoreCase) || vaiTro.Equals("Quản trị viên", StringComparison.OrdinalIgnoreCase) || vaiTro.Equals("NhanVien", StringComparison.OrdinalIgnoreCase) || vaiTro.Equals("Nhân viên", StringComparison.OrdinalIgnoreCase) || vaiTro.Equals("Nhân viên hỗ trợ", StringComparison.OrdinalIgnoreCase));
+    
+    string tenDangNhapDisplay = !string.IsNullOrWhiteSpace(Model.TenDangNhap) 
+        ? Model.TenDangNhap 
+        : (!string.IsNullOrWhiteSpace(Model.Email) ? Model.Email.Split('@')[0] : (Model.MaKh ?? "—"));
+}
+
+<div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content" style="border-radius: 16px; overflow: hidden; border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+        <!-- Modal Header theo phong cách Viettel (#E60012) -->
+        <div class="modal-header text-white py-3" style="background-color: #E60012;">
+            <h5 class="modal-title fw-bold d-flex align-items-center gap-2" id="customerDetailModalLabel">
+                <i class="fa-solid fa-id-card fs-5"></i> Thông Tin Chi Tiết Khách Hàng
+            </h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Đóng"></button>
+        </div>
+
+        <div class="modal-body p-0">
+            <!-- Header Profile Banner -->
+            <div class="p-4 d-flex align-items-center gap-3" style="background: linear-gradient(135deg, rgba(230, 0, 18, 0.08) 0%, rgba(230, 0, 18, 0.02) 100%);">
+                <!-- Avatar / Initial Icon -->
+                <div class="position-relative">
+                    <div class="d-flex align-items-center justify-content-center text-white fw-bold shadow-sm"
+                         style="width: 72px; height: 72px; border-radius: 16px; background: linear-gradient(135deg, #E60012 0%, #B3000E 100%); font-size: 1.8rem;">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                    <span class="position-absolute bottom-0 end-0 p-1 rounded-circle border border-2 border-white @(Model.TrangThai == "Hoạt động" ? "bg-success" : "bg-danger")"
+                          style="width: 14px; height: 14px;" title="@Model.TrangThai"></span>
+                </div>
+
+                <div class="flex-grow-1">
+                    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                        <div>
+                            <h4 class="fw-bold mb-1 text-dark">@Model.HoTen</h4>
+                            <div class="d-flex align-items-center gap-2 flex-wrap" style="font-size: 0.85rem;">
+                                <span class="badge bg-danger-subtle text-danger border border-danger-subtle font-monospace px-2 py-1" style="border-radius: 6px;">
+                                    <i class="fa-solid fa-hashtag me-1"></i>@(Model.MaKh ?? $"KH{Model.IdKhachHang:D3}")
+                                </span>
+                                <span class="badge @(Model.TrangThai == "Hoạt động" ? "bg-success" : "bg-danger") px-2 py-1" style="border-radius: 6px;">
+                                    @(Model.TrangThai ?? "Hoạt động")
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Bar -->
+            <div class="row g-0 border-top border-bottom text-center bg-light">
+                <div class="col-4 py-3 border-end">
+                    <span class="text-muted d-block" style="font-size: 0.78rem;">Tổng phiếu hỗ trợ</span>
+                    <span class="fw-bold fs-5 text-dark">@(Model.PhieuHoTros?.Count ?? 0)</span>
+                </div>
+                <div class="col-4 py-3 border-end">
+                    <span class="text-muted d-block" style="font-size: 0.78rem;">Lịch hẹn hỗ trợ</span>
+                    <span class="fw-bold fs-5 text-dark">@(Model.PhieuHoTros?.SelectMany(p => p.LichHens)?.Count() ?? 0)</span>
+                </div>
+                <div class="col-4 py-3">
+                    <span class="text-muted d-block" style="font-size: 0.78rem;">Đánh giá trung bình</span>
+                    <span class="fw-bold fs-5 text-warning">
+                        @avgRating.ToString("F1") <i class="fa-solid fa-star small"></i>
+                    </span>
+                </div>
+            </div>
+
+            <!-- Details Grid: Bố cục 2 cột -->
+            <div class="p-4">
+                <h6 class="fw-bold text-danger mb-3 border-bottom pb-2" style="font-size: 0.95rem;">
+                    <i class="fa-solid fa-circle-info me-2"></i>Thông tin cá nhân & Tài khoản
+                </h6>
+                <div class="row g-3">
+                    <!-- Cột 1 -->
+                    <div class="col-12 col-md-6">
+                        <div class="mb-3">
+                            <span class="text-muted d-block small mb-1"><i class="fa-solid fa-hashtag text-secondary me-1"></i>Mã khách hàng:</span>
+                            <span class="fw-bold text-dark font-monospace">@(Model.MaKh ?? $"KH{Model.IdKhachHang:D3}")</span>
+                        </div>
+                        <div class="mb-3">
+                            <span class="text-muted d-block small mb-1"><i class="fa-solid fa-user text-secondary me-1"></i>Họ và tên:</span>
+                            <span class="fw-bold text-dark">@(Model.HoTen ?? "—")</span>
+                        </div>
+                        <div class="mb-3">
+                            <span class="text-muted d-block small mb-1"><i class="fa-solid fa-envelope text-secondary me-1"></i>Email:</span>
+                            <span class="fw-medium text-dark">@(string.IsNullOrWhiteSpace(Model.Email) ? "—" : Model.Email)</span>
+                        </div>
+                        <div class="mb-3">
+                            <span class="text-muted d-block small mb-1"><i class="fa-solid fa-phone text-secondary me-1"></i>Số điện thoại:</span>
+                            <span class="fw-bold text-dark">@(string.IsNullOrWhiteSpace(Model.SoDienThoai) ? "—" : Model.SoDienThoai)</span>
+                        </div>
+                    </div>
+
+                    <!-- Cột 2 -->
+                    <div class="col-12 col-md-6">
+                        <div class="mb-3">
+                            <span class="text-muted d-block small mb-1"><i class="fa-solid fa-user-gear text-secondary me-1"></i>Tên đăng nhập:</span>
+                            <span class="fw-semibold text-dark font-monospace">@tenDangNhapDisplay</span>
+                        </div>
+                        <div class="mb-3">
+                            <span class="text-muted d-block small mb-1"><i class="fa-solid fa-calendar-day text-secondary me-1"></i>Ngày tạo tài khoản:</span>
+                            <span class="fw-medium text-dark font-monospace">@(Model.NgayTao?.ToString("dd/MM/yyyy") ?? "—")</span>
+                        </div>
+                        <div class="mb-3">
+                            <span class="text-muted d-block small mb-1"><i class="fa-solid fa-shield-halved text-secondary me-1"></i>Trạng thái tài khoản:</span>
+                            <span class="badge @(Model.TrangThai == "Hoạt động" ? "bg-success" : "bg-danger")">
+                                @(Model.TrangThai ?? "Hoạt động")
+                            </span>
+                        </div>
+                        <div class="mb-3">
+                            <span class="text-muted d-block small mb-1"><i class="fa-solid fa-location-dot text-secondary me-1"></i>Địa chỉ liên hệ:</span>
+                            <span class="fw-medium text-dark text-break">@(string.IsNullOrWhiteSpace(Model.DiaChi) ? "Chưa cập nhật" : Model.DiaChi)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="modal-footer border-top-0 pt-0 px-4 pb-4 d-flex justify-content-end gap-2">
+            <button type="button" class="btn btn-secondary px-4 py-2" data-bs-dismiss="modal" style="border-radius: 8px;">
+                <i class="fa-solid fa-xmark me-1"></i> Đóng
+            </button>
+            @if (isAdmin)
+            {
+                <button type="button" class="btn btn-warning text-dark fw-bold px-4 py-2" data-bs-dismiss="modal" onclick="openEditCustomerModal('@Model.IdKhachHang')" style="border-radius: 8px;">
+                    <i class="fa-solid fa-pen-to-square me-1"></i> Chỉnh sửa
+                </button>
+            }
+        </div>
+    </div>
+</div>

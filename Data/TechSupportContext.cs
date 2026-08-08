@@ -39,7 +39,7 @@ public partial class TechSupportContext : DbContext
 
     public virtual DbSet<TinNhan> TinNhans { get; set; }
 
-    public virtual DbSet<SupportTicketSysterm.Models.ChatMessage> ChatMessages { get; set; }
+
 
 
 
@@ -267,12 +267,14 @@ public partial class TechSupportContext : DbContext
 
             entity.Property(e => e.IdOtp).HasColumnName("IdOTP");
             entity.Property(e => e.IdKhachHang).HasColumnName("IdKhachHang");
-            entity.Property(e => e.Otp)
-                .HasMaxLength(50)
-                .IsUnicode(false)
-                .HasColumnName("OTP");
-            entity.Property(e => e.ThoiGianTao).HasColumnType("datetime").HasColumnName("ThoiGianTao");
-            entity.Property(e => e.HanSuDung).HasColumnType("datetime").HasColumnName("HanSuDung");
+            entity.Property(e => e.MaOTPBam)
+                .HasMaxLength(255)
+                .HasColumnName("MaOTPBam");
+            entity.Property(e => e.ThoiGianTao).HasColumnType("datetime2").HasColumnName("ThoiGianTao");
+            entity.Property(e => e.HanSuDung).HasColumnType("datetime2").HasColumnName("HanSuDung");
+            entity.Property(e => e.DaSuDung).HasDefaultValue(false).HasColumnName("DaSuDung");
+            entity.Property(e => e.SoLanNhapSai).HasDefaultValue(0).HasColumnName("SoLanNhapSai");
+            entity.Property(e => e.LoaiOTP).HasMaxLength(30).HasColumnName("LoaiOTP");
 
             entity.HasOne(d => d.IdKhachHangNavigation).WithMany(p => p.TaiKhoanOtps)
                 .HasForeignKey(d => d.IdKhachHang)
@@ -299,11 +301,6 @@ public partial class TechSupportContext : DbContext
 
 
 
-
-        modelBuilder.Entity<SupportTicketSysterm.Models.ChatMessage>(entity =>
-        {
-            entity.ToTable("ChatMessages");
-        });
 
         OnModelCreatingPartial(modelBuilder);
     }

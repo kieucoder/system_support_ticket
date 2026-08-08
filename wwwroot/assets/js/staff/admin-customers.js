@@ -265,9 +265,6 @@ function renderCustomersList() {
                     <button class="btn-action-custom ${lockBtnClass}" onclick="toggleLockStatus('${escHtml(c.id)}')" data-bs-toggle="tooltip" data-bs-placement="top" title="${lockAction}">
                         <i class="fa-solid ${lockIcon}"></i>
                     </button>
-                    <button class="btn-action-custom delete" onclick="deleteCustomer('${escHtml(c.id)}')" data-bs-toggle="tooltip" data-bs-placement="top" title="Xóa tài khoản">
-                        <i class="fa-solid fa-trash"></i>
-                    </button>
                 </div>
             </td>
         </tr>`;
@@ -312,9 +309,6 @@ function renderCustomersList() {
                     </button>
                     <button class="btn-action-custom ${lockBtnClass}" onclick="toggleLockStatus('${escHtml(c.id)}')" title="${lockAction}">
                         <i class="fa-solid ${lockIcon}"></i>
-                    </button>
-                    <button class="btn-action-custom delete" onclick="deleteCustomer('${escHtml(c.id)}')" title="Xóa">
-                        <i class="fa-solid fa-trash"></i>
                     </button>
                 </div>
             </div>
@@ -409,70 +403,93 @@ window.clearFiltersKH = function () {
 };
 
 /* ══════════════════════════════════════════
+   EVENT DELEGATION FOR CUSTOMER DETAIL
+   ══════════════════════════════════════════ */
+$(document).ready(function () {
+    $(document).on('click', '.btn-view-detail', function (e) {
+        e.preventDefault();
+        const id = $(this).attr('data-id') || $(this).data('id');
+        if (id) {
+            window.viewCustomerDetails(id);
+        }
+    });
+});
+
+/* ══════════════════════════════════════════
    MODAL ACTIONS: VIEW CUSTOMER DETAILED DATA
    ══════════════════════════════════════════ */
 window.viewCustomerDetails = function (customerId) {
     if (!customerId) return;
 
-    // 1. Show modal with loading state immediately
-    $('#customerDetailContainer').html(`
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content border-0 shadow-lg" style="border-radius: var(--vt-border-radius); overflow: hidden;">
-                <div class="modal-header bg-danger text-white py-3">
-                    <h5 class="modal-title fw-bold">
-                        <i class="bi bi-id-card me-2"></i>Hồ Sơ Chi Tiết Khách Hàng
-                    </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Đóng"></button>
-                </div>
-                <div class="modal-body p-5 text-center">
-                    <div class="spinner-border text-danger my-3" role="status" style="width: 2.5rem; height: 2.5rem;">
-                        <span class="visually-hidden">Loading...</span>
-                    </div>
-                    <p class="text-muted fw-semibold mb-0">Đang tải dữ liệu hồ sơ khách hàng...</p>
-                </div>
-            </div>
-        </div>
-    `);
-
-    const modalEl = document.getElementById('viewCustomerModal');
-    if (modalEl) {
-        const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
-        modal.show();
-    }
-
-    // 2. Fetch server partial view
+    // Fetch server partial view GET /Staff/ChiTietKhachHang/{id}
     $.ajax({
-        url: '/Staff/ChiTietKH',
+        url: '/Staff/ChiTietKhachHang/' + customerId,
         type: 'GET',
-        data: { id: customerId },
-        success: function (html) {
-            $('#customerDetailContainer').html(html);
+        success: function (res) {
+            if (typeof res === 'object' && res.success === false) {
+                if (typeof showToast === 'function') {
+                    showToast('error', res.message || 'Không tìm thấy khách hàng.');
+                } else {
+                    alert(res.message || 'Không tìm thấy khách hàng.');
+                }
+                return;
+            }
+
+            let $modal = $('#customerDetailModal');
+            if (!$modal.length) {
+                $modal = $('#viewCustomerModal');
+            }
+
+            $modal.html(res);
+
+            const modalEl = $modal[0];
+            if (modalEl) {
+                $('.modal-backdrop').remove();
+                const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+                modal.show();
+            }
         },
         error: function (xhr) {
-            console.error('Lỗi khi tải chi tiết KH:', xhr);
-            $('#customerDetailContainer').html(`
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content border-0 shadow-lg" style="border-radius: var(--vt-border-radius); overflow: hidden;">
-                        <div class="modal-header bg-danger text-white py-3">
-                            <h5 class="modal-title fw-bold">
-                                <i class="bi bi-exclamation-triangle me-2"></i>Thông Báo
-                            </h5>
-                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Đóng"></button>
-                        </div>
-                        <div class="modal-body p-4 text-center">
-                            <i class="fa-solid fa-circle-exclamation text-danger mb-3" style="font-size: 2.5rem;"></i>
-                            <h6 class="fw-bold text-dark">Không thể tải thông tin khách hàng</h6>
-                            <p class="text-muted small mb-0">Vui lòng kiểm tra lại kết nối mạng hoặc thử lại sau.</p>
-                        </div>
-                        <div class="modal-footer border-top-0 pt-0 px-4 pb-4">
-                            <button type="button" class="btn btn-secondary px-4 py-2" data-bs-dismiss="modal" style="border-radius: var(--vt-border-radius-sm);">Đóng</button>
-                        </div>
-                    </div>
-                </div>
-            `);
+            // Fallback request
+            $.ajax({
+                url: '/Staff/ChiTietKH',
+                type: 'GET',
+                data: { id: customerId },
+                success: function (res) {
+                    if (typeof res === 'object' && res.success === false) {
+                        if (typeof showToast === 'function') {
+                            showToast('error', res.message || 'Không tìm thấy khách hàng.');
+                        } else {
+                            alert(res.message || 'Không tìm thấy khách hàng.');
+                        }
+                        return;
+                    }
+                    let $modal = $('#customerDetailModal');
+                    if (!$modal.length) {
+                        $modal = $('#viewCustomerModal');
+                    }
+                    $modal.html(res);
+                    const modalEl = $modal[0];
+                    if (modalEl) {
+                        $('.modal-backdrop').remove();
+                        const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+                        modal.show();
+                    }
+                },
+                error: function (err) {
+                    console.error('Lỗi khi tải chi tiết KH:', err);
+                    if (typeof showToast === 'function') {
+                        showToast('error', 'Không thể tải thông tin chi tiết khách hàng.');
+                    } else {
+                        alert('Không thể tải thông tin chi tiết khách hàng.');
+                    }
+                }
+            });
         }
     });
 };
+
+
 
 /* ══════════════════════════════════════════
    MODAL ACTIONS: EDIT CUSTOMER
@@ -556,41 +573,11 @@ window.toggleLockStatus = function (customerId) {
    DELETE CUSTOMER STATE FLOW (CONSTRAINED)
    ══════════════════════════════════════════ */
 window.deleteCustomer = function (customerId) {
-    const token = $('#antiForgeryForm input[name="__RequestVerificationToken"]').val();
-
-    Swal.fire({
-        title: 'Xác nhận xóa?',
-        text: 'Bạn có chắc chắn muốn xóa tài khoản khách hàng này vĩnh viễn không? Hành động này không thể hoàn tác.',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#EE0033',
-        cancelButtonColor: '#6c757d',
-        confirmButtonText: 'Xóa vĩnh viễn',
-        cancelButtonText: 'Hủy'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            $.ajax({
-                url: '/Staff/XoaKhachHang',
-                type: 'POST',
-                data: {
-                    id: customerId,
-                    __RequestVerificationToken: token
-                },
-                headers: { 'X-Requested-With': 'XMLHttpRequest' },
-                success: function (res) {
-                    if (res.success) {
-                        Swal.fire('Đã xóa!', res.message, 'success');
-                        window.applyFiltersKH();
-                    } else {
-                        Swal.fire('Không thể xóa!', res.message, 'error');
-                    }
-                },
-                error: function () {
-                    Swal.fire('Lỗi', 'Không thể gửi yêu cầu xóa tới máy chủ.', 'error');
-                }
-            });
-        }
-    });
+    if (typeof Swal !== 'undefined') {
+        Swal.fire('Thông báo', 'Chức năng xóa khách hàng hiện không được hỗ trợ.', 'info');
+    } else {
+        alert('Chức năng xóa khách hàng hiện không được hỗ trợ.');
+    }
 };
 
 /* ══════════════════════════════════════════
@@ -713,46 +700,71 @@ function generateNextCustomerId() {
 /* ══════════════════════════════════════════
    CUSTOMER SUPPORT TICKETS HISTORY LOGS
    ══════════════════════════════════════════ */
+/* ══════════════════════════════════════════
+   CUSTOMER SUPPORT TICKETS HISTORY LOGS
+   ══════════════════════════════════════════ */
+let currentCustomerHistoryTickets = [];
+
 window.viewTicketHistory = function (customerId) {
-    const customer = customersList.find(c => c.id === customerId);
-    if (!customer) return;
+    if (!customerId) return;
 
-    activeHistoryCustomerId = customerId;
+    $.ajax({
+        url: '/Staff/LichSuPhieuKH',
+        type: 'GET',
+        data: { id: customerId },
+        success: function (res) {
+            if (res.success && res.customer) {
+                const c = res.customer;
+                setText('historyCustomerName', c.hoTen || '—');
+                setText('historyCustomerPhone', c.soDienThoai || '—');
+                setText('historyCustomerEmail', c.email || 'Chưa cung cấp');
 
-    // Set headers
-    setText('historyCustomerName', customer.hoTen);
-    setText('historyCustomerPhone', customer.soDienThoai);
-    setText('historyCustomerEmail', customer.email || 'Chưa cung cấp');
+                currentCustomerHistoryTickets = res.tickets || [];
 
-    // Reset filters
-    const searchCode = document.getElementById('historySearchCode');
-    const searchStat = document.getElementById('historySearchStatus');
-    if (searchCode) searchCode.value = '';
-    if (searchStat) searchStat.value = 'all';
+                // Reset filters
+                const searchCode = document.getElementById('historySearchCode');
+                const searchStat = document.getElementById('historySearchStatus');
+                if (searchCode) searchCode.value = '';
+                if (searchStat) searchStat.value = 'all';
 
-    // Apply & render list
-    applyHistoryFilters();
+                // Apply & render list
+                applyHistoryFilters();
 
-    if (ticketHistoryModal) {
-        ticketHistoryModal.show();
-    }
+                const modalEl = document.getElementById('ticketHistoryModal');
+                if (modalEl) {
+                    const modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+                    modal.show();
+                }
+            } else {
+                showToast('error', res.message || 'Không thể lấy lịch sử phiếu hỗ trợ của khách hàng.');
+            }
+        },
+        error: function () {
+            showToast('error', 'Lỗi hệ thống khi tải lịch sử phiếu hỗ trợ.');
+        }
+    });
 };
 
 window.applyHistoryFilters = function () {
-    const customer = customersList.find(c => c.id === activeHistoryCustomerId);
-    if (!customer) return;
+    const keyword = $('#historySearchCode').val()?.toLowerCase().trim() || '';
+    const status = $('#historySearchStatus').val() || 'all';
 
-    const keyword = document.getElementById('historySearchCode')?.value.toLowerCase().trim() || '';
-    const status = document.getElementById('historySearchStatus')?.value || 'all';
-
-    // Find linked tickets matching name or phone
-    const baseTickets = ticketsList.filter(t => t.customerName === customer.hoTen || t.customerPhone === customer.soDienThoai);
-
-    filteredHistoryTickets = baseTickets.filter(t => {
+    filteredHistoryTickets = currentCustomerHistoryTickets.filter(t => {
         const matchesKeyword = !keyword || 
-                               t.ticketCode.toLowerCase().includes(keyword) || 
-                               t.title.toLowerCase().includes(keyword);
-        const matchesStatus = status === 'all' || t.status === status;
+                               (t.maPhieu && t.maPhieu.toLowerCase().includes(keyword)) || 
+                               (t.tieuDe && t.tieuDe.toLowerCase().includes(keyword));
+        
+        let matchesStatus = true;
+        if (status === 'waiting') {
+            matchesStatus = (t.trangThai === 'Chờ tiếp nhận' || t.trangThai === 'ChoTiepNhan' || t.trangThai === 'Chờ xử lý');
+        } else if (status === 'processing') {
+            matchesStatus = (t.trangThai === 'Đang xử lý' || t.trangThai === 'DangXuLy');
+        } else if (status === 'completed') {
+            matchesStatus = (t.trangThai === 'Đã hoàn thành' || t.trangThai === 'Hoàn thành' || t.trangThai === 'HoanThanh');
+        } else if (status === 'cancelled') {
+            matchesStatus = (t.trangThai === 'Đã hủy' || t.trangThai === 'DaHuy');
+        }
+
         return matchesKeyword && matchesStatus;
     });
 
@@ -784,19 +796,19 @@ function renderHistoryTicketsList() {
     }
 
     tbody.innerHTML = filteredHistoryTickets.map(t => {
-        const priorityBadge = getPriorityBadgeHtml(t.priority);
-        const statusBadge = getStatusBadgeHtml(t.status);
+        const priorityBadge = getPriorityBadgeHtml(t.mucUuTien);
+        const statusBadge = getStatusBadgeHtml(t.trangThai);
 
         return `
         <tr>
-            <td style="padding-left:16px;"><span class="rep-ticket-code">${escHtml(t.ticketCode)}</span></td>
-            <td class="fw-semibold text-dark-emphasis">${escHtml(t.title)}</td>
-            <td><span class="text-muted" style="font-size:0.85rem;">${escHtml(t.requestType)}</span></td>
+            <td style="padding-left:16px;"><span class="rep-ticket-code">${escHtml(t.maPhieu)}</span></td>
+            <td class="fw-semibold text-dark-emphasis">${escHtml(t.tieuDe)}</td>
+            <td><span class="text-muted" style="font-size:0.85rem;">${escHtml(t.tenDichVu)}</span></td>
             <td>${priorityBadge}</td>
             <td>${statusBadge}</td>
-            <td><span class="text-muted font-monospace" style="font-size:0.8rem;">${t.createdDate ? t.createdDate.split(' ')[0] : '—'}</span></td>
+            <td><span class="text-muted font-monospace" style="font-size:0.8rem;">${escHtml(t.ngayTao)}</span></td>
             <td style="text-align: center; padding-right:16px;">
-                <button class="btn-action-custom view" onclick="viewTicketDetails('${escHtml(t.ticketCode)}')" title="Xem chi tiết phiếu">
+                <button class="btn-action-custom view" onclick="viewTicketDetailsById(${t.idPhieu})" title="Xem chi tiết phiếu">
                     <i class="fa-solid fa-circle-info"></i>
                 </button>
             </td>
@@ -818,51 +830,53 @@ function getPriorityBadgeHtml(priority) {
 }
 
 function getStatusBadgeHtml(status) {
-    if (status === 'processing') return '<span class="badge-status processing">Đang xử lý</span>';
-    if (status === 'completed') return '<span class="badge-status completed">Đã hoàn thành</span>';
-    if (status === 'cancelled') return '<span class="badge-status cancelled">Đã hủy</span>';
+    if (status === 'processing' || status === 'Đang xử lý' || status === 'DangXuLy') return '<span class="badge-status processing">Đang xử lý</span>';
+    if (status === 'completed' || status === 'Đã hoàn thành' || status === 'Hoàn thành' || status === 'HoanThanh') return '<span class="badge-status completed">Đã hoàn thành</span>';
+    if (status === 'cancelled' || status === 'Đã hủy' || status === 'DaHuy') return '<span class="badge-status cancelled">Đã hủy</span>';
     return '<span class="badge-status waiting">Chờ tiếp nhận</span>';
 }
 
 /* ══════════════════════════════════════════
    VIEW SPECIFIC TICKET DETAIL
    ══════════════════════════════════════════ */
-window.viewTicketDetails = function (ticketCode) {
-    const ticket = ticketsList.find(t => t.ticketCode === ticketCode);
+window.viewTicketDetailsById = function (idPhieu) {
+    const ticket = currentCustomerHistoryTickets.find(t => t.idPhieu === idPhieu);
     if (!ticket) return;
 
     // Fill elements
-    setText('ticketDetTitle', ticket.title);
-    setText('ticketDetCode', ticket.ticketCode);
-    setText('ticketDetCustomer', ticket.customerName);
-    setText('ticketDetReqType', ticket.requestType);
-    setText('ticketDetDesc', ticket.description || 'Không có nội dung mô tả lỗi.');
-    setText('ticketDetCreatedDate', ticket.createdDate || '—');
-    setText('ticketDetUpdatedDate', ticket.createdDate || '—'); // mock matches created date
+    setText('ticketDetTitle', ticket.tieuDe);
+    setText('ticketDetCode', ticket.maPhieu);
+    setText('ticketDetCustomer', $('#historyCustomerName').text());
+    setText('ticketDetReqType', ticket.tenDichVu);
+    setText('ticketDetDesc', ticket.moTa || 'Không có nội dung mô tả lỗi.');
+    setText('ticketDetCreatedDate', ticket.ngayTao || '—');
+    setText('ticketDetUpdatedDate', ticket.ngayCapNhat || '—');
+    setText('ticketDetStaff', ticket.tenNhanVien || 'Chưa phân công');
 
     const priorityDiv = document.getElementById('ticketDetPriority');
     if (priorityDiv) {
-        priorityDiv.innerHTML = getPriorityBadgeHtml(ticket.priority);
+        priorityDiv.innerHTML = getPriorityBadgeHtml(ticket.mucUuTien);
     }
 
     const statusDiv = document.getElementById('ticketDetStatus');
     if (statusDiv) {
-        statusDiv.innerHTML = getStatusBadgeHtml(ticket.status);
+        statusDiv.innerHTML = getStatusBadgeHtml(ticket.trangThai);
     }
 
-    const appDiv = document.getElementById('ticketDetAppointment');
-    if (appDiv) {
-        if (ticket.needAppointment) {
-            appDiv.innerHTML = `<span class="text-success fw-bold"><i class="fa-solid fa-calendar-check me-1"></i> Có lịch hẹn (${ticket.appointmentDate} lúc ${ticket.appointmentTime})</span>`;
-        } else {
-            appDiv.innerHTML = '<span class="text-muted">Không đặt lịch hẹn ghé nhà</span>';
-        }
-    }
-
-    if (ticketDetailsModal) {
-        ticketDetailsModal.show();
+    const modalEl = document.getElementById('ticketDetailsModal');
+    if (modalEl) {
+        const modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+        modal.show();
     }
 };
+
+window.viewTicketDetails = function (ticketCode) {
+    const ticket = currentCustomerHistoryTickets.find(t => t.maPhieu === ticketCode);
+    if (ticket) {
+        window.viewTicketDetailsById(ticket.idPhieu);
+    }
+};
+
 
 /* ══════════════════════════════════════════
    HELPER UTILITIES

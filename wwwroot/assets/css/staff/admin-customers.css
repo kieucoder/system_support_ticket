@@ -488,3 +488,40 @@
         text-align: right;
     }
 }
+
+/* ══════════════════════════════════════════
+   BOOTSTRAP MODAL & BACKDROP Z-INDEX GUARANTEES
+   ══════════════════════════════════════════ */
+.modal-backdrop {
+    z-index: 1050 !important;
+}
+
+.modal {
+    z-index: 1060 !important;
+}
+
+.modal-dialog {
+    z-index: 1065 !important;
+    position: relative !important;
+}
+
+.modal-content {
+    background-color: var(--bg-card, #ffffff) !important;
+    border-radius: var(--vt-border-radius, 16px) !important;
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3) !important;
+}
+
+.modal.show {
+    display: block !important;
+    opacity: 1 !important;
+}
+
+.modal.show .modal-dialog {
+    transform: none !important;
+}
+
+/* Ensure SweetAlert2 modal dialog displays above backdrops */
+.swal2-container {
+    z-index: 2000 !important;
+}
+

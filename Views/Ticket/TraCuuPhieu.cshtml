@@ -163,6 +163,7 @@
     <link rel="stylesheet" href="~/assets/css/header.css">
     <link rel="stylesheet" href="~/assets/css/sidebar.css">
     <link rel="stylesheet" href="~/assets/css/footer.css">
+    <link rel="stylesheet" href="~/assets/css/chatbox.css" asp-append-version="true">
     <link rel="stylesheet" href="~/assets/css/chatbox.css">
 
     <!-- Page CSS -->
@@ -881,6 +882,9 @@
             }
         });
     </script>
+    <!-- AI Chatbox Widget -->
+    @await Html.PartialAsync("_ChatBox")
+    <script src="~/assets/js/chatbox.js" asp-append-version="true"></script>
 </body>
 
 </html>

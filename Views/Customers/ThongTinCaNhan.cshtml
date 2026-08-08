@@ -88,6 +88,7 @@
     <link rel="stylesheet" href="~/assets/css/header.css">
     <link rel="stylesheet" href="~/assets/css/sidebar.css">
     <link rel="stylesheet" href="~/assets/css/footer.css">
+    <link rel="stylesheet" href="~/assets/css/chatbox.css" asp-append-version="true">
     <link rel="stylesheet" href="~/assets/css/chatbox.css">
 
     <!-- Custom Page CSS (Pure Vanilla CSS Layout) -->
@@ -341,6 +342,20 @@
     <!-- Main Workspace -->
     <main class="profile-workspace">
         <div class="profile-main-container">
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show mb-4 shadow-sm rounded-3" role="alert">
+                    <i class="bi bi-check-circle-fill me-2"></i> @TempData["Success"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show mb-4 shadow-sm rounded-3" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i> @TempData["Error"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
 
             <!-- Quick Statistics Cards -->
             <section class="stats-summary-grid">
@@ -748,27 +763,9 @@
         window.__editProfileHasError = @(TempData["EditError"] != null ? "true" : "false");
     </script>
     <script src="~/assets/js/customer-profile.js"></script>
-
-    @if (TempData["Success"] != null || TempData["Error"] != null || !ViewData.ModelState.IsValid)
-    {
-        <script>
-            document.addEventListener("DOMContentLoaded", function() {
-                setTimeout(function() {
-                    const modal = document.getElementById('changePasswordModal');
-                    const overlay = document.getElementById('modalBackdropOverlay');
-                    if (modal) {
-                        modal.style.display = 'block';
-                        modal.classList.add('show');
-                    }
-                    if (overlay) {
-                        overlay.style.display = 'block';
-                        overlay.classList.add('show');
-                    }
-                    document.body.style.overflow = 'hidden';
-                }, 150);
-            });
-        </script>
-    }
+    <!-- AI Chatbox Widget -->
+    @await Html.PartialAsync("_ChatBox")
+    <script src="~/assets/js/chatbox.js" asp-append-version="true"></script>
 </body>
 
 </html>

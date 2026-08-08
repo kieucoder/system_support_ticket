@@ -44,7 +44,7 @@
             <!-- Left Info Section -->
             <div class="topbar-left-group d-flex align-items-center gap-3">
                 <a href="tel:18008119" class="topbar-link">
-                    <i class="bi bi-telephone-fill me-1"></i> Hotline: <strong>1800 8119</strong> (Miễn phí)
+                    <i class="bi bi-telephone-fill me-1"></i> Hotline: <strong>1800 8119</strong>
                 </a>
                 <a href="mailto:support@viettel.com.vn" class="topbar-link d-none d-md-inline-flex">
                     <i class="bi bi-envelope-fill me-1"></i> support@viettel.com.vn
@@ -62,17 +62,14 @@
                 <!-- Social Links -->
                 <div class="topbar-social-list d-none d-sm-flex align-items-center gap-2">
                     <span class="me-1 d-none d-lg-inline topbar-social-label">Kết nối:</span>
-                    <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" class="topbar-social-btn" aria-label="Facebook">
+                    <a href="https://www.facebook.com/fp.viettel.cantho" target="_blank" rel="noopener noreferrer" class="topbar-social-btn" aria-label="Facebook">
                         <i class="bi bi-facebook"></i>
                     </a>
-                    <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" class="topbar-social-btn" aria-label="YouTube">
+                    <a href="https://www.youtube.com" target="_blank" rel="noopener noreferrer" class="topbar-social-btn" aria-label="YouTube">
                         <i class="bi bi-youtube"></i>
                     </a>
                     <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="topbar-social-btn" aria-label="LinkedIn">
                         <i class="bi bi-linkedin"></i>
-                    </a>
-                    <a href="https://zalo.me" target="_blank" rel="noopener noreferrer" class="topbar-social-btn" aria-label="Zalo">
-                        <i class="bi bi-chat-quote-fill"></i>
                     </a>
                 </div>
 
@@ -157,11 +154,21 @@
                                         <span class="support-desc">Chủ động đặt lịch hẹn kỹ thuật viên</span>
                                     </div>
                                 </a>
+                                <a class="support-item" asp-controller="Customers" asp-action="ChatNhanVien" role="menuitem">
+                                    <div class="support-icon-box" style="background: rgba(215, 25, 32, 0.1); color: #D71920;">
+                                        <i class="bi bi-chat-dots-fill"></i>
+                                    </div>
+                                    <div class="support-info">
+                                        <span class="support-title text-danger fw-bold">Chat với nhân viên</span>
+                                        <span class="support-desc">Hỗ trợ kỹ thuật trực tuyến 24/7</span>
+                                    </div>
+                                </a>
                             </div>
                         </div>
                     </li>
 
-                    <!-- 3. Liên hệ -->
+                    
+                    <!-- 4. Liên hệ -->
                     <li class="nav-item">
                         <a class="nav-link @(isContactActive ? "active" : "")" asp-controller="Home" asp-action="LienHe">
                             Liên hệ
@@ -445,6 +452,15 @@
                                     <div class="drawer-sub-text">
                                         <span class="drawer-sub-title">Tạo lịch hẹn</span>
                                         <span class="drawer-sub-desc">Đặt lịch hẹn KTV đến hỗ trợ</span>
+                                    </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="drawer-sub-link text-danger" asp-controller="Customers" asp-action="ChatNhanVien">
+                                    <span class="drawer-sub-icon bg-red-soft"><i class="bi bi-chat-dots-fill"></i></span>
+                                    <div class="drawer-sub-text">
+                                        <span class="drawer-sub-title fw-bold text-danger">Chat với nhân viên</span>
+                                        <span class="drawer-sub-desc">Trò chuyện hỗ trợ 24/7</span>
                                     </div>
                                 </a>
                             </li>

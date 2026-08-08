@@ -620,6 +620,24 @@ body {
     color: var(--white) !important;
 }
 
+.btn-viettel.btn-cancel-ticket {
+    background-color: var(--viettel-red) !important;
+    color: #FFFFFF !important;
+    border: none !important;
+}
+
+.btn-viettel.btn-cancel-ticket:hover {
+    background-color: var(--viettel-red-hover) !important;
+    color: #FFFFFF !important;
+    border-color: transparent !important;
+    box-shadow: 0 6px 20px rgba(215, 25, 32, 0.25) !important;
+    transform: translateY(-2px);
+}
+
+.btn-viettel.btn-cancel-ticket:active {
+    transform: translateY(0);
+}
+
 /* ==================== 9. PRINT LAYOUT OVERRIDES ==================== */
 @media print {
     body, .workspace-area {

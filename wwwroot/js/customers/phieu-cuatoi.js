@@ -108,8 +108,7 @@ function triggerAjaxFilter(pageUrl = null) {
                 '.stat-theme-processing .stat-card-custom__value',
                 '.stat-theme-pending .stat-card-custom__value',
                 '.stat-theme-completed .stat-card-custom__value',
-                '.stat-theme-cancelled .stat-card-custom__value',
-                '.stat-theme-overdue .stat-card-custom__value'
+                '.stat-theme-cancelled .stat-card-custom__value'
             ];
             kpiSelectors.forEach(sel => {
                 const el = document.querySelector(sel);
